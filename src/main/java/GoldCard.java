@@ -1,2 +1,2 @@
-public class GoldCard extends AbstractCard{
+public class GoldCard extends Card{
 }
