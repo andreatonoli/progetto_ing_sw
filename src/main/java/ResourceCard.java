@@ -1,2 +1,2 @@
-public class ResourceCard extends AbstractCard{
+public class ResourceCard extends Card{
 }
