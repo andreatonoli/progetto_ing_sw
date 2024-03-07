@@ -1,4 +1,11 @@
 package model;
 
-public abstract class Symbols {
+public enum Symbols {
+    PLANT,
+    ANIMAL,
+    FUNGI,
+    INSECT,
+    QUILL,
+    INKWELL,
+    MANOSCRIPT
 }
