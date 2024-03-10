@@ -3,6 +3,7 @@ package model;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 public class Player {
     private final String username;
     private boolean firstToEnd;
@@ -15,13 +16,11 @@ public class Player {
     private int[] SymbolCount = {0,0,0,0};
 
 
-    public Player(String name,StarterCard sCard ,AchievementCard obj1, AchievementCard obj2, ResourceCard rCard1, ResourceCard rCard2, GoldCard gCard){
+    public Player(String name,StarterCard sCard ,AchievementCard[] obj, GoldCard gCard,ResourceCard[] hand){
         this.username = name;
-        cardInHand[0] = rCard1;
-        cardInHand[1] = rCard2;
-        cardInHand[2] = gCard;
-        personalObj[0] = obj1;
-        personalObj[1] = obj2;
         this.starterCard = sCard;
+        System.arraycopy(obj, 0, personalObj, 0, 2);
+        System.arraycopy(hand, 0, cardInHand, 0, 2);
+        cardInHand[2] = gCard;
     }
 }

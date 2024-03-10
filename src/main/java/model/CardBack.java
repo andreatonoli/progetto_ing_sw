@@ -12,12 +12,12 @@ public enum CardBack {
     ANIMAL_GOLD(new ArrayList<Symbols>(List.of(Symbols.ANIMAL)), "blue"),
     FUNGI_GOLD(new ArrayList<Symbols>(List.of(Symbols.FUNGI)), "red"),
     INSECT_GOLD(new ArrayList<Symbols>(List.of(Symbols.INSECT)), "purple"),
-    FUNGI_START(new ArrayList<Symbols>(List.of(Symbols.FUNGI)), null),
-    INSECT_START(new ArrayList<Symbols>(List.of(Symbols.INSECT)), null),
-    PLANT_FUNGI_START(new ArrayList<Symbols>(List.of(Symbols.PLANT, Symbols.FUNGI)), null),
-    ANIMAL_INSECT_START(new ArrayList<Symbols>(List.of(Symbols.ANIMAL, Symbols.INSECT)), null),
-    ANIMAL_INSECT_PLANT_START(new ArrayList<Symbols>(List.of(Symbols.ANIMAL, Symbols.INSECT, Symbols.PLANT)), null),
-    PLANT_ANIMAL_FUNGI_START(new ArrayList<Symbols>(List.of(Symbols.PLANT, Symbols.ANIMAL, Symbols.FUNGI)), null);
+    FUNGI_START(new ArrayList<Symbols>(List.of(Symbols.FUNGI)), "white"),
+    INSECT_START(new ArrayList<Symbols>(List.of(Symbols.INSECT)), "white"),
+    PLANT_FUNGI_START(new ArrayList<Symbols>(List.of(Symbols.PLANT, Symbols.FUNGI)), "white"),
+    ANIMAL_INSECT_START(new ArrayList<Symbols>(List.of(Symbols.ANIMAL, Symbols.INSECT)), "white"),
+    ANIMAL_INSECT_PLANT_START(new ArrayList<Symbols>(List.of(Symbols.ANIMAL, Symbols.INSECT, Symbols.PLANT)), "white"),
+    PLANT_ANIMAL_FUNGI_START(new ArrayList<Symbols>(List.of(Symbols.PLANT, Symbols.ANIMAL, Symbols.FUNGI)), "white");
     private final List<Symbols> symbols;
     private final String color;
 
