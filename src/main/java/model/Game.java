@@ -1,5 +1,7 @@
 package model;
 
+import java.util.List;
+
 public class Game {
     public static final int MAX_PLAYERS = 4; /** sets max number of players */
 

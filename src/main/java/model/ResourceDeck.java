@@ -1,4 +1,4 @@
 package model;
 
-public class ResourceDeck {
+public class ResourceDeck implements Deck{
 }

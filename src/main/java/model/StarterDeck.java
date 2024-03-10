@@ -1,4 +1,4 @@
 package model;
 
-public class StarterDeck {
+public class StarterDeck implements Deck{
 }

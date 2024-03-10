@@ -1,4 +1,4 @@
 package model;
 
-public class AchievementDeck {
+public class AchievementDeck implements Deck{
 }

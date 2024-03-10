@@ -1,4 +1,4 @@
 package model;
 
-public class GoldDeck {
+public class GoldDeck implements Deck{
 }

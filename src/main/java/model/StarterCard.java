@@ -1,4 +1,4 @@
 package model;
 
-public class StarterCard {
+public class StarterCard extends Card{
 }
