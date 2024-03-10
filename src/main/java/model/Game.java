@@ -1,8 +1,10 @@
 package model;
 
 public class Game {
+    public static final int MAX_PLAYERS = 4; /** sets max number of players */
+
     private int minPlayer;
-    private int maxPlayer;
+    private GameState gamestate;
     private List<Player> players;
 
     public void startGame()
@@ -30,6 +32,24 @@ public class Game {
 
     }
 
+    public GameState getNameState()
+    {
+        /** returns the state in which the game is played */
+        return gamestate;
+    }
+
+    public List<Player> getPlayerInTurn()
+    {
+        /**
+         returns player that is playing the game at that moment
+         */
+        return players;
+    }
+
+    public int getNumOfPlayers()
+    {
+        return players.size();
+    }
 
 
 }
