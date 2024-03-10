@@ -3,7 +3,8 @@ package model;
 public class Game {
     public static final int MAX_PLAYERS = 4; /** sets max number of players */
 
-    private int minPlayer;
+    public static final int MIN_PLAYERS = 2; /** sets min number of players */
+
     private GameState gamestate;
     private List<Player> players;
 
