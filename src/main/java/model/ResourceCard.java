@@ -8,7 +8,7 @@ public class ResourceCard extends Card {
     /**
      * Resource Card constructor.
      * @param corners Array of corners, corners[0] = top-left, corner[1] = top-right, corner[2] = bottom-right, corner[3] = bottom-left
-     * @param card_number unique number to distinguish the various cards
+     * @param card_number unique number to distinguish through various cards
      * @param point sometimes resource cards give points when placed
      */
     public ResourceCard(Corner[] corners, int card_number, int point){
