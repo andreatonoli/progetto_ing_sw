@@ -9,7 +9,6 @@ public class Player {
     private final StarterCard starterCard;
     private int points = 0;
     private PlayerState playerState;
-    //
     private int[] SymbolCount = {0,0,0,0,0,0,0};
 
     /**
@@ -76,24 +75,26 @@ public class Player {
     }
 
     //manca da inserire l'aumento di punteggio per i centri delle backcard
+    //e manca il caso in cui la carta copre più di un angolo
     public void addSymbolCount(Card placedCard, Corner coveredCorner){
         int[] corner = placedCard.getCorner();
 
-        for (int i=0; i<4; i++)
+        for (int i=0; i<4; i++) {
             if (corner[i].getSymbol() == 'PLANT')
-                SymbolCount[0]=SymbolCount[0]+1;
+                SymbolCount[0] = SymbolCount[0] + 1;
             else if (corner[i].getSymbol() == 'ANIMAL')
-                SymbolCount[1]=SymbolCount[1]+1;
+                SymbolCount[1] = SymbolCount[1] + 1;
             else if (corner[i].getSymbol() == 'FUNGI')
-                SymbolCount[2]=SymbolCount[2]+1;
+                SymbolCount[2] = SymbolCount[2] + 1;
             else if (corner[i].getSymbol() == 'INSECT')
-                SymbolCount[3]=SymbolCount[3]+1;
+                SymbolCount[3] = SymbolCount[3] + 1;
             else if (corner[i].getSymbol() == 'QUILL')
-                SymbolCount[4]=SymbolCount[4]+1;
+                SymbolCount[4] = SymbolCount[4] + 1;
             else if (corner[i].getSymbol() == 'INKWELL')
-                SymbolCount[5]=SymbolCount[5]+1;
+                SymbolCount[5] = SymbolCount[5] + 1;
             else if (corner[i].getSymbol() == 'MANUSCRIPT')
-                SymbolCount[6]=SymbolCount[6]+1;
+                SymbolCount[6] = SymbolCount[6] + 1;
+        }
 
         if (coveredCorner.getSymbol() == 'PLANT')
             SymbolCount[0]=SymbolCount[0]-1;
