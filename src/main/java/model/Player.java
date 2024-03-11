@@ -1,5 +1,7 @@
 package model;
 
+import java.util.List;
+
 public class Player {
     private final String username;
     private boolean firstToEnd;
@@ -28,7 +30,7 @@ public class Player {
     }
 
     /**
-     *
+     * getter used to know the player name
      * @return player's username
      */
     public String getUsername(){
@@ -76,42 +78,59 @@ public class Player {
 
     //manca da inserire l'aumento di punteggio per i centri delle backcard
     //e manca il caso in cui la carta copre più di un angolo
-    public void addSymbolCount(Card placedCard, Corner coveredCorner){
-        int[] corner = placedCard.getCorner();
+    public void addSymbolCount(Card placedCard, Corner coveredCorner) {
+        Corner[] corner = placedCard.getCorners();
 
-        for (int i=0; i<4; i++) {
-            if (corner[i].getSymbol() == 'PLANT')
-                SymbolCount[0] = SymbolCount[0] + 1;
-            else if (corner[i].getSymbol() == 'ANIMAL')
-                SymbolCount[1] = SymbolCount[1] + 1;
-            else if (corner[i].getSymbol() == 'FUNGI')
-                SymbolCount[2] = SymbolCount[2] + 1;
-            else if (corner[i].getSymbol() == 'INSECT')
-                SymbolCount[3] = SymbolCount[3] + 1;
-            else if (corner[i].getSymbol() == 'QUILL')
-                SymbolCount[4] = SymbolCount[4] + 1;
-            else if (corner[i].getSymbol() == 'INKWELL')
-                SymbolCount[5] = SymbolCount[5] + 1;
-            else if (corner[i].getSymbol() == 'MANUSCRIPT')
-                SymbolCount[6] = SymbolCount[6] + 1;
+        for (int i = 0; i < 4; i++) {
+            switch (corner[i].getSymbol()) {
+                case PLANT:
+                    SymbolCount[0]++;
+                    break;
+                case ANIMAL:
+                    SymbolCount[1]++;
+                    break;
+                case FUNGI:
+                    SymbolCount[2]++;
+                    break;
+                case INSECT:
+                    SymbolCount[3]++;
+                    break;
+                case QUILL:
+                    SymbolCount[4]++;
+                    break;
+                case INKWELL:
+                    SymbolCount[5]++;
+                    break;
+                case MANUSCRIPT:
+                    SymbolCount[6]++;
+                    break;
+            }
         }
 
-        if (coveredCorner.getSymbol() == 'PLANT')
-            SymbolCount[0]=SymbolCount[0]-1;
-        else if (coveredCorner.getSymbol() == 'ANIMAL')
-            SymbolCount[1]=SymbolCount[1]-1;
-        else if (coveredCorner.getSymbol() == 'FUNGI')
-            SymbolCount[2]=SymbolCount[2]-1;
-        else if (coveredCorner.getSymbol() == 'INSECT')
-            SymbolCount[3]=SymbolCount[3]-1;
-        else if (coveredCorner.getSymbol() == 'QUILL')
-            SymbolCount[4]=SymbolCount[4]-1;
-        else if (coveredCorner.getSymbol() == 'INKWELL')
-            SymbolCount[5]=SymbolCount[5]-1;
-        else if (coveredCorner.getSymbol() == 'MANUSCRIPT')
-            SymbolCount[6]=SymbolCount[6]-1;
+        switch (coveredCorner.getSymbol()) {
+            case PLANT:
+                SymbolCount[0]--;
+                break;
+            case ANIMAL:
+                SymbolCount[1]--;
+                break;
+            case FUNGI:
+                SymbolCount[2]--;
+                break;
+            case INSECT:
+                SymbolCount[3]--;
+                break;
+            case QUILL:
+                SymbolCount[4]--;
+                break;
+            case INKWELL:
+                SymbolCount[5]--;
+                break;
+            case MANUSCRIPT:
+                SymbolCount[6]--;
+                break;
+        }
     }
-
     public int[] getSymbolCount(){
         return SymbolCount;
     }
