@@ -36,5 +36,7 @@ public class ResourceCard extends Card {
         {
             this.retro = new CardBack(new ArrayList<Symbols>(List.of(Symbols.INSECT)), "purple");
         }
+        this.back = false;
+        this.currentSide = this;
     }
 }

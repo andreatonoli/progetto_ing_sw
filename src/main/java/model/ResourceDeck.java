@@ -2,9 +2,8 @@ package model;
 
 import java.util.*;
 
-public class ResourceDeck implements Deck{
+public class ResourceDeck extends Deck{
     private LinkedList<ResourceCard> deck;
-    private Random rand = new Random();
     /**
      * builds the deck with 40 ResourceCards and initializes the alreadyDrawed deck, which contains the cards already extracted
      * from the deck
@@ -55,24 +54,18 @@ public class ResourceDeck implements Deck{
         ));
     }
 
-    @Override
-    public Card drawCard() throws NullPointerException{
-        Card drew = null;
-        try {
-            int drew_index = rand.nextInt(deck.size());
-            drew = deck.get(drew_index);
-            deck.remove(drew_index);
-        }
-        catch (NullPointerException e){
-            System.out.println("PC");
-        }
+    public ResourceCard drawCard() {
+        ResourceCard drew = null;
+        int drew_index = rand.nextInt(deck.size());
+        drew = deck.get(drew_index);
+        deck.remove(drew_index);
         return drew;
     }
 
-    @Override
-    public Card drawCard(Player player) {
+    public ResourceCard drawCard(Player player) {
+        ResourceCard drew = null;
         int drew_index = rand.nextInt(deck.size() + 1);
-        Card drew = deck.get(drew_index);
+        drew = deck.get(drew_index);
         deck.remove(drew_index);
         return drew;
     }

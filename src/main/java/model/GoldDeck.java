@@ -1,11 +1,10 @@
 package model;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
 
-public class GoldDeck implements Deck{
-    private Set<GoldCard> deck;
-    private HashSet<GoldCard> alreadyDrawed; //forse useless
+public class GoldDeck extends Deck{
+    private LinkedList<GoldCard> deck;
     //cost[0] = FUNGI, cost[1] = PLANT, cost[2] = ANIMAL, cost[3] = INSECT
 
     /**
@@ -13,7 +12,8 @@ public class GoldDeck implements Deck{
      * from the deck
      */
     public GoldDeck() {
-        deck = Set.of(
+        deck = new LinkedList<>();
+        deck.addAll(List.of(
                 new GoldCard(new Corner[]{null, new Corner(Symbols.EMPTY), new Corner(Symbols.QUILL), new Corner(Symbols.EMPTY)}, 1, "quill", 1, new int[]{2, 0, 1, 0}),
                 new GoldCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.INKWELL), new Corner(Symbols.EMPTY), null}, 1, "inkwell", 2, new int[]{2, 1, 0, 0}),
                 new GoldCard(new Corner[]{new Corner(Symbols.MANUSCRIPT), new Corner(Symbols.EMPTY), null, new Corner(Symbols.EMPTY)}, 1, "manuscript", 3, new int[]{2, 0, 0, 1}),
@@ -54,7 +54,21 @@ public class GoldDeck implements Deck{
                 new GoldCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.MANUSCRIPT), null, null}, 3, null, 38, new int[]{0, 0, 0, 3}),
                 new GoldCard(new Corner[]{null, null, new Corner(Symbols.EMPTY), new Corner(Symbols.QUILL)}, 3, null, 39, new int[]{0, 0, 0, 3}),
                 new GoldCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), null, null}, 5, null, 40, new int[]{0, 0, 0, 5})
-        );
-        alreadyDrawed = new HashSet<GoldCard>();
+        ));
+    }
+    public GoldCard drawCard() {
+        GoldCard drew = null;
+        int drew_index = rand.nextInt(deck.size());
+        drew = deck.get(drew_index);
+        deck.remove(drew_index);
+        return drew;
+    }
+
+    public GoldCard drawCard(Player player) {
+        GoldCard drew = null;
+        int drew_index = rand.nextInt(deck.size() + 1);
+        drew = deck.get(drew_index);
+        deck.remove(drew_index);
+        return drew;
     }
 }

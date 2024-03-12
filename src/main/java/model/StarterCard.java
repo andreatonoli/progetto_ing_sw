@@ -12,5 +12,6 @@ public class StarterCard extends Card{
         this.card_number = card_number;
         this.type = "starter";
         this.retro = retro;
+        this.back = false;
     }
 }

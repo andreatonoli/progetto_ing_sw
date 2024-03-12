@@ -1,17 +1,17 @@
 package model;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
 
-public class AchievementDeck implements Deck{
-    private Set<AchievementCard> deck;
-    private HashSet<AchievementCard> alreadyDrawed; //forse useless
+public class AchievementDeck extends Deck{
+    private LinkedList<AchievementCard> deck;
     /**
      * builds the deck with 16 GoldCards and initializes the alreadyDrawed deck, which contains the cards already extracted
      * from the deck
      */
     public AchievementDeck() {
-        deck = Set.of(
+        deck = new LinkedList<>();
+        deck.addAll(List.of(
                 new AchievementCard(2, "red diagonal"),
                 new AchievementCard(2, "green diagonal"),
                 new AchievementCard(2, "blue diagonal"),
@@ -28,6 +28,21 @@ public class AchievementDeck implements Deck{
                 new AchievementCard(2, "manoscript"),
                 new AchievementCard(2, "inkwell"),
                 new AchievementCard(2, "quill")
-        );
+        ));
+    }
+    public AchievementCard drawCard() {
+        AchievementCard drew = null;
+        int drew_index = rand.nextInt(deck.size());
+        drew = deck.get(drew_index);
+        deck.remove(drew_index);
+        return drew;
+    }
+
+    public AchievementCard drawCard(Player player) {
+        AchievementCard drew = null;
+        int drew_index = rand.nextInt(deck.size() + 1);
+        drew = deck.get(drew_index);
+        deck.remove(drew_index);
+        return drew;
     }
 }

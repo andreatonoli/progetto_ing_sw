@@ -17,6 +17,8 @@ public class CardBack extends Card{
         this.symbols.addAll(symbols);
         this.color = color;
         System.arraycopy(corners, 0, this.corners, 0, 4);
+        this.back = true;
+        this.type = "retro";
     }
     public CardBack(List<Symbols> symbols, String color)
     {
@@ -27,8 +29,9 @@ public class CardBack extends Card{
         for (int i = 0; i < 4; i++) {
             this.corners[i] = new Corner(Symbols.EMPTY);
         }
+        this.back = true;
+        this.type = "retro";
     }
-
 
     /**
      * Getter functions for the params

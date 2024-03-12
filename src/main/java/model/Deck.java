@@ -1,6 +1,9 @@
 package model;
 
-public interface Deck {
-    public Card drawCard();
-    public Card drawCard(Player player);
+import java.util.Random;
+
+public abstract class Deck {
+    protected final Random rand = new Random();
+    //public Card drawCard();
+    //public Card drawCard(Player player);
 }
