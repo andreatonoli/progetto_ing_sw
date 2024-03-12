@@ -15,7 +15,7 @@ public class App
         ResourceDeck rodeck = new ResourceDeck();
         Card carta = rodeck.drawCard();
         System.out.println(carta.toInt());
-        System.out.println(carta.getBack(carta).toInt());
+        //System.out.println(carta.getBack(carta).toInt());
         carta.flipSide(carta);
         System.out.println(carta.toInt());
     }

@@ -5,7 +5,7 @@ public abstract class Card implements ICard {
     /** Card's ID is composed of its type and its card_number value */
     protected String type; //maybe useless
     protected int card_number;
-    protected Card currentSide = null;
+    protected Card currentSide = this;
     protected boolean back;
     protected CardBack retro;
     public Corner[] getCorners() {
@@ -16,15 +16,13 @@ public abstract class Card implements ICard {
     }
     public void flipSide(Card card)
     {
-        if (card.currentSide.back)
+        if (back)
         {
-            System.out.println("Qua entro");
             card.currentSide = card;
         }
         else
         {
-            System.out.println("Qua non entro");
-            card.currentSide = retro;
+            card.currentSide = card.getBack(card);
         }
     }
     //FUNZIONI INITULI
