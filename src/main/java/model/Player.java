@@ -8,26 +8,43 @@ public class Player {
     private boolean firstToPlay;
     private Card[] cardInHand = new Card[3];
     private AchievementCard[] personalObj = new AchievementCard[2];
+    private AchievementCard chosenObj;
     private final StarterCard starterCard;
     private int points = 0;
     private PlayerState playerState;
     private int[] SymbolCount = {0,0,0,0,0,0,0};
 
+
     /**
      * constructor of the player class:
      * @param name is the player's unique username
-     * @param sCard is the player's starting card
-     * @param obj array of 2 achievement card, contains the player's personal objectives
-     * @param gCard is the player's initial golden card
-     * @param hand array of 2 resource card, contains the player's initial resource card
+     * @param game is referred to class game
      */
-    public Player(String name,StarterCard sCard ,AchievementCard[] obj, GoldCard gCard,ResourceCard[] hand){
+    public Player(String name, Game game)
+    {
         this.username = name;
-        this.starterCard = sCard;
-        System.arraycopy(obj, 0, personalObj, 0, 2);
-        System.arraycopy(hand, 0, cardInHand, 0, 2);
-        cardInHand[2] = gCard;
+        for (int j=0; j<2; j++)
+            cardInHand[j] = game.getResourceDeck().drawCard();
+        cardInHand[2] = game.getGoldDeck().drawCard();
+        starterCard  = game.getStarterDeck().drawCard();
+        for (int j=0; j<2; j++)
+            personalObj[j] = game.getAchievementDeck().drawCard();
     }
+
+    // passa l'array da un'altra parte, lì viene fatta la decisione e poi richiama setChosenObj
+    public AchievementCard[] getPersonalObj()
+    {
+        return personalObj;
+    }
+
+
+    public void setChosenObj(AchievementCard chosenObj1)
+    {
+        this.chosenObj = chosenObj1;
+    }
+
+
+
 
     /**
      * getter used to know the player name
