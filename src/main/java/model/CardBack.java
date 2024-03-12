@@ -3,25 +3,23 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
-public enum CardBack {
-    PLANT (new ArrayList<Symbols>(List.of(Symbols.PLANT)), "green", new Corner[]{new Corner(null), new Corner(null), new Corner(null), new Corner(null)}),
-    ANIMAL(new ArrayList<Symbols>(List.of(Symbols.ANIMAL)), "blue", new Corner[]{new Corner(null), new Corner(null), new Corner(null), new Corner(null)}),
-    FUNGI(new ArrayList<Symbols>(List.of(Symbols.FUNGI)), "red", new Corner[]{new Corner(null), new Corner(null), new Corner(null), new Corner(null)}),
-    INSECT(new ArrayList<Symbols>(List.of(Symbols.INSECT)), "purple", new Corner[]{new Corner(null), new Corner(null), new Corner(null), new Corner(null)}),
-    PLANT_GOLD(new ArrayList<Symbols>(List.of(Symbols.PLANT)), "green", new Corner[]{new Corner(null), new Corner(null), new Corner(null), new Corner(null)}),
-    ANIMAL_GOLD(new ArrayList<Symbols>(List.of(Symbols.ANIMAL)), "blue", new Corner[]{new Corner(null), new Corner(null), new Corner(null), new Corner(null)}),
-    FUNGI_GOLD(new ArrayList<Symbols>(List.of(Symbols.FUNGI)), "red", new Corner[]{new Corner(null), new Corner(null), new Corner(null), new Corner(null)}),
-    INSECT_GOLD(new ArrayList<Symbols>(List.of(Symbols.INSECT)), "purple", new Corner[]{new Corner(null), new Corner(null), new Corner(null), new Corner(null)}),
-    FUNGI_START(new ArrayList<Symbols>(List.of(Symbols.FUNGI)), "white", new Corner[]{new Corner(Symbols.ANIMAL), new Corner(null), new Corner(Symbols.FUNGI), new Corner(null)}),
-    INSECT_START(new ArrayList<Symbols>(List.of(Symbols.INSECT)), "white", new Corner[]{new Corner(null), new Corner(Symbols.PLANT), new Corner(null), new Corner(Symbols.INSECT)}),
-    PLANT_FUNGI_START(new ArrayList<Symbols>(List.of(Symbols.PLANT, Symbols.FUNGI)), "white", new Corner[]{new Corner(null), new Corner(null), new Corner(null), new Corner(null)}),
-    ANIMAL_INSECT_START(new ArrayList<Symbols>(List.of(Symbols.ANIMAL, Symbols.INSECT)), "white", new Corner[]{new Corner(null), new Corner(null), new Corner(null), new Corner(null)}),
-    ANIMAL_INSECT_PLANT_START(new ArrayList<Symbols>(List.of(Symbols.ANIMAL, Symbols.INSECT, Symbols.PLANT)), "white", new Corner[]{new Corner(null), new Corner(null), new Corner(null), new Corner(null)}),
-    PLANT_ANIMAL_FUNGI_START(new ArrayList<Symbols>(List.of(Symbols.PLANT, Symbols.ANIMAL, Symbols.FUNGI)), "white", new Corner[]{new Corner(null), new Corner(null), new Corner(null), new Corner(null)});
+public class CardBack extends Card{
     private final List<Symbols> symbols;
     private final String color;
-    private Corner[] corners;
-
+    public final CardBack PLANT = new CardBack(new ArrayList<Symbols>(List.of(Symbols.PLANT)), "green", new Corner[]{new Corner(null), new Corner(null), new Corner(null), new Corner(null)});
+    public final CardBack ANIMAL = new CardBack(new ArrayList<Symbols>(List.of(Symbols.ANIMAL)), "blue", new Corner[]{new Corner(null), new Corner(null), new Corner(null), new Corner(null)});
+    public final CardBack FUNGI = new CardBack(new ArrayList<Symbols>(List.of(Symbols.FUNGI)), "red", new Corner[]{new Corner(null), new Corner(null), new Corner(null), new Corner(null)});
+    public final CardBack INSECT = new CardBack(new ArrayList<Symbols>(List.of(Symbols.INSECT)), "purple", new Corner[]{new Corner(null), new Corner(null), new Corner(null), new Corner(null)});
+    public final CardBack PLANT_GOLD = new CardBack(new ArrayList<Symbols>(List.of(Symbols.PLANT)), "green", new Corner[]{new Corner(null), new Corner(null), new Corner(null), new Corner(null)});
+    public final CardBack ANIMAL_GOLD = new CardBack(new ArrayList<Symbols>(List.of(Symbols.ANIMAL)), "blue", new Corner[]{new Corner(null), new Corner(null), new Corner(null), new Corner(null)});
+    public final CardBack FUNGI_GOLD = new CardBack(new ArrayList<Symbols>(List.of(Symbols.FUNGI)), "red", new Corner[]{new Corner(null), new Corner(null), new Corner(null), new Corner(null)});
+    public final CardBack INSECT_GOLD = new CardBack(new ArrayList<Symbols>(List.of(Symbols.INSECT)), "purple", new Corner[]{new Corner(null), new Corner(null), new Corner(null), new Corner(null)});
+    public final CardBack FUNGI_START = new CardBack(new ArrayList<Symbols>(List.of(Symbols.FUNGI)), "white", new Corner[]{new Corner(Symbols.ANIMAL), new Corner(null), new Corner(Symbols.FUNGI), new Corner(null)});
+    public final CardBack INSECT_START = new CardBack(new ArrayList<Symbols>(List.of(Symbols.INSECT)), "white", new Corner[]{new Corner(null), new Corner(Symbols.PLANT), new Corner(null), new Corner(Symbols.INSECT)});
+    public final CardBack PLANT_FUNGI_START = new CardBack(new ArrayList<Symbols>(List.of(Symbols.PLANT, Symbols.FUNGI)), "white", new Corner[]{new Corner(null), new Corner(null), new Corner(null), new Corner(null)});
+    public final CardBack ANIMAL_INSECT_START = new CardBack(new ArrayList<Symbols>(List.of(Symbols.ANIMAL, Symbols.INSECT)), "white", new Corner[]{new Corner(null), new Corner(null), new Corner(null), new Corner(null)});
+    public final CardBack ANIMAL_INSECT_PLANT_START = new CardBack(new ArrayList<Symbols>(List.of(Symbols.ANIMAL, Symbols.INSECT, Symbols.PLANT)), "white", new Corner[]{new Corner(null), new Corner(null), new Corner(null), new Corner(null)});
+    public final CardBack PLANT_ANIMAL_FUNGI_START = new CardBack(new ArrayList<Symbols>(List.of(Symbols.PLANT, Symbols.ANIMAL, Symbols.FUNGI)), "white", new Corner[]{new Corner(null), new Corner(null), new Corner(null), new Corner(null)});
     /**
      * Builds the back of the cards, even the empty corners
      * @param symbols one or more symbols which appear in the center of the card
