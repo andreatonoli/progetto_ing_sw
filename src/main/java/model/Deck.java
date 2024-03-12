@@ -2,7 +2,5 @@ package model;
 
 public interface Deck {
 
-    public default void drawCard() {
-
-    }
+    public default void drawCard();
 }
