@@ -10,7 +10,7 @@ public class AchievementDeck implements Deck{
      * builds the deck with 16 GoldCards and initializes the alreadyDrawed deck, which contains the cards already extracted
      * from the deck
      */
-    public GoldDeck() {
+    public AchievementDeck() {
         deck = Set.of(
                 new AchievementCard(2, "red diagonal"),
                 new AchievementCard(2, "green diagonal"),
