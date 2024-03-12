@@ -6,6 +6,7 @@ public abstract class Card implements ICard {
     protected String type;
     protected int card_number;
     protected Card currentSide;
+    protected CardBack retro;
     public Corner[] getCorners() {
         return corners;
     }

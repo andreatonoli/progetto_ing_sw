@@ -83,13 +83,13 @@ public class Player {
 
         for (int i = 0; i < 4; i++) {
             switch (corner[i].getSymbol()) {
-                case PLANT:
+                case FUNGI:
                     SymbolCount[0]++;
                     break;
-                case ANIMAL:
+                case PLANT:
                     SymbolCount[1]++;
                     break;
-                case FUNGI:
+                case ANIMAL:
                     SymbolCount[2]++;
                     break;
                 case INSECT:

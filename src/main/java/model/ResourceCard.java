@@ -2,6 +2,9 @@ package model;
 
 import model.Card;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ResourceCard extends Card {
     private int point;
 
@@ -16,5 +19,21 @@ public class ResourceCard extends Card {
         this.type = "resource";
         this.card_number = card_number;
         this.point = point;
+        if (card_number <= 10) /**FUNGI retro*/
+        {
+            this.retro = new CardBack(new ArrayList<Symbols>(List.of(Symbols.FUNGI)), "red");
+        }
+        else if (card_number <= 20) /**Plant retro*/
+        {
+            this.retro = new CardBack(new ArrayList<Symbols>(List.of(Symbols.PLANT)), "green");
+        }
+        else if(card_number <= 30) /**Animal retro*/
+        {
+            this.retro = new CardBack(new ArrayList<Symbols>(List.of(Symbols.ANIMAL)), "blue");
+        }
+        else /**Insect retro*/
+        {
+            this.retro = new CardBack(new ArrayList<Symbols>(List.of(Symbols.INSECT)), "purple");
+        }
     }
 }
