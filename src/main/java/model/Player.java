@@ -90,7 +90,9 @@ public class Player {
 
     //manca da inserire l'aumento di punteggio per i centri delle backcard
     //e manca il caso in cui la carta copre più di un angolo
-    public void addSymbolCount(Card placedCard, Corner coveredCorner) {
+    //bisogna fare un case per il numero di angoli che sono compresi nel corner e
+    //in ogni case ci vogliono N (6) case per vedere quali angoli della carta piazzata vengono usati
+    public void addSymbolCount(Card placedCard, List<Corner> coveredCorner) {
         Corner[] corner = placedCard.getCorners();
 
         for (int i = 0; i < 4; i++) {
@@ -118,29 +120,30 @@ public class Player {
                     break;
             }
         }
-
-        switch (coveredCorner.getSymbol()) {
-            case PLANT:
-                SymbolCount[0]--;
-                break;
-            case ANIMAL:
-                SymbolCount[1]--;
-                break;
-            case FUNGI:
-                SymbolCount[2]--;
-                break;
-            case INSECT:
-                SymbolCount[3]--;
-                break;
-            case QUILL:
-                SymbolCount[4]--;
-                break;
-            case INKWELL:
-                SymbolCount[5]--;
-                break;
-            case MANUSCRIPT:
-                SymbolCount[6]--;
-                break;
+        for (Corner value : coveredCorner) {
+            switch (value.getSymbol()) {
+                case PLANT:
+                    SymbolCount[0]--;
+                    break;
+                case ANIMAL:
+                    SymbolCount[1]--;
+                    break;
+                case FUNGI:
+                    SymbolCount[2]--;
+                    break;
+                case INSECT:
+                    SymbolCount[3]--;
+                    break;
+                case QUILL:
+                    SymbolCount[4]--;
+                    break;
+                case INKWELL:
+                    SymbolCount[5]--;
+                    break;
+                case MANUSCRIPT:
+                    SymbolCount[6]--;
+                    break;
+            }
         }
     }
     public int[] getSymbolCount(){
