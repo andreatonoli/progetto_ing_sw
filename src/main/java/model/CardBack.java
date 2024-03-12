@@ -21,6 +21,7 @@ public class CardBack extends Card{
     public CardBack(List<Symbols> symbols, String color)
     {
         this.symbols = new ArrayList<>();
+        this.corners = new Corner[4];
         this.symbols.addAll(symbols);
         this.color = color;
         for (int i = 0; i < 4; i++) {

@@ -1,7 +1,6 @@
 package model;
 
 public interface Deck {
-
-    public void drawCard();
-    public void drawCard(Player player);
+    public Card drawCard();
+    public Card drawCard(Player player);
 }

@@ -1,20 +1,17 @@
 package model;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
-public class ResourceDeck extends ResourceCard implements Deck{
-    //Sfrutto costruttore di ResourceCard per generare 2 set, uno che contiene tutto il mazzo (non estratto), uno che contiene le carte estratte
-    //Non so ancora che collection usare
-    private Set<ResourceCard> deck;
-    private HashSet<ResourceCard> alreadyDrawed; //forse useless
-
+public class ResourceDeck implements Deck{
+    private LinkedList<ResourceCard> deck;
+    private Random rand = new Random();
     /**
      * builds the deck with 40 ResourceCards and initializes the alreadyDrawed deck, which contains the cards already extracted
      * from the deck
      */
     public ResourceDeck(){
-        deck = Set.of(
+        deck = new LinkedList<>();
+        deck.addAll(List.of(
                 new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null, new Corner(Symbols.FUNGI) }, 1, 0),
                 new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null }, 2, 0),
                 new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), null, new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI)}, 3, 0),
@@ -37,7 +34,7 @@ public class ResourceDeck extends ResourceCard implements Deck{
                 new ResourceCard(new Corner[]{null, new Corner(Symbols.PLANT), new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY) }, 20, 1),
                 new ResourceCard(new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.ANIMAL), null, new Corner(Symbols.EMPTY) }, 21, 0),
                 new ResourceCard(new Corner[]{null, new Corner(null), new Corner(Symbols.ANIMAL), new Corner(Symbols.ANIMAL) }, 22, 0),
-                new ResourceCard(new Corner[]{new Corner(Symbols.ANIMAL), Symbols.EMPTY, new Corner(Symbols.EMPTY), new Corner(Symbols.ANIMAL) }, 23, 0),
+                new ResourceCard(new Corner[]{new Corner(Symbols.ANIMAL), null, new Corner(Symbols.EMPTY), new Corner(Symbols.ANIMAL) }, 23, 0),
                 new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.ANIMAL), new Corner(Symbols.ANIMAL), null }, 24, 0),
                 new ResourceCard(new Corner[]{null, new Corner(Symbols.INSECT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INKWELL) }, 25, 0),
                 new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.MANUSCRIPT), null }, 26, 0),
@@ -55,7 +52,28 @@ public class ResourceDeck extends ResourceCard implements Deck{
                 new ResourceCard(new Corner[]{new Corner(Symbols.INSECT), null, new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY) }, 38, 1),
                 new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), new Corner(Symbols.INSECT), null }, 39, 1),
                 new ResourceCard(new Corner[]{null, new Corner(Symbols.INSECT), new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY) }, 40, 1)
-        );
-        alreadyDrawed = new HashSet<ResourceCard>();
+        ));
+    }
+
+    @Override
+    public Card drawCard() throws NullPointerException{
+        Card drew = null;
+        try {
+            int drew_index = rand.nextInt(deck.size());
+            drew = deck.get(drew_index);
+            deck.remove(drew_index);
+        }
+        catch (NullPointerException e){
+            System.out.println("PC");
+        }
+        return drew;
+    }
+
+    @Override
+    public Card drawCard(Player player) {
+        int drew_index = rand.nextInt(deck.size() + 1);
+        Card drew = deck.get(drew_index);
+        deck.remove(drew_index);
+        return drew;
     }
 }
