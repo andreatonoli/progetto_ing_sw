@@ -7,5 +7,6 @@ public enum Symbols {
     INSECT,
     QUILL,
     INKWELL,
-    MANUSCRIPT
+    MANUSCRIPT,
+    EMPTY
 }

@@ -11,7 +11,7 @@ public class StarterDeck implements Deck{
      * builds the deck with 6 StarterCards and initializes the alreadyDrawed deck, which contains the cards already extracted
      * from the deck
      */
-    public GoldDeck() {
+    public StarterDeck() {
         deck = Set.of(
                 new StarterCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT)}, 1),
                 new StarterCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}, 2),
