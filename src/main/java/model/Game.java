@@ -9,19 +9,12 @@ public class Game {
 
     private GameState gameState;
     private List<Player> players;
-
     private Player firstPlayer;
     private Player playerInTurn;
-    private ResourceDeck rDeck;
-    private GoldDeck gDeck;
-    private AchievementDeck aDeck;
-    private StarterDeck sDeck;
-
-    ResourceDeck rDeck = new ResourceDeck();
-    GoldDeck gDeck = new GoldDeck();
-    AchievementDeck aDeck = new AchievementDeck();
-    StarterDeck sDeck = new StarterDeck();
-
+    private ResourceDeck rDeck = new ResourceDeck();
+    private GoldDeck gDeck = new GoldDeck();
+    private AchievementDeck aDeck = new AchievementDeck();
+    private StarterDeck sDeck = new StarterDeck();
 
     public ResourceDeck getResourceDeck()
     {

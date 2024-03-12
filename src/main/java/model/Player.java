@@ -14,7 +14,6 @@ public class Player {
     private PlayerState playerState;
     private int[] SymbolCount = {0,0,0,0,0,0,0};
 
-
     /**
      * constructor of the player class:
      * @param name is the player's unique username
@@ -42,8 +41,6 @@ public class Player {
     {
         this.chosenObj = chosenObj1;
     }
-
-
 
 
     /**
@@ -80,6 +77,8 @@ public class Player {
 
     public int addPoints(int pointsToAdd){
         this.points = this.points + pointsToAdd;
+        if (this.points >= 20)
+            firstToEnd = true;
         if (this.points > 29)
             this.points = 29;
         return this.points;
@@ -87,10 +86,6 @@ public class Player {
 
     public void isFirstToPlay(String username){
         firstToPlay = this.username.equals(username);
-    }
-
-    public void isFirstToEnd(String username){
-        firstToEnd = this.username.equals(username);
     }
 
     //manca da inserire l'aumento di punteggio per i centri delle backcard
