@@ -13,7 +13,7 @@ public class Player {
     private final StarterCard starterCard;
     private int points = 0;
     private PlayerState playerState;
-    private HashMap<Symbols,Integer> symbolCount= new HashMap<>();
+    private HashMap<Symbols,Integer> symbolCount;
 
     /**
      * constructor of the player class:
@@ -24,24 +24,14 @@ public class Player {
     {
         this.username = name;
 
+        symbolCount= new HashMap<>();
+
         for (int j=0; j<2; j++)
             cardInHand[j] = game.getResourceDeck().drawCard();
         cardInHand[2] = game.getGoldDeck().drawCard();
         starterCard  = game.getStarterDeck().drawCard();
         for (int j=0; j<2; j++)
             personalObj[j] = game.getAchievementDeck().drawCard();
-
-        /*
-        non so se serve visto come ho implementato l'incremento dei punti
-
-        symbolCount.put(Symbols.FUNGI,0);
-        symbolCount.put(Symbols.PLANT,0);
-        symbolCount.put(Symbols.ANIMAL,0);
-        symbolCount.put(Symbols.INSECT,0);
-        symbolCount.put(Symbols.QUILL,0);
-        symbolCount.put(Symbols.INKWELL,0);
-        symbolCount.put(Symbols.MANUSCRIPT,0);
-        */
     }
 
     // passa l'array da un'altra parte, lì viene fatta la decisione e poi richiama setChosenObj
@@ -110,54 +100,10 @@ public class Player {
         Corner[] corner = placedCard.getCorners();
 
         for (int i = 0; i < 4; i++) {
-            switch (corner[i].getSymbol()) {
-                case FUNGI:
-                    symbolCount.compute(Symbols.FUNGI, (key, value) -> (value == null) ? 1 : value+1);
-                    break;
-                case PLANT:
-                    symbolCount.compute(Symbols.PLANT, (key, value) -> (value == null) ? 1 : value+1);
-                    break;
-                case ANIMAL:
-                    symbolCount.compute(Symbols.ANIMAL, (key, value) -> (value == null) ? 1 : value+1);
-                    break;
-                case INSECT:
-                    symbolCount.compute(Symbols.INSECT, (key, value) -> (value == null) ? 1 : value+1);
-                    break;
-                case QUILL:
-                    symbolCount.compute(Symbols.QUILL, (key, value) -> (value == null) ? 1 : value+1);
-                    break;
-                case INKWELL:
-                    symbolCount.compute(Symbols.INKWELL, (key, value) -> (value == null) ? 1 : value+1);
-                    break;
-                case MANUSCRIPT:
-                    symbolCount.compute(Symbols.MANUSCRIPT, (key, value) -> (value == null) ? 1 : value+1);
-                    break;
-            }
+            symbolCount.compute(corner[i].getSymbol(), (key, value) -> (value == null) ? 1 : value + 1);
         }
-        for (Corner symbol : coveredCorner) {
-            switch (symbol.getSymbol()) {
-                case FUNGI:
-                    symbolCount.compute(Symbols.FUNGI, (key, value) -> (value == null) ? -1 : value-1);
-                    break;
-                case PLANT:
-                    symbolCount.compute(Symbols.PLANT, (key, value) -> (value == null) ? -1 : value-1);
-                    break;
-                case ANIMAL:
-                    symbolCount.compute(Symbols.ANIMAL, (key, value) -> (value == null) ? -1 : value-1);
-                    break;
-                case INSECT:
-                    symbolCount.compute(Symbols.INSECT, (key, value) -> (value == null) ? -1 : value-1);
-                    break;
-                case QUILL:
-                    symbolCount.compute(Symbols.QUILL, (key, value) -> (value == null) ? -1 : value-1);
-                    break;
-                case INKWELL:
-                    symbolCount.compute(Symbols.INKWELL, (key, value) -> (value == null) ? -1 : value-1);
-                    break;
-                case MANUSCRIPT:
-                    symbolCount.compute(Symbols.MANUSCRIPT, (key, value) -> (value == null) ? -1 : value-1);
-                    break;
-            }
+        for (Corner cCorner : coveredCorner) {
+            symbolCount.compute(cCorner.getSymbol(), (key, value) -> (value == null) ? -1 : value-1);
         }
     }
     public HashMap<Symbols,Integer> getSymbolCount(){
