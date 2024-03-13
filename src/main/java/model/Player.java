@@ -92,13 +92,16 @@ public class Player {
         firstToPlay = this.username.equals(username);
     }
 
-    //manca da inserire l'aumento di punteggio per i centri delle backcard
-    //e manca il caso in cui la carta copre più di un angolo
     //bisogna fare un case per il numero di angoli che sono compresi nel corner e
     //in ogni case ci vogliono N (6) case per vedere quali angoli della carta piazzata vengono usati
     public void addSymbolCount(Card placedCard, List<Corner> coveredCorner) {
         Corner[] corner = placedCard.getCorners();
-
+        if (placedCard.back){
+            CardBack back = (CardBack)placedCard;
+            for (int i=0; i<back.getSymbols().size(); i++){
+                symbolCount.compute(back.getSymbols().get(i), (key, value) -> (value == null) ? 1 : value + 1);
+            }
+        }
         for (int i = 0; i < 4; i++) {
             symbolCount.compute(corner[i].getSymbol(), (key, value) -> (value == null) ? 1 : value + 1);
         }
@@ -106,6 +109,7 @@ public class Player {
             symbolCount.compute(cCorner.getSymbol(), (key, value) -> (value == null) ? -1 : value-1);
         }
     }
+
     public HashMap<Symbols,Integer> getSymbolCount(){
         return symbolCount;
     }
