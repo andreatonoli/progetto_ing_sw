@@ -92,14 +92,16 @@ public class Player {
         firstToPlay = this.username.equals(username);
     }
 
-    //bisogna fare un case per il numero di angoli che sono compresi nel corner e
-    //in ogni case ci vogliono N (6) case per vedere quali angoli della carta piazzata vengono usati
+    /**
+     * adder to increment the values for each symbol in the hashmap symbolCount
+     * @param placedCard is the card that is getting placed
+     * @param coveredCorner are the corner that are getting covered by the placedCard
+     */
     public void addSymbolCount(Card placedCard, List<Corner> coveredCorner) {
         Corner[] corner = placedCard.getCorners();
         if (placedCard.back){
-            CardBack back = (CardBack)placedCard;
-            for (int i=0; i<back.getSymbols().size(); i++){
-                symbolCount.compute(back.getSymbols().get(i), (key, value) -> (value == null) ? 1 : value + 1);
+            for (int i=0; i<placedCard.getBack(placedCard).getSymbols().size(); i++){
+                symbolCount.compute(placedCard.getBack(placedCard).getSymbols().get(i), (key, value) -> (value == null) ? 1 : value + 1);
             }
         }
         for (int i = 0; i < 4; i++) {
