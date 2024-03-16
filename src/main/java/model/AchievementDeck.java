@@ -3,7 +3,7 @@ package model;
 import java.util.LinkedList;
 import java.util.List;
 
-public class AchievementDeck extends Deck{
+public class AchievementDeck{
     private LinkedList<AchievementCard> deck;
     /**
      * builds the deck with 16 GoldCards and initializes the alreadyDrawed deck, which contains the cards already extracted

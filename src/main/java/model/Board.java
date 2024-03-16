@@ -6,7 +6,7 @@ import java.util.Random;
 public class Board {
     private Game game;
     private Random rand;
-    private LinkedList<AchievementCard> achievementDeck;
+    private LinkedList<Achievement> achievementDeck;
     private LinkedList<GoldCard> goldDeck;
     private LinkedList<ResourceCard> resourceDeck;
     private LinkedList <StarterCard> starterDeck;
@@ -19,8 +19,25 @@ public class Board {
     {
         rand = new Random();
         this.game = game;
-        this.achievementDeck = new LinkedList<>();
-        //Implementazione di achievementDeck
+        this.achievementDeck = new LinkedList<Achievement>();
+        achievementDeck.addAll(List.of(
+                new AchievementDiagonal("red"),
+                new AchievementDiagonal("green"),
+                new AchievementDiagonal("blue"),
+                new AchievementDiagonal("purple"),
+                new AchievementL("red"),
+                new AchievementL("green"),
+                new AchievementL("blue"),
+                new AchievementL("purple"),
+                new AchievementResources(Symbols.FUNGI),
+                new AchievementResources(Symbols.PLANT),
+                new AchievementResources(Symbols.ANIMAL),
+                new AchievementResources(Symbols.INSECT),
+                new AchievementItem(3, new ArrayList<Symbols>(List.of(Symbols.QUILL, Symbols.INKWELL, Symbols.MANUSCRIPT))),
+                new AchievementItem(2, new ArrayList<Symbols>(List.of(Symbols.MANUSCRIPT))),
+                new AchievementItem(2, new ArrayList<Symbols>(List.of(Symbols.INKWELL))),
+                new AchievementItem(2, new ArrayList<Symbols>(List.of(Symbols.QUILL)))
+        ));
         this.goldDeck = new LinkedList<>();
         goldDeck.addAll(List.of(
                 new GoldCard(new Corner[]{null, new Corner(Symbols.EMPTY), new Corner(Symbols.QUILL), new Corner(Symbols.EMPTY)}, 1, "quill", 1, new int[]{2, 0, 1, 0}),
@@ -119,8 +136,8 @@ public class Board {
     }
 
     //da far controllare a cugola tutti i draw
-    public AchievementCard drawCardA(LinkedList<AchievementCard> achievementDeck) {
-        AchievementCard drew = null;
+    public Achievement drawCardA(LinkedList<Achievement> achievementDeck) {
+        Achievement drew = null;
         int drew_index = rand.nextInt(achievementDeck.size());
         drew = achievementDeck.get(drew_index);
         achievementDeck.remove(drew_index);
@@ -149,7 +166,7 @@ public class Board {
     }
 
 
-    public LinkedList<AchievementCard> getAchievementDeck() {
+    public LinkedList<Achievement> getAchievementDeck() {
         return achievementDeck;
     }
     public LinkedList<GoldCard> getGoldDeck() {
