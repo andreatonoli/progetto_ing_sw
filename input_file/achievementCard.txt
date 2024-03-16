@@ -1,0 +1,16 @@
+Diagonal red
+Diagonal green
+Diagonal blue
+Diagonal purple
+L red
+L green
+L blue
+L purple
+Resources FUNGI
+Resources PLANT
+Resources ANIMAL
+Resources INSECT
+Item 3 QUILL INKWELL MANUSCRIPT
+Item 2 MANUSCRIPT
+Item 2 INKWELL
+Item 2 QUILL
