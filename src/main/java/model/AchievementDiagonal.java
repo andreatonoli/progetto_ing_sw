@@ -12,4 +12,8 @@ public class AchievementDiagonal implements Achievement{
         this.basePoint = 2;
         this.color = color;
     }
+    @Override
+    public void calcPoints() {
+
+    }
 }

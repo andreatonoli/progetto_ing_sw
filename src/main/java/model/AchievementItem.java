@@ -9,4 +9,8 @@ public class AchievementItem implements Achievement{
         this.basePoint = basePoint;
         this.symbol = symbols;
     }
+    @Override
+    public void calcPoints() {
+
+    }
 }

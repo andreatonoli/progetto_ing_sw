@@ -11,4 +11,8 @@ public class AchievementResources implements Achievement{
         this.basePoint = 2;
         this.symbol = symbol;
     }
+    @Override
+    public void calcPoints() {
+
+    }
 }

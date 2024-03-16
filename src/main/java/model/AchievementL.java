@@ -12,4 +12,8 @@ public class AchievementL implements Achievement{
         this.basePoint = 3;
         this.color = color;
     }
+    @Override
+    public void calcPoints() {
+
+    }
 }
