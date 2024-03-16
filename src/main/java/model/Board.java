@@ -1,11 +1,11 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.Random;
 
 public class Board {
     private Game game;
+    private Random rand;
     private LinkedList<AchievementCard> achievementDeck;
     private LinkedList<GoldCard> goldDeck;
     private LinkedList<ResourceCard> resourceDeck;
@@ -17,6 +17,7 @@ public class Board {
      */
     public Board(Game game)
     {
+        rand = new Random();
         this.game = game;
         this.achievementDeck = new LinkedList<>();
         //Implementazione di achievementDeck
@@ -117,6 +118,37 @@ public class Board {
         ));
     }
 
+    //da far controllare a cugola tutti i draw
+    public AchievementCard drawCardA(LinkedList<AchievementCard> achievementDeck) {
+        AchievementCard drew = null;
+        int drew_index = rand.nextInt(achievementDeck.size());
+        drew = achievementDeck.get(drew_index);
+        achievementDeck.remove(drew_index);
+        return drew;
+    }
+    public GoldCard drawCardG(LinkedList<GoldCard> goldDeck) {
+        GoldCard drew = null;
+        int drew_index = rand.nextInt(goldDeck.size());
+        drew = goldDeck.get(drew_index);
+        goldDeck.remove(drew_index);
+        return drew;
+    }
+    public ResourceCard drawCardR(LinkedList<ResourceCard> resourceDeck) {
+        ResourceCard drew = null;
+        int drew_index = rand.nextInt(resourceDeck.size());
+        drew = resourceDeck.get(drew_index);
+        resourceDeck.remove(drew_index);
+        return drew;
+    }
+    public StarterCard drawCardS(LinkedList <StarterCard> starterDeck) {
+        StarterCard drew = null;
+        int drew_index = rand.nextInt(starterDeck.size());
+        drew = starterDeck.get(drew_index);
+        starterDeck.remove(drew_index);
+        return drew;
+    }
+
+
     public LinkedList<AchievementCard> getAchievementDeck() {
         return achievementDeck;
     }
@@ -129,4 +161,6 @@ public class Board {
     public LinkedList<StarterCard> getStarterDeck() {
         return starterDeck;
     }
+
+
 }

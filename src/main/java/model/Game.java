@@ -11,30 +11,7 @@ public class Game {
     private List<Player> players;
     private Player firstPlayer;
     private Player playerInTurn;
-    private ResourceDeck rDeck = new ResourceDeck();
-    private GoldDeck gDeck = new GoldDeck();
-    private AchievementDeck aDeck = new AchievementDeck();
-    private StarterDeck sDeck = new StarterDeck();
 
-    public ResourceDeck getResourceDeck()
-    {
-        return rDeck;
-    }
-
-    public GoldDeck getGoldDeck()
-    {
-        return gDeck;
-    }
-
-    public AchievementDeck getAchievementDeck()
-    {
-        return aDeck;
-    }
-
-    public StarterDeck getStarterDeck()
-    {
-        return sDeck;
-    }
     public void startGame()
     {
 

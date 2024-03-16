@@ -1,5 +1,6 @@
 package model;
 
+import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 
@@ -15,23 +16,29 @@ public class Player {
     private PlayerState playerState;
     private HashMap<Symbols,Integer> symbolCount;
 
+    private HashMap<int[], Card> cardPosition;
+
     /**
      * constructor of the player class:
      * @param name is the player's unique username
      * @param game is referred to class game
      */
-    public Player(String name, Game game)
+    public Player(String name, Game game, Board board)
     {
+        cardPosition = new HashMap<>();
+
         this.username = name;
 
         symbolCount= new HashMap<>();
 
         for (int j=0; j<2; j++)
-            cardInHand[j] = game.getResourceDeck().drawCard();
-        cardInHand[2] = game.getGoldDeck().drawCard();
-        starterCard  = game.getStarterDeck().drawCard();
+            cardInHand[j] = board.drawCardR(board.getResourceDeck());
+        cardInHand[2] = board.drawCardG(board.getGoldDeck());
+        starterCard  = board.drawCardS(board.getStarterDeck());
         for (int j=0; j<2; j++)
-            personalObj[j] = game.getAchievementDeck().drawCard();
+            personalObj[j] = board.drawCardA(board.getAchievementDeck());
+
+
     }
 
     // passa l'array da un'altra parte, lì viene fatta la decisione e poi richiama setChosenObj
@@ -100,8 +107,8 @@ public class Player {
     public void addSymbolCount(Card placedCard, List<Corner> coveredCorner) {
         Corner[] corner = placedCard.getCorners();
         if (placedCard.back){
-            for (int i=0; i<placedCard.getBack(placedCard).getSymbols().size(); i++){
-                symbolCount.compute(placedCard.getBack(placedCard).getSymbols().get(i), (key, value) -> (value == null) ? 1 : value + 1);
+            for (int i=0; i<placedCard.getBack().getSymbols().size(); i++){
+                symbolCount.compute(placedCard.getBack().getSymbols().get(i), (key, value) -> (value == null) ? 1 : value + 1);
             }
         }
         for (int i = 0; i < 4; i++) {
@@ -115,4 +122,34 @@ public class Player {
     public HashMap<Symbols,Integer> getSymbolCount(){
         return symbolCount;
     }
+
+    /**
+     * requires valid coordinates.
+     * the controller will place the card wherever is possible and then call this method to update the game board
+     * @param placedCard is the card that has been placed
+     * @param coordinates is the position where the card has been placed
+     */
+    public void setCardPosition(Card placedCard, int[] coordinates) {
+        cardPosition.put(coordinates,placedCard);
+    }
+
+    /**
+     * method to get the coordinates of the card
+     * @param card is the card we need to know the position of
+     * @return the position of the card
+     */
+    public int[] getCardPosition(Card card){
+        for (Map.Entry<int[], Card> entry : cardPosition.entrySet()){
+            if (entry.getValue()==card){
+                return entry.getKey();
+            }
+        }
+        return new int[]{0,0};
+    }
+
 }
+
+
+
+
+
