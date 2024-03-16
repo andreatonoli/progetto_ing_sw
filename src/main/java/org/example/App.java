@@ -1,8 +1,7 @@
 package org.example;
 
-import model.CardBack;
-import model.ResourceDeck;
 import model.Card;
+import model.StarterCard;
 
 /**
  * Hello world!
@@ -18,5 +17,15 @@ public class App
         //System.out.println(carta.getBack(carta).toInt());
         carta.flipSide(carta);
         System.out.println(carta.toInt());
+    }
+
+
+
+    public StarterCard drawCard() {
+        StarterCard drew = null;
+        int drew_index = rand.nextInt(deck.size());
+        drew = deck.get(drew_index);
+        deck.remove(drew_index);
+        return drew;
     }
 }
