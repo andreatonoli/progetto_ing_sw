@@ -14,8 +14,8 @@ public abstract class Card {
     public Corner getCorner(int index){
         return corners[index];
     }
-    public CardBack getBack(Card card){
-        return card.retro;
+    public CardBack getBack(){
+        return this.retro;
     }
     public boolean isBack(Card card)
     {
