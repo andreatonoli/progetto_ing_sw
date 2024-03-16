@@ -9,8 +9,8 @@ public class Player {
     private boolean firstToEnd;
     private boolean firstToPlay;
     private Card[] cardInHand = new Card[3];
-    private AchievementCard[] personalObj = new AchievementCard[2];
-    private AchievementCard chosenObj;
+    private Achievement[] personalObj = new Achievement[2];
+    private Achievement chosenObj;
     private final StarterCard starterCard;
     private int points = 0;
     private PlayerState playerState;
@@ -38,17 +38,17 @@ public class Player {
         for (int j=0; j<2; j++)
             personalObj[j] = board.drawCardA(board.getAchievementDeck());
 
-
+        setCardPosition(starterCard, new int[]{0,0});
     }
 
     // passa l'array da un'altra parte, lì viene fatta la decisione e poi richiama setChosenObj
-    public AchievementCard[] getPersonalObj()
+    public Achievement[] getPersonalObj()
     {
         return personalObj;
     }
 
 
-    public void setChosenObj(AchievementCard chosenObj1)
+    public void setChosenObj(Achievement chosenObj1)
     {
         this.chosenObj = chosenObj1;
     }
