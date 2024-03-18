@@ -9,7 +9,7 @@ import model.StarterCard;
  */
 public class App 
 {
-    public static void main( String[] args )
+   /* public static void main( String[] args )
     {
         ResourceDeck rodeck = new ResourceDeck();
         Card carta = rodeck.drawCard();
@@ -27,5 +27,5 @@ public class App
         drew = deck.get(drew_index);
         deck.remove(drew_index);
         return drew;
-    }
+    }*/
 }
