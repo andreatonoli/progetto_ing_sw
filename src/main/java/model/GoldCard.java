@@ -17,6 +17,8 @@ public class GoldCard extends Card {
      * @param cost represents the cost, in terms of symbols, necessary to place the card
      */
     public GoldCard(Corner[] corners, int basePoint, String condition, int card_number, int[] cost){
+        this.corners = new Corner[4];
+        this.cost = new int[4];
         System.arraycopy(corners, 0, this.corners, 0, 4);
         this.type = "gold";
         this.basePoint = basePoint;

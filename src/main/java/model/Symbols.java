@@ -8,5 +8,6 @@ public enum Symbols {
     QUILL,
     INKWELL,
     MANUSCRIPT,
-    EMPTY
+    EMPTY,
+    NOCORNER
 }

@@ -2,7 +2,6 @@ package model;
 
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
@@ -49,7 +48,7 @@ public class Board {
 
 
         goldDeck = new LinkedList<>();
-        reader = new BufferedReader(new FileReader("C:\\Users\\hp\\polimi\\ing-sw-2024-riva-pieruz-sartore-tonoli\\input_file\\goldCard.txt"));
+        reader = new BufferedReader(new FileReader("src/main/input_file/goldCard.txt"));
         String line = reader.readLine();
         int id = 1;
         int basePoint;

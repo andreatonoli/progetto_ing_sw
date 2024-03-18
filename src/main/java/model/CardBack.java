@@ -13,6 +13,7 @@ public class CardBack extends Card{
      * @param corners Array of corners, corners[0] = top-left, corner[1] = top-right, corner[2] = bottom-right, corner[3] = bottom-left
      */
     public CardBack(List<Symbols> symbols, String color, Corner[] corners){
+        this.corners = new Corner[4];
         this.symbols = new ArrayList<>();
         this.symbols.addAll(symbols);
         this.color = color;

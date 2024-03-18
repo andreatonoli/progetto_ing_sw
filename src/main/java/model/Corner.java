@@ -14,7 +14,12 @@ public class Corner {
      */
     public Corner(Symbols symbol){
         this.symbol = symbol;
-        this.state = CornerState.VISIBLE;
+        if (symbol == Symbols.NOCORNER){
+            this.state = CornerState.NOT_VISIBLE;
+        }
+        else{
+            this.state = CornerState.VISIBLE;
+        }
     }
 
     public Symbols getSymbol(){
