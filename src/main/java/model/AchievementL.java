@@ -27,7 +27,7 @@ public class AchievementL implements Achievement{
     @Override
     public int calcPoints(Player player) { //In questo modo il linkage dei colori è fisso
         int point = 0;
-        HashMap<int [], Card> board = player.getCardPosition();
+        HashMap<int [], Card> board = player.getPlayerBoard().getCardPosition();
         Set<int[]> keySet = board.keySet();
         int[] bottom = new int[2];
         int[] top = new int[2];

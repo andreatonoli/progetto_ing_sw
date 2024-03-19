@@ -22,7 +22,7 @@ public class AchievementResources implements Achievement{
     @Override
     public int calcPoints(Player player) {
         int point = 0;
-        point = this.basePoint * (Math.floorDiv(player.getSymbolCount().get(this.symbol), 3));
+        point = this.basePoint * (Math.floorDiv(player.getPlayerBoard().getSymbolCount().get(this.symbol), 3));
         return point;
     }
 }

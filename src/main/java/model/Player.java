@@ -8,52 +8,22 @@ public class Player {
     private final String username;
     private boolean firstToEnd;
     private boolean firstToPlay;
-    private Card[] cardInHand = new Card[3];
-    private Achievement[] personalObj = new Achievement[2];
-    private Achievement chosenObj;
-    private final StarterCard starterCard;
     private int points = 0;
     private PlayerState playerState;
-    private HashMap<Symbols,Integer> symbolCount;
-    private HashMap<int[], Card> cardPosition;
     private ArrayList<String> chat;
-
     private Game game;
+
+    private PlayerBoard playerBoard;
 
     /**
      * constructor of the player class:
      * @param name is the player's unique username
      */
-    public Player(String name, Board board)
+    public Player(String name, GameBoard board)
     {
         this.chat = new ArrayList<String>();
 
-        this.cardPosition = new HashMap<>();
-
         this.username = name;
-
-        this.symbolCount= new HashMap<>();
-
-        for (int j=0; j<2; j++)
-            cardInHand[j] = board.drawCardR(board.getResourceDeck());
-        cardInHand[2] = board.drawCardG(board.getGoldDeck());
-        starterCard  = board.drawCardS(board.getStarterDeck());
-        for (int j=0; j<2; j++)
-            personalObj[j] = board.drawCardA(board.getAchievementDeck());
-
-        setCardPosition(starterCard, new int[]{0,0});
-    }
-
-    // passa l'array da un'altra parte, lì viene fatta la decisione e poi richiama setChosenObj
-    public Achievement[] getPersonalObj()
-    {
-        return personalObj;
-    }
-
-
-    public void setChosenObj(Achievement chosenObj1)
-    {
-        this.chosenObj = chosenObj1;
     }
 
     /**
@@ -63,9 +33,7 @@ public class Player {
     public String getUsername(){
         return username;
     }
-    public HashMap<int[], Card> getCardPosition(){
-        return cardPosition;
-    }
+
     /**
      * setter to change the player state
      * @param playerState is the new state of the player
@@ -101,54 +69,6 @@ public class Player {
 
     public void isFirstToPlay(String username){
         firstToPlay = this.username.equals(username);
-    }
-
-    /**
-     * adder to increment the values for each symbol in the hashmap symbolCount
-     * @param placedCard is the card that is getting placed
-     * @param coveredCorner are the corner that are getting covered by the placedCard
-     */
-    public void addSymbolCount(Card placedCard, List<Corner> coveredCorner) {
-        Corner[] corner = placedCard.getCorners();
-        if (placedCard.back){
-            for (int i=0; i<placedCard.getBack().getSymbols().size(); i++){
-                symbolCount.compute(placedCard.getBack().getSymbols().get(i), (key, value) -> (value == null) ? 1 : value + 1);
-            }
-        }
-        for (int i = 0; i < 4; i++) {
-            symbolCount.compute(corner[i].getSymbol(), (key, value) -> (value == null) ? 1 : value + 1);
-        }
-        for (Corner cCorner : coveredCorner) {
-            symbolCount.compute(cCorner.getSymbol(), (key, value) -> (value == null) ? -1 : value-1);
-        }
-    }
-
-    public HashMap<Symbols,Integer> getSymbolCount(){
-        return symbolCount;
-    }
-
-    /**
-     * requires valid coordinates.
-     * the controller will place the card wherever is possible and then call this method to update the game board
-     * @param placedCard is the card that has been placed
-     * @param coordinates is the position where the card has been placed
-     */
-    public void setCardPosition(Card placedCard, int[] coordinates) {
-        cardPosition.put(coordinates,placedCard);
-    }
-
-    /**
-     * method to get the coordinates of the card
-     * @param card is the card we need to know the position of
-     * @return the position of the card
-     */
-    public int[] getCardPosition(Card card){
-        for (Map.Entry<int[], Card> entry : cardPosition.entrySet()){
-            if (entry.getValue()==card){
-                return entry.getKey();
-            }
-        }
-        return new int[]{0,0};
     }
 
     public void sendMessage(Player receiver, String message){
@@ -187,6 +107,13 @@ public class Player {
         this.game = game;
     }
 
+    public Game getGame(){
+        return this.game;
+    }
+
+    public PlayerBoard getPlayerBoard(){
+        return this.playerBoard;
+    }
 }
 
 
