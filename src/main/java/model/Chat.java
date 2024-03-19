@@ -1,9 +1,11 @@
 package model;
 
 import model.exceptions.PlayerNotFoundException;
-import java.util.List;
+import java.util.ArrayList;
 
 public class Chat {
+
+    public static final int CHATDIM = 7;
 
     //id del game
     private Game game;
@@ -12,17 +14,17 @@ public class Chat {
     private Player player;
 
     //lista dei player
-    private List<Player> players;
+    private ArrayList<Player> players;
 
-    public Chat() {
-
+    public Chat(Game game) {
+        this.game = game;
+        this.players = game.getPlayers();
     }
 
     public void forwardMessage(Player sender, Player receiver, boolean global, String message) throws PlayerNotFoundException{
         if (global){
             for (Player p : players){
-                //attributo da inserire nella classe Player per visualizzare il messaggio nella propria chat
-                //p.displayMessage(sender, message);
+                p.displayMessage(sender, message);
             }
         }
         else{

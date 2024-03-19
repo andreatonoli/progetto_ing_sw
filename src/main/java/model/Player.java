@@ -1,8 +1,8 @@
 package model;
 
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
+import model.exceptions.PlayerNotFoundException;
+
+import java.util.*;
 
 public class Player {
     private final String username;
@@ -15,21 +15,24 @@ public class Player {
     private int points = 0;
     private PlayerState playerState;
     private HashMap<Symbols,Integer> symbolCount;
-
     private HashMap<int[], Card> cardPosition;
+    private ArrayList<String> chat;
+
+    private Game game;
 
     /**
      * constructor of the player class:
      * @param name is the player's unique username
-     * @param game is referred to class game
      */
-    public Player(String name, Game game, Board board)
+    public Player(String name, Board board)
     {
-        cardPosition = new HashMap<>();
+        this.chat = new ArrayList<String>();
+
+        this.cardPosition = new HashMap<>();
 
         this.username = name;
 
-        symbolCount= new HashMap<>();
+        this.symbolCount= new HashMap<>();
 
         for (int j=0; j<2; j++)
             cardInHand[j] = board.drawCardR(board.getResourceDeck());
@@ -145,6 +148,42 @@ public class Player {
             }
         }
         return new int[]{0,0};
+    }
+
+    public void sendMessage(Player receiver, String message){
+        try{
+            this.game.getChat().forwardMessage(this, receiver, false, message);
+        }
+        catch(PlayerNotFoundException e) {
+            System.out.println("Player not found");
+        }
+    }
+
+    public void sendMessage(boolean global, String message){
+        try{
+            this.game.getChat().forwardMessage(this, null, true, message);
+        }
+        catch(PlayerNotFoundException e) {
+            System.out.println("Player not found");
+        }
+    }
+
+    public void displayMessage(Player sender, String message){
+        if(chat.size() >= Chat.CHATDIM){
+            chat.set(Chat.CHATDIM - 1, message);
+            Collections.rotate(chat, 1);
+        }
+        else{
+            chat.addFirst(message);
+        }
+        for(int i = 0; i < chat.size(); i++){
+            System.out.println(chat.get(i));
+        }
+    }
+
+    //temporaneo
+    public void setGame(Game game){
+        this.game = game;
     }
 
 }
