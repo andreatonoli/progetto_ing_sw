@@ -1,11 +1,7 @@
-Diagonal red
-Diagonal green
-Diagonal blue
-Diagonal purple
-L red
-L green
-L blue
-L purple
+DiagonalAndL red
+DiagonalAndL green
+DiagonalAndL blue
+DiagonalAndL purple
 Resources FUNGI
 Resources PLANT
 Resources ANIMAL
