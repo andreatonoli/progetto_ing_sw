@@ -56,7 +56,6 @@ public class Player {
         this.chosenObj = chosenObj1;
     }
 
-
     /**
      * getter used to know the player name
      * @return player's username
@@ -64,7 +63,9 @@ public class Player {
     public String getUsername(){
         return username;
     }
-
+    public HashMap<int[], Card> getCardPosition(){
+        return cardPosition;
+    }
     /**
      * setter to change the player state
      * @param playerState is the new state of the player

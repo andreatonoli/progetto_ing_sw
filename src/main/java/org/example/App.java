@@ -3,6 +3,9 @@ package org.example;
 import model.*;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
 
 /**
  * Hello world!
@@ -24,7 +27,15 @@ public class App
         }
 
     }
-
+    public void shuffleDeck(LinkedList<Card> deck){
+        Collections.shuffle(deck);
+    }
+    public Achievement drawCardA(LinkedList<Achievement> achievementDeck) {
+        Achievement drew;
+        drew = achievementDeck.getFirst();
+        achievementDeck.removeFirst();
+        return drew;
+    }
 
 /*
     public StarterCard drawCard() {
