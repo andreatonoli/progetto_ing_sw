@@ -1,5 +1,6 @@
 package model;
 
+import model.exceptions.PlayerNotFoundException;
 import java.util.List;
 
 public class Chat {
@@ -17,7 +18,7 @@ public class Chat {
 
     }
 
-    public void sendMessage(Player sender, Player receiver, boolean global, String message){
+    public void forwardMessage(Player sender, Player receiver, boolean global, String message) throws PlayerNotFoundException{
         if (global){
             for (Player p : players){
                 //attributo da inserire nella classe Player per visualizzare il messaggio nella propria chat
@@ -25,7 +26,9 @@ public class Chat {
             }
         }
         else{
-            //receiver.displayMessage(sender, message);
+            if(!players.contains(receiver)){
+                throw new PlayerNotFoundException();
+            }
         }
     }
 }
