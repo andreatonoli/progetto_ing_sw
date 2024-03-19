@@ -1,0 +1,11 @@
+{
+  "corners": [
+      null,
+      "EMPTY",
+      "QUILL",
+      "EMPTY"
+  ],
+  "basePoint": 1,
+  "condition": "quill",
+  "cost": [2,0,1,0]
+}
