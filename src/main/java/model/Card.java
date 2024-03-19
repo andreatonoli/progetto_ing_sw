@@ -4,6 +4,7 @@ public abstract class Card {
     protected Corner[] corners;
     /** Card's ID is composed of its type and its card_number value */
     protected String type; //maybe useless
+    protected String color;
     protected int card_number;
     protected Card currentSide = this;
     protected boolean back;
@@ -16,6 +17,9 @@ public abstract class Card {
     }
     public CardBack getBack(){
         return this.retro;
+    }
+    public String getColor() {
+        return color;
     }
     public boolean isBack(Card card)
     {

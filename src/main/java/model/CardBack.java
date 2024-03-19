@@ -5,14 +5,13 @@ import java.util.List;
 
 public class CardBack extends Card{
     private final List<Symbols> symbols;
-    private final String color;
     /**
      * Builds the back of the cards, even the empty corners
      * @param symbols one or more symbols which appear in the center of the card
      * @param color color of the card
      * @param corners Array of corners, corners[0] = top-left, corner[1] = top-right, corner[2] = bottom-right, corner[3] = bottom-left
      */
-    public CardBack(List<Symbols> symbols, String color, Corner[] corners){
+    public CardBack(List<Symbols> symbols, String color, Corner[] corners) {
         this.corners = new Corner[4];
         this.symbols = new ArrayList<>();
         this.symbols.addAll(symbols);
@@ -41,7 +40,4 @@ public class CardBack extends Card{
         return symbols;
     }
 
-    public String getColor() {
-        return color;
-    }
 }

@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Game {
@@ -8,9 +9,27 @@ public class Game {
     public static final int MIN_PLAYERS = 2; /** sets min number of players */
 
     private GameState gameState;
-    private List<Player> players;
+    private ArrayList<Player> players;
     private Player firstPlayer;
     private Player playerInTurn;
+
+    private Chat messagesContainer;
+
+    /**
+     * @param first is the first player to enter, first create the game
+     */
+    public Game(){
+        this.gameState = GameState.WAIT_PLAYERS;
+        this.players = new ArrayList<Player>();
+        //this.players.add(first);
+        this.firstPlayer = null;
+        this.playerInTurn = null;
+        this.messagesContainer = new Chat(this);
+    }
+
+    public Chat getChat(){
+        return this.messagesContainer;
+    }
 
     public void startGame()
     {
@@ -58,5 +77,13 @@ public class Game {
         return players.size();
     }
 
+    public ArrayList<Player> getPlayers(){
+        return this.players;
+    }
+
+    //temporaneo
+    public void addPlayer(Player player){
+        this.players.add(player);
+    }
 
 }

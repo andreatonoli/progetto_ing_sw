@@ -1,5 +1,5 @@
 package model;
 
 public interface Achievement {
-    void calcPoints();
+    int calcPoints(Player player);
 }

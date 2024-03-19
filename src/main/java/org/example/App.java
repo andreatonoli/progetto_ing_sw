@@ -3,6 +3,9 @@ package org.example;
 import model.*;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
 
 /**
  * Hello world!
@@ -15,14 +18,24 @@ public class App
         Game game = new Game();
         try {
             Board board = new Board(game);
-            for (GoldCard g : board.getGoldDeck()){
-                System.out.println(g.getCorner(0).getSymbol().toString());
-            }
+            Player pippo = new Player("pippo", board);
+            pippo.setGame(game);
+            game.addPlayer(pippo);
+            pippo.sendMessage(true, "ciao pipo");
         } catch (IOException e){
             System.out.println("suca");
         }
-    }
 
+    }
+    public void shuffleDeck(LinkedList<Card> deck){
+        Collections.shuffle(deck);
+    }
+    public Achievement drawCardA(LinkedList<Achievement> achievementDeck) {
+        Achievement drew;
+        drew = achievementDeck.getFirst();
+        achievementDeck.removeFirst();
+        return drew;
+    }
 
 /*
     public StarterCard drawCard() {
