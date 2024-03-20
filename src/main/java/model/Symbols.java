@@ -1,9 +1,9 @@
 package model;
 
 public enum Symbols {
+    FUNGI,
     PLANT,
     ANIMAL,
-    FUNGI,
     INSECT,
     QUILL,
     INKWELL,
