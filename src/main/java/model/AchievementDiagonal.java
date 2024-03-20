@@ -27,7 +27,7 @@ public class AchievementDiagonal implements Achievement{
     @Override
     public int calcPoints(Player player) {
         int point = 0;
-        HashMap<int [], Card> board = player.getCardPosition();
+        HashMap<int [], Card> board = player.getPlayerBoard().getCardPosition();
         Set<int[]> keySet = board.keySet();
         int[] prev = new int[2];
         int[] succ = new int[2];

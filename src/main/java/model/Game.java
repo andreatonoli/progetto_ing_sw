@@ -1,30 +1,31 @@
 package model;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 public class Game {
     public static final int MAX_PLAYERS = 4; /** sets max number of players */
 
     public static final int MIN_PLAYERS = 2; /** sets min number of players */
 
+    private GameBoard gameBoard;
     private GameState gameState;
     private ArrayList<Player> players;
     private Player firstPlayer;
     private Player playerInTurn;
-
     private Chat messagesContainer;
 
     /**
      * @param first is the first player to enter, first create the game
      */
-    public Game(){
+    public Game() throws IOException {
         this.gameState = GameState.WAIT_PLAYERS;
         this.players = new ArrayList<Player>();
         //this.players.add(first);
         this.firstPlayer = null;
         this.playerInTurn = null;
         this.messagesContainer = new Chat(this);
+        this.gameBoard = new GameBoard(this);
     }
 
     public Chat getChat(){
@@ -84,6 +85,10 @@ public class Game {
     //temporaneo
     public void addPlayer(Player player){
         this.players.add(player);
+    }
+
+    public GameBoard getGameBoard(){
+        return this.gameBoard;
     }
 
 }

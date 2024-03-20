@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.Random;
 
-public class Board {
+public class GameBoard {
     private Game game;
     private Random rand;
     private LinkedList<Achievement> achievementDeck;
@@ -20,7 +20,7 @@ public class Board {
      * Builds game's board, its decks and links one specific board to one specific game
      * @param game game to which the board belongs
      */
-    public Board(Game game) throws IOException {
+    public GameBoard(Game game) throws IOException {
         rand = new Random();
         this.game = game;
 
@@ -196,6 +196,5 @@ public class Board {
     public LinkedList<StarterCard> getStarterDeck() {
         return starterDeck;
     }
-
 
 }
