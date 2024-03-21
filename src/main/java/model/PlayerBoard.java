@@ -6,9 +6,6 @@ import java.util.Map;
 
 public class PlayerBoard {
     private Player player;
-    private Card[] cardInHand = new Card[3];
-    private Achievement[] personalObj = new Achievement[2];
-    private Achievement chosenObj;
     private final StarterCard starterCard;
     private HashMap<int[], Card> cardPosition;
     private HashMap<Symbols,Integer> symbolCount;
@@ -21,23 +18,15 @@ public class PlayerBoard {
 
         for (int j=0; j<2; j++)
             //draw card da modificare
-            cardInHand[j] = player.getGame().getGameBoard().drawCardR(player.getGame().getGameBoard().getResourceDeck());
-        cardInHand[2] = player.getGame().getGameBoard().drawCardG(player.getGame().getGameBoard().getGoldDeck());
+            player.getCardInHand()[j] = player.getGame().getGameBoard().drawCardR(player.getGame().getGameBoard().getResourceDeck());
+        player.getCardInHand()[2] = player.getGame().getGameBoard().drawCardG(player.getGame().getGameBoard().getGoldDeck());
         starterCard  = player.getGame().getGameBoard().drawCardS(player.getGame().getGameBoard().getStarterDeck());
         for (int j=0; j<2; j++)
-            personalObj[j] = player.getGame().getGameBoard().drawCardA(player.getGame().getGameBoard().getAchievementDeck());
+            player.getPersonalObj()[j] = player.getGame().getGameBoard().drawCardA(player.getGame().getGameBoard().getAchievementDeck());
 
         setCardPosition(starterCard, new int[]{0,0});
     }
     // passa l'array da un'altra parte, lì viene fatta la decisione e poi richiama setChosenObj
-    public Achievement[] getPersonalObj()
-    {
-        return personalObj;
-    }
-    public void setChosenObj(Achievement chosenObj1)
-    {
-        this.chosenObj = chosenObj1;
-    }
     /**
      * requires valid coordinates.
      * the controller will place the card wherever is possible and then call this method to update the game board

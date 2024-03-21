@@ -17,7 +17,7 @@ public class PlayerMessageTest extends TestCase {
         String message = "messaggio globale";
         game1 = new Game();
         chat1 = new Chat(game1);
-        board1 = new GameBoard(game1);
+        board1 = new GameBoard();
         player1 = new Player("mario", board1);
         player2 = new Player("luigi", board1);
         //aggiunta tempornaea dei giocatori alla partita finchè non gestita diversamente

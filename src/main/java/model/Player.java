@@ -8,6 +8,9 @@ public class Player {
     private final String username;
     private boolean firstToEnd;
     private boolean firstToPlay;
+    private Card[] cardInHand;
+    private Achievement[] personalObj;
+    private Achievement chosenObj;
     private int points = 0;
     private PlayerState playerState;
     private ArrayList<String> chat;
@@ -21,9 +24,11 @@ public class Player {
      */
     public Player(String name, GameBoard board)
     {
-        this.chat = new ArrayList<String>();
-
         this.username = name;
+        this.playerState = PlayerState.NOT_IN_TURN;
+        this.cardInHand = new Card[3];
+        this.personalObj = new Achievement[2];
+        this.chat = new ArrayList<String>();
     }
 
     /**
@@ -32,6 +37,21 @@ public class Player {
      */
     public String getUsername(){
         return username;
+    }
+
+    public Achievement getChosenObj() {
+        return chosenObj;
+    }
+
+    public Card[] getCardInHand() { //cercare valore per definire "no carta"
+        return cardInHand;
+    }
+
+    public Achievement[] getPersonalObj() {
+        return personalObj;
+    }
+    public ArrayList<String> getChat() {
+        return chat;
     }
 
     /**
@@ -97,9 +117,10 @@ public class Player {
         else{
             chat.addFirst(message);
         }
-        for(int i = 0; i < chat.size(); i++){
-            System.out.println(chat.get(i));
-        }
+        //Stampa per test
+        //for(int i = 0; i < chat.size(); i++){
+        //    System.out.println(chat.get(i));
+        //}
     }
 
     //temporaneo
@@ -113,6 +134,14 @@ public class Player {
 
     public PlayerBoard getPlayerBoard(){
         return this.playerBoard;
+    }
+    public void addInHand(Card card){
+        for (int i = 0; i < this.cardInHand.length; i++) {
+            if (this.cardInHand[i] == null){
+                this.cardInHand[i] = card;
+                break;
+            }
+        }
     }
 }
 
