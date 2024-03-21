@@ -1,10 +1,10 @@
-null EMPTY QUILL EMPTY 1 quill 2 0 1 0
-EMPTY INKWELL EMPTY null 1 inkwell 2 1 0 0
-MANUSCRIPT EMPTY null EMPTY 1 manuscript 2 0 0 1
-EMPTY EMPTY EMPTY null 2 corner 3 0 1 0
-EMPTY EMPTY null EMPTY 2 corner 3 1 0 0
-EMPTY null EMPTY EMPTY 2 corner 3 0 0 1
-EMPTY null null INKWELL 3 null 3 0 0 0
+
+
+
+
+
+
+
 QUILL EMPTY null null 3 null 3 0 0 0
 null MANUSCRIPT EMPTY null 3 null 3 0 0 0
 EMPTY null null EMPTY 5 null 5 0 0 0
