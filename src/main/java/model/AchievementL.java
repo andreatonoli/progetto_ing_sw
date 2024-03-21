@@ -33,7 +33,7 @@ public class AchievementL implements Achievement{
         int[] top = new int[2];
         ArrayList<int[]> marked = new ArrayList<>();
         switch (this.color){
-            case "red":
+            case Color.RED:
                 for (int[] i : keySet){
                     if (board.get(i).getColor().equals(this.color)){
                         top[0] = i[0];
@@ -41,7 +41,7 @@ public class AchievementL implements Achievement{
                         bottom[0] = i[0] + 1;
                         bottom[1] = i[1] - 1;
                         if (!marked.contains(i) && !marked.contains(bottom) && !marked.contains(top)){
-                            if (board.get(top).getColor().equals(this.color) && board.get(bottom).getColor().equals("green")){
+                            if (board.get(top).getColor().equals(this.color) && board.get(bottom).getColor().equals(Color.GREEN)){
                                 point += this.basePoint;
                                 marked.add(i);
                                 marked.add(bottom);
@@ -51,7 +51,7 @@ public class AchievementL implements Achievement{
                     }
                 }
                 break;
-            case "blue":
+            case Color.BLUE:
                 for (int[] i : keySet){
                     if (board.get(i).getColor().equals(this.color)){
                         top[0] = i[0] + 1;
@@ -59,7 +59,7 @@ public class AchievementL implements Achievement{
                         bottom[0] = i[0];
                         bottom[1] = i[1] - 1;
                         if (!marked.contains(i) && !marked.contains(bottom) && !marked.contains(top)){
-                            if (board.get(bottom).getColor().equals(this.color) && board.get(top).getColor().equals("red")){
+                            if (board.get(bottom).getColor().equals(this.color) && board.get(top).getColor().equals(Color.RED)){
                                 point += this.basePoint;
                                 marked.add(i);
                                 marked.add(bottom);
@@ -69,7 +69,7 @@ public class AchievementL implements Achievement{
                     }
                 }
                 break;
-            case "green":
+            case Color.GREEN:
                 for (int[] i : keySet){
                     if (board.get(i).getColor().equals(this.color)){
                         top[0] = i[0];
@@ -77,7 +77,7 @@ public class AchievementL implements Achievement{
                         bottom[0] = i[0] - 1;
                         bottom[1] = i[1] - 1;
                         if (!marked.contains(i) && !marked.contains(bottom) && !marked.contains(top)){
-                            if (board.get(top).getColor().equals(this.color) && board.get(bottom).getColor().equals("purple")){
+                            if (board.get(top).getColor().equals(this.color) && board.get(bottom).getColor().equals(Color.PURPLE)){
                                 point += this.basePoint;
                                 marked.add(i);
                                 marked.add(bottom);
@@ -87,7 +87,7 @@ public class AchievementL implements Achievement{
                     }
                 }
                 break;
-            case "purple":
+            case Color.PURPLE:
                 for (int[] i : keySet){
                     if (board.get(i).getColor().equals(this.color)){
                         top[0] = i[0] - 1;
@@ -95,7 +95,7 @@ public class AchievementL implements Achievement{
                         bottom[0] = i[0];
                         bottom[1] = i[1] - 1;
                         if (!marked.contains(i) && !marked.contains(bottom) && !marked.contains(top)){
-                            if (board.get(bottom).getColor().equals(this.color) && board.get(top).getColor().equals("blue")){
+                            if (board.get(bottom).getColor().equals(this.color) && board.get(top).getColor().equals(Color.BLUE)){
                                 point += this.basePoint;
                                 marked.add(i);
                                 marked.add(bottom);
