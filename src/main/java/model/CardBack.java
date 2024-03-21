@@ -11,7 +11,7 @@ public class CardBack extends Card{
      * @param color color of the card
      * @param corners Array of corners, corners[0] = top-left, corner[1] = top-right, corner[2] = bottom-right, corner[3] = bottom-left
      */
-    public CardBack(List<Symbols> symbols, String color, Corner[] corners) {
+    public CardBack(List<Symbols> symbols, Color color, Corner[] corners) {
         this.corners = new Corner[4];
         this.symbols = new ArrayList<>();
         this.symbols.addAll(symbols);
@@ -20,7 +20,7 @@ public class CardBack extends Card{
         this.back = true;
         this.type = "retro";
     }
-    public CardBack(List<Symbols> symbols, String color)
+    public CardBack(List<Symbols> symbols, Color color)
     {
         this.symbols = new ArrayList<>();
         this.corners = new Corner[4];

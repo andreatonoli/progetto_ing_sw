@@ -26,19 +26,19 @@ public class GoldCard extends Card {
         this.card_number = card_number;
         System.arraycopy(cost, 0, this.cost, 0, 4);
         if (card_number <= 10){ /**Gold fungi retro*/
-            this.retro = new CardBack(new ArrayList<Symbols>(List.of(Symbols.FUNGI)), "red");
+            this.retro = new CardBack(new ArrayList<Symbols>(List.of(Symbols.FUNGI)), Color.RED);
         }
         else if (card_number <= 20) /**gold plant retro*/
         {
-            this.retro = new CardBack(new ArrayList<Symbols>(List.of(Symbols.PLANT)), "green");
+            this.retro = new CardBack(new ArrayList<Symbols>(List.of(Symbols.PLANT)), Color.GREEN);
         }
         else if(card_number <= 30) /**gold animal retro*/
         {
-            this.retro = new CardBack(new ArrayList<Symbols>(List.of(Symbols.ANIMAL)), "blue");
+            this.retro = new CardBack(new ArrayList<Symbols>(List.of(Symbols.ANIMAL)), Color.BLUE);
         }
         else /**gold insect retro*/
         {
-            this.retro = new CardBack(new ArrayList<Symbols>(List.of(Symbols.INSECT)), "purple");
+            this.retro = new CardBack(new ArrayList<Symbols>(List.of(Symbols.INSECT)), Color.PURPLE);
         }
         this.back = false;
     }
