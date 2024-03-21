@@ -31,6 +31,8 @@ public class Chat {
             if(!players.contains(receiver)){
                 throw new PlayerNotFoundException();
             }
+            sender.displayMessage(sender, message);
+            receiver.displayMessage(receiver, message);
         }
     }
 }
