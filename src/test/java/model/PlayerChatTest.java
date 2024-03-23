@@ -19,7 +19,7 @@ public class PlayerChatTest {
      */
     public PlayerChatTest() throws IOException {
         this.game1 = new Game();
-        this.board1 = new GameBoard();
+        this.board1 = new GameBoard(game1);
     }
 
     /**

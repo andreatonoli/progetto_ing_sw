@@ -7,7 +7,7 @@
       "INSECT"
     ],
     "retro": {
-      "symbols": "INSECT",
+      "symbols": ["INSECT"],
       "corners": [
         "EMPTY",
         "PLANT",
@@ -24,7 +24,7 @@
       "FUNGI"
     ],
     "retro": {
-      "symbols": "FUNGI",
+      "symbols": ["FUNGI"],
       "corners": [
         "ANIMAL",
         "EMPTY",

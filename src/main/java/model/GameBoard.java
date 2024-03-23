@@ -1,6 +1,5 @@
 package model;
 
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -8,24 +7,20 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.Random;
 
 public class GameBoard {
     private Game game;
-    private Random rand;
     private LinkedList<Achievement> achievementDeck;
-    private LinkedList<GoldCard> goldDeck;
-    private LinkedList<ResourceCard> resourceDeck;
-    private LinkedList <StarterCard> starterDeck;
+    private LinkedList<Card> goldDeck;
+    private LinkedList<Card> resourceDeck;
+    private LinkedList <Card> starterDeck;
 
     /**
      * Builds game's board, its decks and links one specific board to one specific game
      * @param game game to which the board belongs
      */
     public GameBoard(Game game) throws IOException {
-        rand = new Random();
         this.game = game;
-
         try {
             Corner[] arrayCorner;
             ArrayList<Symbols> items;
@@ -37,14 +32,13 @@ public class GameBoard {
             JSONObject jo;
             JSONArray objCost;
             JSONArray symbols;
-
             //creation of achievementDeck
             this.achievementDeck = new LinkedList<>();
             content = new String(Files.readAllBytes(Paths.get("src/main/input_file/achievementCard.json")));
             jo = new JSONObject(content);
             items = new ArrayList<>();
             for (String achievementCard : jo.keySet()) {
-                if (achievementCard.startsWith("AchievementDiagonalAndL")){
+                if (achievementCard.startsWith("DiagonalAndL")){
                     colorOrSymbol = jo.getJSONObject(achievementCard).getString("color");
                     AchievementDiagonal adCard = new AchievementDiagonal(Color.valueOf(colorOrSymbol));
                     AchievementL alCard = new AchievementL(Color.valueOf(colorOrSymbol));
@@ -65,7 +59,6 @@ public class GameBoard {
                     achievementDeck.add(aiCard);
                 }
             }
-
             //creation of goldDeck
             this.goldDeck = new LinkedList<>();
             content = new String(Files.readAllBytes(Paths.get("src/main/input_file/goldCard.json")));
@@ -88,7 +81,6 @@ public class GameBoard {
                 goldDeck.add(gCard);
                 id++;
             }
-
             //creation of resourceDeck
             this.resourceDeck = new LinkedList<>();
             content = new String(Files.readAllBytes(Paths.get("src/main/input_file/resourceCard.json")));
@@ -105,7 +97,6 @@ public class GameBoard {
                 resourceDeck.add(rCard);
                 id++;
             }
-
             //creation of starterDeck
             this.starterDeck = new LinkedList<>();
             content = new String(Files.readAllBytes(Paths.get("src/main/input_file/starterCard.json")));
@@ -138,48 +129,35 @@ public class GameBoard {
         }
     }
 
-    //da far controllare a cugola tutti i draw
-    public Achievement drawCardA(LinkedList<Achievement> achievementDeck) {
-        Achievement drew = null;
-        int drew_index = rand.nextInt(achievementDeck.size());
-        drew = achievementDeck.get(drew_index);
-        achievementDeck.remove(drew_index);
-        return drew;
+    /**
+     * Receives a shuffled deck and takes the first card also removing it
+     * @param deck to draw from
+     * @return Card drew from the deck
+     */
+    protected Card drawCard(LinkedList<Card> deck){
+        Card drawedCard = deck.getFirst();
+        deck.removeFirst();
+        return drawedCard;
     }
-    public GoldCard drawCardG(LinkedList<GoldCard> goldDeck) {
-        GoldCard drew = null;
-        int drew_index = rand.nextInt(goldDeck.size());
-        drew = goldDeck.get(drew_index);
-        goldDeck.remove(drew_index);
-        return drew;
+    /**
+     * Receives a shuffled achivementDeck and takes the first card also removing it
+     * @return Achievement drew from the deck
+     */
+    protected Achievement drawCard(){
+        Achievement drawedCard = achievementDeck.getFirst();
+        achievementDeck.removeFirst();
+        return drawedCard;
     }
-    public ResourceCard drawCardR(LinkedList<ResourceCard> resourceDeck) {
-        ResourceCard drew = null;
-        int drew_index = rand.nextInt(resourceDeck.size());
-        drew = resourceDeck.get(drew_index);
-        resourceDeck.remove(drew_index);
-        return drew;
-    }
-    public StarterCard drawCardS(LinkedList <StarterCard> starterDeck) {
-        StarterCard drew = null;
-        int drew_index = rand.nextInt(starterDeck.size());
-        drew = starterDeck.get(drew_index);
-        starterDeck.remove(drew_index);
-        return drew;
-    }
-
-
     public LinkedList<Achievement> getAchievementDeck() {
         return achievementDeck;
     }
-    public LinkedList<GoldCard> getGoldDeck() {
+    public LinkedList<Card> getGoldDeck() {
         return goldDeck;
     }
-    public LinkedList<ResourceCard> getResourceDeck() {
+    public LinkedList<Card> getResourceDeck() {
         return resourceDeck;
     }
-    public LinkedList<StarterCard> getStarterDeck() {
+    public LinkedList<Card> getStarterDeck() {
         return starterDeck;
     }
-
 }

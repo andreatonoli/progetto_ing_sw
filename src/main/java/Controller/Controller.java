@@ -12,27 +12,19 @@ public class Controller {
      * @param player who wants to draw a card
      * @param deck from which the player choose to pick a card
      */
-    public void drawResource(Player player, LinkedList<ResourceCard> deck){
-        if (canDrawResource(player, deck)){
+    public void drawResource(Player player, LinkedList<Card> deck){
+        if (canDraw(player, deck)){
             Card drawedCard = deck.getFirst();
             player.addInHand(drawedCard);
             deck.removeFirst();
         }
     }
-    public void drawGold(Player player, LinkedList<GoldCard> deck){
-        if (canDrawGold(player, deck)){
-            Card drawedCard = deck.getFirst();
-            player.addInHand(drawedCard);
-            deck.removeFirst();
-        }
-    }
-
     /**
      * checks if the player can draw a card from a specified deck.
      * @param player to control
      * @return the possibility to draw a card
      */
-    public boolean canDrawGold(Player player, LinkedList<GoldCard> deck){
+    public boolean canDraw(Player player, LinkedList<Card> deck){
         //player cannot draw a card if the deck is empty, his hand is full (dim >= 3), hasn't already played a card or if it's not his turn
         if (deck.isEmpty()){
             return false;
@@ -47,20 +39,4 @@ public class Controller {
         }
         return true;
     }
-    public boolean canDrawResource(Player player, LinkedList<ResourceCard> deck){
-        //player cannot draw a card if the deck is empty, his hand is full (dim >= 3), hasn't already played a card or if it's not his turn
-        if (deck.isEmpty()){
-            return false;
-        }
-        if (player.getPlayerState().equals(PlayerState.NOT_IN_TURN) || player.getPlayerState().equals(PlayerState.PLAY_CARD)){
-            return false;
-        }
-        for (int i = 0; i < 3; i++) {
-            if (player.getCardInHand()[i] == null){
-                return true;
-            }
-        }
-        return true;
-    }
-
 }

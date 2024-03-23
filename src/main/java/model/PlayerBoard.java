@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class PlayerBoard {
     private Player player;
-    private final StarterCard starterCard;
+    private final Card starterCard; //Se si vuole far tornare di tipo starter bisogna creare un metodo drawCard apposito per lei
     private HashMap<int[], Card> cardPosition;
     private HashMap<Symbols,Integer> symbolCount;
 
@@ -18,11 +18,11 @@ public class PlayerBoard {
 
         for (int j=0; j<2; j++)
             //draw card da modificare
-            player.getCardInHand()[j] = player.getGame().getGameBoard().drawCardR(player.getGame().getGameBoard().getResourceDeck());
-        player.getCardInHand()[2] = player.getGame().getGameBoard().drawCardG(player.getGame().getGameBoard().getGoldDeck());
-        starterCard  = player.getGame().getGameBoard().drawCardS(player.getGame().getGameBoard().getStarterDeck());
+            player.getCardInHand()[j] = player.getGame().getGameBoard().drawCard(player.getGame().getGameBoard().getResourceDeck());
+        player.getCardInHand()[2] = player.getGame().getGameBoard().drawCard(player.getGame().getGameBoard().getGoldDeck());
+        starterCard  = player.getGame().getGameBoard().drawCard(player.getGame().getGameBoard().getStarterDeck());
         for (int j=0; j<2; j++)
-            player.getPersonalObj()[j] = player.getGame().getGameBoard().drawCardA(player.getGame().getGameBoard().getAchievementDeck());
+            player.getPersonalObj()[j] = player.getGame().getGameBoard().drawCard();
 
         setCardPosition(starterCard, new int[]{0,0});
     }

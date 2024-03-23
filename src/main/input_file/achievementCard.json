@@ -33,14 +33,14 @@
   },
   "Item2": {
     "basePoint": 2,
-    "symbols": "MANUSCRIPT"
+    "symbols": ["MANUSCRIPT"]
   },
   "Item3": {
     "basePoint": 2,
-    "symbols": "INKWELL"
+    "symbols": ["INKWELL"]
   },
   "Item4": {
     "basePoint": 2,
-    "symbols": "QUILL"
+    "symbols": ["QUILL"]
   }
 }

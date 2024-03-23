@@ -19,10 +19,10 @@ public class ControllerTest {
     @DisplayName("Draw a Card")
     public void DrawTest() throws IOException {
         Game game = new Game();
-        GameBoard board = new GameBoard();
+        GameBoard board = new GameBoard(game);
         Player player = new Player("pippo", board);
         player.setPlayerState(PlayerState.DRAW_CARD);
-        LinkedList<ResourceCard> deck = new LinkedList<>();
+        LinkedList<Card> deck = new LinkedList<>();
         ResourceCard drawed = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null, new Corner(Symbols.FUNGI) }, 1, 0);
         deck.add(drawed);
         deck.add(new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null }, 2, 0));
@@ -42,10 +42,10 @@ public class ControllerTest {
     @DisplayName("Cannot Draw")
     public void EmptyTest() throws IOException{
         Game game = new Game();
-        GameBoard board = new GameBoard();
+        GameBoard board = new GameBoard(game);
         Player player = new Player("pippo", board);
         player.setPlayerState(PlayerState.DRAW_CARD);
-        LinkedList<ResourceCard> deck = new LinkedList<>();
+        LinkedList<Card> deck = new LinkedList<>();
         Controller c = new Controller();
         ResourceCard a = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null, new Corner(Symbols.FUNGI) }, 1, 0);
         ResourceCard b = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null }, 2, 0);
