@@ -1,7 +1,7 @@
 {
   "GoldCard1": {
     "corners": [
-      "null",
+      "NOCORNER",
       "EMPTY",
       "QUILL",
       "EMPTY"
@@ -15,7 +15,7 @@
       "EMPTY",
       "INKWELL",
       "EMPTY",
-      "null"
+      "NOCORNER"
     ],
     "basePoint": 1,
     "condition": "inkwell",
@@ -25,7 +25,7 @@
     "corners": [
       "MANUSCRIPT",
       "EMPTY",
-      "null",
+      "NOCORNER",
       "EMPTY"
     ],
     "basePoint": 1,
@@ -37,7 +37,7 @@
       "EMPTY",
       "EMPTY",
       "EMPTY",
-      "null"
+      "NOCORNER"
     ],
     "basePoint": 2,
     "condition": "corner",
@@ -47,7 +47,7 @@
     "corners": [
       "EMPTY",
       "EMPTY",
-      "null",
+      "NOCORNER",
       "EMPTY"
     ],
     "basePoint": 2,
@@ -57,7 +57,7 @@
   "GoldCard6": {
     "corners": [
       "EMPTY",
-      "null",
+      "NOCORNER",
       "EMPTY",
       "EMPTY"
     ],
@@ -68,8 +68,8 @@
   "GoldCard7": {
     "corners": [
       "EMPTY",
-      "null",
-      "null",
+      "NOCORNER",
+      "NOCORNER",
       "INKWELL"
     ],
     "basePoint": 3,
@@ -80,8 +80,8 @@
     "corners": [
       "QUILL",
       "EMPTY",
-      "null",
-      "null"
+      "NOCORNER",
+      "NOCORNER"
     ],
     "basePoint": 3,
     "condition": "null",
@@ -89,10 +89,10 @@
   },
   "GoldCard9": {
     "corners": [
-      "null",
+      "NOCORNER",
       "MANUSCRIPT",
       "EMPTY",
-      "null"
+      "NOCORNER"
     ],
     "basePoint": 3,
     "condition": "null",
@@ -101,8 +101,8 @@
   "GoldCard10": {
     "corners": [
       "EMPTY",
-      "null",
-      "null",
+      "NOCORNER",
+      "NOCORNER",
       "EMPTY"
     ],
     "basePoint": 5,
@@ -113,7 +113,7 @@
     "corners": [
       "QUILL",
       "EMPTY",
-      "null",
+      "NOCORNER",
       "EMPTY"
     ],
     "basePoint": 1,
@@ -125,7 +125,7 @@
       "EMPTY",
       "MANUSCRIPT",
       "EMPTY",
-      "null"
+      "NOCORNER"
     ],
     "basePoint": 1,
     "condition": "manuscript",
@@ -134,7 +134,7 @@
   "GoldCard13": {
     "corners": [
       "EMPTY",
-      "null",
+      "NOCORNER",
       "EMPTY",
       "INKWELL"
     ],
@@ -144,7 +144,7 @@
   },
   "GoldCard14": {
     "corners": [
-      "null",
+      "NOCORNER",
       "EMPTY",
       "EMPTY",
       "EMPTY"
@@ -157,7 +157,7 @@
     "corners": [
       "EMPTY",
       "EMPTY",
-      "null",
+      "NOCORNER",
       "EMPTY"
     ],
     "basePoint": 2,
@@ -167,7 +167,7 @@
   "GoldCard16": {
     "corners": [
       "EMPTY",
-      "null",
+      "NOCORNER",
       "EMPTY",
       "EMPTY"
     ],
@@ -178,8 +178,8 @@
   "GoldCard17": {
     "corners": [
       "EMPTY",
-      "null",
-      "null",
+      "NOCORNER",
+      "NOCORNER",
       "QUILL"
     ],
     "basePoint": 3,
@@ -190,8 +190,8 @@
     "corners": [
       "MANUSCRIPT",
       "EMPTY",
-      "null",
-      "null"
+      "NOCORNER",
+      "NOCORNER"
     ],
     "basePoint": 3,
     "condition": "null",
@@ -199,10 +199,10 @@
   },
   "GoldCard19": {
     "corners": [
-      "null",
+      "NOCORNER",
       "INKWELL",
       "EMPTY",
-      "null"
+      "NOCORNER"
     ],
     "basePoint": 3,
     "condition": "null",
@@ -212,8 +212,8 @@
     "corners": [
       "EMPTY",
       "EMPTY",
-      "null",
-      "null"
+      "NOCORNER",
+      "NOCORNER"
     ],
     "basePoint": 5,
     "condition": "null",
@@ -223,7 +223,7 @@
     "corners": [
       "INKWELL",
       "EMPTY",
-      "null",
+      "NOCORNER",
       "EMPTY"
     ],
     "basePoint": 1,
@@ -232,7 +232,7 @@
   },
   "GoldCard22": {
     "corners": [
-      "null",
+      "NOCORNER",
       "EMPTY",
       "MANUSCRIPT",
       "EMPTY"
@@ -244,7 +244,7 @@
   "GoldCard23": {
     "corners": [
       "EMPTY",
-      "null",
+      "NOCORNER",
       "EMPTY",
       "QUILL"
     ],
@@ -257,7 +257,7 @@
       "EMPTY",
       "EMPTY",
       "EMPTY",
-      "null"
+      "NOCORNER"
     ],
     "basePoint": 2,
     "condition": "corner",
@@ -266,7 +266,7 @@
   "GoldCard25": {
     "corners": [
       "EMPTY",
-      "null",
+      "NOCORNER",
       "EMPTY",
       "EMPTY"
     ],
@@ -276,7 +276,7 @@
   },
   "GoldCard26": {
     "corners": [
-      "null",
+      "NOCORNER",
       "EMPTY",
       "EMPTY",
       "EMPTY"
@@ -288,8 +288,8 @@
   "GoldCard27": {
     "corners": [
       "EMPTY",
-      "null",
-      "null",
+      "NOCORNER",
+      "NOCORNER",
       "MANUSCRIPT"
     ],
     "basePoint": 3,
@@ -300,8 +300,8 @@
     "corners": [
       "EMPTY",
       "INKWELL",
-      "null",
-      "null"
+      "NOCORNER",
+      "NOCORNER"
     ],
     "basePoint": 3,
     "condition": "null",
@@ -309,10 +309,10 @@
   },
   "GoldCard29": {
     "corners": [
-      "null",
+      "NOCORNER",
       "EMPTY",
       "QUILL",
-      "null"
+      "NOCORNER"
     ],
     "basePoint": 3,
     "condition": "null",
@@ -320,10 +320,10 @@
   },
   "GoldCard30": {
     "corners": [
-      "null",
+      "NOCORNER",
       "EMPTY",
       "EMPTY",
-      "null"
+      "NOCORNER"
     ],
     "basePoint": 3,
     "condition": "null",
@@ -334,7 +334,7 @@
       "EMPTY",
       "QUILL",
       "EMPTY",
-      "null"
+      "NOCORNER"
     ],
     "basePoint": 1,
     "condition": "quill",
@@ -343,7 +343,7 @@
   "GoldCard32": {
     "corners": [
       "EMPTY",
-      "null",
+      "NOCORNER",
       "EMPTY",
       "MANUSCRIPT"
     ],
@@ -353,7 +353,7 @@
   },
   "GoldCard33": {
     "corners": [
-      "null",
+      "NOCORNER",
       "EMPTY",
       "INKWELL",
       "EMPTY"
@@ -367,7 +367,7 @@
       "EMPTY",
       "EMPTY",
       "EMPTY",
-      "null"
+      "NOCORNER"
     ],
     "basePoint": 2,
     "condition": "corner",
@@ -377,7 +377,7 @@
     "corners": [
       "EMPTY",
       "EMPTY",
-      "null",
+      "NOCORNER",
       "EMPTY"
     ],
     "basePoint": 2,
@@ -387,7 +387,7 @@
   "GoldCard36": {
     "corners": [
       "EMPTY",
-      "null",
+      "NOCORNER",
       "EMPTY",
       "EMPTY"
     ],
@@ -398,8 +398,8 @@
   "GoldCard37": {
     "corners": [
       "INKWELL",
-      "null",
-      "null",
+      "NOCORNER",
+      "NOCORNER",
       "EMPTY"
     ],
     "basePoint": 3,
@@ -410,8 +410,8 @@
     "corners": [
       "EMPTY",
       "MANUSCRIPT",
-      "null",
-      "null"
+      "NOCORNER",
+      "NOCORNER"
     ],
     "basePoint": 3,
     "condition": "null",
@@ -419,8 +419,8 @@
   },
   "GoldCard39": {
     "corners": [
-      "null",
-      "null",
+      "NOCORNER",
+      "NOCORNER",
       "EMPTY",
       "QUILL"
     ],
@@ -432,8 +432,8 @@
     "corners": [
       "EMPTY",
       "EMPTY",
-      "null",
-      "null"
+      "NOCORNER",
+      "NOCORNER"
     ],
     "basePoint": 5,
     "condition": "null",

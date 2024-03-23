@@ -13,16 +13,6 @@ import java.util.LinkedList;
 public class App 
 {
    public static void main( String[] args ) throws IOException {
-        Game game = new Game();
-        try {
-            GameBoard board = new GameBoard(game);
-            Player pippo = new Player("pippo", board);
-            pippo.setGame(game);
-            game.addPlayer(pippo);
-            pippo.sendMessage(true, "ciao pipo");
-        } catch (IOException e){
-            System.out.println("suca");
-        }
 
     }
     public void shuffleDeck(LinkedList<Card> deck){
