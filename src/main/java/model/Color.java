@@ -3,7 +3,8 @@ public enum Color {
     RED,
     GREEN,
     BLUE,
-    PURPLE;
+    PURPLE,
+    WHITE;
     Color associatedColor;
     Color(){
         setAssociatedColor();
