@@ -1,8 +1,18 @@
 {
   "starterCard1" : {
+    "corners":[
+      "FUNGI",
+      "PLANT",
+      "ANIMAL",
+      "INSECT"
+    ],
     "retro": {
+      "symbols": "INSECT",
       "corners": [
-
+        "EMPTY",
+        "PLANT",
+        "EMPTY",
+        "INSECT"
       ]
     }
   }
