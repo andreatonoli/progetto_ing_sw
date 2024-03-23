@@ -6,13 +6,13 @@ import java.util.Set;
 
 public class AchievementDiagonal implements Achievement{
     private int basePoint;
-    private String color;
+    private Color color;
     /**
      * Builds cards which achievement is created a diagonal with cards of the same color.
      * They've all the same base points (2)
      * @param color color of the diagonal
      */
-    public AchievementDiagonal(String color){
+    public AchievementDiagonal(Color color){
         this.basePoint = 2;
         this.color = color;
     }
@@ -32,7 +32,7 @@ public class AchievementDiagonal implements Achievement{
         int[] prev = new int[2];
         int[] succ = new int[2];
         ArrayList<int[]> marked = new ArrayList<>();
-        if(this.color.equals("red") || this.color.equals("blue")){
+        if(this.color.equals(Color.RED) || this.color.equals(Color.BLUE)){
             for (int[] i : keySet)
             {
                 if (board.get(i).getColor().equals(this.color)){
@@ -51,7 +51,7 @@ public class AchievementDiagonal implements Achievement{
                     }
                 }
             }
-        } else if (this.color.equals("green") || this.color.equals("purple")) {
+        } else if (this.color.equals(Color.GREEN) || this.color.equals(Color.PURPLE)) {
             for (int[] i : keySet)
             {
                 if (board.get(i).getColor().equals(this.color)){

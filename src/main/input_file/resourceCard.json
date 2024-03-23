@@ -3,7 +3,7 @@
     "corners": [
       "FUNGI",
       "EMPTY",
-      "null",
+      "NOCORNER",
       "FUNGI"
     ],
     "point": 0
@@ -13,14 +13,14 @@
       "FUNGI",
       "FUNGI",
       "EMPTY",
-      "null"
+      "NOCORNER"
     ],
     "point": 0
   },
   "ResourceCard3": {
     "corners": [
       "EMPTY",
-      "null",
+      "NOCORNER",
       "FUNGI",
       "FUNGI"
     ],
@@ -28,7 +28,7 @@
   },
   "ResourceCard4": {
     "corners": [
-      "null",
+      "NOCORNER",
       "FUNGI",
       "FUNGI",
       "EMPTY"
@@ -37,7 +37,7 @@
   },
   "ResourceCard5": {
     "corners": [
-      "null",
+      "NOCORNER",
       "QUILL",
       "FUNGI",
       "PLANT"
@@ -49,7 +49,7 @@
       "INKWELL",
       "FUNGI",
       "ANIMAL",
-      "null"
+      "NOCORNER"
     ],
     "point": 0
   },
@@ -66,7 +66,7 @@
     "corners": [
       "EMPTY",
       "FUNGI",
-      "null",
+      "NOCORNER",
       "EMPTY"
     ],
     "point": 1
@@ -74,7 +74,7 @@
   "ResourceCard9": {
     "corners": [
       "FUNGI",
-      "null",
+      "NOCORNER",
       "EMPTY",
       "EMPTY"
     ],
@@ -82,7 +82,7 @@
   },
   "ResourceCard10": {
     "corners": [
-      "null",
+      "NOCORNER",
       "EMPTY",
       "EMPTY",
       "FUNGI"
@@ -93,7 +93,7 @@
     "corners": [
       "PLANT",
       "EMPTY",
-      "null",
+      "NOCORNER",
       "PLANT"
     ],
     "point": 0
@@ -103,14 +103,14 @@
       "PLANT",
       "PLANT",
       "EMPTY",
-      "null"
+      "NOCORNER"
     ],
     "point": 0
   },
   "ResourceCard13": {
     "corners": [
       "EMPTY",
-      "null",
+      "NOCORNER",
       "PLANT",
       "PLANT"
     ],
@@ -118,7 +118,7 @@
   },
   "ResourceCard14": {
     "corners": [
-      "null",
+      "NOCORNER",
       "PLANT",
       "PLANT",
       "EMPTY"
@@ -127,7 +127,7 @@
   },
   "ResourceCard15": {
     "corners": [
-      "null",
+      "NOCORNER",
       "INSECT",
       "PLANT",
       "QUILL"
@@ -139,14 +139,14 @@
       "FUNGI",
       "PLANT",
       "INKWELL",
-      "null"
+      "NOCORNER"
     ],
     "point": 0
   },
   "ResourceCard17": {
     "corners": [
       "MANUSCRIPT",
-      "null",
+      "NOCORNER",
       "ANIMAL",
       "PLANT"
     ],
@@ -156,7 +156,7 @@
     "corners": [
       "EMPTY",
       "EMPTY",
-      "null",
+      "NOCORNER",
       "PLANT"
     ],
     "point": 1
@@ -166,13 +166,13 @@
       "EMPTY",
       "EMPTY",
       "PLANT",
-      "null"
+      "NOCORNER"
     ],
     "point": 1
   },
   "ResourceCard20": {
     "corners": [
-      "null",
+      "NOCORNER",
       "PLANT",
       "EMPTY",
       "EMPTY"
@@ -183,14 +183,14 @@
     "corners": [
       "ANIMAL",
       "ANIMAL",
-      "null",
+      "NOCORNER",
       "EMPTY"
     ],
     "point": 0
   },
   "ResourceCard22": {
     "corners": [
-      "null",
+      "NOCORNER",
       "EMPTY",
       "ANIMAL",
       "ANIMAL"
@@ -200,7 +200,7 @@
   "ResourceCard23": {
     "corners": [
       "ANIMAL",
-      "null",
+      "NOCORNER",
       "EMPTY",
       "ANIMAL"
     ],
@@ -211,13 +211,13 @@
       "EMPTY",
       "ANIMAL",
       "ANIMAL",
-      "null"
+      "NOCORNER"
     ],
     "point": 0
   },
   "ResourceCard25": {
     "corners": [
-      "null",
+      "NOCORNER",
       "INSECT",
       "ANIMAL",
       "INKWELL"
@@ -229,14 +229,14 @@
       "PLANT",
       "ANIMAL",
       "MANUSCRIPT",
-      "null"
+      "NOCORNER"
     ],
     "point": 0
   },
   "ResourceCard27": {
     "corners": [
       "QUILL",
-      "null",
+      "NOCORNER",
       "FUNGI",
       "ANIMAL"
     ],
@@ -244,7 +244,7 @@
   },
   "ResourceCard28": {
     "corners": [
-      "null",
+      "NOCORNER",
       "EMPTY",
       "EMPTY",
       "ANIMAL"
@@ -254,7 +254,7 @@
   "ResourceCard29": {
     "corners": [
       "EMPTY",
-      "null",
+      "NOCORNER",
       "ANIMAL",
       "EMPTY"
     ],
@@ -264,7 +264,7 @@
     "corners": [
       "EMPTY",
       "ANIMAL",
-      "null",
+      "NOCORNER",
       "EMPTY"
     ],
     "point": 1
@@ -273,14 +273,14 @@
     "corners": [
       "INSECT",
       "INSECT",
-      "null",
+      "NOCORNER",
       "EMPTY"
     ],
     "point": 0
   },
   "ResourceCard32": {
     "corners": [
-      "null",
+      "NOCORNER",
       "EMPTY",
       "INSECT",
       "INSECT"
@@ -290,7 +290,7 @@
   "ResourceCard33": {
     "corners": [
       "INSECT",
-      "null",
+      "NOCORNER",
       "EMPTY",
       "INSECT"
     ],
@@ -301,13 +301,13 @@
       "EMPTY",
       "INSECT",
       "INSECT",
-      "null"
+      "NOCORNER"
     ],
     "point": 0
   },
   "ResourceCard35": {
     "corners": [
-      "null",
+      "NOCORNER",
       "QUILL",
       "INSECT",
       "ANIMAL"
@@ -319,7 +319,7 @@
       "MANUSCRIPT",
       "INSECT",
       "FUNGI",
-      "null"
+      "NOCORNER"
     ],
     "point": 0
   },
@@ -327,7 +327,7 @@
     "corners": [
       "INSECT",
       "PLANT",
-      "null",
+      "NOCORNER",
       "INKWELL"
     ],
     "point": 0
@@ -335,7 +335,7 @@
   "ResourceCard38": {
     "corners": [
       "INSECT",
-      "null",
+      "NOCORNER",
       "EMPTY",
       "EMPTY"
     ],
@@ -346,13 +346,13 @@
       "EMPTY",
       "EMPTY",
       "INSECT",
-      "null"
+      "NOCORNER"
     ],
     "point": 1
   },
   "ResourceCard40": {
     "corners": [
-      "null",
+      "NOCORNER",
       "INSECT",
       "EMPTY",
       "EMPTY"

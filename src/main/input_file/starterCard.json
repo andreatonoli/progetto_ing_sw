@@ -15,5 +15,104 @@
         "INSECT"
       ]
     }
+  },
+  "starterCard2" : {
+    "corners":[
+      "PLANT",
+      "ANIMAL",
+      "INSECT",
+      "FUNGI"
+    ],
+    "retro": {
+      "symbols": "FUNGI",
+      "corners": [
+        "ANIMAL",
+        "EMPTY",
+        "FUNGI",
+        "EMPTY"
+      ]
+    }
+  },
+  "starterCard3" : {
+    "corners":[
+      "INSECT",
+      "ANIMAL",
+      "PLANT",
+      "FUNGI"
+    ],
+    "retro": {
+      "symbols": [
+        "PLANT",
+        "FUNGI"
+      ],
+      "corners": [
+        "EMPTY",
+        "EMPTY",
+        "EMPTY",
+        "EMPTY"
+      ]
+    }
+  },
+  "starterCard4" : {
+    "corners":[
+      "PLANT",
+      "INSECT",
+      "FUNGI",
+      "ANIMAL"
+    ],
+    "retro": {
+      "symbols": [
+        "ANIMAL",
+        "INSECT"
+      ],
+      "corners": [
+        "EMPTY",
+        "EMPTY",
+        "EMPTY",
+        "EMPTY"
+      ]
+    }
+  },
+  "starterCard5" : {
+    "corners":[
+      "INSECT",
+      "FUNGI",
+      "ANIMAL",
+      "PLANT"
+    ],
+    "retro": {
+      "symbols": [
+        "ANIMAL",
+        "INSECT",
+        "PLANT"
+      ],
+      "corners": [
+        "EMPTY",
+        "EMPTY",
+        "NOCORNER",
+        "NOCORNER"
+      ]
+    }
+  },
+  "starterCard6" : {
+    "corners":[
+      "FUNGI",
+      "ANIMAL",
+      "INSECT",
+      "PLANT"
+    ],
+    "retro": {
+      "symbols": [
+        "PLANT",
+        "ANIMAL",
+        "FUNGI"
+      ],
+      "corners": [
+        "EMPTY",
+        "EMPTY",
+        "NOCORNER",
+        "NOCORNER"
+      ]
+    }
   }
 }
