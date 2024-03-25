@@ -12,7 +12,7 @@ public class Controller {
      * @param player who wants to draw a card
      * @param deck from which the player choose to pick a card
      */
-    public void drawResource(Player player, LinkedList<Card> deck){
+    public void drawCard(Player player, LinkedList<Card> deck){
         if (canDraw(player, deck)){
             Card drawedCard = deck.getFirst();
             player.addInHand(drawedCard);
