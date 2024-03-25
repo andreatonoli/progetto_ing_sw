@@ -14,7 +14,7 @@ public class DrawTest {
      */
     @Test
     @DisplayName("Draw a Card")
-    public void DrawTest() throws IOException {
+    public void DrawACardTest() throws IOException {
         Game game = new Game();
         GameBoard board = new GameBoard(game);
         Player player = new Player("pippo", board);
