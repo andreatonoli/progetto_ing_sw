@@ -22,6 +22,7 @@ public class Controller {
             player.addInHand(drawedCard);
             deck.removeFirst();
         }
+        //else => ritorno un errore in base a cosa sbaglio (o eccezione)
     }
     /**
      * checks if the player can draw a card from a specified deck.
@@ -44,7 +45,67 @@ public class Controller {
         return true;
     }
 
-    public void placeCard(){
-
+    /**
+     * Place card
+     * @param card to place
+     * @param coordinates of the card occupied by the placement
+     * @param corner where player wants to place the card
+     */
+    public void placeCard(Player player, Card card, int[] coordinates, CornerEnum corner) {
+        if (canPlace(corner, coordinates, player)) {
+            //coordinates of the new card
+            int[] newCoordinates = new int[2];
+            int[] checkCoordinates = new int[2];
+            newCoordinates[0] = coordinates[0] + corner.getX();
+            newCoordinates[1] = coordinates[1] + corner.getY();
+            player.getPlayerBoard().setCardPosition(card, newCoordinates);
+            for (CornerEnum position : CornerEnum.values()) {
+                if (!card.getCorner(position).getSymbol().equals(Symbols.NOCORNER)){
+                    //Add symbols (of the placed card) to counter
+                    player.getPlayerBoard().getSymbolCount().increaseSymbolCount(card.getCorner(position).getSymbol());
+                    //select the card below the placed card
+                    checkCoordinates[0] = newCoordinates[0] + position.getX();
+                    checkCoordinates[1] = newCoordinates[1] + position.getY();
+                    //Cover its corner
+                    player.getPlayerBoard().getCardPosition().get(checkCoordinates).getCorner(position.getOppositePosition()).setState(CornerState.NOT_VISIBLE);
+                    //Remove corner's symbol from the counter
+                    player.getPlayerBoard().getSymbolCount().decreaseSymbolCount(player.getPlayerBoard().getCardPosition().get(checkCoordinates).getCorner(position.getOppositePosition()).getSymbol());
+                }
+            }
+            card.calcPoints();
+        }
+    }
+    /**
+     * check if the card can be placed in the designed spot
+     * @param cornerPosition position of one of the corner the card will be placed on
+     * @param coordinates position of the card containing the corner on cornerPosition
+     * @param player is the player who are placing the card
+     * @return contains a boolean
+     */
+    public boolean canPlace(CornerEnum cornerPosition, int[] coordinates, Player player){
+        int[] newCoordinates = new int[2];
+        boolean legit = true;
+        //check if the player placing the card is the player in turn
+        if (player.getPlayerState().equals(PlayerState.NOT_IN_TURN)){
+            return false;
+        }
+        //check if the corner we are placing the card on is available
+        Corner corner = player.getPlayerBoard().getCardPosition().get(coordinates).getCorner(cornerPosition);
+        if (corner.getState().equals(CornerState.NOT_VISIBLE)){
+            return false;
+        }
+        //check if the card cover other corners and if those corner are available
+        coordinates[0] = coordinates[0]+cornerPosition.getX();
+        coordinates[1] = coordinates[1]+cornerPosition.getY();
+        for (CornerEnum c: CornerEnum.values()){
+            newCoordinates[0] = coordinates[0]+c.getX();
+            newCoordinates[1] = coordinates[1]+c.getY();
+            if (player.getPlayerBoard().getCardPosition().containsKey(newCoordinates)){
+                if (player.getPlayerBoard().getCardPosition().get(newCoordinates).getCorner(c.getOppositePosition()).getState().equals(CornerState.NOT_VISIBLE)){
+                    legit = false;
+                }
+            }
+        }
+        return legit;
     }
 }

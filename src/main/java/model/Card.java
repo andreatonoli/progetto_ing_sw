@@ -12,8 +12,8 @@ public abstract class Card {
     public Corner[] getCorners() {
         return corners;
     }
-    public Corner getCorner(int index){
-        return corners[index];
+    public Corner getCorner(CornerEnum corner){
+        return corners[corner.ordinal()];
     }
     public CardBack getBack(){
         return this.retro;
