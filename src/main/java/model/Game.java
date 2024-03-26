@@ -2,6 +2,7 @@ package model;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Game {
     public static final int MAX_PLAYERS = 4; /** sets max number of players */
@@ -16,7 +17,8 @@ public class Game {
     private Chat chatHandler;
 
     /**
-     * @param first is the first player to enter, first create the game
+     *
+     * @throws IOException
      */
     public Game() throws IOException {
         this.gameState = GameState.WAIT_PLAYERS;
@@ -28,17 +30,57 @@ public class Game {
         this.gameBoard = new GameBoard(this);
     }
 
-    public Chat getChat(){
-        return this.chatHandler;
+    public void startGame() {
+
+        //mescolamento mazzi
+        Collections.shuffle(gameBoard.getStarterDeck());
+        Collections.shuffle(gameBoard.getAchievementDeck());
+        Collections.shuffle(gameBoard.getResourceDeck());
+        Collections.shuffle(gameBoard.getGoldDeck());
+
+        //posizionamento 2 carte nella board comune
+        gameBoard.setCommonResource(gameBoard.drawCard(gameBoard.getResourceDeck()), 0);
+        gameBoard.setCommonResource(gameBoard.drawCard(gameBoard.getResourceDeck()), 1);
+        gameBoard.setCommonGold(gameBoard.drawCard(gameBoard.getGoldDeck()), 0);
+        gameBoard.setCommonGold(gameBoard.drawCard(gameBoard.getGoldDeck()), 1);
+
+        //a ogni giocatore viene data la carte iniziale
+        for (Player p : players){
+            p.getPlayerBoard().setStarterCard(gameBoard.drawCard(gameBoard.getStarterDeck()));
+            //prima va fatto scegliere il lato al giocatore
+            //quando il controller vede che il player vuole piazzare la carta posiziona la starterCard
+        }
+
+        //colore segnalino scelto dal player al login
+
+        //ogni giocatore pesca due carte risorsa e due carte oro
+        for (Player p : players){
+            p.addInHand(gameBoard.drawCard(gameBoard.getResourceDeck()));
+            p.addInHand(gameBoard.drawCard(gameBoard.getResourceDeck()));
+            p.addInHand(gameBoard.drawCard(gameBoard.getGoldDeck()));
+        }
+
+        //posizonamento 2 carte obiettivo nella board comune
+        gameBoard.setCommonAchievement(gameBoard.drawCard(), 0);
+        gameBoard.setCommonAchievement(gameBoard.drawCard(), 1);
+
+        //scelta carta obiettivo
+        for (Player p : players){
+            p.getPersonalObj()[0] = gameBoard.drawCard();
+            p.getPersonalObj()[1] = gameBoard.drawCard();
+            //scelta carta da parte del player
+            //per il momento il player sceglie la prima carta
+            //poi verrà gestita nel controller
+            p.setChosenObj(p.getPersonalObj()[0]);
+        }
+
+        //scelta random primo giocatore
+        Collections.shuffle(players);
+        setFirstPlayer();
+
     }
 
-    public void startGame()
-    {
-
-    }
-
-    public void endGame()
-    {
+    public void endGame() {
 
     }
 
@@ -89,6 +131,10 @@ public class Game {
 
     public GameBoard getGameBoard(){
         return this.gameBoard;
+    }
+
+    public Chat getChat(){
+        return this.chatHandler;
     }
 
 }

@@ -15,8 +15,8 @@ public class Player {
     private PlayerState playerState;
     private ArrayList<String> chat;
     private Game game;
-
     private PlayerBoard playerBoard;
+    private String color;
 
     /**
      * constructor of the player class:
@@ -29,6 +29,7 @@ public class Player {
         this.cardInHand = new Card[3];
         this.personalObj = new Achievement[2];
         this.chat = new ArrayList<String>();
+        this.playerBoard = new PlayerBoard();
     }
 
     /**
@@ -41,6 +42,10 @@ public class Player {
 
     public Achievement getChosenObj() {
         return chosenObj;
+    }
+
+    public void setChosenObj(Achievement chosenObj) {
+        this.chosenObj = chosenObj;
     }
 
     public Card[] getCardInHand() { //cercare valore per definire "no carta"

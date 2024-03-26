@@ -31,4 +31,8 @@ public abstract class Card {
     //public void placeCard(Card card);
     //public int getPoint(Card card);
     //public void flipSide(Card card);
+
+    public int getCardNumber(){
+        return this.card_number;
+    }
 }

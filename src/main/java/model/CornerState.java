@@ -7,6 +7,5 @@ package model;
  */
 public enum CornerState {
     VISIBLE,
-    NOT_VISIBLE,
-    OCCUPIED
+    NOT_VISIBLE
 }
