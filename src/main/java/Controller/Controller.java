@@ -7,6 +7,10 @@ import java.util.LinkedList;
     addInHand : Player => metodo per aggiungere carta alla mano
  */
 public class Controller {
+    private Game game; //reference to model
+    public Controller(Game game){
+        this.game = game;
+    }
     /**
      *Picks the top card of the deck and calls addInHand to give it to the player
      * @param player who wants to draw a card
@@ -38,5 +42,9 @@ public class Controller {
             }
         }
         return true;
+    }
+
+    public void placeCard(){
+
     }
 }
