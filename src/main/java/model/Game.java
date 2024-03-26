@@ -13,7 +13,7 @@ public class Game {
     private ArrayList<Player> players;
     private Player firstPlayer;
     private Player playerInTurn;
-    private Chat messagesContainer;
+    private Chat chatHandler;
 
     /**
      * @param first is the first player to enter, first create the game
@@ -24,12 +24,12 @@ public class Game {
         //this.players.add(first);
         this.firstPlayer = null;
         this.playerInTurn = null;
-        this.messagesContainer = new Chat(this);
+        this.chatHandler = new Chat(this);
         this.gameBoard = new GameBoard(this);
     }
 
     public Chat getChat(){
-        return this.messagesContainer;
+        return this.chatHandler;
     }
 
     public void startGame()

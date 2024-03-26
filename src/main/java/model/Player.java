@@ -100,7 +100,7 @@ public class Player {
         }
     }
 
-    public void sendMessage(boolean global, String message){
+    public void sendMessage(String message){
         try{
             this.game.getChat().forwardMessage(this, null, true, message);
         }

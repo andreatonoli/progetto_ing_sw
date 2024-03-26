@@ -38,7 +38,7 @@ public class PlayerChatTest {
         //game set for players temporary until fix
         player1.setGame(game1);
         player2.setGame(game1);
-        player1.sendMessage(true, message);
+        player1.sendMessage(message);
 
         assertEquals(message, player1.getChat().get(0));
         assertEquals(message, player2.getChat().get(0));
@@ -65,9 +65,9 @@ public class PlayerChatTest {
         player2.setGame(game1);
         //fulling array chat for all players
         for (int i = 0; i < Chat.CHATDIM; i++){
-            player1.sendMessage(true, message1);
+            player1.sendMessage(message1);
         }
-        player1.sendMessage(true, message2);
+        player1.sendMessage(message2);
 
         assertEquals(message2, player1.getChat().get(0));
         assertEquals(message2, player2.getChat().get(0));
@@ -132,7 +132,7 @@ public class PlayerChatTest {
         player3.setGame(game1);
         //partially fulling array chat for all players
         for (int i = 0; i < Chat.CHATDIM - 2; i++){
-            player2.sendMessage(true, message1);
+            player2.sendMessage(message1);
         }
         //fulling array chat for player2
         for (int i = 0; i < Chat.CHATDIM - 5; i++){
