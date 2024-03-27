@@ -24,7 +24,7 @@ public class DrawTest {
         deck.add(drawed);
         deck.add(new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null }, 2, 0));
         deck.add(new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), null, new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI)}, 3, 0));
-        Controller c = new Controller();
+        Controller c = new Controller(game);
         c.drawCard(player, deck);
         assertEquals(player.getCardInHand()[0], drawed);
         assertNotEquals(player.getCardInHand()[0], deck.getFirst());
@@ -42,7 +42,7 @@ public class DrawTest {
         Player player = new Player("pippo", board);
         player.setPlayerState(PlayerState.DRAW_CARD);
         LinkedList<Card> deck = new LinkedList<>();
-        Controller c = new Controller();
+        Controller c = new Controller(game);
         ResourceCard a = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null, new Corner(Symbols.FUNGI) }, 1, 0);
         ResourceCard b = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null }, 2, 0);
         player.addInHand(a);
@@ -59,7 +59,7 @@ public class DrawTest {
         Player player = new Player("pippo", board);
         player.setPlayerState(PlayerState.DRAW_CARD);
         LinkedList<Card> deck = new LinkedList<>();
-        Controller c = new Controller();
+        Controller c = new Controller(game);
         ResourceCard a = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null, new Corner(Symbols.FUNGI) }, 1, 0);
         ResourceCard b = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null }, 2, 0);
         ResourceCard d = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), null, new Corner(Symbols.EMPTY) }, 8, 1);
@@ -89,7 +89,7 @@ public class DrawTest {
         Player player = new Player("pippo", board);
         player.setPlayerState(PlayerState.NOT_IN_TURN);
         LinkedList<Card> deck = new LinkedList<>();
-        Controller c = new Controller();
+        Controller c = new Controller(game);
         ResourceCard a = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null, new Corner(Symbols.FUNGI) }, 1, 0);
         ResourceCard b = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null }, 2, 0);
         deck.add(a);

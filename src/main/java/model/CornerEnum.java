@@ -28,5 +28,6 @@ public enum CornerEnum {
                 return c;
             }
         }
+        return null;
     }
 }
