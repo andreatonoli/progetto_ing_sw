@@ -25,88 +25,54 @@ public class AchievementL implements Achievement{
      * @return amount of points made with this achievement
      */
     @Override
-    public int calcPoints(Player player) { //In questo modo il linkage dei colori è fisso
+    public int calcPoints(Player player) {
         int point = 0;
-        HashMap<int [], Card> board = player.getPlayerBoard().getCardPosition();
-        Set<int[]> keySet = board.keySet();
-        int[] bottom = new int[2];
-        int[] top = new int[2];
+        Set<Integer> keySet = player.getPlayerBoard().getPositionCardKeys();
+        int[] diff = new int[2];
+        int[] coord = new int[2];
+        int[] same = new int[2];
         ArrayList<int[]> marked = new ArrayList<>();
-        switch (this.color){
-            case Color.RED:
-                for (int[] i : keySet){
-                    if (board.get(i).getColor().equals(this.color)){
-                        top[0] = i[0];
-                        top[1] = i[1] + 1;
-                        bottom[0] = i[0] + 1;
-                        bottom[1] = i[1] - 1;
-                        if (!marked.contains(i) && !marked.contains(bottom) && !marked.contains(top)){
-                            if (board.get(top).getColor().equals(this.color) && board.get(bottom).getColor().equals(Color.GREEN)){
-                                point += this.basePoint;
-                                marked.add(i);
-                                marked.add(bottom);
-                                marked.add(top);
-                            }
-                        }
+        for (Integer i : keySet){
+            coord[0] = i % 1024;
+            coord[1] = i / 1024;
+            if (player.getPlayerBoard().getCard(coord).getColor().equals(this.color)){
+                //Cercare un algoritmo migliore (non aver paura di creare altri metodi per semplificare)
+                switch (this.color){
+                    case RED:
+                            same[0] = coord[0];
+                            same[1] = coord[1] + 1;
+                            diff[0] = coord[0] + 1;
+                            diff[1] = coord[1] - 1;
+                            break;
+                    case BLUE:
+                            same[0] = coord[0];
+                            same[1] = coord[1] - 1;
+                            diff[0] = coord[0] + 1;
+                            diff[1] = coord[1] + 1;
+                            break;
+                    case GREEN:
+                            same[0] = coord[0];
+                            same[1] = coord[1] + 1;
+                            diff[0] = coord[0] - 1;
+                            diff[1] = coord[1] - 1;
+                            break;
+                    case PURPLE:
+                            same[0] = coord[0];
+                            same[1] = coord[1] - 1;
+                            diff[0] = coord[0] - 1;
+                            diff[1] = coord[1] + 1;
+                            break;
+                }
+                if (!marked.contains(coord) && !marked.contains(diff) && !marked.contains(same)){
+                    if (player.getPlayerBoard().getCard(same).getColor().equals(this.color) && player.getPlayerBoard().getCard(diff).getColor().equals(Color.getAssociatedColor(this.color))){
+                        point += this.basePoint;
+                        marked.add(coord);
+                        marked.add(diff);
+                        marked.add(same);
                     }
                 }
-                break;
-            case Color.BLUE:
-                for (int[] i : keySet){
-                    if (board.get(i).getColor().equals(this.color)){
-                        top[0] = i[0] + 1;
-                        top[1] = i[1] + 1;
-                        bottom[0] = i[0];
-                        bottom[1] = i[1] - 1;
-                        if (!marked.contains(i) && !marked.contains(bottom) && !marked.contains(top)){
-                            if (board.get(bottom).getColor().equals(this.color) && board.get(top).getColor().equals(Color.RED)){
-                                point += this.basePoint;
-                                marked.add(i);
-                                marked.add(bottom);
-                                marked.add(top);
-                            }
-                        }
-                    }
-                }
-                break;
-            case Color.GREEN:
-                for (int[] i : keySet){
-                    if (board.get(i).getColor().equals(this.color)){
-                        top[0] = i[0];
-                        top[1] = i[1] + 1;
-                        bottom[0] = i[0] - 1;
-                        bottom[1] = i[1] - 1;
-                        if (!marked.contains(i) && !marked.contains(bottom) && !marked.contains(top)){
-                            if (board.get(top).getColor().equals(this.color) && board.get(bottom).getColor().equals(Color.PURPLE)){
-                                point += this.basePoint;
-                                marked.add(i);
-                                marked.add(bottom);
-                                marked.add(top);
-                            }
-                        }
-                    }
-                }
-                break;
-            case Color.PURPLE:
-                for (int[] i : keySet){
-                    if (board.get(i).getColor().equals(this.color)){
-                        top[0] = i[0] - 1;
-                        top[1] = i[1] + 1;
-                        bottom[0] = i[0];
-                        bottom[1] = i[1] - 1;
-                        if (!marked.contains(i) && !marked.contains(bottom) && !marked.contains(top)){
-                            if (board.get(bottom).getColor().equals(this.color) && board.get(top).getColor().equals(Color.BLUE)){
-                                point += this.basePoint;
-                                marked.add(i);
-                                marked.add(bottom);
-                                marked.add(top);
-                            }
-                        }
-                    }
-                }
-                break;
+            }
         }
         return point;
-    return 8;
     }
 }

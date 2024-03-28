@@ -9,7 +9,7 @@ public enum Color {
     Color(Integer associatedIndex){
         this.associatedIndex = associatedIndex;
     }
-    public Color getAssociatedColor(Color color){
+    public static Color getAssociatedColor(Color color){
         for (Color c : Color.values()){
             if (c.associatedIndex == color.ordinal()){
                 return c;
