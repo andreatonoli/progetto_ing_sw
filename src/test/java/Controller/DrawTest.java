@@ -17,7 +17,7 @@ public class DrawTest {
     public void DrawACardTest() throws IOException {
         Game game = new Game();
         GameBoard board = new GameBoard(game);
-        Player player = new Player("pippo", board);
+        Player player = new Player("pippo", board, game);
         player.setPlayerState(PlayerState.DRAW_CARD);
         LinkedList<Card> deck = new LinkedList<>();
         ResourceCard drawed = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null, new Corner(Symbols.FUNGI) }, 1, 0);
@@ -39,7 +39,7 @@ public class DrawTest {
     public void EmptyTest() throws IOException{
         Game game = new Game();
         GameBoard board = new GameBoard(game);
-        Player player = new Player("pippo", board);
+        Player player = new Player("pippo", board, game);
         player.setPlayerState(PlayerState.DRAW_CARD);
         LinkedList<Card> deck = new LinkedList<>();
         Controller c = new Controller(game);
@@ -56,7 +56,7 @@ public class DrawTest {
     public void FullHandTest() throws IOException{
         Game game = new Game();
         GameBoard board = new GameBoard(game);
-        Player player = new Player("pippo", board);
+        Player player = new Player("pippo", board, game);
         player.setPlayerState(PlayerState.DRAW_CARD);
         LinkedList<Card> deck = new LinkedList<>();
         Controller c = new Controller(game);
@@ -86,7 +86,7 @@ public class DrawTest {
     public void NotInTurnTest() throws IOException{
         Game game = new Game();
         GameBoard board = new GameBoard(game);
-        Player player = new Player("pippo", board);
+        Player player = new Player("pippo", board, game);
         player.setPlayerState(PlayerState.NOT_IN_TURN);
         LinkedList<Card> deck = new LinkedList<>();
         Controller c = new Controller(game);

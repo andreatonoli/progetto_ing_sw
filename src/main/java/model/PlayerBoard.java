@@ -3,17 +3,18 @@ package model;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class PlayerBoard {
     private Player player;
     private final Card starterCard; //Se si vuole far tornare di tipo starter bisogna creare un metodo drawCard apposito per lei
-    private HashMap<int[], Card> cardPosition;
+    private HashMap<Integer, Card> cardPosition;
     private HashMap<Symbols,Integer> symbolCount;
 
-    public PlayerBoard(){
+    public PlayerBoard(Player player){
 
         this.cardPosition = new HashMap<>();
-
+        this.player = player;
         this.symbolCount= new HashMap<>();
 
         for (int j=0; j<2; j++)
@@ -34,27 +35,35 @@ public class PlayerBoard {
      * @param coordinates is the position where the card has been placed
      */
     public void setCardPosition(Card placedCard, int[] coordinates) {
-        cardPosition.put(coordinates,placedCard);
+        cardPosition.put(coordinates[0] + ((1<<10) * coordinates[1]), placedCard);
     }
-
     /**
      * method to get the coordinates of the card
      * @param card is the card we need to know the position of
      * @return the position of the card
      */
-    public int[] getCardPosition(Card card){
-        for (Map.Entry<int[], Card> entry : cardPosition.entrySet()){
-            if (entry.getValue()==card){
-                return entry.getKey();
-            }
+    //public int[] getCardPosition(Card card){
+    //    for (Map.Entry<int[], Card> entry : cardPosition.entrySet()){
+    //        if (entry.getValue()==card){
+    //            return entry.getKey();
+    //        }
+    //    }
+    //    return new int[]{0,0};
+    //}
+
+    public Card getCard(int[] coord){
+        int key = coord[0] + (1<<10) * coord[1];
+        if (!this.cardPosition.containsKey(key)){
+            return null;
         }
-        return new int[]{0,0};
+        return this.cardPosition.get(key);
     }
-
-    public HashMap<int[], Card> getCardPosition(){
-        return cardPosition;
+    public Set<Integer> getPositionCardKeys(){
+        return this.cardPosition.keySet();
     }
-
+    public int[] getCoordFromKey(Integer key){
+        return new int[]{key % 1024, key / 1024};
+    }
     /**
      * adder to increment the values for each symbol in the hashmap symbolCount
      * @param placedCard is the card that is getting placed
@@ -79,4 +88,34 @@ public class PlayerBoard {
         return symbolCount;
     }
 
+    //TOGLI
+    public void increaseSymbolCount(Symbols symbol){
+        if (!symbol.equals(Symbols.NOCORNER) || !symbol.equals(Symbols.EMPTY)){
+            this.symbolCount.compute(symbol, (key, value) -> (value == null) ? 1 : value + 1);
+        }
+    }
+    public void decreaseSymbolCount(Symbols symbol){
+        if (!symbol.equals(Symbols.NOCORNER)|| !symbol.equals(Symbols.EMPTY)){
+            this.symbolCount.compute(symbol, (key, value) -> (value == null || value == 0) ? 0 : value - 1);
+        }
+    }
+    public void coverCorner(Card card, int[] coordinates){
+        int[] checkCoordinates = new int[2];
+        for (CornerEnum position : CornerEnum.values()) {
+            if (!card.getCorner(position).getSymbol().equals(Symbols.NOCORNER)){
+                //Add symbols (of the placed card) to counter
+                this.increaseSymbolCount(card.getCornerSymbol(position));
+                //select the card below the placed card
+                checkCoordinates[0] = coordinates[0] + position.getX();
+                checkCoordinates[1] = coordinates[1] + position.getY();
+                //Cover its corner
+                if (this.getCard(checkCoordinates) != null) {
+                    this.getCard(checkCoordinates).getCorner(position.getOppositePosition()).setState(CornerState.NOT_VISIBLE);
+                    //Manca aggiungere simboli della starter card nel symbolcount
+                    //this.decreaseSymbolCount(this.getCard(checkCoordinates).getCardSymbol(position));
+                }
+                //Remove corner's symbol from the counter
+            }
+        }
+    }
 }

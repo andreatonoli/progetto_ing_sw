@@ -22,13 +22,15 @@ public class Player {
      * constructor of the player class:
      * @param name is the player's unique username
      */
-    public Player(String name, GameBoard board)
+    public Player(String name, GameBoard board, Game game)
     {
         this.username = name;
         this.playerState = PlayerState.NOT_IN_TURN;
         this.cardInHand = new Card[3];
         this.personalObj = new Achievement[2];
         this.chat = new ArrayList<String>();
+        this.game = game;
+        this.playerBoard = new PlayerBoard(this);
     }
 
     /**

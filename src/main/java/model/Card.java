@@ -25,6 +25,9 @@ public abstract class Card {
     {
         return this.back;
     }
+    public Symbols getCornerSymbol(CornerEnum corner){
+        return this.corners[corner.ordinal()].getSymbol();
+    }
     //public Card getSide(Card card);
     //public void setSide(Card card);
     //public void flipSide(Card card);

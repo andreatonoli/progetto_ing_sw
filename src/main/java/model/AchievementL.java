@@ -107,5 +107,6 @@ public class AchievementL implements Achievement{
                 break;
         }
         return point;
+    return 8;
     }
 }
