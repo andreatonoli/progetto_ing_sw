@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Objects;
+
 public abstract class Card {
     protected Corner[] corners;
     /** Card's ID is composed of its type and its card_number value */
@@ -34,4 +36,13 @@ public abstract class Card {
     //public void placeCard(Card card);
     //public int getPoint(Card card);
     //public void flipSide(Card card);
+
+    //AAAAAAAAAA
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Card card = (Card) o;
+        return card_number == card.card_number && Objects.equals(type, card.type);
+    }
 }
