@@ -15,6 +15,7 @@ public class ResourceCard extends Card {
      * @param point sometimes resource cards give points when placed
      */
     public ResourceCard(Corner[] corners, int card_number, int point){
+        this.currentSide = this;
         this.corners = new Corner[4];
         System.arraycopy(corners, 0, this.corners, 0, 4);
         this.type = "resource";

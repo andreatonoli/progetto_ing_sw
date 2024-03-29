@@ -15,20 +15,21 @@ public class Player {
     private PlayerState playerState;
     private ArrayList<String> chat;
     private Game game;
+
     private PlayerBoard playerBoard;
-    private String color;
 
     /**
      * constructor of the player class:
      * @param name is the player's unique username
      */
-    public Player(String name, GameBoard board)
+    public Player(String name, GameBoard board, Game game)
     {
         this.username = name;
         this.playerState = PlayerState.NOT_IN_TURN;
         this.cardInHand = new Card[3];
         this.personalObj = new Achievement[2];
         this.chat = new ArrayList<String>();
+        this.game = game;
         this.playerBoard = new PlayerBoard();
     }
 
@@ -42,10 +43,6 @@ public class Player {
 
     public Achievement getChosenObj() {
         return chosenObj;
-    }
-
-    public void setChosenObj(Achievement chosenObj) {
-        this.chosenObj = chosenObj;
     }
 
     public Card[] getCardInHand() { //cercare valore per definire "no carta"
@@ -74,7 +71,9 @@ public class Player {
     public PlayerState getPlayerState() {
         return playerState;
     }
-
+    public void setChosenObj(Achievement choice){
+        this.chosenObj = choice;
+    }
     /**
      * getter to get the current score of the player
      * @return the player's points

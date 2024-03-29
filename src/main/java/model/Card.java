@@ -6,20 +6,23 @@ public abstract class Card {
     protected String type; //maybe useless
     protected Color color;
     protected int card_number;
-    protected Card currentSide = this;
+    protected Card currentSide;
     protected boolean back;
     protected CardBack retro;
     public Corner[] getCorners() {
-        return corners;
+        return currentSide.corners;
     }
-    public Corner getCorner(int index){
-        return corners[index];
+    public Corner getCorner(CornerEnum corner){
+        return currentSide.corners[corner.ordinal()];
     }
     public CardBack getBack(){
         return this.retro;
     }
     public Color getColor() {
         return color;
+    }
+    public Symbols getCornerSymbol(CornerEnum corner){
+        return currentSide.corners[corner.ordinal()].getSymbol();
     }
     public boolean isBack(Card card)
     {

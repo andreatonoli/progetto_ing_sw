@@ -8,6 +8,7 @@ public class StarterCard extends Card{
      * @param retro back of the card
      */
     public StarterCard(Corner[] corners, int card_number, CardBack retro){
+        this.currentSide = this;
         this.corners = new Corner[4];
         System.arraycopy(corners, 0, this.corners, 0, 4);
         this.card_number = card_number;
