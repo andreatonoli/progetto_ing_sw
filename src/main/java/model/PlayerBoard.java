@@ -24,20 +24,21 @@ public class PlayerBoard {
     public void setCardPosition(Card placedCard, int[] coordinates) {
         cardPosition.put(coordinates[0] + ((1<<10) * coordinates[1]), placedCard);
     }
-    ///**
-    // * method to get the coordinates of the card
-    // * @param card is the card we need to know the position of
-    // * @return the position of the card
-    // */
-    //public int[] getCardPosition(Card card){
-    //    for (Map.Entry<int[], Card> entry : cardPosition.entrySet()){
-    //        if (entry.getValue()==card){
-    //            return entry.getKey();
-    //        }
-    //    }
-    //    return new int[]{0,0};
-    //}
-
+    /**
+     * method to get the coordinates of the card
+     * @param card is the card we need to know the position of
+     * @return the position of the card
+     */
+    public int[] getCardCoordinates(Card card){
+        int[] coord = new int[]{0,0};
+        for (int i : this.getPositionCardKeys()){
+            if (cardPosition.get(i).equals(card)){
+                coord[0] = i % 1024;
+                coord[1] = i / 1024;
+            }
+        }
+        return coord;
+    }
     public Card getCard(int[] coord){
         int key = coord[0] + (1<<10) * coord[1];
         if (!this.cardPosition.containsKey(key)){
@@ -47,9 +48,6 @@ public class PlayerBoard {
     }
     public Set<Integer> getPositionCardKeys(){
         return this.cardPosition.keySet();
-    }
-    public int[] getCoordFromKey(Integer key){
-        return new int[]{key % 1024, key / 1024};
     }
     public HashMap<Symbols,Integer> getSymbolCount(){
         return symbolCount;
@@ -85,9 +83,14 @@ public class PlayerBoard {
     public void coverCorner(Card card, int[] coordinates){
         int[] checkCoordinates = new int[2];
         for (CornerEnum position : CornerEnum.values()) {
-            if (!card.getCorner(position).getSymbol().equals(Symbols.NOCORNER)){
+            if (!card.getCornerSymbol(position).equals(Symbols.NOCORNER)){
                 //Add symbols (of the placed card) to counter
                 this.increaseSymbolCount(card.getCornerSymbol(position));
+            }
+            if (card.getSymbols() != null){
+                for (Symbols ignored : card.getSymbols()){
+                    this.increaseSymbolCount(card.getCornerSymbol(position));
+                }
             }
             //select the card below the placed card
             checkCoordinates[0] = coordinates[0] + position.getX();
@@ -95,9 +98,9 @@ public class PlayerBoard {
             //Cover its corner and removes its symbols from the counter, also cover those placedCard corners which have
             //another corner below them
             if (this.getCard(checkCoordinates) != null) {
-                card.getCorner(position).setState(CornerState.NOT_VISIBLE);
-                this.getCard(checkCoordinates).getCorner(position.getOppositePosition()).setState(CornerState.NOT_VISIBLE);
-                this.decreaseSymbolCount(this.getCard(checkCoordinates).getCorner(position.getOppositePosition()).getSymbol());
+                card.setCornerState(position, CornerState.NOT_VISIBLE);
+                this.getCard(checkCoordinates).setCornerState(position.getOppositePosition(), CornerState.NOT_VISIBLE);
+                this.decreaseSymbolCount(this.getCard(checkCoordinates).getCornerSymbol(position.getOppositePosition()));
             }
         }
     }

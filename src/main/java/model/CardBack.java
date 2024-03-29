@@ -4,27 +4,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CardBack extends Card{
-    private final List<Symbols> symbols;
+    private List<Symbols> centerSymbols;
     /**
      * Builds the back of the cards, even the empty corners
-     * @param symbols one or more symbols which appear in the center of the card
+     * @param centerSymbols one or more symbols which appear in the center of the card
      * @param color color of the card
      * @param corners Array of corners, corners[0] = top-left, corner[1] = top-right, corner[2] = bottom-right, corner[3] = bottom-left
      */
-    public CardBack(List<Symbols> symbols, Color color, Corner[] corners) {
+    public CardBack(List<Symbols> centerSymbols, Color color, Corner[] corners) {
         this.corners = new Corner[4];
-        this.symbols = new ArrayList<>();
-        this.symbols.addAll(symbols);
+        this.centerSymbols = new ArrayList<>();
+        this.centerSymbols.addAll(centerSymbols);
         this.color = color;
         System.arraycopy(corners, 0, this.corners, 0, 4);
         this.back = true;
         this.type = "retro";
     }
-    public CardBack(List<Symbols> symbols, Color color)
-    {
-        this.symbols = new ArrayList<>();
+    public CardBack(List<Symbols> centerSymbols, Color color) {
+        this.centerSymbols = new ArrayList<>();
         this.corners = new Corner[4];
-        this.symbols.addAll(symbols);
+        this.centerSymbols.addAll(centerSymbols);
         this.color = color;
         for (int i = 0; i < 4; i++) {
             this.corners[i] = new Corner(Symbols.EMPTY);
@@ -33,11 +32,17 @@ public class CardBack extends Card{
         this.type = "retro";
     }
 
-    /**
-     * Getter functions for the params
-     */
+    @Override
     public List<Symbols> getSymbols() {
-        return symbols;
+        return this.centerSymbols;
+    }
+    @Override
+    public boolean checkCost(Player player) {
+        return true;
     }
 
+    @Override
+    public void calcPoint(Player player) {
+
+    }
 }

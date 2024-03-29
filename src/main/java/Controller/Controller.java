@@ -3,9 +3,6 @@ import model.*;
 
 import java.util.LinkedList;
 
-/*Metodi da aggiungere
-    addInHand : Player => metodo per aggiungere carta alla mano
- */
 public class Controller {
     private Game game; //reference to model
     public Controller(Game game){
@@ -42,13 +39,13 @@ public class Controller {
                 return true;
             }
         }
-        return true;
+        return false;
     }
 
     /**
      * Place card
      * @param card to place
-     * @param coordinates TODO: scrivere il commento corretto
+     * @param coordinates of the card which corner will be covered after the placement
      * @param corner where player wants to place the card
      */
     public void placeCard(Player player, Card card, int[] coordinates, CornerEnum corner) {
@@ -60,6 +57,10 @@ public class Controller {
             int[] newCoordinates = new int[2];
             newCoordinates[0] = coordinates[0] + corner.getX();
             newCoordinates[1] = coordinates[1] + corner.getY();
+            if(!card.checkCost(player)){
+                //Tiro eccezione
+                return;
+            }
             player.getPlayerBoard().setCardPosition(card, newCoordinates);
             player.getPlayerBoard().coverCorner(card, newCoordinates);
             //card.calcPoints();
@@ -82,8 +83,7 @@ public class Controller {
             return false;
         }
         //check if the corner we are placing the card on is available
-        Corner corner = player.getPlayerBoard().getCard(coord).getCorner(cornerPosition);
-        if (corner.getState().equals(CornerState.NOT_VISIBLE)){
+        if (player.getPlayerBoard().getCard(coord).getCornerState(cornerPosition).equals(CornerState.NOT_VISIBLE)){
             return false;
         }
         //check if the card cover other corners and if those corner are available
@@ -96,12 +96,15 @@ public class Controller {
                 newCoordinates[0] = coord[0]+c.getX();
                 newCoordinates[1] = coord[1]+c.getY();
                 if (player.getPlayerBoard().getCard(newCoordinates) != null){
-                    if (player.getPlayerBoard().getCard(newCoordinates).getCorner(c.getOppositePosition()).getState().equals(CornerState.NOT_VISIBLE)){
+                    if (player.getPlayerBoard().getCard(newCoordinates).getCornerState(c.getOppositePosition()).equals(CornerState.NOT_VISIBLE)){
                         legit = false;
                     }
                 }
             }
         }
         return legit;
+    }
+    public void flipCard(Card card){
+
     }
 }

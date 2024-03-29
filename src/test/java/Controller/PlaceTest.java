@@ -8,7 +8,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import java.io.IOException;
-
+//TODO: Fare test anche per i punteggi delle carte e sul costo
 public class PlaceTest{
     private Game game;
     @Test

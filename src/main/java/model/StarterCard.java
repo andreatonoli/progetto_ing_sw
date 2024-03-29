@@ -1,5 +1,7 @@
 package model;
 
+import java.util.List;
+
 public class StarterCard extends Card{
     /**
      * Starter Card constructor.
@@ -16,5 +18,17 @@ public class StarterCard extends Card{
         this.type = "starter";
         this.retro = retro;
         this.back = false;
+    }
+
+    @Override
+    public List<Symbols> getSymbols() {
+        return null;
+    }
+    @Override
+    public boolean checkCost(Player player) {
+        return true;
+    }
+    @Override
+    public void calcPoint(Player player) {
     }
 }
