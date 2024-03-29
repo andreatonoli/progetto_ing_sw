@@ -1,6 +1,5 @@
 package model;
 
-import model.*;
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +15,7 @@ public class PlayerBoardTest {
         Player player = new Player("Ugo", game.getGameBoard(), game);
         game.addPlayer(player);
         //game.startGame();
-        StarterCard a = new StarterCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}, 2, new CardBack(new ArrayList<Symbols>(List.of(Symbols.FUNGI)), Color.WHITE, new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY)}));
+        StarterCard a = new StarterCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}, 2, new CardBack(new ArrayList<>(List.of(Symbols.FUNGI)), Color.WHITE, new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY)}));
         player.getPlayerBoard().setStarterCard(a);
         assertEquals(1, player.getPlayerBoard().getSymbolCount().get(Symbols.FUNGI));
         assertEquals(1, player.getPlayerBoard().getSymbolCount().get(Symbols.PLANT));

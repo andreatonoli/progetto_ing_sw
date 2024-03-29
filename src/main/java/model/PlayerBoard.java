@@ -1,8 +1,6 @@
 package model;
 
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class PlayerBoard {
@@ -26,11 +24,11 @@ public class PlayerBoard {
     public void setCardPosition(Card placedCard, int[] coordinates) {
         cardPosition.put(coordinates[0] + ((1<<10) * coordinates[1]), placedCard);
     }
-    /**
-     * method to get the coordinates of the card
-     * @param card is the card we need to know the position of
-     * @return the position of the card
-     */
+    ///**
+    // * method to get the coordinates of the card
+    // * @param card is the card we need to know the position of
+    // * @return the position of the card
+    // */
     //public int[] getCardPosition(Card card){
     //    for (Map.Entry<int[], Card> entry : cardPosition.entrySet()){
     //        if (entry.getValue()==card){

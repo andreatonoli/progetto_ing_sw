@@ -1,7 +1,5 @@
 package model;
 
-import java.util.Objects;
-
 public abstract class Card {
     protected Corner[] corners;
     /** Card's ID is composed of its type and its card_number value */
