@@ -27,46 +27,35 @@ public class AchievementDiagonal implements Achievement{
     @Override
     public int calcPoints(Player player) {
         int point = 0;
-        HashMap<int [], Card> board = player.getPlayerBoard().getCardPosition();
-        Set<int[]> keySet = board.keySet();
+        Set<Integer> keySet = player.getPlayerBoard().getPositionCardKeys();
         int[] prev = new int[2];
         int[] succ = new int[2];
+        int[] coord = new int[2];
         ArrayList<int[]> marked = new ArrayList<>();
-        if(this.color.equals(Color.RED) || this.color.equals(Color.BLUE)){
-            for (int[] i : keySet)
-            {
-                if (board.get(i).getColor().equals(this.color)){
-                    prev[0] = i[0] - 1;
-                    prev[1] = i[1] - 1;
-                    succ[0] = i[0] + 1;
-                    succ[1] = i[1] + 1;
-                    if (!marked.contains(i) && !marked.contains(succ) && !marked.contains(prev))
-                    {
-                        if (board.get(prev).getColor().equals(this.color) && board.get(succ).getColor().equals(this.color)){
-                            point += this.basePoint;
-                            marked.add(prev);
-                            marked.add(i);
-                            marked.add(succ);
-                        }
-                    }
+        for (Integer i : keySet)
+        {
+            coord[0] = i % 1024;
+            coord[1] = i / 1024;
+            if (player.getPlayerBoard().getCard(coord).getColor().equals(this.color)){
+                if (this.color.equals(Color.RED) || this.color.equals(Color.BLUE)) {
+                    prev[0] = (i % 1024) - 1;
+                    prev[1] = (i / 1024) - 1;
+                    succ[0] = (i % 1024) + 1;
+                    succ[1] = (i / 1024) + 1;
                 }
-            }
-        } else if (this.color.equals(Color.GREEN) || this.color.equals(Color.PURPLE)) {
-            for (int[] i : keySet)
-            {
-                if (board.get(i).getColor().equals(this.color)){
-                    prev[0] = i[0] - 1;
-                    prev[1] = i[1] + 1;
-                    succ[0] = i[0] + 1;
-                    succ[1] = i[1] - 1;
-                    if (!marked.contains(i) && !marked.contains(succ) && !marked.contains(prev))
-                    {
-                        if (board.get(prev).getColor().equals(this.color) && board.get(succ).getColor().equals(this.color)){
-                            point += this.basePoint;
-                            marked.add(prev);
-                            marked.add(i);
-                            marked.add(succ);
-                        }
+                else {
+                    prev[0] = (i % 1024) - 1;
+                    prev[1] = (i / 1024) + 1;
+                    succ[0] = (i % 1024) + 1;
+                    succ[1] = (i / 1024) - 1;
+                }
+                if (!marked.contains(coord) && !marked.contains(succ) && !marked.contains(prev))
+                {
+                    if (player.getPlayerBoard().getCard(prev).getColor().equals(this.color) && player.getPlayerBoard().getCard(succ).getColor().equals(this.color)){
+                        point += this.basePoint;
+                        marked.add(prev);
+                        marked.add(coord);
+                        marked.add(succ);
                     }
                 }
             }
