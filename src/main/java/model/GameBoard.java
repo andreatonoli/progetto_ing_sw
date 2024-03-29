@@ -23,6 +23,9 @@ public class GameBoard {
      */
     public GameBoard(Game game) throws IOException {
         this.game = game;
+        this.commonResource = new Card[2];
+        this.commonGold = new Card[2];
+        this.commonAchievement = new Achievement[2];
         try {
             Corner[] arrayCorner;
             ArrayList<Symbols> items;

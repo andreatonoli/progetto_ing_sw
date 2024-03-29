@@ -48,14 +48,16 @@ public class Controller {
     /**
      * Place card
      * @param card to place
-     * @param coordinates (DELLA CARTA DA COPRIRE)
+     * @param coordinates TODO: scrivere il commento corretto
      * @param corner where player wants to place the card
      */
     public void placeCard(Player player, Card card, int[] coordinates, CornerEnum corner) {
+        //TODO: differenziare il piazzamento delle gold dalle resource card
+        //TODO: aggiungere calcolo dei punti al placeCard => scrivere calcolo dei punti nelle carte
+        //TODO: Rimuovere la carta giocata dalla mano del giocatore
         if (canPlace(corner, coordinates, player, card)) {
             //coordinates of the new card
             int[] newCoordinates = new int[2];
-            int[] checkCoordinates = new int[2];
             newCoordinates[0] = coordinates[0] + corner.getX();
             newCoordinates[1] = coordinates[1] + corner.getY();
             player.getPlayerBoard().setCardPosition(card, newCoordinates);
@@ -76,7 +78,7 @@ public class Controller {
         System.arraycopy(coordinates, 0, coord, 0, 2);
         boolean legit = true;
         //check if the player placing the card is the player in turn
-        if (player.getPlayerState().equals(PlayerState.NOT_IN_TURN)){
+        if (player.getPlayerState().equals(PlayerState.NOT_IN_TURN) || player.getPlayerState().equals(PlayerState.DRAW_CARD)){
             return false;
         }
         //check if the corner we are placing the card on is available
