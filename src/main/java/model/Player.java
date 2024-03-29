@@ -30,7 +30,7 @@ public class Player {
         this.personalObj = new Achievement[2];
         this.chat = new ArrayList<String>();
         this.game = game;
-        this.playerBoard = new PlayerBoard(this);
+        this.playerBoard = new PlayerBoard();
     }
 
     /**
@@ -44,7 +44,9 @@ public class Player {
     public Achievement getChosenObj() {
         return chosenObj;
     }
-
+    public void setChosenObj(Achievement chosenObj) {
+        this.chosenObj = chosenObj;
+    }
     public Card[] getCardInHand() { //cercare valore per definire "no carta"
         return cardInHand;
     }

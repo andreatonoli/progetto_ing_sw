@@ -14,7 +14,9 @@ public class GameBoard {
     private LinkedList<Card> goldDeck;
     private LinkedList<Card> resourceDeck;
     private LinkedList <Card> starterDeck;
-
+    private Card[] commonResource;
+    private Card[] commonGold;
+    private Achievement[] commonAchievement;
     /**
      * Builds game's board, its decks and links one specific board to one specific game
      * @param game game to which the board belongs
@@ -159,5 +161,29 @@ public class GameBoard {
     }
     public LinkedList<Card> getStarterDeck() {
         return starterDeck;
+    }
+
+    public Card[] getCommonResource(){
+        return this.commonResource;
+    }
+
+    public void setCommonResource(Card commonResource, int i){
+        this.commonResource[i] = commonResource;
+    }
+
+    public Card[] getCommonGold(){
+        return this.commonGold;
+    }
+
+    public void setCommonGold(Card commonGold, int i){
+        this.commonGold[i] = commonGold;
+    }
+
+    public Achievement[] getCommonAchievement(){
+        return this.commonAchievement;
+    }
+
+    public void setCommonAchievement(Achievement commonAchievement, int i){
+        this.commonAchievement[i] = commonAchievement;
     }
 }

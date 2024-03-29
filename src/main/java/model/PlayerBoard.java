@@ -7,25 +7,14 @@ import java.util.Set;
 
 public class PlayerBoard {
     private Player player;
-    private final Card starterCard; //Se si vuole far tornare di tipo starter bisogna creare un metodo drawCard apposito per lei
+    private Card starterCard; //Se si vuole far tornare di tipo starter bisogna creare un metodo drawCard apposito per lei
     private HashMap<Integer, Card> cardPosition;
     private HashMap<Symbols,Integer> symbolCount;
 
-    public PlayerBoard(Player player){
+    public PlayerBoard(){
 
         this.cardPosition = new HashMap<>();
-        this.player = player;
         this.symbolCount= new HashMap<>();
-
-        for (int j=0; j<2; j++)
-            //draw card da modificare
-            player.getCardInHand()[j] = player.getGame().getGameBoard().drawCard(player.getGame().getGameBoard().getResourceDeck());
-        player.getCardInHand()[2] = player.getGame().getGameBoard().drawCard(player.getGame().getGameBoard().getGoldDeck());
-        starterCard  = player.getGame().getGameBoard().drawCard(player.getGame().getGameBoard().getStarterDeck());
-        for (int j=0; j<2; j++)
-            player.getPersonalObj()[j] = player.getGame().getGameBoard().drawCard();
-
-        setCardPosition(starterCard, new int[]{0,0});
     }
     // passa l'array da un'altra parte, lì viene fatta la decisione e poi richiama setChosenObj
     /**
@@ -86,6 +75,13 @@ public class PlayerBoard {
 
     public HashMap<Symbols,Integer> getSymbolCount(){
         return symbolCount;
+    }
+    public void setStarterCard(Card starterCard){
+        this.starterCard = starterCard;
+    }
+
+    public Card getStarterCard(){
+        return this.starterCard;
     }
 
     //TOGLI
