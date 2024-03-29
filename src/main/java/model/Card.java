@@ -7,7 +7,8 @@ public abstract class Card {
     protected Color color;
     protected int card_number;
     protected Card currentSide;
-    protected boolean back;
+    protected boolean back; //forse useless
+    protected Card front;
     protected CardBack retro;
     public Corner[] getCorners() {
         return currentSide.corners;

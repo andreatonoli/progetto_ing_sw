@@ -15,7 +15,6 @@ public class Player {
     private PlayerState playerState;
     private ArrayList<String> chat;
     private Game game;
-
     private PlayerBoard playerBoard;
 
     /**

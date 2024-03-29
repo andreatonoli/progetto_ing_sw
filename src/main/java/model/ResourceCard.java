@@ -7,7 +7,6 @@ import java.util.List;
 
 public class ResourceCard extends Card {
     private int point;
-
     /**
      * Resource Card constructor.
      * @param corners Array of corners, corners[0] = top-left, corner[1] = top-right, corner[2] = bottom-right, corner[3] = bottom-left
@@ -16,6 +15,7 @@ public class ResourceCard extends Card {
      */
     public ResourceCard(Corner[] corners, int card_number, int point){
         this.currentSide = this;
+        this.front = this;
         this.corners = new Corner[4];
         System.arraycopy(corners, 0, this.corners, 0, 4);
         this.type = "resource";

@@ -18,6 +18,7 @@ public class GoldCard extends Card {
      */
     public GoldCard(Corner[] corners, int basePoint, String condition, int card_number, int[] cost){
         this.currentSide = this;
+        this.front = this;
         this.corners = new Corner[4];
         this.cost = new int[4];
         System.arraycopy(corners, 0, this.corners, 0, 4);
