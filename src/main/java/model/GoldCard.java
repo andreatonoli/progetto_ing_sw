@@ -24,6 +24,10 @@ public class GoldCard extends Card {
         System.arraycopy(corners, 0, this.corners, 0, 4);
         this.type = "gold";
         this.basePoint = basePoint;
+        //TODO: trovare soluzione migliore
+        if (condition == null){
+            condition = "no";
+        }
         this.condition = condition;
         this.card_number = card_number;
         System.arraycopy(cost, 0, this.cost, 0, 4);
