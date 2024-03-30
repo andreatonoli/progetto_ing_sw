@@ -9,7 +9,7 @@ public abstract class Card {
     protected Color color;
     protected int card_number;
     protected Card currentSide;
-    protected boolean back; //forse useless
+    protected boolean back;
     protected Card front;
     protected CardBack retro;
     public abstract List<Symbols> getSymbols();
@@ -17,6 +17,14 @@ public abstract class Card {
     public abstract void calcPoint(Player player);
     public Color getColor() {
         return color;
+    }
+    public void setCurrentSide(){
+        if (currentSide.equals(retro)){
+            this.currentSide = front;
+        }
+        else{
+            this.currentSide = retro;
+        }
     }
     public Corner getCorner(CornerEnum corner){
         return currentSide.corners[corner.ordinal()];

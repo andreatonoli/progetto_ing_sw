@@ -103,6 +103,6 @@ public class Controller {
         return legit;
     }
     public void flipCard(Card card){
-
+        card.setCurrentSide();
     }
 }
