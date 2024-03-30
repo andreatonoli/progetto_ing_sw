@@ -6,7 +6,8 @@
       "NOCORNER",
       "FUNGI"
     ],
-    "point": 0
+    "point": 0,
+    "id" : 1
   },
   "ResourceCard2": {
     "corners": [
@@ -15,7 +16,8 @@
       "EMPTY",
       "NOCORNER"
     ],
-    "point": 0
+    "point": 0,
+    "id" : 2
   },
   "ResourceCard3": {
     "corners": [
@@ -24,7 +26,8 @@
       "FUNGI",
       "FUNGI"
     ],
-    "point": 0
+    "point": 0,
+    "id" : 3
   },
   "ResourceCard4": {
     "corners": [
@@ -33,7 +36,8 @@
       "FUNGI",
       "EMPTY"
     ],
-    "point": 0
+    "point": 0,
+    "id" : 4
   },
   "ResourceCard5": {
     "corners": [
@@ -42,7 +46,8 @@
       "FUNGI",
       "PLANT"
     ],
-    "point": 0
+    "point": 0,
+    "id" : 5
   },
   "ResourceCard6": {
     "corners": [
@@ -51,7 +56,8 @@
       "ANIMAL",
       "NOCORNER"
     ],
-    "point": 0
+    "point": 0,
+    "id" : 6
   },
   "ResourceCard7": {
     "corners": [
@@ -60,7 +66,8 @@
       "EMPTY",
       "MANUSCRIPT"
     ],
-    "point": 0
+    "point": 0,
+    "id" : 7
   },
   "ResourceCard8": {
     "corners": [
@@ -69,7 +76,8 @@
       "NOCORNER",
       "EMPTY"
     ],
-    "point": 1
+    "point": 1,
+    "id" : 8
   },
   "ResourceCard9": {
     "corners": [
@@ -78,7 +86,8 @@
       "EMPTY",
       "EMPTY"
     ],
-    "point": 1
+    "point": 1,
+    "id" : 9
   },
   "ResourceCard10": {
     "corners": [
@@ -87,7 +96,8 @@
       "EMPTY",
       "FUNGI"
     ],
-    "point": 1
+    "point": 1,
+    "id" : 10
   },
   "ResourceCard11": {
     "corners": [
@@ -96,7 +106,8 @@
       "NOCORNER",
       "PLANT"
     ],
-    "point": 0
+    "point": 0,
+    "id" : 11
   },
   "ResourceCard12": {
     "corners": [
@@ -105,7 +116,8 @@
       "EMPTY",
       "NOCORNER"
     ],
-    "point": 0
+    "point": 0,
+    "id" : 12
   },
   "ResourceCard13": {
     "corners": [
@@ -114,7 +126,8 @@
       "PLANT",
       "PLANT"
     ],
-    "point": 0
+    "point": 0,
+    "id" : 13
   },
   "ResourceCard14": {
     "corners": [
@@ -123,7 +136,8 @@
       "PLANT",
       "EMPTY"
     ],
-    "point": 0
+    "point": 0,
+    "id" : 14
   },
   "ResourceCard15": {
     "corners": [
@@ -132,7 +146,8 @@
       "PLANT",
       "QUILL"
     ],
-    "point": 0
+    "point": 0,
+    "id" : 15
   },
   "ResourceCard16": {
     "corners": [
@@ -141,7 +156,8 @@
       "INKWELL",
       "NOCORNER"
     ],
-    "point": 0
+    "point": 0,
+    "id" : 16
   },
   "ResourceCard17": {
     "corners": [
@@ -150,7 +166,8 @@
       "ANIMAL",
       "PLANT"
     ],
-    "point": 0
+    "point": 0,
+    "id" : 17
   },
   "ResourceCard18": {
     "corners": [
@@ -159,7 +176,8 @@
       "NOCORNER",
       "PLANT"
     ],
-    "point": 1
+    "point": 1,
+    "id" : 18
   },
   "ResourceCard19": {
     "corners": [
@@ -168,7 +186,8 @@
       "PLANT",
       "NOCORNER"
     ],
-    "point": 1
+    "point": 1,
+    "id" : 19
   },
   "ResourceCard20": {
     "corners": [
@@ -177,7 +196,8 @@
       "EMPTY",
       "EMPTY"
     ],
-    "point": 1
+    "point": 1,
+    "id" : 20
   },
   "ResourceCard21": {
     "corners": [
@@ -186,7 +206,8 @@
       "NOCORNER",
       "EMPTY"
     ],
-    "point": 0
+    "point": 0,
+    "id" : 21
   },
   "ResourceCard22": {
     "corners": [
@@ -195,7 +216,8 @@
       "ANIMAL",
       "ANIMAL"
     ],
-    "point": 0
+    "point": 0,
+    "id" : 22
   },
   "ResourceCard23": {
     "corners": [
@@ -204,7 +226,8 @@
       "EMPTY",
       "ANIMAL"
     ],
-    "point": 0
+    "point": 0,
+    "id" : 23
   },
   "ResourceCard24": {
     "corners": [
@@ -213,7 +236,8 @@
       "ANIMAL",
       "NOCORNER"
     ],
-    "point": 0
+    "point": 0,
+    "id" : 24
   },
   "ResourceCard25": {
     "corners": [
@@ -222,7 +246,8 @@
       "ANIMAL",
       "INKWELL"
     ],
-    "point": 0
+    "point": 0,
+    "id" : 25
   },
   "ResourceCard26": {
     "corners": [
@@ -231,7 +256,8 @@
       "MANUSCRIPT",
       "NOCORNER"
     ],
-    "point": 0
+    "point": 0,
+    "id" : 26
   },
   "ResourceCard27": {
     "corners": [
@@ -240,7 +266,8 @@
       "FUNGI",
       "ANIMAL"
     ],
-    "point": 0
+    "point": 0,
+    "id" : 27
   },
   "ResourceCard28": {
     "corners": [
@@ -249,7 +276,8 @@
       "EMPTY",
       "ANIMAL"
     ],
-    "point": 1
+    "point": 1,
+    "id" : 28
   },
   "ResourceCard29": {
     "corners": [
@@ -258,7 +286,8 @@
       "ANIMAL",
       "EMPTY"
     ],
-    "point": 1
+    "point": 1,
+    "id" : 29
   },
   "ResourceCard30": {
     "corners": [
@@ -267,7 +296,8 @@
       "NOCORNER",
       "EMPTY"
     ],
-    "point": 1
+    "point": 1,
+    "id" : 30
   },
   "ResourceCard31": {
     "corners": [
@@ -276,7 +306,8 @@
       "NOCORNER",
       "EMPTY"
     ],
-    "point": 0
+    "point": 0,
+    "id" : 31
   },
   "ResourceCard32": {
     "corners": [
@@ -285,7 +316,8 @@
       "INSECT",
       "INSECT"
     ],
-    "point": 0
+    "point": 0,
+    "id" : 32
   },
   "ResourceCard33": {
     "corners": [
@@ -294,7 +326,8 @@
       "EMPTY",
       "INSECT"
     ],
-    "point": 0
+    "point": 0,
+    "id" : 33
   },
   "ResourceCard34": {
     "corners": [
@@ -303,7 +336,8 @@
       "INSECT",
       "NOCORNER"
     ],
-    "point": 0
+    "point": 0,
+    "id" : 34
   },
   "ResourceCard35": {
     "corners": [
@@ -312,7 +346,8 @@
       "INSECT",
       "ANIMAL"
     ],
-    "point": 0
+    "point": 0,
+    "id" : 35
   },
   "ResourceCard36": {
     "corners": [
@@ -321,7 +356,8 @@
       "FUNGI",
       "NOCORNER"
     ],
-    "point": 0
+    "point": 0,
+    "id" : 36
   },
   "ResourceCard37": {
     "corners": [
@@ -330,7 +366,8 @@
       "NOCORNER",
       "INKWELL"
     ],
-    "point": 0
+    "point": 0,
+    "id" : 37
   },
   "ResourceCard38": {
     "corners": [
@@ -339,7 +376,8 @@
       "EMPTY",
       "EMPTY"
     ],
-    "point": 1
+    "point": 1,
+    "id" : 38
   },
   "ResourceCard39": {
     "corners": [
@@ -348,7 +386,8 @@
       "INSECT",
       "NOCORNER"
     ],
-    "point": 1
+    "point": 1,
+    "id" : 39
   },
   "ResourceCard40": {
     "corners": [
@@ -357,6 +396,7 @@
       "EMPTY",
       "EMPTY"
     ],
-    "point": 1
+    "point": 1,
+    "id" : 40
   }
 }

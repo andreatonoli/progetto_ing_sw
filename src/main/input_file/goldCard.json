@@ -8,7 +8,8 @@
     ],
     "basePoint": 1,
     "condition": "quill",
-    "cost": [2,0,1,0]
+    "cost": [2,0,1,0],
+    "id" : 1
   },
   "GoldCard2": {
     "corners": [
@@ -19,7 +20,8 @@
     ],
     "basePoint": 1,
     "condition": "inkwell",
-    "cost": [2,1,0,0]
+    "cost": [2,1,0,0],
+    "id" : 2
   },
   "GoldCard3": {
     "corners": [
@@ -30,7 +32,8 @@
     ],
     "basePoint": 1,
     "condition": "manuscript",
-    "cost": [2,0,0,1]
+    "cost": [2,0,0,1],
+    "id" : 3
   },
   "GoldCard4": {
     "corners": [
@@ -41,7 +44,8 @@
     ],
     "basePoint": 2,
     "condition": "corner",
-    "cost": [3,0,1,0]
+    "cost": [3,0,1,0],
+    "id" : 4
   },
   "GoldCard5": {
     "corners": [
@@ -52,7 +56,8 @@
     ],
     "basePoint": 2,
     "condition": "corner",
-    "cost": [3,1,0,0]
+    "cost": [3,1,0,0],
+    "id" : 5
   },
   "GoldCard6": {
     "corners": [
@@ -63,7 +68,8 @@
     ],
     "basePoint": 2,
     "condition": "corner",
-    "cost": [3,0,0,1]
+    "cost": [3,0,0,1],
+    "id" : 6
   },
   "GoldCard7": {
     "corners": [
@@ -74,7 +80,8 @@
     ],
     "basePoint": 3,
     "condition": "null",
-    "cost": [3,0,0,0]
+    "cost": [3,0,0,0],
+    "id" : 7
   },
   "GoldCard8": {
     "corners": [
@@ -85,7 +92,8 @@
     ],
     "basePoint": 3,
     "condition": "null",
-    "cost": [3,0,0,0]
+    "cost": [3,0,0,0],
+    "id" : 8
   },
   "GoldCard9": {
     "corners": [
@@ -96,7 +104,8 @@
     ],
     "basePoint": 3,
     "condition": "null",
-    "cost": [3,0,0,0]
+    "cost": [3,0,0,0],
+    "id" : 9
   },
   "GoldCard10": {
     "corners": [
@@ -107,7 +116,8 @@
     ],
     "basePoint": 5,
     "condition": "null",
-    "cost": [5,0,0,0]
+    "cost": [5,0,0,0],
+    "id" : 10
   },
   "GoldCard11": {
     "corners": [
@@ -118,7 +128,8 @@
     ],
     "basePoint": 1,
     "condition": "quill",
-    "cost": [0,2,0,1]
+    "cost": [0,2,0,1],
+    "id" : 11
   },
   "GoldCard12": {
     "corners": [
@@ -129,7 +140,8 @@
     ],
     "basePoint": 1,
     "condition": "manuscript",
-    "cost": [1,2,0,0]
+    "cost": [1,2,0,0],
+    "id" : 12
   },
   "GoldCard13": {
     "corners": [
@@ -140,7 +152,8 @@
     ],
     "basePoint": 1,
     "condition": "inkwell",
-    "cost": [0,2,1,0]
+    "cost": [0,2,1,0],
+    "id" : 13
   },
   "GoldCard14": {
     "corners": [
@@ -151,7 +164,8 @@
     ],
     "basePoint": 2,
     "condition": "corner",
-    "cost": [0,3,0,1]
+    "cost": [0,3,0,1],
+    "id" : 14
   },
   "GoldCard15": {
     "corners": [
@@ -162,7 +176,8 @@
     ],
     "basePoint": 2,
     "condition": "corner",
-    "cost": [0,3,1,0]
+    "cost": [0,3,1,0],
+    "id" : 15
   },
   "GoldCard16": {
     "corners": [
@@ -173,7 +188,8 @@
     ],
     "basePoint": 2,
     "condition": "corner",
-    "cost": [1,3,0,0]
+    "cost": [1,3,0,0],
+    "id" : 16
   },
   "GoldCard17": {
     "corners": [
@@ -184,7 +200,8 @@
     ],
     "basePoint": 3,
     "condition": "null",
-    "cost": [0,3,0,0]
+    "cost": [0,3,0,0],
+    "id" : 17
   },
   "GoldCard18": {
     "corners": [
@@ -195,7 +212,8 @@
     ],
     "basePoint": 3,
     "condition": "null",
-    "cost": [0,3,0,0]
+    "cost": [0,3,0,0],
+    "id" : 18
   },
   "GoldCard19": {
     "corners": [
@@ -206,7 +224,8 @@
     ],
     "basePoint": 3,
     "condition": "null",
-    "cost": [0,3,0,0]
+    "cost": [0,3,0,0],
+    "id" : 19
   },
   "GoldCard20": {
     "corners": [
@@ -217,7 +236,8 @@
     ],
     "basePoint": 5,
     "condition": "null",
-    "cost": [0,5,0,0]
+    "cost": [0,5,0,0],
+    "id" : 20
   },
   "GoldCard21": {
     "corners": [
@@ -228,7 +248,8 @@
     ],
     "basePoint": 1,
     "condition": "inkwell",
-    "cost": [0,0,2,1]
+    "cost": [0,0,2,1],
+    "id" : 21
   },
   "GoldCard22": {
     "corners": [
@@ -239,7 +260,8 @@
     ],
     "basePoint": 1,
     "condition": "manuscript",
-    "cost": [0,1,2,0]
+    "cost": [0,1,2,0],
+    "id" : 22
   },
   "GoldCard23": {
     "corners": [
@@ -250,7 +272,8 @@
     ],
     "basePoint": 1,
     "condition": "quill",
-    "cost": [1,0,2,0]
+    "cost": [1,0,2,0],
+    "id" : 23
   },
   "GoldCard24": {
     "corners": [
@@ -261,7 +284,8 @@
     ],
     "basePoint": 2,
     "condition": "corner",
-    "cost": [0,0,3,1]
+    "cost": [0,0,3,1],
+    "id" : 24
   },
   "GoldCard25": {
     "corners": [
@@ -272,7 +296,8 @@
     ],
     "basePoint": 2,
     "condition": "corner",
-    "cost": [1,0,3,0]
+    "cost": [1,0,3,0],
+    "id" : 25
   },
   "GoldCard26": {
     "corners": [
@@ -283,7 +308,8 @@
     ],
     "basePoint": 2,
     "condition": "corner",
-    "cost": [0,1,3,0]
+    "cost": [0,1,3,0],
+    "id" : 26
   },
   "GoldCard27": {
     "corners": [
@@ -294,7 +320,8 @@
     ],
     "basePoint": 3,
     "condition": "null",
-    "cost": [0,0,3,0]
+    "cost": [0,0,3,0],
+    "id" : 27
   },
   "GoldCard28": {
     "corners": [
@@ -305,7 +332,8 @@
     ],
     "basePoint": 3,
     "condition": "null",
-    "cost": [0,0,3,0]
+    "cost": [0,0,3,0],
+    "id" : 28
   },
   "GoldCard29": {
     "corners": [
@@ -316,7 +344,8 @@
     ],
     "basePoint": 3,
     "condition": "null",
-    "cost": [0,0,3,0]
+    "cost": [0,0,3,0],
+    "id" : 29
   },
   "GoldCard30": {
     "corners": [
@@ -327,7 +356,8 @@
     ],
     "basePoint": 3,
     "condition": "null",
-    "cost": [0,0,5,0]
+    "cost": [0,0,5,0],
+    "id" : 30
   },
   "GoldCard31": {
     "corners": [
@@ -338,7 +368,8 @@
     ],
     "basePoint": 1,
     "condition": "quill",
-    "cost": [0,1,0,2]
+    "cost": [0,1,0,2],
+    "id" : 31
   },
   "GoldCard32": {
     "corners": [
@@ -349,7 +380,8 @@
     ],
     "basePoint": 1,
     "condition": "manuscript",
-    "cost": [0,0,1,2]
+    "cost": [0,0,1,2],
+    "id" : 32
   },
   "GoldCard33": {
     "corners": [
@@ -360,7 +392,8 @@
     ],
     "basePoint": 1,
     "condition": "inkwell",
-    "cost": [1,0,0,2]
+    "cost": [1,0,0,2],
+    "id" : 33
   },
   "GoldCard34": {
     "corners": [
@@ -371,7 +404,8 @@
     ],
     "basePoint": 2,
     "condition": "corner",
-    "cost": [0,0,1,3]
+    "cost": [0,0,1,3],
+    "id" : 34
   },
   "GoldCard35": {
     "corners": [
@@ -382,7 +416,8 @@
     ],
     "basePoint": 2,
     "condition": "corner",
-    "cost": [0,1,0,3]
+    "cost": [0,1,0,3],
+    "id" : 35
   },
   "GoldCard36": {
     "corners": [
@@ -393,7 +428,8 @@
     ],
     "basePoint": 2,
     "condition": "corner",
-    "cost": [1,0,0,3]
+    "cost": [1,0,0,3],
+    "id" : 36
   },
   "GoldCard37": {
     "corners": [
@@ -404,7 +440,8 @@
     ],
     "basePoint": 3,
     "condition": "null",
-    "cost": [0,0,0,3]
+    "cost": [0,0,0,3],
+    "id" : 37
   },
   "GoldCard38": {
     "corners": [
@@ -415,7 +452,8 @@
     ],
     "basePoint": 3,
     "condition": "null",
-    "cost": [0,0,0,3]
+    "cost": [0,0,0,3],
+    "id" : 38
   },
   "GoldCard39": {
     "corners": [
@@ -426,7 +464,8 @@
     ],
     "basePoint": 3,
     "condition": "null",
-    "cost": [0,0,0,3]
+    "cost": [0,0,0,3],
+    "id" : 39
   },
   "GoldCard40": {
     "corners": [
@@ -437,6 +476,7 @@
     ],
     "basePoint": 5,
     "condition": "null",
-    "cost": [0,0,0,5]
+    "cost": [0,0,0,5],
+    "id" : 40
   }
 }

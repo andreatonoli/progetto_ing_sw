@@ -18,6 +18,7 @@ public class StarterCard extends Card{
         this.type = "starter";
         this.retro = retro;
         this.back = false;
+        this.color = Color.WHITE;
     }
 
     @Override

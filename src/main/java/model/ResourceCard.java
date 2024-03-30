@@ -23,18 +23,22 @@ public class ResourceCard extends Card {
         this.point = point;
         if (card_number <= 10) /**FUNGI retro*/
         {
+            this.color = Color.RED;
             this.retro = new CardBack(new ArrayList<>(List.of(Symbols.FUNGI)), Color.RED);
         }
         else if (card_number <= 20) /**Plant retro*/
         {
+            this.color = Color.GREEN;
             this.retro = new CardBack(new ArrayList<>(List.of(Symbols.PLANT)), Color.GREEN);
         }
         else if(card_number <= 30) /**Animal retro*/
         {
+            this.color = Color.BLUE;
             this.retro = new CardBack(new ArrayList<>(List.of(Symbols.ANIMAL)), Color.BLUE);
         }
         else /**Insect retro*/
         {
+            this.color = Color.PURPLE;
             this.retro = new CardBack(new ArrayList<>(List.of(Symbols.INSECT)), Color.PURPLE);
         }
         this.back = false;

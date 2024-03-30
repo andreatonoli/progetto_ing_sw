@@ -6,6 +6,7 @@
       "ANIMAL",
       "INSECT"
     ],
+    "id" : 1,
     "retro": {
       "symbols": ["INSECT"],
       "corners": [
@@ -23,6 +24,7 @@
       "INSECT",
       "FUNGI"
     ],
+    "id" : 2,
     "retro": {
       "symbols": ["FUNGI"],
       "corners": [
@@ -40,6 +42,7 @@
       "PLANT",
       "FUNGI"
     ],
+    "id" : 3,
     "retro": {
       "symbols": [
         "PLANT",
@@ -60,6 +63,7 @@
       "FUNGI",
       "ANIMAL"
     ],
+    "id" : 4,
     "retro": {
       "symbols": [
         "ANIMAL",
@@ -80,6 +84,7 @@
       "ANIMAL",
       "PLANT"
     ],
+    "id" : 5,
     "retro": {
       "symbols": [
         "ANIMAL",
@@ -101,6 +106,7 @@
       "INSECT",
       "PLANT"
     ],
+    "id" : 6,
     "retro": {
       "symbols": [
         "PLANT",

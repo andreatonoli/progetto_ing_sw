@@ -24,26 +24,26 @@ public class GoldCard extends Card {
         System.arraycopy(corners, 0, this.corners, 0, 4);
         this.type = "gold";
         this.basePoint = basePoint;
-        //TODO: trovare soluzione migliore
-        if (condition == null){
-            condition = "no";
-        }
         this.condition = condition;
         this.card_number = card_number;
         System.arraycopy(cost, 0, this.cost, 0, 4);
         if (card_number <= 10){ /**Gold fungi retro*/
+            this.color = Color.RED;
             this.retro = new CardBack(new ArrayList<>(List.of(Symbols.FUNGI)), Color.RED);
         }
         else if (card_number <= 20) /**gold plant retro*/
         {
+            this.color = Color.GREEN;
             this.retro = new CardBack(new ArrayList<>(List.of(Symbols.PLANT)), Color.GREEN);
         }
         else if(card_number <= 30) /**gold animal retro*/
         {
+            this.color = Color.BLUE;
             this.retro = new CardBack(new ArrayList<>(List.of(Symbols.ANIMAL)), Color.BLUE);
         }
         else /**gold insect retro*/
         {
+            this.color = Color.PURPLE;
             this.retro = new CardBack(new ArrayList<>(List.of(Symbols.INSECT)), Color.PURPLE);
         }
         this.back = false;

@@ -147,7 +147,7 @@ public class Player {
         }
     }
     public void removeFromHand(Card cardToRemove){
-        for (int i = 0; i < this.cardInHand.length; i++) {
+        for (int i = 0; i < this.cardInHand.length && this.cardInHand[i] != null; i++) {
             if (this.cardInHand[i].equals(cardToRemove)){
                 this.cardInHand[i] = null;
                 break;

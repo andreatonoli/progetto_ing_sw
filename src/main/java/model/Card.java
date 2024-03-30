@@ -38,4 +38,8 @@ public abstract class Card {
     public void setCornerState(CornerEnum corner, CornerState state){
         currentSide.corners[corner.ordinal()].setState(state);
     }
+    //TODO: Cancella questa funzione qua sotto
+    public int getCard_number(){
+        return card_number;
+    }
 }
