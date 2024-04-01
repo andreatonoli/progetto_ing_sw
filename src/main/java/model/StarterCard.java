@@ -23,6 +23,9 @@ public class StarterCard extends Card{
 
     @Override
     public List<Symbols> getSymbols() {
+        if (this.back){
+            return this.currentSide.getSymbols();
+        }
         return null;
     }
     @Override

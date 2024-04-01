@@ -21,6 +21,7 @@ public class ResourceCard extends Card {
         this.type = "resource";
         this.card_number = card_number;
         this.point = point;
+        this.back = false;
         if (card_number <= 10) /**FUNGI retro*/
         {
             this.color = Color.RED;
@@ -46,6 +47,9 @@ public class ResourceCard extends Card {
     }
     @Override
     public List<Symbols> getSymbols(){
+        if(this.back) {
+            return this.currentSide.getSymbols();
+        }
         return null;
     }
     @Override
@@ -55,6 +59,10 @@ public class ResourceCard extends Card {
 
     @Override
     public void calcPoint(Player player) {
+        if (this.back){
+            this.currentSide.calcPoint(player);
+            return;
+        }
         player.addPoints(this.point);
     }
 }

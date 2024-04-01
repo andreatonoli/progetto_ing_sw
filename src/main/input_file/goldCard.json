@@ -7,7 +7,8 @@
       "EMPTY"
     ],
     "basePoint": 1,
-    "condition": "quill",
+    "condition": "ITEM",
+    "symbol": "QUILL",
     "cost": [2,0,1,0],
     "id" : 1
   },
@@ -19,7 +20,8 @@
       "NOCORNER"
     ],
     "basePoint": 1,
-    "condition": "inkwell",
+    "condition": "ITEM",
+    "symbol": "INKWELL",
     "cost": [2,1,0,0],
     "id" : 2
   },
@@ -31,7 +33,8 @@
       "EMPTY"
     ],
     "basePoint": 1,
-    "condition": "manuscript",
+    "condition": "ITEM",
+    "symbol": "MANUSCRIPT",
     "cost": [2,0,0,1],
     "id" : 3
   },
@@ -43,7 +46,7 @@
       "NOCORNER"
     ],
     "basePoint": 2,
-    "condition": "corner",
+    "condition": "CORNER",
     "cost": [3,0,1,0],
     "id" : 4
   },
@@ -55,7 +58,7 @@
       "EMPTY"
     ],
     "basePoint": 2,
-    "condition": "corner",
+    "condition": "CORNER",
     "cost": [3,1,0,0],
     "id" : 5
   },
@@ -67,7 +70,7 @@
       "EMPTY"
     ],
     "basePoint": 2,
-    "condition": "corner",
+    "condition": "CORNER",
     "cost": [3,0,0,1],
     "id" : 6
   },
@@ -79,7 +82,7 @@
       "INKWELL"
     ],
     "basePoint": 3,
-    "condition": "null",
+    "condition": "NOTHING",
     "cost": [3,0,0,0],
     "id" : 7
   },
@@ -91,7 +94,7 @@
       "NOCORNER"
     ],
     "basePoint": 3,
-    "condition": "null",
+    "condition": "NOTHING",
     "cost": [3,0,0,0],
     "id" : 8
   },
@@ -103,7 +106,7 @@
       "NOCORNER"
     ],
     "basePoint": 3,
-    "condition": "null",
+    "condition": "NOTHING",
     "cost": [3,0,0,0],
     "id" : 9
   },
@@ -115,7 +118,7 @@
       "EMPTY"
     ],
     "basePoint": 5,
-    "condition": "null",
+    "condition": "NOTHING",
     "cost": [5,0,0,0],
     "id" : 10
   },
@@ -127,7 +130,8 @@
       "EMPTY"
     ],
     "basePoint": 1,
-    "condition": "quill",
+    "condition": "ITEM",
+    "symbol": "QUILL",
     "cost": [0,2,0,1],
     "id" : 11
   },
@@ -139,7 +143,8 @@
       "NOCORNER"
     ],
     "basePoint": 1,
-    "condition": "manuscript",
+    "condition": "ITEM",
+    "symbol": "MANUSCRIPT",
     "cost": [1,2,0,0],
     "id" : 12
   },
@@ -151,7 +156,8 @@
       "INKWELL"
     ],
     "basePoint": 1,
-    "condition": "inkwell",
+    "condition": "ITEM",
+    "symbol": "INKWELL",
     "cost": [0,2,1,0],
     "id" : 13
   },
@@ -163,7 +169,7 @@
       "EMPTY"
     ],
     "basePoint": 2,
-    "condition": "corner",
+    "condition": "CORNER",
     "cost": [0,3,0,1],
     "id" : 14
   },
@@ -175,7 +181,7 @@
       "EMPTY"
     ],
     "basePoint": 2,
-    "condition": "corner",
+    "condition": "CORNER",
     "cost": [0,3,1,0],
     "id" : 15
   },
@@ -187,7 +193,7 @@
       "EMPTY"
     ],
     "basePoint": 2,
-    "condition": "corner",
+    "condition": "CORNER",
     "cost": [1,3,0,0],
     "id" : 16
   },
@@ -199,7 +205,7 @@
       "QUILL"
     ],
     "basePoint": 3,
-    "condition": "null",
+    "condition": "NOTHING",
     "cost": [0,3,0,0],
     "id" : 17
   },
@@ -211,7 +217,7 @@
       "NOCORNER"
     ],
     "basePoint": 3,
-    "condition": "null",
+    "condition": "NOTHING",
     "cost": [0,3,0,0],
     "id" : 18
   },
@@ -223,7 +229,7 @@
       "NOCORNER"
     ],
     "basePoint": 3,
-    "condition": "null",
+    "condition": "NOTHING",
     "cost": [0,3,0,0],
     "id" : 19
   },
@@ -235,7 +241,7 @@
       "NOCORNER"
     ],
     "basePoint": 5,
-    "condition": "null",
+    "condition": "NOTHING",
     "cost": [0,5,0,0],
     "id" : 20
   },
@@ -247,7 +253,8 @@
       "EMPTY"
     ],
     "basePoint": 1,
-    "condition": "inkwell",
+    "condition": "ITEM",
+    "symbol": "INKWELL",
     "cost": [0,0,2,1],
     "id" : 21
   },
@@ -259,7 +266,8 @@
       "EMPTY"
     ],
     "basePoint": 1,
-    "condition": "manuscript",
+    "condition": "ITEM",
+    "symbol": "MANUSCRIPT",
     "cost": [0,1,2,0],
     "id" : 22
   },
@@ -271,7 +279,8 @@
       "QUILL"
     ],
     "basePoint": 1,
-    "condition": "quill",
+    "condition": "ITEM",
+    "symbol": "QUILL",
     "cost": [1,0,2,0],
     "id" : 23
   },
@@ -283,7 +292,7 @@
       "NOCORNER"
     ],
     "basePoint": 2,
-    "condition": "corner",
+    "condition": "CORNER",
     "cost": [0,0,3,1],
     "id" : 24
   },
@@ -295,7 +304,7 @@
       "EMPTY"
     ],
     "basePoint": 2,
-    "condition": "corner",
+    "condition": "CORNER",
     "cost": [1,0,3,0],
     "id" : 25
   },
@@ -307,7 +316,7 @@
       "EMPTY"
     ],
     "basePoint": 2,
-    "condition": "corner",
+    "condition": "CORNER",
     "cost": [0,1,3,0],
     "id" : 26
   },
@@ -319,7 +328,7 @@
       "MANUSCRIPT"
     ],
     "basePoint": 3,
-    "condition": "null",
+    "condition": "NOTHING",
     "cost": [0,0,3,0],
     "id" : 27
   },
@@ -331,7 +340,7 @@
       "NOCORNER"
     ],
     "basePoint": 3,
-    "condition": "null",
+    "condition": "NOTHING",
     "cost": [0,0,3,0],
     "id" : 28
   },
@@ -343,7 +352,7 @@
       "NOCORNER"
     ],
     "basePoint": 3,
-    "condition": "null",
+    "condition": "NOTHING",
     "cost": [0,0,3,0],
     "id" : 29
   },
@@ -355,7 +364,7 @@
       "NOCORNER"
     ],
     "basePoint": 3,
-    "condition": "null",
+    "condition": "NOTHING",
     "cost": [0,0,5,0],
     "id" : 30
   },
@@ -367,7 +376,8 @@
       "NOCORNER"
     ],
     "basePoint": 1,
-    "condition": "quill",
+    "condition": "ITEM",
+    "symbol": "QUILL",
     "cost": [0,1,0,2],
     "id" : 31
   },
@@ -379,7 +389,8 @@
       "MANUSCRIPT"
     ],
     "basePoint": 1,
-    "condition": "manuscript",
+    "condition": "ITEM",
+    "symbol": "MANUSCRIPT",
     "cost": [0,0,1,2],
     "id" : 32
   },
@@ -391,7 +402,8 @@
       "EMPTY"
     ],
     "basePoint": 1,
-    "condition": "inkwell",
+    "condition": "ITEM",
+    "symbol": "INKWELL",
     "cost": [1,0,0,2],
     "id" : 33
   },
@@ -403,7 +415,7 @@
       "NOCORNER"
     ],
     "basePoint": 2,
-    "condition": "corner",
+    "condition": "CORNER",
     "cost": [0,0,1,3],
     "id" : 34
   },
@@ -415,7 +427,7 @@
       "EMPTY"
     ],
     "basePoint": 2,
-    "condition": "corner",
+    "condition": "CORNER",
     "cost": [0,1,0,3],
     "id" : 35
   },
@@ -427,7 +439,7 @@
       "EMPTY"
     ],
     "basePoint": 2,
-    "condition": "corner",
+    "condition": "CORNER",
     "cost": [1,0,0,3],
     "id" : 36
   },
@@ -439,7 +451,7 @@
       "EMPTY"
     ],
     "basePoint": 3,
-    "condition": "null",
+    "condition": "NOTHING",
     "cost": [0,0,0,3],
     "id" : 37
   },
@@ -451,7 +463,7 @@
       "NOCORNER"
     ],
     "basePoint": 3,
-    "condition": "null",
+    "condition": "NOTHING",
     "cost": [0,0,0,3],
     "id" : 38
   },
@@ -463,7 +475,7 @@
       "QUILL"
     ],
     "basePoint": 3,
-    "condition": "null",
+    "condition": "NOTHING",
     "cost": [0,0,0,3],
     "id" : 39
   },
@@ -475,7 +487,7 @@
       "NOCORNER"
     ],
     "basePoint": 5,
-    "condition": "null",
+    "condition": "NOTHING",
     "cost": [0,0,0,5],
     "id" : 40
   }

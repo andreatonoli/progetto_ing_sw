@@ -30,6 +30,7 @@ public class GameBoard {
             int[] cost;
             int basePoint;
             int cardNumber;
+            Symbols conditionItem;
             String content;
             String colorOrSymbol;
             JSONObject jo;
@@ -80,7 +81,14 @@ public class GameBoard {
                     cost[i] = objCost.getInt(i);
                 }
                 cardNumber = jo.getJSONObject(goldCard).getInt("id");
-                GoldCard gCard = new GoldCard(arrayCorner, basePoint, colorOrSymbol, cardNumber, cost);
+                GoldCard gCard;
+                if (colorOrSymbol.equals("ITEM")){
+                    conditionItem = Symbols.valueOf(jo.getJSONObject(goldCard).getString("symbol"));
+                    gCard = new GoldCard(arrayCorner, basePoint, Condition.valueOf(colorOrSymbol), cardNumber, cost, conditionItem);
+                }
+                else{
+                    gCard = new GoldCard(arrayCorner, basePoint, Condition.valueOf(colorOrSymbol), cardNumber, cost, null);
+                }
                 goldDeck.add(gCard);
             }
             //creation of resourceDeck
