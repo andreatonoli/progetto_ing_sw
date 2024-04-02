@@ -18,6 +18,8 @@ public class Game {
      *
      * @throws IOException
      */
+
+    //eccezione si può togliere da game ma prima va tolta da gameboard
     public Game() throws IOException {
         this.gameState = GameState.WAIT_PLAYERS;
         this.players = new ArrayList<Player>();
@@ -30,39 +32,39 @@ public class Game {
 
     public void startGame() {
 
-        //mescolamento mazzi
+        /** decks are shuffled*/
         Collections.shuffle(gameBoard.getStarterDeck());
         Collections.shuffle(gameBoard.getAchievementDeck());
         Collections.shuffle(gameBoard.getResourceDeck());
         Collections.shuffle(gameBoard.getGoldDeck());
 
-        //posizionamento 2 carte nella board comune
+        /** two cards are settled in the common board*/
         gameBoard.setCommonResource(gameBoard.drawCard(gameBoard.getResourceDeck()), 0);
         gameBoard.setCommonResource(gameBoard.drawCard(gameBoard.getResourceDeck()), 1);
         gameBoard.setCommonGold(gameBoard.drawCard(gameBoard.getGoldDeck()), 0);
         gameBoard.setCommonGold(gameBoard.drawCard(gameBoard.getGoldDeck()), 1);
 
-        //a ogni giocatore viene data la carte iniziale
+        /** starter card is given to each player*/
         for (Player p : players){
             p.getPlayerBoard().setStarterCard(gameBoard.drawCard(gameBoard.getStarterDeck()));
-            //prima va fatto scegliere il lato al giocatore
-            //quando il controller vede che il player vuole piazzare la carta posiziona la starterCard
+            /** in first place the player chose the side he prefers, in order to settle down the card*/
+            /** when the controller sees that the player wants to settle down the card, it places starterCard*/
         }
 
         //colore segnalino scelto dal player al login
 
-        //ogni giocatore pesca due carte risorsa e una carta oro
+        /** every player draws two resource cards and a gold card*/
         for (Player p : players){
             p.addInHand(gameBoard.drawCard(gameBoard.getResourceDeck()));
             p.addInHand(gameBoard.drawCard(gameBoard.getResourceDeck()));
             p.addInHand(gameBoard.drawCard(gameBoard.getGoldDeck()));
         }
 
-        //posizonamento 2 carte obiettivo nella board comune
+        /** two achievement cards are settled in the common board */
         gameBoard.setCommonAchievement(gameBoard.drawCard(), 0);
         gameBoard.setCommonAchievement(gameBoard.drawCard(), 1);
 
-        //scelta carta obiettivo
+        /** at this moment each player chose the achievement card */
         for (Player p : players){
             p.getPersonalObj()[0] = gameBoard.drawCard();
             p.getPersonalObj()[1] = gameBoard.drawCard();
@@ -72,7 +74,7 @@ public class Game {
             p.setChosenObj(p.getPersonalObj()[0]);
         }
 
-        //scelta random primo giocatore
+        /** the first player is chosen in a random way*/
         Collections.shuffle(players);
         setFirstPlayer();
 
@@ -87,7 +89,7 @@ public class Game {
             }
         }
 
-        //calcolo vincitore
+        /** the winner is chosen by the number of points */
         int max = 0;
         ArrayList<Player> winners = new ArrayList<>();
         for (Player p: players){
