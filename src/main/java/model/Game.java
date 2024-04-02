@@ -53,7 +53,7 @@ public class Game {
 
         //colore segnalino scelto dal player al login
 
-        //ogni giocatore pesca due carte risorsa e due carte oro
+        //ogni giocatore pesca due carte risorsa e una carta oro
         for (Player p : players){
             p.addInHand(gameBoard.drawCard(gameBoard.getResourceDeck()));
             p.addInHand(gameBoard.drawCard(gameBoard.getResourceDeck()));
@@ -81,14 +81,40 @@ public class Game {
     }
 
     public void endGame() {
+        //per il momento aggiunta punti non dentro a calcPoints
+        for (Player p: players){
+            p.addPoints(p.getChosenObj().calcPoints(p));
+            for (Achievement a : gameBoard.getCommonAchievement()){
+                p.addPoints(a.calcPoints(p));
+            }
+        }
+
+        //calcolo vincitore
+        int max = 0;
+        ArrayList<Player> winners = new ArrayList<>();
+        for (Player p: players){
+            if (p.getPoints() == max){
+                winners.add(p);
+                max = p.getPoints();
+            }
+            if (p.getPoints() > max){
+                winners = new ArrayList<>();
+                winners.add(p);
+                max = p.getPoints();
+            }
+        }
 
     }
 
     public void setFirstPlayer()
     {
-        firstPlayer = players.get(0);
+        firstPlayer = players.getFirst();
         firstPlayer.isFirstToPlay(firstPlayer.getUsername());
         firstPlayer.setPlayerState(PlayerState.PLAY_CARD);
+    }
+
+    public Player getFirstPlayer(){
+        return this.firstPlayer;
     }
 
     public void setGameState(GameState nextGameState)
@@ -115,11 +141,6 @@ public class Game {
         return playerInTurn;
     }
 
-    public int getNumOfPlayers()
-    {
-        return players.size();
-    }
-
     public ArrayList<Player> getPlayers(){
         return this.players;
     }
@@ -131,6 +152,10 @@ public class Game {
 
     public GameBoard getGameBoard(){
         return this.gameBoard;
+    }
+
+    public void setGameBoard(GameBoard gameBoard){
+        this.gameBoard = gameBoard;
     }
 
     public Chat getChat(){
