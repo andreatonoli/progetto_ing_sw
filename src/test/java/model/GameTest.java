@@ -18,7 +18,6 @@ public class GameTest {
         this.game1 = new Game();
     }
 
-    //DA TESTARE ANCHE CON LISTA DEI GIOCATORI VUOTA?
 
     /**
      * This test check that a game with three players assigns correctly the common cards
@@ -107,6 +106,9 @@ public class GameTest {
         assertTrue(game1.getPlayers().contains(game1.getFirstPlayer()));
     }
 
+    /**
+     * This test check that a game with zero players don't assign the common cards
+     */
     @Test
     @DisplayName("Test game start without players")
     public void testGameStartWithoutPlayers() throws NotEnoughPlayersException {
@@ -124,6 +126,10 @@ public class GameTest {
 
     }
 
+    /**
+     * This test check that a game with one player don't assign the common cards
+     * and don't assign the cards to the player
+     */
     @Test
     @DisplayName("Test game start with one players")
     public void testGameStartWithOnePlayers() throws NotEnoughPlayersException {
