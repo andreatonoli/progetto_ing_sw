@@ -1,5 +1,7 @@
 package model;
 
+import model.exceptions.NotEnoughPlayersException;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,54 +34,61 @@ public class Game {
         this.gameBoard = new GameBoard(this);
     }
 
-    public void startGame() {
+    public void startGame() throws NotEnoughPlayersException {
 
-        /** decks are shuffled*/
-        Collections.shuffle(gameBoard.getStarterDeck());
-        Collections.shuffle(gameBoard.getAchievementDeck());
-        Collections.shuffle(gameBoard.getResourceDeck());
-        Collections.shuffle(gameBoard.getGoldDeck());
+        try {
+            if(players.isEmpty() || players.size() == 1) {
+                throw new NotEnoughPlayersException();
+            }
+            /** decks are shuffled*/
+            Collections.shuffle(gameBoard.getStarterDeck());
+            Collections.shuffle(gameBoard.getAchievementDeck());
+            Collections.shuffle(gameBoard.getResourceDeck());
+            Collections.shuffle(gameBoard.getGoldDeck());
 
-        /** two cards are settled in the common board*/
-        gameBoard.setCommonResource(gameBoard.drawCard(gameBoard.getResourceDeck()), 0);
-        gameBoard.setCommonResource(gameBoard.drawCard(gameBoard.getResourceDeck()), 1);
-        gameBoard.setCommonGold(gameBoard.drawCard(gameBoard.getGoldDeck()), 0);
-        gameBoard.setCommonGold(gameBoard.drawCard(gameBoard.getGoldDeck()), 1);
+            /** two cards are settled in the common board*/
+            gameBoard.setCommonResource(gameBoard.drawCard(gameBoard.getResourceDeck()), 0);
+            gameBoard.setCommonResource(gameBoard.drawCard(gameBoard.getResourceDeck()), 1);
+            gameBoard.setCommonGold(gameBoard.drawCard(gameBoard.getGoldDeck()), 0);
+            gameBoard.setCommonGold(gameBoard.drawCard(gameBoard.getGoldDeck()), 1);
 
-        /** starter card is given to each player*/
-        for (Player p : players){
-            p.getPlayerBoard().setStarterCard(gameBoard.drawCard(gameBoard.getStarterDeck()));
-            /** in first place the player chose the side he prefers, in order to settle down the card*/
-            /** when the controller sees that the player wants to settle down the card, it places starterCard*/
+            /** starter card is given to each player*/
+            for (Player p : players) {
+                p.getPlayerBoard().setStarterCard(gameBoard.drawCard(gameBoard.getStarterDeck()));
+                /** in first place the player chose the side he prefers, in order to settle down the card*/
+                /** when the controller sees that the player wants to settle down the card, it places starterCard*/
+            }
+
+            //colore segnalino scelto dal player al login
+
+            /** every player draws two resource cards and a gold card*/
+            for (Player p : players) {
+                p.addInHand(gameBoard.drawCard(gameBoard.getResourceDeck()));
+                p.addInHand(gameBoard.drawCard(gameBoard.getResourceDeck()));
+                p.addInHand(gameBoard.drawCard(gameBoard.getGoldDeck()));
+            }
+
+            /** two achievement cards are settled in the common board */
+            gameBoard.setCommonAchievement(gameBoard.drawCard(), 0);
+            gameBoard.setCommonAchievement(gameBoard.drawCard(), 1);
+
+            /** at this moment each player chose the achievement card */
+            for (Player p : players) {
+                p.getPersonalObj()[0] = gameBoard.drawCard();
+                p.getPersonalObj()[1] = gameBoard.drawCard();
+                //scelta carta da parte del player
+                //per il momento il player sceglie la prima carta
+                //poi verrà gestita nel controller
+                p.setChosenObj(p.getPersonalObj()[0]);
+            }
+
+            /** the first player is chosen in a random way*/
+            Collections.shuffle(players);
+            setFirstPlayer();
         }
-
-        //colore segnalino scelto dal player al login
-
-        /** every player draws two resource cards and a gold card*/
-        for (Player p : players){
-            p.addInHand(gameBoard.drawCard(gameBoard.getResourceDeck()));
-            p.addInHand(gameBoard.drawCard(gameBoard.getResourceDeck()));
-            p.addInHand(gameBoard.drawCard(gameBoard.getGoldDeck()));
+        catch(NotEnoughPlayersException e){
+            System.out.println("At least two players to start the game");
         }
-
-        /** two achievement cards are settled in the common board */
-        gameBoard.setCommonAchievement(gameBoard.drawCard(), 0);
-        gameBoard.setCommonAchievement(gameBoard.drawCard(), 1);
-
-        /** at this moment each player chose the achievement card */
-        for (Player p : players){
-            p.getPersonalObj()[0] = gameBoard.drawCard();
-            p.getPersonalObj()[1] = gameBoard.drawCard();
-            //scelta carta da parte del player
-            //per il momento il player sceglie la prima carta
-            //poi verrà gestita nel controller
-            p.setChosenObj(p.getPersonalObj()[0]);
-        }
-
-        /** the first player is chosen in a random way*/
-        Collections.shuffle(players);
-        setFirstPlayer();
-
     }
 
     public void endGame() {
@@ -154,10 +163,6 @@ public class Game {
 
     public GameBoard getGameBoard(){
         return this.gameBoard;
-    }
-
-    public void setGameBoard(GameBoard gameBoard){
-        this.gameBoard = gameBoard;
     }
 
     public Chat getChat(){

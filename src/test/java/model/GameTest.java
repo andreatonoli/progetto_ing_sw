@@ -1,6 +1,8 @@
 package model;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import model.exceptions.NotEnoughPlayersException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 
@@ -10,15 +12,10 @@ import java.util.ArrayList;
 public class GameTest {
 
     private final Game game1;
-    private final GameBoard board1;
     private Player player1, player2, player3;
 
     public GameTest() throws IOException {
         this.game1 = new Game();
-        this.board1 = new GameBoard(game1);
-        //IMPORTANTE: AGGIUNGERE DENTRO A COSTRUTTORE DI GAMEBOARD
-        //LA CHIAMATA AL SETTER DELLA GAMEBOARD DEL GAME
-        game1.setGameBoard(board1);
     }
 
     //DA TESTARE ANCHE CON LISTA DEI GIOCATORI VUOTA?
@@ -29,39 +26,39 @@ public class GameTest {
      */
     @Test
     @DisplayName("Test game start")
-    public void testGameStart() {
-        player1 = new Player("mario", board1);
-        player2 = new Player("luigi", board1);
-        player3 = new Player("peach", board1);
+    public void testGameStart() throws NotEnoughPlayersException {
+        player1 = new Player("mario", game1.getGameBoard());
+        player2 = new Player("luigi", game1.getGameBoard());
+        player3 = new Player("peach", game1.getGameBoard());
         game1.addPlayer(player1);
         game1.addPlayer(player2);
         game1.addPlayer(player3);
         game1.startGame();
 
-        assertNotNull(board1.getCommonAchievement());
-        assertEquals(board1.getCommonAchievement().length, 2);
-        for (int i = 0; i < board1.getCommonAchievement().length; i++){
-            assertInstanceOf(Achievement.class, board1.getCommonAchievement()[i]);
-            assertFalse(board1.getAchievementDeck().contains(board1.getCommonAchievement()[i]));
+        assertNotNull(game1.getGameBoard().getCommonAchievement());
+        assertEquals(game1.getGameBoard().getCommonAchievement().length, 2);
+        for (int i = 0; i < game1.getGameBoard().getCommonAchievement().length; i++){
+            assertInstanceOf(Achievement.class, game1.getGameBoard().getCommonAchievement()[i]);
+            assertFalse(game1.getGameBoard().getAchievementDeck().contains(game1.getGameBoard().getCommonAchievement()[i]));
         }
-        assertNotNull(board1.getCommonResource());
-        assertEquals(board1.getCommonResource().length, 2);
-        for (int i = 0; i < board1.getCommonResource().length; i++){
-            assertInstanceOf(ResourceCard.class, board1.getCommonResource()[i]);
-            assertFalse(board1.getResourceDeck().contains(board1.getCommonResource()[i]));
+        assertNotNull(game1.getGameBoard().getCommonResource());
+        assertEquals(game1.getGameBoard().getCommonResource().length, 2);
+        for (int i = 0; i < game1.getGameBoard().getCommonResource().length; i++){
+            assertInstanceOf(ResourceCard.class, game1.getGameBoard().getCommonResource()[i]);
+            assertFalse(game1.getGameBoard().getResourceDeck().contains(game1.getGameBoard().getCommonResource()[i]));
         }
-        assertNotNull(board1.getCommonGold());
-        assertEquals(board1.getCommonGold().length, 2);
-        for (int i = 0; i < board1.getCommonGold().length; i++){
-            assertInstanceOf(GoldCard.class, board1.getCommonGold()[i]);
-            assertFalse(board1.getGoldDeck().contains(board1.getCommonGold()[i]));
+        assertNotNull(game1.getGameBoard().getCommonGold());
+        assertEquals(game1.getGameBoard().getCommonGold().length, 2);
+        for (int i = 0; i < game1.getGameBoard().getCommonGold().length; i++){
+            assertInstanceOf(GoldCard.class, game1.getGameBoard().getCommonGold()[i]);
+            assertFalse(game1.getGameBoard().getGoldDeck().contains(game1.getGameBoard().getCommonGold()[i]));
         }
 
         ArrayList<Player> playersWithoutP;
         for (Player p : game1.getPlayers()){
             assertNotNull(p.getPlayerBoard().getStarterCard());
             assertInstanceOf(StarterCard.class, p.getPlayerBoard().getStarterCard());
-            assertFalse(board1.getStarterDeck().contains(p.getPlayerBoard().getStarterCard()));
+            assertFalse(game1.getGameBoard().getStarterDeck().contains(p.getPlayerBoard().getStarterCard()));
             playersWithoutP = new ArrayList<>();
             playersWithoutP.addAll(game1.getPlayers());
             playersWithoutP.remove(p);
@@ -73,7 +70,7 @@ public class GameTest {
             assertEquals(p.getCardInHand().length, 3);
             for (int i = 0; i < p.getCardInHand().length - 1; i++){
                 assertInstanceOf(ResourceCard.class, p.getCardInHand()[i]);
-                assertFalse(board1.getResourceDeck().contains(p.getCardInHand()[i]));
+                assertFalse(game1.getGameBoard().getResourceDeck().contains(p.getCardInHand()[i]));
                 playersWithoutP = new ArrayList<>();
                 playersWithoutP.addAll(game1.getPlayers());
                 playersWithoutP.remove(p);
@@ -84,7 +81,7 @@ public class GameTest {
                 }
             }
             assertInstanceOf(GoldCard.class, p.getCardInHand()[2]);
-            assertFalse(board1.getGoldDeck().contains(p.getCardInHand()[2]));
+            assertFalse(game1.getGameBoard().getGoldDeck().contains(p.getCardInHand()[2]));
             playersWithoutP = new ArrayList<>();
             playersWithoutP.addAll(game1.getPlayers());
             playersWithoutP.remove(p);
@@ -98,15 +95,53 @@ public class GameTest {
             assertEquals(p.getPersonalObj().length, 2);
             for (int i = 0; i < p.getPersonalObj().length; i++){
                 assertInstanceOf(Achievement.class, p.getPersonalObj()[i]);
-                assertFalse(board1.getAchievementDeck().contains(p.getPersonalObj()[i]));
+                assertFalse(game1.getGameBoard().getAchievementDeck().contains(p.getPersonalObj()[i]));
             }
             assertNotNull(p.getChosenObj());
             assertInstanceOf(Achievement.class, p.getChosenObj());
-            assertFalse(board1.getAchievementDeck().contains(p.getChosenObj()));
+            assertFalse(game1.getGameBoard().getAchievementDeck().contains(p.getChosenObj()));
             assertTrue(p.getChosenObj().equals(p.getPersonalObj()[0]) || p.getChosenObj().equals(p.getPersonalObj()[1]));
         }
 
         assertNotNull(game1.getFirstPlayer());
         assertTrue(game1.getPlayers().contains(game1.getFirstPlayer()));
+    }
+
+    @Test
+    @DisplayName("Test game start without players")
+    public void testGameStartWithoutPlayers() throws NotEnoughPlayersException {
+        game1.startGame();
+
+        for (Achievement a : game1.getGameBoard().getCommonAchievement()){
+            assertNull(a);
+        }
+        for (Card r : game1.getGameBoard().getCommonResource()){
+            assertNull(r);
+        }
+        for (Card g : game1.getGameBoard().getCommonGold()){
+            assertNull(g);
+        }
+
+    }
+
+    @Test
+    @DisplayName("Test game start with one players")
+    public void testGameStartWithOnePlayers() throws NotEnoughPlayersException {
+        player1 = new Player("mario", game1.getGameBoard());
+        game1.addPlayer(player1);
+        game1.startGame();
+
+        for (Achievement a : game1.getGameBoard().getCommonAchievement()){
+            assertNull(a);
+        }
+        for (Card r : game1.getGameBoard().getCommonResource()){
+            assertNull(r);
+        }
+        for (Card g : game1.getGameBoard().getCommonGold()){
+            assertNull(g);
+        }
+        for (Card c : player1.getCardInHand()){
+            assertNull(c);
+        }
     }
 }
