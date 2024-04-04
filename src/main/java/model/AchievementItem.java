@@ -19,7 +19,7 @@ public class AchievementItem implements Achievement{
      * @return the amount of points done with this achievement card
      */
     @Override
-    public int calcPoints(Player player) {
+    public void calcPoints(Player player) {
         int point = 0;
         int min_val = 0;
         if (this.basePoint == 3){
@@ -36,6 +36,6 @@ public class AchievementItem implements Achievement{
         } else if (this.basePoint == 2) {
             point = this.basePoint * (Math.floorDiv(player.getPlayerBoard().getSymbolCount().get(symbol.getFirst()), 2));
         }
-        return point;
+        player.addPoints(point);
     }
 }

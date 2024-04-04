@@ -25,7 +25,7 @@ public class AchievementDiagonal implements Achievement{
      * @return amount of points made with this achievement
      */
     @Override
-    public int calcPoints(Player player) {
+    public void calcPoints(Player player) {
         int point = 0;
         Set<Integer> keySet = player.getPlayerBoard().getPositionCardKeys();
         int[] prev = new int[2];
@@ -51,15 +51,19 @@ public class AchievementDiagonal implements Achievement{
                 }
                 if (!marked.contains(coord) && !marked.contains(succ) && !marked.contains(prev))
                 {
-                    if (player.getPlayerBoard().getCard(prev).getColor().equals(this.color) && player.getPlayerBoard().getCard(succ).getColor().equals(this.color)){
-                        point += this.basePoint;
-                        marked.add(prev);
-                        marked.add(coord);
-                        marked.add(succ);
+                    Card prec = player.getPlayerBoard().getCard(prev);
+                    Card aft = player.getPlayerBoard().getCard(succ);
+                    if (prec != null && aft != null){
+                        if (prec.getColor().equals(this.color) && aft.getColor().equals(this.color)){
+                            point += this.basePoint;
+                            marked.add(prev);
+                            marked.add(coord);
+                            marked.add(succ);
+                        }
                     }
                 }
             }
         }
-        return point;
+        player.addPoints(point);
     }
 }

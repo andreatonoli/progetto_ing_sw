@@ -25,7 +25,7 @@ public class AchievementL implements Achievement{
      * @return amount of points made with this achievement
      */
     @Override
-    public int calcPoints(Player player) {
+    public void calcPoints(Player player) {
         int point = 0;
         Set<Integer> keySet = player.getPlayerBoard().getPositionCardKeys();
         int[] diff = new int[2];
@@ -73,6 +73,6 @@ public class AchievementL implements Achievement{
                 }
             }
         }
-        return point;
+        player.addPoints(point);
     }
 }
