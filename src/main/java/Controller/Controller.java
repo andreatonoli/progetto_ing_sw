@@ -102,7 +102,23 @@ public class Controller {
         }
         return legit;
     }
+
+    /**
+     * Changes the side shown to the player
+     * @param card to be flipped
+     */
     public void flipCard(Card card){
         card.setCurrentSide();
+    }
+
+    /**
+     * Gives the player the secret achievement he chose
+     * @param player who chose the card
+     * @param choice index of the chosen card
+     */
+    public void chooseObj(Player player, int choice){
+        if (choice <= 1){
+            player.setChosenObj(player.getPersonalObj()[choice]);
+        }
     }
 }

@@ -13,7 +13,7 @@ public class FlipTest {
     @DisplayName("Flip a card")
     public void FlipCardTest() throws IOException{
         Game game = new Game();
-        Player player = new Player("pippo", game.getGameBoard(), game);
+        Player player = new Player("pippo", game);
         player.setPlayerState(PlayerState.DRAW_CARD);
         Controller c = new Controller(game);
         //First card of the deck
@@ -36,7 +36,7 @@ public class FlipTest {
     @DisplayName("Flip and Place a Card")
     public void FlipPlaceTest() throws IOException{
         Game game = new Game();
-        Player player = new Player("pippo", game.getGameBoard(), game);
+        Player player = new Player("pippo", game);
         Controller c = new Controller(game);
         //a is a green card => has a permanent plant symbol on its back
         ResourceCard a = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), new Corner(Symbols.PLANT), new Corner(Symbols.NOCORNER)}, 19, 1);
@@ -59,7 +59,7 @@ public class FlipTest {
     @DisplayName("Flip StarterCard and Not Valid Placement")
     public void FlipStarterNotValidPlacement() throws IOException{
         Game game = new Game();
-        Player player = new Player("pippo", game.getGameBoard(), game);
+        Player player = new Player("pippo", game);
         Controller c = new Controller(game);
         ResourceCard a = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), new Corner(Symbols.PLANT), new Corner(Symbols.NOCORNER)}, 19, 1);
         StarterCard s = new StarterCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}, 2, new CardBack(new ArrayList<>(List.of(Symbols.FUNGI)), Color.WHITE, new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.EMPTY)}));

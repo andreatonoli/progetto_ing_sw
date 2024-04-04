@@ -15,7 +15,7 @@ public class PlaceTest{
     @DisplayName("Place a card")
     public void PlaceACardTest() throws IOException{
         game = new Game();
-        Player player = new Player("pippo", game.getGameBoard(), game);
+        Player player = new Player("pippo", game);
         player.setPlayerState(PlayerState.PLAY_CARD);
         Controller c = new Controller(game);
         StarterCard s = new StarterCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}, 2, new CardBack(new ArrayList<>(List.of(Symbols.FUNGI)), Color.WHITE, new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY)}));
@@ -37,7 +37,7 @@ public class PlaceTest{
     public void NotInTurnTest() throws IOException{
         game = new Game();
         Controller c = new Controller(game);
-        Player player = new Player("pippo", game.getGameBoard(), game);
+        Player player = new Player("pippo", game);
         StarterCard s = new StarterCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}, 2, new CardBack(new ArrayList<>(List.of(Symbols.FUNGI)), Color.WHITE, new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY)}));
         ResourceCard a = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.FUNGI) }, 1, 0);
         player.setPlayerState(PlayerState.NOT_IN_TURN);
@@ -66,7 +66,7 @@ public class PlaceTest{
     public void PlaceOnNoCornerTest() throws IOException{
         game = new Game();
         Controller c = new Controller(game);
-        Player player = new Player("pippo", game.getGameBoard(), game);
+        Player player = new Player("pippo", game);
         StarterCard s = new StarterCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}, 2, new CardBack(new ArrayList<>(List.of(Symbols.FUNGI)), Color.WHITE, new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY)}));
         ResourceCard a = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.FUNGI) }, 1, 0);
         GoldCard b = new GoldCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 3, Condition.NOTHING, 17, new int[]{1, 0, 0, 0}, null);
@@ -100,7 +100,7 @@ public class PlaceTest{
     public void CoversNoCornerTest() throws IOException{
         game = new Game();
         Controller c = new Controller(game);
-        Player player = new Player("pippo", game.getGameBoard(), game);
+        Player player = new Player("pippo", game);
         StarterCard s = new StarterCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}, 2, new CardBack(new ArrayList<>(List.of(Symbols.FUNGI)), Color.WHITE, new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY)}));
         ResourceCard a = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.FUNGI) }, 1, 0);
         GoldCard b = new GoldCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.QUILL), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER)}, 3, Condition.NOTHING, 17, new int[]{1, 0, 0, 0}, null);
@@ -139,7 +139,7 @@ public class PlaceTest{
         game = new Game();
         Controller c = new Controller(game);
         int plantCost = 3;
-        Player player = new Player("pippo", game.getGameBoard(), game);
+        Player player = new Player("pippo", game);
         StarterCard s = new StarterCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}, 2, new CardBack(new ArrayList<>(List.of(Symbols.FUNGI)), Color.WHITE, new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY)}));
         GoldCard b = new GoldCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 3, Condition.NOTHING, 17, new int[]{0, plantCost, 0, 0}, null);
         player.setPlayerState(PlayerState.PLAY_CARD);
