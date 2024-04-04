@@ -19,7 +19,7 @@ public class AchievementItem implements Achievement{
      * @return the amount of points done with this achievement card
      */
     @Override
-    public int calcPoints(Player player) { //point = base * min(count_simboli)
+    public int calcPoints(Player player) {
         int point = 0;
         int min_val = 0;
         if (this.basePoint == 3){

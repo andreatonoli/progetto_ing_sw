@@ -1,5 +1,7 @@
 package model;
 
+import java.util.List;
+
 public class StarterCard extends Card{
     /**
      * Starter Card constructor.
@@ -8,11 +10,25 @@ public class StarterCard extends Card{
      * @param retro back of the card
      */
     public StarterCard(Corner[] corners, int card_number, CardBack retro){
+        this.currentSide = this;
+        this.front = this;
         this.corners = new Corner[4];
         System.arraycopy(corners, 0, this.corners, 0, 4);
         this.card_number = card_number;
         this.type = "starter";
         this.retro = retro;
         this.back = false;
+    }
+
+    @Override
+    public List<Symbols> getSymbols() {
+        return null;
+    }
+    @Override
+    public boolean checkCost(Player player) {
+        return true;
+    }
+    @Override
+    public void calcPoint(Player player) {
     }
 }

@@ -8,9 +8,7 @@ import java.util.Collections;
 
 public class Game {
     public static final int MAX_PLAYERS = 4; /** sets max number of players */
-
     public static final int MIN_PLAYERS = 2; /** sets min number of players */
-
     private GameBoard gameBoard;
     private GameState gameState;
     private ArrayList<Player> players;

@@ -1,21 +1,20 @@
 package model;
 public enum Color {
-    RED,
-    GREEN,
-    BLUE,
-    PURPLE,
-    WHITE;
-    Color associatedColor;
-    //Color(){
-    //    setAssociatedColor();
-    //}
-    //private void setAssociatedColor(){
-    //    RED.associatedColor = GREEN;
-    //    GREEN.associatedColor = PURPLE;
-    //    BLUE.associatedColor = RED;
-    //    PURPLE.associatedColor = BLUE;
-    //}
-    public Color getAssociatedColor(Color color){
-        return color.associatedColor;
+    RED(1),
+    GREEN(3),
+    BLUE(0),
+    PURPLE(2),
+    WHITE(4);
+    Integer associatedIndex;
+    Color(Integer associatedIndex){
+        this.associatedIndex = associatedIndex;
+    }
+    public static Color getAssociatedColor(Color color){
+        for (Color c : Color.values()){
+            if (c.associatedIndex == color.ordinal()){
+                return c;
+            }
+        }
+        return Color.WHITE;
     }
 }
