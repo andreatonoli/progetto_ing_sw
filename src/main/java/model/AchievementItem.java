@@ -23,7 +23,7 @@ public class AchievementItem implements Achievement{
         int point = 0;
         int min_val = 0;
         if (this.basePoint == 3){
-            if (player.getPlayerBoard().getSymbolCount().get(symbol.get(0)) <= player.getPlayerBoard().getSymbolCount().get(symbol.get(1))){
+            if (player.getPlayerBoard().getSymbolCount().get(symbol.getFirst()) <= player.getPlayerBoard().getSymbolCount().get(symbol.get(1))){
                 min_val = player.getPlayerBoard().getSymbolCount().get(symbol.getFirst());
             }
             else{

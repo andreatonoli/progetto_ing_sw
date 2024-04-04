@@ -24,42 +24,45 @@ public class AchievementDiagonal implements Achievement{
      * @param player to calculate the points
      * @return amount of points made with this achievement
      */
-    @Override
+    @Override //TODO: controlla effettiva utilità di marked
     public void calcPoints(Player player) {
         int point = 0;
+        PlayerBoard pBoard = player.getPlayerBoard();
         Set<Integer> keySet = player.getPlayerBoard().getPositionCardKeys();
-        int[] prev = new int[2];
-        int[] succ = new int[2];
+        int len = 0;
+        int[] prev;
         int[] coord = new int[2];
+        int[] offset = new int [2]; //distance between two elements of the diagonal
         ArrayList<int[]> marked = new ArrayList<>();
         for (Integer i : keySet)
         {
             coord[0] = i % 1024;
             coord[1] = i / 1024;
-            if (player.getPlayerBoard().getCard(coord).getColor().equals(this.color)){
+            if (pBoard.getCard(coord).getColor().equals(this.color)){
                 if (this.color.equals(Color.RED) || this.color.equals(Color.BLUE)) {
-                    prev[0] = (i % 1024) - 1;
-                    prev[1] = (i / 1024) - 1;
-                    succ[0] = (i % 1024) + 1;
-                    succ[1] = (i / 1024) + 1;
+                    offset[0] = -1;
+                    offset[1] = -1;
                 }
                 else {
-                    prev[0] = (i % 1024) - 1;
-                    prev[1] = (i / 1024) + 1;
-                    succ[0] = (i % 1024) + 1;
-                    succ[1] = (i / 1024) - 1;
+                    offset[0] = -1;
+                    offset[1] = 1;
                 }
-                if (!marked.contains(coord) && !marked.contains(succ) && !marked.contains(prev))
+                if (!marked.contains(coord))
                 {
-                    Card prec = player.getPlayerBoard().getCard(prev);
-                    Card aft = player.getPlayerBoard().getCard(succ);
-                    if (prec != null && aft != null){
-                        if (prec.getColor().equals(this.color) && aft.getColor().equals(this.color)){
-                            point += this.basePoint;
-                            marked.add(prev);
-                            marked.add(coord);
-                            marked.add(succ);
-                        }
+                    prev = coord;
+                    while (pBoard.getCard(prev) != null && pBoard.getCard(prev).getColor().equals(this.color) && !marked.contains(pBoard.getCard(prev))){
+                        prev[0] += offset[0];
+                        prev[1] += offset[1];
+                    }
+                    do{
+                        prev[0] -= offset[0];
+                        prev[1] -= offset[1];
+                        marked.add(prev);
+                        len++;
+                    } while(pBoard.getCard(prev) != null && pBoard.getCard(prev).getColor().equals(this.color) && !marked.contains(pBoard.getCard(prev)));
+                    point += this.basePoint * (Math.floorDiv(len, 3));
+                    for (int j = 0; j < len % 3; j++) {
+                        marked.removeLast();
                     }
                 }
             }
