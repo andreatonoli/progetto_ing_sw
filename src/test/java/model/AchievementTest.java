@@ -111,6 +111,7 @@ public class AchievementTest {
     public void resourcesTest() throws IOException{
         Game game = new Game();
         Player p = new Player("pippo", game);
+        Controller co = new Controller(game);
         Achievement a = new AchievementResources(Symbols.FUNGI);
         Achievement b = new AchievementResources(Symbols.PLANT);
         Achievement c = new AchievementResources(Symbols.ANIMAL);
@@ -120,9 +121,32 @@ public class AchievementTest {
         Card f = new ResourceCard(new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.PLANT), new Corner(Symbols.PLANT), new Corner(Symbols.QUILL) }, 15, 0);
         Card g = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.NOCORNER) }, 16, 0);
         Card h = new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.FUNGI), new Corner(Symbols.ANIMAL), new Corner(Symbols.PLANT) }, 17, 0);
-        Card i = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.PLANT) }, 18, 1);
+        Card i = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.PLANT) }, 18, 0);
         StarterCard s = new StarterCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT)}, 1, new CardBack(new ArrayList<Symbols>(List.of(Symbols.INSECT)), Color.WHITE, new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.PLANT), new Corner(Symbols.EMPTY), new Corner(Symbols.INSECT)}));
         p.getPlayerBoard().setStarterCard(s);
-        
+        //p can place card
+        p.setPlayerState(PlayerState.PLAY_CARD);
+        //place the cards
+        co.placeCard(p, e, new int[]{0,0}, CornerEnum.TL);
+        co.placeCard(p, f, new int[]{0,0}, CornerEnum.TR);
+        co.placeCard(p, g, new int[]{0,0}, CornerEnum.BL);
+        co.placeCard(p, h, new int[]{0,0}, CornerEnum.BR);
+        co.placeCard(p, i, new int[]{1,1}, CornerEnum.TL);
+        System.out.println(p.getPlayerBoard().getSymbolCount(Symbols.FUNGI));
+        //Number of not covered symbols:
+        //Fungi: 4 => 2 point
+        a.calcPoints(p);
+        assertEquals(2, p.getPoints());
+        //Plant: 5 => 2 points
+        b.calcPoints(p);
+        assertEquals(4, p.getPoints());
+        //Animal: 2 => 0 point
+        c.calcPoints(p);
+        assertEquals(4, p.getPoints());
+        //Insect: 2 => 0 points
+        d.calcPoints(p);
+        assertEquals(4, p.getPoints());
+        //Total : 4 points
+        assertEquals(4, p.getPoints());
     }
 }
