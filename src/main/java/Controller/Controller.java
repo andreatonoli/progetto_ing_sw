@@ -88,6 +88,10 @@ public class Controller {
         //Calculates the PlacedCard position
         coord[0] = coord[0]+cornerPosition.getX();
         coord[1] = coord[1]+cornerPosition.getY();
+        //Check if that position is available
+        if (player.getPlayerBoard().getCard(coord) != null){
+            return false;
+        }
         //for each corner of the placed card checks if the corner below is visible
         for (CornerEnum c: CornerEnum.values()){
             if(!cardToBePlaced.getCorner(c).getSymbol().equals(Symbols.NOCORNER)){

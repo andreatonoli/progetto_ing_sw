@@ -196,4 +196,52 @@ public class AchievementTest {
         //12 points done
         assertEquals(12, p.getPoints());
     }
+
+    @Test
+    @DisplayName("Mixed Achievement")
+    public void mixedAchievementTest() throws IOException{
+        Game game = new Game();
+        Player p = new Player("pippo", game);
+        Controller co = new Controller(game);
+        Achievement a = new AchievementL(Color.RED);
+        Achievement b = new AchievementDiagonal(Color.GREEN);
+        Achievement c = new AchievementItem(2, new ArrayList<>(List.of(Symbols.QUILL)));
+        Achievement d = new AchievementResources(Symbols.INSECT);
+        //Define a bunch of cards to fill the board
+        Card r1 = new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.INSECT), new Corner(Symbols.ANIMAL), new Corner(Symbols.PLANT) }, 7, 0);
+        Card r2 = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), new Corner(Symbols.QUILL), new Corner(Symbols.PLANT) }, 8, 0);
+        Card g1 = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.INKWELL), new Corner(Symbols.INSECT), new Corner(Symbols.QUILL) }, 14, 0);
+        Card g2 = new ResourceCard(new Corner[]{new Corner(Symbols.QUILL), new Corner(Symbols.ANIMAL), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY) }, 15, 0);
+        Card g3 = new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY) }, 12, 0);
+        Card b1 = new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.FUNGI), new Corner(Symbols.INSECT) }, 24, 0);
+        Card b2 = new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.QUILL), new Corner(Symbols.INSECT), new Corner(Symbols.QUILL) }, 27, 0);
+        Card p1 = new ResourceCard(new Corner[]{new Corner(Symbols.QUILL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY) }, 32, 0);
+        Card p2 = new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.QUILL), new Corner(Symbols.QUILL) }, 38, 0);
+        Card b3 = new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.QUILL), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY) }, 26, 0);
+        Card p3 = new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.QUILL), new Corner(Symbols.EMPTY) }, 36, 0);
+        StarterCard s = new StarterCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT)}, 1, new CardBack(new ArrayList<Symbols>(List.of(Symbols.INSECT)), Color.WHITE, new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.PLANT), new Corner(Symbols.EMPTY), new Corner(Symbols.INSECT)}));
+        p.setPlayerState(PlayerState.PLAY_CARD);
+        p.getPlayerBoard().setStarterCard(s);
+        //Placing the cards
+        co.placeCard(p, r1, new int[]{0, 0}, CornerEnum.TR);
+        co.placeCard(p, r2, new int[]{0, 0}, CornerEnum.BR);
+        co.placeCard(p, g1, new int[]{1, -1}, CornerEnum.BR);
+        co.placeCard(p, g2, new int[]{2, -2}, CornerEnum.BR);
+        co.placeCard(p, g3, new int[]{3, -3}, CornerEnum.BR);
+        co.placeCard(p, b1, new int[]{1, -1}, CornerEnum.BL);
+        co.placeCard(p, p3, new int[]{2, -2}, CornerEnum.BL);
+        co.placeCard(p, b2, new int[]{3, -3}, CornerEnum.BL);
+        co.placeCard(p, p1, new int[]{0, 0}, CornerEnum.TL);
+        co.placeCard(p, b3, new int[]{4, -4}, CornerEnum.TR);
+        co.placeCard(p, p2, new int[]{2, -2}, CornerEnum.TR);
+        //point = 3 => only one red L shape
+        a.calcPoints(p);
+        // point = 2 => only one green diagonal
+        b.calcPoints(p);
+        // Uncovered Quill: 7
+        c.calcPoints(p);
+        // Uncovered Insect:5 => point = 1
+        d.calcPoints(p);
+        assertEquals(13, p.getPoints());
+    }
 }
