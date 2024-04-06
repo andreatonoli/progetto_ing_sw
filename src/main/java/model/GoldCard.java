@@ -2,10 +2,12 @@ package model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class GoldCard extends Card {
     int basePoint;
-    String condition;
+    Condition condition;
+    Symbols requiredItem;
     int[] cost; //number of symbols to place the card
 
     /**
@@ -16,8 +18,9 @@ public class GoldCard extends Card {
      * @param card_number unique number to distinguish through various cards
      * @param cost represents the cost, in terms of symbols, necessary to place the card
      */
-    public GoldCard(Corner[] corners, int basePoint, String condition, int card_number, int[] cost){
+    public GoldCard(Corner[] corners, int basePoint, Condition condition, int card_number, int[] cost, Symbols requiredItem){
         this.currentSide = this;
+        this.requiredItem = requiredItem;
         this.front = this;
         this.corners = new Corner[4];
         this.cost = new int[4];
@@ -26,20 +29,25 @@ public class GoldCard extends Card {
         this.basePoint = basePoint;
         this.condition = condition;
         this.card_number = card_number;
+        this.back = false;
         System.arraycopy(cost, 0, this.cost, 0, 4);
         if (card_number <= 10){ /**Gold fungi retro*/
+            this.color = Color.RED;
             this.retro = new CardBack(new ArrayList<>(List.of(Symbols.FUNGI)), Color.RED);
         }
         else if (card_number <= 20) /**gold plant retro*/
         {
+            this.color = Color.GREEN;
             this.retro = new CardBack(new ArrayList<>(List.of(Symbols.PLANT)), Color.GREEN);
         }
         else if(card_number <= 30) /**gold animal retro*/
         {
+            this.color = Color.BLUE;
             this.retro = new CardBack(new ArrayList<>(List.of(Symbols.ANIMAL)), Color.BLUE);
         }
         else /**gold insect retro*/
         {
+            this.color = Color.PURPLE;
             this.retro = new CardBack(new ArrayList<>(List.of(Symbols.INSECT)), Color.PURPLE);
         }
         this.back = false;
@@ -63,14 +71,20 @@ public class GoldCard extends Card {
     }
     @Override
     public List<Symbols> getSymbols() {
+        if (this.back){
+            return this.currentSide.getSymbols();
+        }
         return null;
     }
-    //TODO: riscrivere calcPoint (magari fare sottoclassi)
-    @Override
+    @Override //TODO: riscrivere bene
     public void calcPoint(Player player) {
+        if (this.back){
+            this.currentSide.calcPoint(player);
+            return;
+        }
         int point = 0;
         switch (condition){
-            case "corner":
+            case Condition.CORNER:
                 int[] checkCoordinates = new int[2];
                 int[] coord = player.getPlayerBoard().getCardCoordinates(this);
                 for (CornerEnum c: CornerEnum.values()){
@@ -81,14 +95,8 @@ public class GoldCard extends Card {
                     }
                 }
                 break;
-            case "manuscript":
-                point = this.basePoint * player.getPlayerBoard().getSymbolCount().get(Symbols.MANUSCRIPT);
-                break;
-            case "quill":
-                point = this.basePoint * player.getPlayerBoard().getSymbolCount().get(Symbols.QUILL);
-                break;
-            case "inkwell":
-                point = this.basePoint * player.getPlayerBoard().getSymbolCount().get(Symbols.INKWELL);
+            case Condition.ITEM:
+                point = this.basePoint * player.getPlayerBoard().getSymbolCount().get(requiredItem);
                 break;
             default:
                 point = this.basePoint;

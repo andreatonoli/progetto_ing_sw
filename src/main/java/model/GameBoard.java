@@ -28,8 +28,9 @@ public class GameBoard {
             Corner[] arrayCorner;
             ArrayList<Symbols> items;
             int[] cost;
-            int id;
             int basePoint;
+            int cardNumber;
+            Symbols conditionItem;
             String content;
             String colorOrSymbol;
             JSONObject jo;
@@ -66,7 +67,6 @@ public class GameBoard {
             this.goldDeck = new LinkedList<>();
             content = new String(Files.readAllBytes(Paths.get("src/main/input_file/goldCard.json")));
             jo = new JSONObject(content);
-            id=1;
             for (String goldCard : jo.keySet()) {
                 symbols = jo.getJSONObject(goldCard).getJSONArray("corners");
                 arrayCorner = new Corner[symbols.length()];
@@ -80,15 +80,21 @@ public class GameBoard {
                 for (int i=0; i<objCost.length(); i++){
                     cost[i] = objCost.getInt(i);
                 }
-                GoldCard gCard = new GoldCard(arrayCorner, basePoint, colorOrSymbol, id, cost);
+                cardNumber = jo.getJSONObject(goldCard).getInt("id");
+                GoldCard gCard;
+                if (colorOrSymbol.equals("ITEM")){
+                    conditionItem = Symbols.valueOf(jo.getJSONObject(goldCard).getString("symbol"));
+                    gCard = new GoldCard(arrayCorner, basePoint, Condition.valueOf(colorOrSymbol), cardNumber, cost, conditionItem);
+                }
+                else{
+                    gCard = new GoldCard(arrayCorner, basePoint, Condition.valueOf(colorOrSymbol), cardNumber, cost, null);
+                }
                 goldDeck.add(gCard);
-                id++;
             }
             //creation of resourceDeck
             this.resourceDeck = new LinkedList<>();
             content = new String(Files.readAllBytes(Paths.get("src/main/input_file/resourceCard.json")));
             jo = new JSONObject(content);
-            id=1;
             for (String resourceCard : jo.keySet()) {
                 symbols = jo.getJSONObject(resourceCard).getJSONArray("corners");
                 arrayCorner = new Corner[symbols.length()];
@@ -96,15 +102,14 @@ public class GameBoard {
                     arrayCorner[i] = new Corner(Symbols.valueOf(symbols.getString(i)));
                 }
                 basePoint = jo.getJSONObject(resourceCard).getInt("point");
-                ResourceCard rCard = new ResourceCard(arrayCorner, id, basePoint);
+                cardNumber = jo.getJSONObject(resourceCard).getInt("id");
+                ResourceCard rCard = new ResourceCard(arrayCorner, cardNumber, basePoint);
                 resourceDeck.add(rCard);
-                id++;
             }
             //creation of starterDeck
             this.starterDeck = new LinkedList<>();
             content = new String(Files.readAllBytes(Paths.get("src/main/input_file/starterCard.json")));
             jo = new JSONObject(content);
-            id=1;
             items = new ArrayList<>();
             for (String starterCard : jo.keySet()) {
                 symbols = jo.getJSONObject(starterCard).getJSONObject("retro").getJSONArray("symbols");
@@ -122,9 +127,9 @@ public class GameBoard {
                 for (int i=0; i<symbols.length(); i++){
                     arrayCorner[i] = new Corner(Symbols.valueOf(symbols.getString(i)));
                 }
-                StarterCard sCard = new StarterCard(arrayCorner, id, retro);
+                cardNumber = jo.getJSONObject(starterCard).getInt("id");
+                StarterCard sCard = new StarterCard(arrayCorner, cardNumber, retro);
                 starterDeck.add(sCard);
-                id++;
             }
             commonResource = new Card[2];
             commonGold = new Card[2];
