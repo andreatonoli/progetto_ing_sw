@@ -62,7 +62,6 @@ public class PlayerBoard {
         return this.starterCard;
     }
 
-    //TOGLI
     public void increaseSymbolCount(Symbols symbol){
         if (!symbol.equals(Symbols.NOCORNER) || !symbol.equals(Symbols.EMPTY)){
             this.symbolCount.compute(symbol, (key, value) -> (value == null) ? 1 : value + 1);

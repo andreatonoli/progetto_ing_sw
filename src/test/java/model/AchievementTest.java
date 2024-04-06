@@ -57,9 +57,8 @@ public class AchievementTest {
         a.calcPoints(p);
         assertEquals(4, p.getPoints());
     }
-    //TODO: Imparare a calcolare un minimo
     @Test
-    @DisplayName("Item Achievement")
+    @DisplayName("Item Achievement - 3 Items")
     public void itemTest() throws IOException{
         Game game = new Game();
         Player p = new Player("pippo", game);
@@ -78,12 +77,25 @@ public class AchievementTest {
         co.placeCard(p, c, new int[]{0,0}, CornerEnum.TR);
         co.placeCard(p, d, new int[]{0,0}, CornerEnum.BL);
         co.placeCard(p, e, new int[]{0,0}, CornerEnum.BR);
-        co.placeCard(p, b, new int[]{-1,1}, CornerEnum.BL);
+        co.placeCard(p, f, new int[]{-1,1}, CornerEnum.BL);
         //Number of items:
         //  Manuscript: 3
         //  Inkwell: 4
         //  Quill: 4
         a.calcPoints(p);
-        assertEquals(9, p.getPoints());
+        //9 points from achievement and 1 point from f card
+        assertEquals(10, p.getPoints());
+    }
+    @Test
+    @DisplayName("Item Achievement - No Item Found")
+    public void noItemTest() throws IOException{
+        Game game = new Game();
+        Player p = new Player("pippo", game);
+        Achievement a = new AchievementItem(3, new ArrayList<>(List.of(Symbols.INKWELL, Symbols.QUILL, Symbols.MANUSCRIPT)));
+        int offset = 5; //Adding some points to player
+        p.addPoints(offset);
+        p.getPlayerBoard().increaseSymbolCount(Symbols.INKWELL);
+        a.calcPoints(p);
+        assertEquals(offset, p.getPoints());
     }
 }

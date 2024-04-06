@@ -24,7 +24,9 @@ public class AchievementDiagonal implements Achievement{
      * @param player to calculate the points
      * @return amount of points made with this achievement
      */
-    @Override //TODO: controlla effettiva utilità di marked
+    @Override
+    //TODO: controlla effettiva utilità di marked
+    //TODO: scrivere sorting del set per velocizzare algoritmo
     public void calcPoints(Player player) {
         int point = 0;
         PlayerBoard pBoard = player.getPlayerBoard();
