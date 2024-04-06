@@ -61,7 +61,7 @@ public class GoldCard extends Card {
     public boolean checkCost(Player player) {
         for (Symbols s : Symbols.values()){
             if (s.ordinal() < 4){
-                if (cost[s.ordinal()] > player.getPlayerBoard().getSymbolCount().get(s))
+                if (cost[s.ordinal()] > player.getPlayerBoard().getSymbolCount(s))
                 {
                     return false;
                 }
@@ -96,7 +96,7 @@ public class GoldCard extends Card {
                 }
                 break;
             case Condition.ITEM:
-                point = this.basePoint * player.getPlayerBoard().getSymbolCount().get(requiredItem);
+                point = this.basePoint * player.getPlayerBoard().getSymbolCount(requiredItem);
                 break;
             default:
                 point = this.basePoint;

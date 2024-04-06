@@ -49,10 +49,10 @@ public class FlipTest {
         assertEquals(2, player.getPlayerBoard().getPositionCardKeys().size());
         //Back points = 0 (always)
         assertEquals(0, player.getPoints());
-        assertEquals(2, player.getPlayerBoard().getSymbolCount().get(Symbols.PLANT));
-        assertEquals(1, player.getPlayerBoard().getSymbolCount().get(Symbols.INSECT));
-        assertEquals(1, player.getPlayerBoard().getSymbolCount().get(Symbols.ANIMAL));
-        assertEquals(0, player.getPlayerBoard().getSymbolCount().get(Symbols.FUNGI));
+        assertEquals(2, player.getPlayerBoard().getSymbolCount(Symbols.PLANT));
+        assertEquals(1, player.getPlayerBoard().getSymbolCount(Symbols.INSECT));
+        assertEquals(1, player.getPlayerBoard().getSymbolCount(Symbols.ANIMAL));
+        assertEquals(0, player.getPlayerBoard().getSymbolCount(Symbols.FUNGI));
     }
 
     @Test
@@ -77,9 +77,9 @@ public class FlipTest {
         c.placeCard(player, a, new int[]{0,0}, CornerEnum.BR);
         //Check if the card was not placed
         assertEquals(1, player.getPlayerBoard().getCardPosition().size());
-        assertEquals(1, player.getPlayerBoard().getSymbolCount().get(Symbols.FUNGI));
-        assertEquals(1, player.getPlayerBoard().getSymbolCount().get(Symbols.ANIMAL));
-        assertNull(player.getPlayerBoard().getSymbolCount().get(Symbols.PLANT));
-        assertNull(player.getPlayerBoard().getSymbolCount().get(Symbols.INSECT));
+        assertEquals(1, player.getPlayerBoard().getSymbolCount(Symbols.FUNGI));
+        assertEquals(1, player.getPlayerBoard().getSymbolCount(Symbols.ANIMAL));
+        assertNull(player.getPlayerBoard().getSymbolCount(Symbols.PLANT));
+        assertNull(player.getPlayerBoard().getSymbolCount(Symbols.INSECT));
     }
 }

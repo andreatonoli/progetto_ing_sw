@@ -11,7 +11,7 @@ public enum Color {
     }
     public static Color getAssociatedColor(Color color){
         for (Color c : Color.values()){
-            if (c.associatedIndex == color.ordinal()){
+            if (color.associatedIndex == c.ordinal()){
                 return c;
             }
         }
