@@ -28,6 +28,7 @@ public class AchievementL implements Achievement{
     public void calcPoints(Player player) {
         int point = 0;
         Set<Integer> keySet = player.getPlayerBoard().getPositionCardKeys();
+        PlayerBoard pBoard = player.getPlayerBoard();
         int[] diff = new int[2];
         int[] coord = new int[2];
         int[] same = new int[2];
@@ -35,7 +36,7 @@ public class AchievementL implements Achievement{
         for (Integer i : keySet){
             coord[0] = i % 1024;
             coord[1] = i / 1024;
-            if (player.getPlayerBoard().getCard(coord).getColor().equals(this.color)){
+            if (pBoard.getCard(coord).getColor().equals(this.color)){
                 //Cercare un algoritmo migliore (non aver paura di creare altri metodi per semplificare)
                 switch (this.color){
                     case RED:
@@ -64,11 +65,13 @@ public class AchievementL implements Achievement{
                             break;
                 }
                 if (!marked.contains(coord) && !marked.contains(diff) && !marked.contains(same)){
-                    if (player.getPlayerBoard().getCard(same).getColor().equals(this.color) && player.getPlayerBoard().getCard(diff).getColor().equals(Color.getAssociatedColor(this.color))){
-                        point += this.basePoint;
-                        marked.add(coord);
-                        marked.add(diff);
-                        marked.add(same);
+                    if (pBoard.getCard(same) != null && pBoard.getCard(diff) != null){
+                        if (pBoard.getCard(same).getColor().equals(this.color) && pBoard.getCard(diff).getColor().equals(Color.getAssociatedColor(this.color))){
+                            point += this.basePoint;
+                            marked.add(coord);
+                            marked.add(diff);
+                            marked.add(same);
+                        }
                     }
                 }
             }
