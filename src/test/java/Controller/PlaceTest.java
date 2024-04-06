@@ -21,14 +21,14 @@ public class PlaceTest{
         StarterCard s = new StarterCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}, 2, new CardBack(new ArrayList<>(List.of(Symbols.FUNGI)), Color.WHITE, new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY)}));
         ResourceCard a = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.FUNGI) }, 1, 1);
         player.getPlayerBoard().setStarterCard(s);
-        assertEquals(1, player.getPlayerBoard().getSymbolCount().get(Symbols.ANIMAL));
-        assertEquals(1, player.getPlayerBoard().getSymbolCount().get(Symbols.FUNGI));
+        assertEquals(1, player.getPlayerBoard().getSymbolCount(Symbols.ANIMAL));
+        assertEquals(1, player.getPlayerBoard().getSymbolCount(Symbols.FUNGI));
         c.placeCard(player, a, new int[] {0,0}, CornerEnum.TR);
         assertTrue(player.getPlayerBoard().getCardPosition().containsValue(a));
         assertEquals(a, player.getPlayerBoard().getCard(new int[]{1,1}));
         assertEquals(2, player.getPlayerBoard().getPositionCardKeys().size()); //true if both the card were successfully added to the player board
-        assertEquals(3, player.getPlayerBoard().getSymbolCount().get(Symbols.FUNGI)); //checks if card symbols were successfully added to the symbol count
-        assertEquals(0, player.getPlayerBoard().getSymbolCount().get(Symbols.ANIMAL)); //if true placeCard() has successfully covered the top-right corner
+        assertEquals(3, player.getPlayerBoard().getSymbolCount(Symbols.FUNGI)); //checks if card symbols were successfully added to the symbol count
+        assertEquals(0, player.getPlayerBoard().getSymbolCount(Symbols.ANIMAL)); //if true placeCard() has successfully covered the top-right corner
         assertEquals(1, player.getPoints());
     }
 
@@ -42,22 +42,22 @@ public class PlaceTest{
         ResourceCard a = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.FUNGI) }, 1, 0);
         player.setPlayerState(PlayerState.NOT_IN_TURN);
         player.getPlayerBoard().setStarterCard(s);
-        int Bfungi = player.getPlayerBoard().getSymbolCount().get(Symbols.FUNGI);
-        int Banimal = player.getPlayerBoard().getSymbolCount().get(Symbols.ANIMAL);
+        int Bfungi = player.getPlayerBoard().getSymbolCount(Symbols.FUNGI);
+        int Banimal = player.getPlayerBoard().getSymbolCount(Symbols.ANIMAL);
         c.placeCard(player, a, new int[]{0,0}, CornerEnum.TL);
         //true only if nothing had changed (so the card wasn't placed)
         assertFalse(player.getPlayerBoard().getCardPosition().containsValue(a));
         assertEquals(1, player.getPlayerBoard().getPositionCardKeys().size());
-        assertEquals(Bfungi, player.getPlayerBoard().getSymbolCount().get(Symbols.FUNGI));
-        assertEquals(Banimal, player.getPlayerBoard().getSymbolCount().get(Symbols.ANIMAL));
+        assertEquals(Bfungi, player.getPlayerBoard().getSymbolCount(Symbols.FUNGI));
+        assertEquals(Banimal, player.getPlayerBoard().getSymbolCount(Symbols.ANIMAL));
         assertEquals(0, player.getPoints());
         player.setPlayerState(PlayerState.DRAW_CARD);
         c.placeCard(player, a, new int[]{0,0}, CornerEnum.TL);
         //true only if nothing had changed (so the card wasn't placed)
         assertFalse(player.getPlayerBoard().getCardPosition().containsValue(a));
         assertEquals(1, player.getPlayerBoard().getPositionCardKeys().size());
-        assertEquals(Bfungi, player.getPlayerBoard().getSymbolCount().get(Symbols.FUNGI));
-        assertEquals(Banimal, player.getPlayerBoard().getSymbolCount().get(Symbols.ANIMAL));
+        assertEquals(Bfungi, player.getPlayerBoard().getSymbolCount(Symbols.FUNGI));
+        assertEquals(Banimal, player.getPlayerBoard().getSymbolCount(Symbols.ANIMAL));
         assertEquals(0, player.getPoints());
     }
 
@@ -77,10 +77,10 @@ public class PlaceTest{
         assertEquals(a, player.getPlayerBoard().getCard(new int[]{1,1}));
         assertEquals(2, player.getPlayerBoard().getPositionCardKeys().size());
         assertEquals(0, player.getPoints());
-        int Bfungi = player.getPlayerBoard().getSymbolCount().get(Symbols.FUNGI);
-        int Banimal = player.getPlayerBoard().getSymbolCount().get(Symbols.ANIMAL);
-        int Bplant = player.getPlayerBoard().getSymbolCount().get(Symbols.PLANT);
-        int Binsect = player.getPlayerBoard().getSymbolCount().get(Symbols.EMPTY);
+        int Bfungi = player.getPlayerBoard().getSymbolCount(Symbols.FUNGI);
+        int Banimal = player.getPlayerBoard().getSymbolCount(Symbols.ANIMAL);
+        int Bplant = player.getPlayerBoard().getSymbolCount(Symbols.PLANT);
+        int Binsect = player.getPlayerBoard().getSymbolCount(Symbols.EMPTY);
         int Bpoint = player.getPoints();
         //a's BR corner is hidden, so we cannot place the b card on that spot
         c.placeCard(player, b, new int[]{1,1}, CornerEnum.BR);
@@ -88,10 +88,10 @@ public class PlaceTest{
         assertFalse(player.getPlayerBoard().getCardPosition().containsValue(b));
         assertNull(player.getPlayerBoard().getCard(new int[]{2,0}));
         assertEquals(2, player.getPlayerBoard().getPositionCardKeys().size());
-        assertEquals(Bfungi, player.getPlayerBoard().getSymbolCount().get(Symbols.FUNGI));
-        assertEquals(Banimal, player.getPlayerBoard().getSymbolCount().get(Symbols.ANIMAL));
-        assertEquals(Bplant, player.getPlayerBoard().getSymbolCount().get(Symbols.PLANT));
-        assertEquals(Binsect, player.getPlayerBoard().getSymbolCount().get(Symbols.INSECT));
+        assertEquals(Bfungi, player.getPlayerBoard().getSymbolCount(Symbols.FUNGI));
+        assertEquals(Banimal, player.getPlayerBoard().getSymbolCount(Symbols.ANIMAL));
+        assertEquals(Bplant, player.getPlayerBoard().getSymbolCount(Symbols.PLANT));
+        assertEquals(Binsect, player.getPlayerBoard().getSymbolCount(Symbols.INSECT));
         assertEquals(Bpoint, player.getPoints());
     }
 
@@ -114,10 +114,10 @@ public class PlaceTest{
         assertEquals(b, player.getPlayerBoard().getCard(new int[]{1,-1}));
         assertEquals(3, player.getPlayerBoard().getPositionCardKeys().size());
         assertEquals(3, player.getPoints());
-        int Bfungi = player.getPlayerBoard().getSymbolCount().get(Symbols.FUNGI);
-        int Banimal = player.getPlayerBoard().getSymbolCount().get(Symbols.ANIMAL);
-        int Bplant = player.getPlayerBoard().getSymbolCount().get(Symbols.PLANT);
-        int Binsect = player.getPlayerBoard().getSymbolCount().get(Symbols.INSECT);
+        int Bfungi = player.getPlayerBoard().getSymbolCount(Symbols.FUNGI);
+        int Banimal = player.getPlayerBoard().getSymbolCount(Symbols.ANIMAL);
+        int Bplant = player.getPlayerBoard().getSymbolCount(Symbols.PLANT);
+        int Binsect = player.getPlayerBoard().getSymbolCount(Symbols.INSECT);
         int Bsize = player.getPlayerBoard().getPositionCardKeys().size();
         int Bpoint = player.getPoints();
         //a's BR corner is hidden, so we cannot place the b card on that spot
@@ -126,10 +126,10 @@ public class PlaceTest{
         assertNull(player.getPlayerBoard().getCard(new int[]{2,0}));
         assertFalse(player.getPlayerBoard().getCardPosition().containsValue(d));
         assertEquals(Bsize, player.getPlayerBoard().getPositionCardKeys().size());
-        assertEquals(Bfungi, player.getPlayerBoard().getSymbolCount().get(Symbols.FUNGI));
-        assertEquals(Banimal, player.getPlayerBoard().getSymbolCount().get(Symbols.ANIMAL));
-        assertEquals(Bplant, player.getPlayerBoard().getSymbolCount().get(Symbols.PLANT));
-        assertEquals(Binsect, player.getPlayerBoard().getSymbolCount().get(Symbols.INSECT));
+        assertEquals(Bfungi, player.getPlayerBoard().getSymbolCount(Symbols.FUNGI));
+        assertEquals(Banimal, player.getPlayerBoard().getSymbolCount(Symbols.ANIMAL));
+        assertEquals(Bplant, player.getPlayerBoard().getSymbolCount(Symbols.PLANT));
+        assertEquals(Binsect, player.getPlayerBoard().getSymbolCount(Symbols.INSECT));
         assertEquals(Bpoint, player.getPoints());
     }
 
@@ -147,11 +147,11 @@ public class PlaceTest{
         c.placeCard(player, b, new int[]{0,0}, CornerEnum.BL);
         //Check if the card was not placed
         assertEquals(1, player.getPlayerBoard().getCardPosition().size());
-        assertEquals(1, player.getPlayerBoard().getSymbolCount().get(Symbols.FUNGI));
-        assertEquals(1, player.getPlayerBoard().getSymbolCount().get(Symbols.ANIMAL));
-        assertEquals(1, player.getPlayerBoard().getSymbolCount().get(Symbols.PLANT));
-        assertEquals(1, player.getPlayerBoard().getSymbolCount().get(Symbols.INSECT));
+        assertEquals(1, player.getPlayerBoard().getSymbolCount(Symbols.FUNGI));
+        assertEquals(1, player.getPlayerBoard().getSymbolCount(Symbols.ANIMAL));
+        assertEquals(1, player.getPlayerBoard().getSymbolCount(Symbols.PLANT));
+        assertEquals(1, player.getPlayerBoard().getSymbolCount(Symbols.INSECT));
         assertEquals(0, player.getPoints());
-        assertTrue(player.getPlayerBoard().getSymbolCount().get(Symbols.PLANT) < plantCost);
+        assertTrue(player.getPlayerBoard().getSymbolCount(Symbols.PLANT) < plantCost);
     }
 }

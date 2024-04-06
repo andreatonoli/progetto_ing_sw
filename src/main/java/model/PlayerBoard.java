@@ -49,8 +49,11 @@ public class PlayerBoard {
     public Set<Integer> getPositionCardKeys(){
         return this.cardPosition.keySet();
     }
-    public HashMap<Symbols,Integer> getSymbolCount(){
-        return symbolCount;
+    public Integer getSymbolCount(Symbols s){
+        if(this.symbolCount.get(s) != null){
+            return this.symbolCount.get(s);
+        }
+        return 0;
     }
     public void setStarterCard(Card starterCard){
         this.starterCard = starterCard;

@@ -41,25 +41,25 @@ public class AchievementL implements Achievement{
                 switch (this.color){
                     case RED:
                             same[0] = coord[0];
-                            same[1] = coord[1] + 1;
+                            same[1] = coord[1] + 2;
                             diff[0] = coord[0] + 1;
                             diff[1] = coord[1] - 1;
                             break;
                     case BLUE:
                             same[0] = coord[0];
-                            same[1] = coord[1] - 1;
+                            same[1] = coord[1] - 2;
                             diff[0] = coord[0] + 1;
                             diff[1] = coord[1] + 1;
                             break;
                     case GREEN:
                             same[0] = coord[0];
-                            same[1] = coord[1] + 1;
+                            same[1] = coord[1] + 2;
                             diff[0] = coord[0] - 1;
                             diff[1] = coord[1] - 1;
                             break;
                     case PURPLE:
                             same[0] = coord[0];
-                            same[1] = coord[1] - 1;
+                            same[1] = coord[1] - 2;
                             diff[0] = coord[0] - 1;
                             diff[1] = coord[1] + 1;
                             break;
