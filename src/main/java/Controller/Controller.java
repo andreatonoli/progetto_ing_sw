@@ -43,27 +43,25 @@ public class Controller {
     }
 
     /**
-     * Place card
+     * Place card then removes it from the player's hand
      * @param card to place
      * @param coordinates of the card which corner will be covered after the placement
      * @param corner where player wants to place the card
      */
     public void placeCard(Player player, Card card, int[] coordinates, CornerEnum corner) {
-        //TODO: differenziare il piazzamento delle gold dalle resource card
-        //TODO: aggiungere calcolo dei punti al placeCard => scrivere calcolo dei punti nelle carte
-        //TODO: Rimuovere la carta giocata dalla mano del giocatore
         if (canPlace(corner, coordinates, player, card)) {
             //coordinates of the new card
             int[] newCoordinates = new int[2];
             newCoordinates[0] = coordinates[0] + corner.getX();
             newCoordinates[1] = coordinates[1] + corner.getY();
             if(!card.checkCost(player)){
-                //Tiro eccezione
+                //TODO: Tiro eccezione
                 return;
             }
             player.getPlayerBoard().setCardPosition(card, newCoordinates);
             player.getPlayerBoard().coverCorner(card, newCoordinates);
-            //card.calcPoints();
+            card.calcPoint(player);
+            player.removeFromHand(card);
         }
     }
     /**
@@ -104,7 +102,23 @@ public class Controller {
         }
         return legit;
     }
-    public void flipCard(Card card){
 
+    /**
+     * Changes the side shown to the player
+     * @param card to be flipped
+     */
+    public void flipCard(Card card){
+        card.setCurrentSide();
+    }
+
+    /**
+     * Gives the player the secret achievement he chose
+     * @param player who chose the card
+     * @param choice index of the chosen card
+     */
+    public void chooseObj(Player player, int choice){
+        if (choice <= 1){
+            player.setChosenObj(player.getPersonalObj()[choice]);
+        }
     }
 }

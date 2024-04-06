@@ -20,9 +20,9 @@ public class AchievementResources implements Achievement{
      * @return amount of points done with this achievement
      */
     @Override
-    public int calcPoints(Player player) {
-        int point = 0;
+    public void calcPoints(Player player) {
+        int point;
         point = this.basePoint * (Math.floorDiv(player.getPlayerBoard().getSymbolCount().get(this.symbol), 3));
-        return point;
+        player.addPoints(point);
     }
 }

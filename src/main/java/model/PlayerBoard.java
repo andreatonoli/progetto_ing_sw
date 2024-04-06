@@ -62,7 +62,6 @@ public class PlayerBoard {
         return this.starterCard;
     }
 
-    //TOGLI
     public void increaseSymbolCount(Symbols symbol){
         if (!symbol.equals(Symbols.NOCORNER) || !symbol.equals(Symbols.EMPTY)){
             this.symbolCount.compute(symbol, (key, value) -> (value == null) ? 1 : value + 1);
@@ -82,15 +81,15 @@ public class PlayerBoard {
      */
     public void coverCorner(Card card, int[] coordinates){
         int[] checkCoordinates = new int[2];
+        if (card.getSymbols() != null){
+            for (Symbols s : card.getSymbols()){
+                this.increaseSymbolCount(s);
+            }
+        }
         for (CornerEnum position : CornerEnum.values()) {
             if (!card.getCornerSymbol(position).equals(Symbols.NOCORNER)){
                 //Add symbols (of the placed card) to counter
                 this.increaseSymbolCount(card.getCornerSymbol(position));
-            }
-            if (card.getSymbols() != null){
-                for (Symbols ignored : card.getSymbols()){
-                    this.increaseSymbolCount(card.getCornerSymbol(position));
-                }
             }
             //select the card below the placed card
             checkCoordinates[0] = coordinates[0] + position.getX();

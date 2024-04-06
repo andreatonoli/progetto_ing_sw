@@ -3,13 +3,14 @@ package model;
 import java.util.List;
 
 public abstract class Card {
+    //TODO: fare in modo di sfruttare correttamente l'ereditarietà
     protected Corner[] corners;
     /** Card's ID is composed of its type and its card_number value */
     protected String type; //Non abusare => probabilmente divernterà enum
     protected Color color;
     protected int card_number;
     protected Card currentSide;
-    protected boolean back; //forse useless
+    protected boolean back; //true <=> card's current side is back
     protected Card front;
     protected CardBack retro;
     public abstract List<Symbols> getSymbols();
@@ -17,6 +18,16 @@ public abstract class Card {
     public abstract void calcPoint(Player player);
     public Color getColor() {
         return color;
+    }
+    public void setCurrentSide(){
+        if (currentSide.back){
+            this.currentSide = front;
+            this.back = false;
+        }
+        else{
+            this.currentSide = retro;
+            this.back = true;
+        }
     }
     public Corner getCorner(CornerEnum corner){
         return currentSide.corners[corner.ordinal()];
