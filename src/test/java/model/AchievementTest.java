@@ -132,7 +132,6 @@ public class AchievementTest {
         co.placeCard(p, g, new int[]{0,0}, CornerEnum.BL);
         co.placeCard(p, h, new int[]{0,0}, CornerEnum.BR);
         co.placeCard(p, i, new int[]{1,1}, CornerEnum.TL);
-        System.out.println(p.getPlayerBoard().getSymbolCount(Symbols.FUNGI));
         //Number of not covered symbols:
         //Fungi: 4 => 2 point
         a.calcPoints(p);
@@ -148,5 +147,53 @@ public class AchievementTest {
         assertEquals(4, p.getPoints());
         //Total : 4 points
         assertEquals(4, p.getPoints());
+    }
+
+    @Test
+    @DisplayName("L Achievement")
+    public void lTest() throws IOException{
+        Game game = new Game();
+        Player p = new Player("pippo", game);
+        Controller co = new Controller(game);
+        Achievement a = new AchievementL(Color.RED);
+        Achievement b = new AchievementL(Color.BLUE);
+        Achievement c = new AchievementL(Color.GREEN);
+        Achievement d = new AchievementL(Color.PURPLE);
+        //Define 2 red cards
+        Card r1 = new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.FUNGI), new Corner(Symbols.ANIMAL), new Corner(Symbols.PLANT) }, 7, 0);
+        Card r2 = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), new Corner(Symbols.ANIMAL), new Corner(Symbols.PLANT) }, 8, 0);
+        //Define 2 green cards
+        Card g1 = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.INKWELL), new Corner(Symbols.INSECT), new Corner(Symbols.EMPTY) }, 14, 0);
+        Card g2 = new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY) }, 15, 0);
+        //Define 2 blue cards
+        Card b1 = new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY) }, 24, 0);
+        Card b2 = new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY) }, 27, 0);
+        //Define 2 purple cards
+        Card p1 = new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY) }, 32, 0);
+        Card p2 = new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY) }, 38, 0);
+        //Define 2 cards to link the structure
+        Card place1 = new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY) }, 12, 0);
+        Card place2 = new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY) }, 26, 0);
+        Card place3 = new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY) }, 36, 0);
+        StarterCard s = new StarterCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT)}, 1, new CardBack(new ArrayList<Symbols>(List.of(Symbols.INSECT)), Color.WHITE, new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.PLANT), new Corner(Symbols.EMPTY), new Corner(Symbols.INSECT)}));
+        p.setPlayerState(PlayerState.PLAY_CARD);
+        p.getPlayerBoard().setStarterCard(s);
+        co.placeCard(p, r1, new int[]{0, 0}, CornerEnum.TR);
+        co.placeCard(p, r2, new int[]{0, 0}, CornerEnum.BR);
+        co.placeCard(p, g1, new int[]{1, -1}, CornerEnum.BR);
+        co.placeCard(p, b1, new int[]{1, -1}, CornerEnum.BL);
+        co.placeCard(p, place1, new int[]{2, -2}, CornerEnum.BR);
+        co.placeCard(p, place2, new int[]{0, -2}, CornerEnum.BL);
+        co.placeCard(p, b2, new int[]{-1, -3}, CornerEnum.BR);
+        co.placeCard(p, g2, new int[]{3, -3}, CornerEnum.BL);
+        co.placeCard(p, p1, new int[]{0, -4}, CornerEnum.BR);
+        co.placeCard(p, place3, new int[]{1, -5}, CornerEnum.BL);
+        co.placeCard(p, p2, new int[]{0, -6}, CornerEnum.BR);
+        a.calcPoints(p);
+        b.calcPoints(p);
+        c.calcPoints(p);
+        d.calcPoints(p);
+        //12 points done
+        assertEquals(12, p.getPoints());
     }
 }
