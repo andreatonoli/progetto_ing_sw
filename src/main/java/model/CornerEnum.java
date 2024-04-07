@@ -17,10 +17,8 @@ public enum CornerEnum {
     public int getY(){
         return this.y;
     }
-    //TODO: scrivere commento
     /**
-     *
-     * @return
+     * @return the opposite corner
      */
     public CornerEnum getOppositePosition(){
         for (CornerEnum c : CornerEnum.values()){

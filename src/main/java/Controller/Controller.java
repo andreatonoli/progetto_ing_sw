@@ -104,13 +104,14 @@ public class Controller {
     public void canPlace(CornerEnum cornerPosition, int[] coordinates, Player player, Card cardToBePlaced) throws NotInTurnException, OccupiedCornerException, CostNotSatisfiedException, AlreadyUsedPositionException{
         int[] newCoordinates = new int[2];
         int[] coord = new int[2];
+        PlayerBoard pBoard = player.getPlayerBoard();
         System.arraycopy(coordinates, 0, coord, 0, 2);
         //check if the player placing the card is the player in turn
         if (player.getPlayerState().equals(PlayerState.NOT_IN_TURN) || player.getPlayerState().equals(PlayerState.DRAW_CARD)){
             throw new NotInTurnException();
         }
         //check if the corner we are placing the card on is available
-        if (player.getPlayerBoard().getCard(coord).getCornerState(cornerPosition).equals(CornerState.NOT_VISIBLE)){
+        if (pBoard.getCard(coord).getCornerState(cornerPosition).equals(CornerState.NOT_VISIBLE)){
             throw new OccupiedCornerException();
         }
         if(!cardToBePlaced.checkCost(player)){
@@ -121,16 +122,16 @@ public class Controller {
         coord[0] = coord[0]+cornerPosition.getX();
         coord[1] = coord[1]+cornerPosition.getY();
         //Check if that position is available
-        if (player.getPlayerBoard().getCard(coord) != null){
+        if (pBoard.getCard(coord) != null){
             throw new AlreadyUsedPositionException();
         }
         //for each corner of the placed card checks if the corner below is visible
         for (CornerEnum c: CornerEnum.values()){
-            if(!cardToBePlaced.getCorner(c).getSymbol().equals(Symbols.NOCORNER)){
+            if(!cardToBePlaced.getCornerSymbol(c).equals(Symbols.NOCORNER)){
                 newCoordinates[0] = coord[0]+c.getX();
                 newCoordinates[1] = coord[1]+c.getY();
-                if (player.getPlayerBoard().getCard(newCoordinates) != null){
-                    if (player.getPlayerBoard().getCard(newCoordinates).getCornerState(c.getOppositePosition()).equals(CornerState.NOT_VISIBLE)){
+                if (pBoard.getCard(newCoordinates) != null){
+                    if (pBoard.getCard(newCoordinates).getCornerState(c.getOppositePosition()).equals(CornerState.NOT_VISIBLE)){
                         throw new OccupiedCornerException();
                     }
                 }
