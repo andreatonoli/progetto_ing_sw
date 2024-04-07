@@ -16,13 +16,12 @@ public class AchievementDiagonal implements Achievement{
         this.basePoint = 2;
         this.color = color;
     }
-
+    //TODO: Riscrivere commento e spiegare correttamente l'algoritmo
     /**
      *This method calculates the points made by a player with the diagonal achievement. It exploits an ArrayList to mark
      * the elements already visited. For each card it takes also its predecessor and it successor on the diagonal and checks
      * if they've all the same color. In that case it adds their position in the marked list
      * @param player to calculate the points
-     * @return amount of points made with this achievement
      */
     @Override
     //TODO: controlla effettiva utilità di marked
