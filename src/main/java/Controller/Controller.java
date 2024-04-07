@@ -1,5 +1,6 @@
 package Controller;
 import model.*;
+import model.exceptions.*;
 
 import java.util.LinkedList;
 
@@ -14,32 +15,43 @@ public class Controller {
      * @param deck from which the player choose to pick a card
      */
     public void drawCard(Player player, LinkedList<Card> deck){
-        if (canDraw(player, deck)){
+        try {
+            System.out.println("Drawing a card...");
+            canDraw(player, deck);
             Card drawedCard = deck.getFirst();
             player.addInHand(drawedCard);
             deck.removeFirst();
+            System.out.println("Successfully drew a card");
+        } catch (EmptyException e) {
+            System.out.println("Cannot draw - The deck is empty");
+        } catch (NotInTurnException e) {
+            System.out.println("Cannot draw - Player is not in draw card state");
+        } catch (FullHandException e) {
+            System.out.println("Cannot draw - Player's hand is full");
         }
-        //else => ritorno un errore in base a cosa sbaglio (o eccezione)
     }
+
     /**
-     * checks if the player can draw a card from a specified deck.
-     * @param player to control
-     * @return the possibility to draw a card
+     * Check if the player can draw from a specified deck
+     * @param player who has to be checked
+     * @param deck the player wants to draw from
+     * @throws EmptyException the deck is empty
+     * @throws NotInTurnException the player is not in DRAW_CARD state
+     * @throws FullHandException player's hand is full so there's no space for another card
      */
-    public boolean canDraw(Player player, LinkedList<Card> deck){
-        //player cannot draw a card if the deck is empty, his hand is full (dim >= 3), hasn't already played a card or if it's not his turn
+    public void canDraw(Player player, LinkedList<Card> deck) throws EmptyException, NotInTurnException, FullHandException{
         if (deck.isEmpty()){
-            return false;
+            throw new EmptyException();
         }
         if (player.getPlayerState().equals(PlayerState.NOT_IN_TURN) || player.getPlayerState().equals(PlayerState.PLAY_CARD)){
-            return false;
+            throw new NotInTurnException();
         }
         for (int i = 0; i < 3; i++) {
             if (player.getCardInHand()[i] == null){
-                return true;
+                return;
             }
         }
-        return false;
+        throw new FullHandException();
     }
 
     /**
@@ -54,10 +66,6 @@ public class Controller {
             int[] newCoordinates = new int[2];
             newCoordinates[0] = coordinates[0] + corner.getX();
             newCoordinates[1] = coordinates[1] + corner.getY();
-            if(!card.checkCost(player)){
-                //TODO: Tiro eccezione
-                return;
-            }
             player.getPlayerBoard().setCardPosition(card, newCoordinates);
             player.getPlayerBoard().coverCorner(card, newCoordinates);
             card.calcPoint(player);

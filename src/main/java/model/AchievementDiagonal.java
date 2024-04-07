@@ -1,8 +1,6 @@
 package model;
 
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.Set;
+import java.util.*;
 
 public class AchievementDiagonal implements Achievement{
     private int basePoint;
@@ -29,14 +27,17 @@ public class AchievementDiagonal implements Achievement{
     public void calcPoints(Player player) {
         int point = 0;
         PlayerBoard pBoard = player.getPlayerBoard();
-        Set<Integer> keySet = player.getPlayerBoard().getPositionCardKeys();
-        int len = 0;
+        ArrayList<Integer> sortedKeySet = new ArrayList<>(pBoard.getPositionCardKeys());
+        Collections.sort(sortedKeySet);
         int[] prev;
         int[] coord = new int[2];
         int[] offset = new int [2]; //distance between two elements of the diagonal
         ArrayList<int[]> marked = new ArrayList<>();
-        for (Integer i : keySet)
+        int len = 0; //INUTILE
+        for (Integer i : sortedKeySet)
         {
+            //Problemi con le y negative
+            //System.out.println("Coordinate: " + i % 1024 + " " + i / 1024);
             coord[0] = i % 1024;
             coord[1] = i / 1024;
             if (pBoard.getCard(coord).getColor().equals(this.color)){
