@@ -22,7 +22,7 @@ public class GameBoard {
      * Builds game's board, its decks and links one specific board to one specific game
      * @param game game to which the board belongs
      */
-    public GameBoard(Game game) throws IOException {
+    public GameBoard(Game game) {
         this.game = game;
         try {
             Corner[] arrayCorner;

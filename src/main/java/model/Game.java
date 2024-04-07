@@ -1,5 +1,6 @@
 package model;
 
+import model.exceptions.GameNotStartedException;
 import model.exceptions.NotEnoughPlayersException;
 
 import java.io.IOException;
@@ -16,13 +17,14 @@ public class Game {
     private Player playerInTurn;
     private Chat chatHandler;
 
+    private boolean gameStarted = false;
+
     /**
      *
      * @throws IOException
      */
 
-    //eccezione si può togliere da game ma prima va tolta da gameboard
-    public Game() throws IOException {
+    public Game() {
         this.gameState = GameState.WAIT_PLAYERS;
         this.players = new ArrayList<Player>();
         //this.players.add(first);
@@ -87,32 +89,40 @@ public class Game {
         catch(NotEnoughPlayersException e){
             System.out.println("At least two players to start the game");
         }
+        gameStarted = true;
     }
 
-    public void endGame() {
-        //per il momento aggiunta punti non dentro a calcPoints
-        for (Player p: players){
-            p.addPoints(p.getChosenObj().calcPoints(p));
-            for (Achievement a : gameBoard.getCommonAchievement()){
-                p.addPoints(a.calcPoints(p));
+    public void endGame() throws GameNotStartedException {
+        try{
+            if(!gameStarted){
+                throw new GameNotStartedException();
             }
-        }
+            for (Player p: players){
+                p.getChosenObj().calcPoints(p);
+                for (Achievement a : gameBoard.getCommonAchievement()){
+                    a.calcPoints(p);
+                }
+            }
 
-        /** the winner is chosen by the number of points */
-        int max = 0;
-        ArrayList<Player> winners = new ArrayList<>();
-        for (Player p: players){
-            if (p.getPoints() == max){
-                winners.add(p);
-                max = p.getPoints();
+            /** the winner is chosen by the number of points */
+            int max = 0;
+            ArrayList<Player> winners = new ArrayList<>();
+            for (Player p: players){
+                if (p.getPoints() == max){
+                    winners.add(p);
+                    max = p.getPoints();
+                }
+                if (p.getPoints() > max){
+                    winners = new ArrayList<>();
+                    winners.add(p);
+                    max = p.getPoints();
+                }
             }
-            if (p.getPoints() > max){
-                winners = new ArrayList<>();
-                winners.add(p);
-                max = p.getPoints();
-            }
+            gameStarted = false;
         }
-
+        catch(GameNotStartedException e){
+            System.out.println("Game not started");
+        }
     }
 
     public void setFirstPlayer()
