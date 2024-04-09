@@ -34,8 +34,8 @@ public class AchievementL implements Achievement{
         int[] same = new int[2];
         ArrayList<int[]> marked = new ArrayList<>();
         for (Integer i : keySet){
-            coord[0] = i % 1024;
-            coord[1] = i / 1024;
+            coord[0] = (i / 1024) - PlayerBoard.OFFSET;
+            coord[1] = (i % 1024) - PlayerBoard.OFFSET;
             if (pBoard.getCard(coord).getColor().equals(this.color)){
                 //Cercare un algoritmo migliore (non aver paura di creare altri metodi per semplificare)
                 switch (this.color){

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Set;
 
 public class PlayerBoard {
+    public static final int OFFSET = 128;
     private Player player;
     private Card starterCard; //Se si vuole far tornare di tipo starter bisogna creare un metodo drawCard apposito per lei
     private HashMap<Integer, Card> cardPosition;
@@ -22,25 +23,30 @@ public class PlayerBoard {
      * @param coordinates is the position where the card has been placed
      */
     public void setCardPosition(Card placedCard, int[] coordinates) {
-        cardPosition.put(coordinates[0] + ((1<<10) * coordinates[1]), placedCard);
+        int x = coordinates[0] + OFFSET;
+        int y = coordinates[1] + OFFSET;
+        cardPosition.put(y + ((1<<10) * x), placedCard);
     }
     /**
      * method to get the coordinates of the card
      * @param card is the card we need to know the position of
      * @return the position of the card
      */
+    //TODO: da modificare
     public int[] getCardCoordinates(Card card){
         int[] coord = new int[]{0,0};
         for (int i : this.getPositionCardKeys()){
             if (cardPosition.get(i).equals(card)){
-                coord[0] = i % 1024;
-                coord[1] = i / 1024;
+                coord[0] = (i / 1024) - OFFSET;
+                coord[1] = (i % 1024) - OFFSET;
             }
         }
         return coord;
     }
     public Card getCard(int[] coord){
-        int key = coord[0] + (1<<10) * coord[1];
+        int x = coord[0] + OFFSET;
+        int y = coord[1] + OFFSET;
+        int key = y + (1<<10) * x;
         if (!this.cardPosition.containsKey(key)){
             return null;
         }

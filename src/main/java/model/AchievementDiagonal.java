@@ -28,6 +28,9 @@ public class AchievementDiagonal implements Achievement{
         int point = 0;
         PlayerBoard pBoard = player.getPlayerBoard();
         ArrayList<Integer> sortedKeySet = new ArrayList<>(pBoard.getPositionCardKeys());
+        //Direction followed on the board:
+        //x: left -> right
+        //y: bottom -> top
         Collections.sort(sortedKeySet);
         int[] prev;
         int[] coord = new int[2];
@@ -36,32 +39,26 @@ public class AchievementDiagonal implements Achievement{
         int len = 0; //INUTILE
         for (Integer i : sortedKeySet)
         {
-            //Problemi con le y negative
-            //System.out.println("Coordinate: " + i % 1024 + " " + i / 1024);
-            coord[0] = i % 1024;
-            coord[1] = i / 1024;
+            coord[0] = (i / 1024) - PlayerBoard.OFFSET;
+            coord[1] = (i % 1024) - PlayerBoard.OFFSET;
             if (pBoard.getCard(coord).getColor().equals(this.color)){
                 if (this.color.equals(Color.RED) || this.color.equals(Color.BLUE)) {
-                    offset[0] = -1;
-                    offset[1] = -1;
+                    offset[0] = 1;
+                    offset[1] = 1;
                 }
                 else {
-                    offset[0] = -1;
-                    offset[1] = 1;
+                    offset[0] = 1;
+                    offset[1] = -1;
                 }
                 if (!marked.contains(coord))
                 {
                     prev = coord;
-                    while (pBoard.getCard(prev) != null && pBoard.getCard(prev).getColor().equals(this.color) && !marked.contains(pBoard.getCard(prev))){
+                    do{
                         prev[0] += offset[0];
                         prev[1] += offset[1];
-                    }
-                    do{
-                        prev[0] -= offset[0];
-                        prev[1] -= offset[1];
                         marked.add(prev);
                         len++;
-                    } while(pBoard.getCard(prev) != null && pBoard.getCard(prev).getColor().equals(this.color) && !marked.contains(pBoard.getCard(prev)));
+                    } while(pBoard.getCard(prev) != null && pBoard.getCard(prev).getColor().equals(this.color));
                     point += this.basePoint * (Math.floorDiv(len, 3));
                     for (int j = 0; j < len % 3; j++) {
                         marked.removeLast();
