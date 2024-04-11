@@ -10,12 +10,13 @@ import java.util.Scanner;
 public class RmiClient extends UnicastRemoteObject implements VirtualView {
 
     final VirtualServer server;
+    private final String nickname="pippo";
     public RmiClient(VirtualServer server) throws RemoteException{
         this.server=server;
     }
 
     private void run() throws RemoteException {
-        this.server.connect(this);
+        this.server.login(this);
         this.runCli();
     }
 
@@ -39,4 +40,10 @@ public class RmiClient extends UnicastRemoteObject implements VirtualView {
     public void showUpdate(String update) {
         //TODO
     }
+
+    @Override
+    public String askNickname() {
+        return null;
+    }
+
 }
