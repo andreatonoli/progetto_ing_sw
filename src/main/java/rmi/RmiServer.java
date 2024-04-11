@@ -41,21 +41,15 @@ public class RmiServer implements VirtualServer {
     @Override
     public synchronized void login(VirtualView client) throws RemoteException {
         //TODO sincronizza
-        try{
-            String nickname;
+        String nickname;
+        nickname=client.askNickname();
+        while(this.client.containsValue(nickname))
+        {
+            System.out.println("username already taken");
             nickname=client.askNickname();
-            while(this.client.containsValue(nickname))
-            {
-                System.out.println("username already taken");
-                nickname=client.askNickname();
-            }
-            this.client.put(client,nickname);
-        }catch(UnexpectedException e){
-            System.out.println("peto puzzolente");
-            while (true)
-                System.out.println("ass");
         }
-
+        System.out.println(nickname);
+        this.client.put(client,nickname);
     }
 
     public static void main(String[] args) throws IOException {

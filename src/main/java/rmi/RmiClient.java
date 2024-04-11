@@ -23,8 +23,9 @@ public class RmiClient extends UnicastRemoteObject implements VirtualView {
         this.runCli();
     }
 
-    private void runCli(){
-        Scanner scan = new Scanner(System.in);
+    private void runCli() throws RemoteException{
+        //Scanner scan = new Scanner(System.in);
+        System.out.println("Ciao mamma");
         //while (true) {
         //    System.out.print("> ");
             //TODO inserire i comandi che da il client
@@ -39,7 +40,7 @@ public class RmiClient extends UnicastRemoteObject implements VirtualView {
                 break;
             }
         }
-        Ui view=null;
+        Ui view = null;
         if (tuiParam){
             view = new Tui();
         }
@@ -57,12 +58,19 @@ public class RmiClient extends UnicastRemoteObject implements VirtualView {
 
     @Override
     public String askNickname() throws RemoteException{
-        return null;
+        String nickname;
+        System.out.println("input username: ");
+        nickname = readInput();
+        return nickname;
     }
 
     @Override
     public VirtualServer askServerInfo() throws RemoteException{
         return null;
+    }
+    public String readInput(){
+        Scanner scanner = new Scanner(System.in);
+        return scanner.next();
     }
 
 
