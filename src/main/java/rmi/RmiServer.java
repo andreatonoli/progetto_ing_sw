@@ -2,12 +2,14 @@ package rmi;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.rmi.UnexpectedException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import view.*;
 
 import Controller.Controller;
 import model.Game;
@@ -39,13 +41,20 @@ public class RmiServer implements VirtualServer {
     @Override
     public synchronized void login(VirtualView client) throws RemoteException {
         //TODO sincronizza
-        String nickname;
-        do{
-            //TODO messaggio richiesta nickname
+        try{
+            String nickname;
             nickname=client.askNickname();
-        } while(this.client.containsValue(nickname));
-        this.client.put(client,nickname);
-
+            while(this.client.containsValue(nickname))
+            {
+                System.out.println("username already taken");
+                nickname=client.askNickname();
+            }
+            this.client.put(client,nickname);
+        }catch(UnexpectedException e){
+            System.out.println("peto puzzolente");
+            while (true)
+                System.out.println("ass");
+        }
 
     }
 

@@ -7,9 +7,12 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Scanner;
 
+import view.*;
+
 public class RmiClient extends UnicastRemoteObject implements VirtualView {
 
     final VirtualServer server;
+    //private Ui view;
     private final String nickname="pippo";
     public RmiClient(VirtualServer server) throws RemoteException{
         this.server=server;
@@ -22,28 +25,45 @@ public class RmiClient extends UnicastRemoteObject implements VirtualView {
 
     private void runCli(){
         Scanner scan = new Scanner(System.in);
-        while (true) {
-            System.out.print("> ");
+        //while (true) {
+        //    System.out.print("> ");
             //TODO inserire i comandi che da il client
-        }
+        //}
     }
 
     public static void main(String[] args) throws RemoteException, NotBoundException {
-        final String serverName = "GameServer";
-        Registry registry = LocateRegistry.getRegistry(args[0], 1234); //passare l'host name del server
-        VirtualServer server = (VirtualServer) registry.lookup(serverName);
-
-        new RmiClient(server);
+        boolean tuiParam=false;
+        for (String arg : args){
+            if (arg.equals("--cli") || arg.equals("-c")){
+                tuiParam=true;
+                break;
+            }
+        }
+        Ui view=null;
+        if (tuiParam){
+            view = new Tui();
+        }
+        else{
+            //TODO: avvio applicazione grafica
+            view = new Tui();
+        }
+        VirtualServer server = view.askServerInfo();
+        new RmiClient(server).run();
     }
-
     @Override
-    public void showUpdate(String update) {
+    public void showUpdate(String update) throws RemoteException {
         //TODO
     }
 
     @Override
-    public String askNickname() {
+    public String askNickname() throws RemoteException{
         return null;
     }
+
+    @Override
+    public VirtualServer askServerInfo() throws RemoteException{
+        return null;
+    }
+
 
 }
