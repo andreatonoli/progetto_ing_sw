@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Set;
 
 public class PlayerBoard {
+    public static final int OFFSET = 128;
     private Player player;
     private Card starterCard; //Se si vuole far tornare di tipo starter bisogna creare un metodo drawCard apposito per lei
     private HashMap<Integer, Card> cardPosition;
@@ -22,25 +23,30 @@ public class PlayerBoard {
      * @param coordinates is the position where the card has been placed
      */
     public void setCardPosition(Card placedCard, int[] coordinates) {
-        cardPosition.put(coordinates[0] + ((1<<10) * coordinates[1]), placedCard);
+        int x = coordinates[0] + OFFSET;
+        int y = coordinates[1] + OFFSET;
+        cardPosition.put(y + ((1<<10) * x), placedCard);
     }
     /**
      * method to get the coordinates of the card
      * @param card is the card we need to know the position of
      * @return the position of the card
      */
+    //TODO: da modificare
     public int[] getCardCoordinates(Card card){
         int[] coord = new int[]{0,0};
         for (int i : this.getPositionCardKeys()){
             if (cardPosition.get(i).equals(card)){
-                coord[0] = i % 1024;
-                coord[1] = i / 1024;
+                coord[0] = (i / 1024) - OFFSET;
+                coord[1] = (i % 1024) - OFFSET;
             }
         }
         return coord;
     }
     public Card getCard(int[] coord){
-        int key = coord[0] + (1<<10) * coord[1];
+        int x = coord[0] + OFFSET;
+        int y = coord[1] + OFFSET;
+        int key = y + (1<<10) * x;
         if (!this.cardPosition.containsKey(key)){
             return null;
         }
@@ -49,8 +55,11 @@ public class PlayerBoard {
     public Set<Integer> getPositionCardKeys(){
         return this.cardPosition.keySet();
     }
-    public HashMap<Symbols,Integer> getSymbolCount(){
-        return symbolCount;
+    public Integer getSymbolCount(Symbols s){
+        if(this.symbolCount.get(s) != null){
+            return this.symbolCount.get(s);
+        }
+        return 0;
     }
     public void setStarterCard(Card starterCard){
         this.starterCard = starterCard;
@@ -62,7 +71,6 @@ public class PlayerBoard {
         return this.starterCard;
     }
 
-    //TOGLI
     public void increaseSymbolCount(Symbols symbol){
         if (!symbol.equals(Symbols.NOCORNER) || !symbol.equals(Symbols.EMPTY)){
             this.symbolCount.compute(symbol, (key, value) -> (value == null) ? 1 : value + 1);
@@ -82,15 +90,15 @@ public class PlayerBoard {
      */
     public void coverCorner(Card card, int[] coordinates){
         int[] checkCoordinates = new int[2];
+        if (card.getSymbols() != null){
+            for (Symbols s : card.getSymbols()){
+                this.increaseSymbolCount(s);
+            }
+        }
         for (CornerEnum position : CornerEnum.values()) {
             if (!card.getCornerSymbol(position).equals(Symbols.NOCORNER)){
                 //Add symbols (of the placed card) to counter
                 this.increaseSymbolCount(card.getCornerSymbol(position));
-            }
-            if (card.getSymbols() != null){
-                for (Symbols ignored : card.getSymbols()){
-                    this.increaseSymbolCount(card.getCornerSymbol(position));
-                }
             }
             //select the card below the placed card
             checkCoordinates[0] = coordinates[0] + position.getX();

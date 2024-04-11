@@ -25,54 +25,57 @@ public class AchievementL implements Achievement{
      * @return amount of points made with this achievement
      */
     @Override
-    public int calcPoints(Player player) {
+    public void calcPoints(Player player) {
         int point = 0;
         Set<Integer> keySet = player.getPlayerBoard().getPositionCardKeys();
+        PlayerBoard pBoard = player.getPlayerBoard();
         int[] diff = new int[2];
         int[] coord = new int[2];
         int[] same = new int[2];
         ArrayList<int[]> marked = new ArrayList<>();
         for (Integer i : keySet){
-            coord[0] = i % 1024;
-            coord[1] = i / 1024;
-            if (player.getPlayerBoard().getCard(coord).getColor().equals(this.color)){
+            coord[0] = (i / 1024) - PlayerBoard.OFFSET;
+            coord[1] = (i % 1024) - PlayerBoard.OFFSET;
+            if (pBoard.getCard(coord).getColor().equals(this.color)){
                 //Cercare un algoritmo migliore (non aver paura di creare altri metodi per semplificare)
                 switch (this.color){
                     case RED:
                             same[0] = coord[0];
-                            same[1] = coord[1] + 1;
+                            same[1] = coord[1] + 2;
                             diff[0] = coord[0] + 1;
                             diff[1] = coord[1] - 1;
                             break;
                     case BLUE:
                             same[0] = coord[0];
-                            same[1] = coord[1] - 1;
+                            same[1] = coord[1] - 2;
                             diff[0] = coord[0] + 1;
                             diff[1] = coord[1] + 1;
                             break;
                     case GREEN:
                             same[0] = coord[0];
-                            same[1] = coord[1] + 1;
+                            same[1] = coord[1] + 2;
                             diff[0] = coord[0] - 1;
                             diff[1] = coord[1] - 1;
                             break;
                     case PURPLE:
                             same[0] = coord[0];
-                            same[1] = coord[1] - 1;
+                            same[1] = coord[1] - 2;
                             diff[0] = coord[0] - 1;
                             diff[1] = coord[1] + 1;
                             break;
                 }
                 if (!marked.contains(coord) && !marked.contains(diff) && !marked.contains(same)){
-                    if (player.getPlayerBoard().getCard(same).getColor().equals(this.color) && player.getPlayerBoard().getCard(diff).getColor().equals(Color.getAssociatedColor(this.color))){
-                        point += this.basePoint;
-                        marked.add(coord);
-                        marked.add(diff);
-                        marked.add(same);
+                    if (pBoard.getCard(same) != null && pBoard.getCard(diff) != null){
+                        if (pBoard.getCard(same).getColor().equals(this.color) && pBoard.getCard(diff).getColor().equals(Color.getAssociatedColor(this.color))){
+                            point += this.basePoint;
+                            marked.add(coord);
+                            marked.add(diff);
+                            marked.add(same);
+                        }
                     }
                 }
             }
         }
-        return point;
+        player.addPoints(point);
     }
 }

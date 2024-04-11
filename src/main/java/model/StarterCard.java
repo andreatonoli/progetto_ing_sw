@@ -18,10 +18,14 @@ public class StarterCard extends Card{
         this.type = "starter";
         this.retro = retro;
         this.back = false;
+        this.color = Color.WHITE;
     }
 
     @Override
     public List<Symbols> getSymbols() {
+        if (this.back){
+            return this.currentSide.getSymbols();
+        }
         return null;
     }
     @Override

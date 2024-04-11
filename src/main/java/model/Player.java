@@ -21,7 +21,7 @@ public class Player {
      * constructor of the player class:
      * @param name is the player's unique username
      */
-    public Player(String name, GameBoard board, Game game)
+    public Player(String name, Game game)
     {
         this.username = name;
         this.playerState = PlayerState.NOT_IN_TURN;
@@ -142,6 +142,14 @@ public class Player {
         for (int i = 0; i < this.cardInHand.length; i++) {
             if (this.cardInHand[i] == null){
                 this.cardInHand[i] = card;
+                break;
+            }
+        }
+    }
+    public void removeFromHand(Card cardToRemove){
+        for (int i = 0; i < this.cardInHand.length && this.cardInHand[i] != null; i++) {
+            if (this.cardInHand[i].equals(cardToRemove)){
+                this.cardInHand[i] = null;
                 break;
             }
         }

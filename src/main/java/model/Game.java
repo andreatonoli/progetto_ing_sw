@@ -1,5 +1,8 @@
 package model;
 
+import model.exceptions.GameNotStartedException;
+import model.exceptions.NotEnoughPlayersException;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,11 +17,14 @@ public class Game {
     private Player playerInTurn;
     private Chat chatHandler;
 
+    private boolean gameStarted = false;
+
     /**
      *
      * @throws IOException
      */
-    public Game() throws IOException {
+
+    public Game() {
         this.gameState = GameState.WAIT_PLAYERS;
         this.players = new ArrayList<Player>();
         //this.players.add(first);
@@ -28,65 +34,106 @@ public class Game {
         this.gameBoard = new GameBoard(this);
     }
 
-    public void startGame() {
+    public void startGame() throws NotEnoughPlayersException {
 
-        //mescolamento mazzi
-        Collections.shuffle(gameBoard.getStarterDeck());
-        Collections.shuffle(gameBoard.getAchievementDeck());
-        Collections.shuffle(gameBoard.getResourceDeck());
-        Collections.shuffle(gameBoard.getGoldDeck());
+        try {
+            if(players.isEmpty() || players.size() == 1) {
+                throw new NotEnoughPlayersException();
+            }
+            /** decks are shuffled*/
+            Collections.shuffle(gameBoard.getStarterDeck());
+            Collections.shuffle(gameBoard.getAchievementDeck());
+            Collections.shuffle(gameBoard.getResourceDeck());
+            Collections.shuffle(gameBoard.getGoldDeck());
 
-        //posizionamento 2 carte nella board comune
-        gameBoard.setCommonResource(gameBoard.drawCard(gameBoard.getResourceDeck()), 0);
-        gameBoard.setCommonResource(gameBoard.drawCard(gameBoard.getResourceDeck()), 1);
-        gameBoard.setCommonGold(gameBoard.drawCard(gameBoard.getGoldDeck()), 0);
-        gameBoard.setCommonGold(gameBoard.drawCard(gameBoard.getGoldDeck()), 1);
+            /** two cards are settled in the common board*/
+            gameBoard.setCommonResource(gameBoard.drawCard(gameBoard.getResourceDeck()), 0);
+            gameBoard.setCommonResource(gameBoard.drawCard(gameBoard.getResourceDeck()), 1);
+            gameBoard.setCommonGold(gameBoard.drawCard(gameBoard.getGoldDeck()), 0);
+            gameBoard.setCommonGold(gameBoard.drawCard(gameBoard.getGoldDeck()), 1);
 
-        //a ogni giocatore viene data la carte iniziale
-        for (Player p : players){
-            p.getPlayerBoard().setStarterCard(gameBoard.drawCard(gameBoard.getStarterDeck()));
-            //prima va fatto scegliere il lato al giocatore
-            //quando il controller vede che il player vuole piazzare la carta posiziona la starterCard
+            /** starter card is given to each player*/
+            for (Player p : players) {
+                p.getPlayerBoard().setStarterCard(gameBoard.drawCard(gameBoard.getStarterDeck()));
+                /** in first place the player chose the side he prefers, in order to settle down the card*/
+                /** when the controller sees that the player wants to settle down the card, it places starterCard*/
+            }
+
+            //colore segnalino scelto dal player al login
+
+            /** every player draws two resource cards and a gold card*/
+            for (Player p : players) {
+                p.addInHand(gameBoard.drawCard(gameBoard.getResourceDeck()));
+                p.addInHand(gameBoard.drawCard(gameBoard.getResourceDeck()));
+                p.addInHand(gameBoard.drawCard(gameBoard.getGoldDeck()));
+            }
+
+            /** two achievement cards are settled in the common board */
+            gameBoard.setCommonAchievement(gameBoard.drawCard(), 0);
+            gameBoard.setCommonAchievement(gameBoard.drawCard(), 1);
+
+            /** at this moment each player chose the achievement card */
+            for (Player p : players) {
+                p.getPersonalObj()[0] = gameBoard.drawCard();
+                p.getPersonalObj()[1] = gameBoard.drawCard();
+                //scelta carta da parte del player
+                //per il momento il player sceglie la prima carta
+                //poi verrà gestita nel controller
+                p.setChosenObj(p.getPersonalObj()[0]);
+            }
+
+            /** the first player is chosen in a random way*/
+            Collections.shuffle(players);
+            setFirstPlayer();
         }
-
-        //colore segnalino scelto dal player al login
-
-        //ogni giocatore pesca due carte risorsa e due carte oro
-        for (Player p : players){
-            p.addInHand(gameBoard.drawCard(gameBoard.getResourceDeck()));
-            p.addInHand(gameBoard.drawCard(gameBoard.getResourceDeck()));
-            p.addInHand(gameBoard.drawCard(gameBoard.getGoldDeck()));
+        catch(NotEnoughPlayersException e){
+            System.out.println("At least two players to start the game");
         }
-
-        //posizonamento 2 carte obiettivo nella board comune
-        gameBoard.setCommonAchievement(gameBoard.drawCard(), 0);
-        gameBoard.setCommonAchievement(gameBoard.drawCard(), 1);
-
-        //scelta carta obiettivo
-        for (Player p : players){
-            p.getPersonalObj()[0] = gameBoard.drawCard();
-            p.getPersonalObj()[1] = gameBoard.drawCard();
-            //scelta carta da parte del player
-            //per il momento il player sceglie la prima carta
-            //poi verrà gestita nel controller
-            p.setChosenObj(p.getPersonalObj()[0]);
-        }
-
-        //scelta random primo giocatore
-        Collections.shuffle(players);
-        setFirstPlayer();
-
+        gameStarted = true;
     }
 
-    public void endGame() {
+    public void endGame() throws GameNotStartedException {
+        try{
+            if(!gameStarted){
+                throw new GameNotStartedException();
+            }
+            for (Player p: players){
+                p.getChosenObj().calcPoints(p);
+                for (Achievement a : gameBoard.getCommonAchievement()){
+                    a.calcPoints(p);
+                }
+            }
 
+            /** the winner is chosen by the number of points */
+            int max = 0;
+            ArrayList<Player> winners = new ArrayList<>();
+            for (Player p: players){
+                if (p.getPoints() == max){
+                    winners.add(p);
+                    max = p.getPoints();
+                }
+                if (p.getPoints() > max){
+                    winners = new ArrayList<>();
+                    winners.add(p);
+                    max = p.getPoints();
+                }
+            }
+            gameStarted = false;
+        }
+        catch(GameNotStartedException e){
+            System.out.println("Game not started");
+        }
     }
 
     public void setFirstPlayer()
     {
-        firstPlayer = players.get(0);
+        firstPlayer = players.getFirst();
         firstPlayer.isFirstToPlay(firstPlayer.getUsername());
         firstPlayer.setPlayerState(PlayerState.PLAY_CARD);
+    }
+
+    public Player getFirstPlayer(){
+        return this.firstPlayer;
     }
 
     public void setGameState(GameState nextGameState)
@@ -111,11 +158,6 @@ public class Game {
          returns player that is playing the game at that moment
          */
         return playerInTurn;
-    }
-
-    public int getNumOfPlayers()
-    {
-        return players.size();
     }
 
     public ArrayList<Player> getPlayers(){

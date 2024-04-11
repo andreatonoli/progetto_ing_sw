@@ -1,8 +1,6 @@
 package model;
 
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.Set;
+import java.util.*;
 
 public class AchievementDiagonal implements Achievement{
     private int basePoint;
@@ -16,50 +14,58 @@ public class AchievementDiagonal implements Achievement{
         this.basePoint = 2;
         this.color = color;
     }
-
+    //TODO: Riscrivere commento e spiegare correttamente l'algoritmo
     /**
      *This method calculates the points made by a player with the diagonal achievement. It exploits an ArrayList to mark
      * the elements already visited. For each card it takes also its predecessor and it successor on the diagonal and checks
      * if they've all the same color. In that case it adds their position in the marked list
      * @param player to calculate the points
-     * @return amount of points made with this achievement
      */
     @Override
-    public int calcPoints(Player player) {
+    //TODO: controlla effettiva utilità di marked
+    //TODO: scrivere sorting del set per velocizzare algoritmo
+    public void calcPoints(Player player) {
         int point = 0;
-        Set<Integer> keySet = player.getPlayerBoard().getPositionCardKeys();
-        int[] prev = new int[2];
-        int[] succ = new int[2];
+        PlayerBoard pBoard = player.getPlayerBoard();
+        ArrayList<Integer> sortedKeySet = new ArrayList<>(pBoard.getPositionCardKeys());
+        //Direction followed on the board:
+        //x: left -> right
+        //y: bottom -> top
+        Collections.sort(sortedKeySet);
+        int[] prev;
         int[] coord = new int[2];
+        int[] offset = new int [2]; //distance between two elements of the diagonal
         ArrayList<int[]> marked = new ArrayList<>();
-        for (Integer i : keySet)
+        int len = 0; //INUTILE
+        for (Integer i : sortedKeySet)
         {
-            coord[0] = i % 1024;
-            coord[1] = i / 1024;
-            if (player.getPlayerBoard().getCard(coord).getColor().equals(this.color)){
+            coord[0] = (i / 1024) - PlayerBoard.OFFSET;
+            coord[1] = (i % 1024) - PlayerBoard.OFFSET;
+            if (pBoard.getCard(coord).getColor().equals(this.color)){
                 if (this.color.equals(Color.RED) || this.color.equals(Color.BLUE)) {
-                    prev[0] = (i % 1024) - 1;
-                    prev[1] = (i / 1024) - 1;
-                    succ[0] = (i % 1024) + 1;
-                    succ[1] = (i / 1024) + 1;
+                    offset[0] = 1;
+                    offset[1] = 1;
                 }
                 else {
-                    prev[0] = (i % 1024) - 1;
-                    prev[1] = (i / 1024) + 1;
-                    succ[0] = (i % 1024) + 1;
-                    succ[1] = (i / 1024) - 1;
+                    offset[0] = 1;
+                    offset[1] = -1;
                 }
-                if (!marked.contains(coord) && !marked.contains(succ) && !marked.contains(prev))
+                if (!marked.contains(coord))
                 {
-                    if (player.getPlayerBoard().getCard(prev).getColor().equals(this.color) && player.getPlayerBoard().getCard(succ).getColor().equals(this.color)){
-                        point += this.basePoint;
+                    prev = coord;
+                    do{
+                        prev[0] += offset[0];
+                        prev[1] += offset[1];
                         marked.add(prev);
-                        marked.add(coord);
-                        marked.add(succ);
+                        len++;
+                    } while(pBoard.getCard(prev) != null && pBoard.getCard(prev).getColor().equals(this.color));
+                    point += this.basePoint * (Math.floorDiv(len, 3));
+                    for (int j = 0; j < len % 3; j++) {
+                        marked.removeLast();
                     }
                 }
             }
         }
-        return point;
+        player.addPoints(point);
     }
 }
