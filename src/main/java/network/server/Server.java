@@ -11,13 +11,14 @@ import java.util.concurrent.BlockingQueue;
 
 import Controller.Controller;
 import model.Game;
-import network.client.VirtualClient;
+import network.client.RMIClientHandler;
 
 public class Server implements VirtualServer {
 
     private final Controller controller;
     private final static int CAPACITY = 10;
-    private final  Map<VirtualClient, String> client;
+    private List<Game> activeGames;
+    private final  Map<RMIClientHandler, String> client;
     private final BlockingQueue<String> updates = new ArrayBlockingQueue<>(CAPACITY);
 
     //da usare tramite updates.put(valore) cosi che aggora tutti i cliet
@@ -35,21 +36,15 @@ public class Server implements VirtualServer {
     public Server(Controller controller){
         this.controller=controller;
         this.client = Collections.synchronizedMap(new HashMap<>());
+        this.activeGames = Collections.synchronizedList(new ArrayList<>());
     }
 
-    @Override
-    public synchronized void login(VirtualClient client) throws RemoteException {
-        //TODO sincronizza
-        String nickname;
-        nickname = client.askNickname();
-        while(this.client.containsValue(nickname))
-        {
-            //TODO: farlo stampare sul client
-            System.out.println("username already taken");
-            nickname=client.askNickname();
-        }
-        System.out.println(nickname);
-        this.client.put(client,nickname);
+    //@Override
+    public void login(RMIClientHandler client, String username) throws RemoteException {
+        this.client.put(client,username);
+        System.err.println("user "+ username + "connected and ready to die");
+        //TODO: associare player instance al client
+        //chiamare costruttore di player -> game.addPlayer
     }
 
     public static void main(String[] args) throws IOException {
@@ -59,6 +54,10 @@ public class Server implements VirtualServer {
         Registry registry = LocateRegistry.createRegistry(1234);
         registry.rebind(serverName, stub);
         System.out.println("server bound. ");
+    }
+
+    public boolean usernameTaken(String username) throws RemoteException{
+        return client.containsValue(username);
     }
 
 }
