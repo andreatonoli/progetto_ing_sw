@@ -1,6 +1,6 @@
 package view;
 
-import rmi.VirtualServer;
+import network.server.VirtualServer;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

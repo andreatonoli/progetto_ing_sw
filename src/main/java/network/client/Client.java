@@ -1,20 +1,19 @@
-package rmi;
+package network.client;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Scanner;
 
+import network.server.VirtualServer;
 import view.*;
 
-public class RmiClient extends UnicastRemoteObject implements VirtualView {
+public class Client extends UnicastRemoteObject implements VirtualClient {
 
     final VirtualServer server;
     //private Ui view;
     private final String nickname="pippo";
-    public RmiClient(VirtualServer server) throws RemoteException{
+    public Client(VirtualServer server) throws RemoteException{
         this.server=server;
     }
 
@@ -46,32 +45,13 @@ public class RmiClient extends UnicastRemoteObject implements VirtualView {
         }
         else{
             //TODO: avvio applicazione grafica
-            view = new Tui();
+            view = new Tui(); //Placeholder
         }
         VirtualServer server = view.askServerInfo();
-        new RmiClient(server).run();
+        //new Client(server).run();
     }
     @Override
     public void showUpdate(String update) throws RemoteException {
         //TODO
     }
-
-    @Override
-    public String askNickname() throws RemoteException{
-        String nickname;
-        System.out.println("input username: ");
-        nickname = readInput();
-        return nickname;
-    }
-
-    @Override
-    public VirtualServer askServerInfo() throws RemoteException{
-        return null;
-    }
-    public String readInput(){
-        Scanner scanner = new Scanner(System.in);
-        return scanner.next();
-    }
-
-
 }

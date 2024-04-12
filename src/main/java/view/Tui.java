@@ -1,6 +1,6 @@
 package view;
 
-import rmi.VirtualServer;
+import network.server.VirtualServer;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
