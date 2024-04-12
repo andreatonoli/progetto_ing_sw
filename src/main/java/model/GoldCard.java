@@ -104,4 +104,12 @@ public class GoldCard extends Card {
         }
         player.addPoints(point);
     }
+    @Override
+    public int[] getCost(){ return this.cost; }
+    @Override
+    public int getPoints(){ return this.basePoint; }
+    @Override
+    public Condition getCondition(){ return this.condition; }
+    @Override
+    public Symbols getRequiredItem(){ return this.requiredItem; }
 }

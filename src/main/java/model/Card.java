@@ -16,6 +16,10 @@ public abstract class Card {
     public abstract List<Symbols> getSymbols();
     public abstract boolean checkCost(Player player);
     public abstract void calcPoint(Player player);
+    public abstract int[] getCost();
+    public abstract int getPoints();
+    public abstract Condition getCondition();
+    public abstract Symbols getRequiredItem();
     public Color getColor() {
         return color;
     }
@@ -32,6 +36,10 @@ public abstract class Card {
     public Corner getCorner(CornerEnum corner){
         return currentSide.corners[corner.ordinal()];
     }
+
+    public boolean isBack(){ return this.back; }
+    public CardBack getBack(){ return this.retro; }
+    public Corner[] getCorners(){ return this.corners;}
     public Symbols getCornerSymbol(CornerEnum corner){
         return currentSide.corners[corner.ordinal()].getSymbol();
     }

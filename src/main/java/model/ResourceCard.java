@@ -65,4 +65,13 @@ public class ResourceCard extends Card {
         }
         player.addPoints(this.point);
     }
+
+    @Override
+    public int[] getCost(){ return new int[]{0,0,0,0}; }
+    @Override
+    public int getPoints(){ return this.point; }
+    @Override
+    public Condition getCondition(){ return null; }
+    @Override
+    public Symbols getRequiredItem(){ return null; }
 }
