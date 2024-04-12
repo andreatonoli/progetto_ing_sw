@@ -2,6 +2,7 @@ package view;
 
 import network.client.*;
 import java.io.PrintStream;
+import java.rmi.RemoteException;
 import java.util.Scanner;
 //TODO: Mergeare TUI e TUIHandler
 public class TuiHandler implements Ui{
@@ -16,24 +17,28 @@ public class TuiHandler implements Ui{
      * Starts the TUI instance and begins the login phase
      */
     public void run(){
-        //TODO: Stampa del titolo
-        String choice;
-        String username = askNickname();
-        out.println("Please specify the following settings. The default value is shown between brackets.");
-        String address = askServerAddress();
-        int port = askServerPort();
-        out.println("Please, choose your connection method:\n\tRMI\n\tSocket");
-        choice = scanner.nextLine();
-        while(!choice.equalsIgnoreCase("RMI") && !choice.equalsIgnoreCase("Socket")){
-            out.println("Wrong input.\nPlease, choose your connection method. Press:\n\tRMI\n\tSocket");
+        try {
+            //TODO: Stampa del titolo
+            String choice;
+            String username = askNickname();
+            out.println("Please specify the following settings. The default value is shown between brackets.");
+            String address = askServerAddress();
+            int port = askServerPort();
+            out.println("Please, choose your connection method:\n\tI)RMI\n\tII)Socket");
             choice = scanner.nextLine();
-        }
-        if (choice.equalsIgnoreCase("RMI")){
-            //probabilmente va salvata l'istanza di client
-            new RMIClient(username, address, port, this);
-        }
-        else{
-            new SocketClient();
+            while(!choice.equalsIgnoreCase("RMI") && !choice.equalsIgnoreCase("Socket")){
+                out.println("Wrong input.\nPlease, choose your connection method. Press:\n\tRMI\n\tSocket");
+                choice = scanner.nextLine();
+            }
+            if (choice.equalsIgnoreCase("RMI")){
+                //probabilmente va salvata l'istanza di client
+                new RMIClient(username, address, port, this);
+            }
+            else{
+                new SocketClient();
+            }
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
         }
     }
     /**
@@ -54,7 +59,7 @@ public class TuiHandler implements Ui{
      */
     @Override
     public String askServerAddress() {
-        String defaultAddress = "LocalHost";
+        String defaultAddress = "localhost";
         String host;
         System.out.print("Enter the server address [" + defaultAddress + "]: ");
         String address = scanner.nextLine();

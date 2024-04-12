@@ -41,8 +41,8 @@ public class Server implements VirtualServer {
 
     //@Override
     public void login(RMIClientHandler client, String username) throws RemoteException {
-        this.client.put(client,username);
-        System.err.println("user "+ username + "connected and ready to die");
+        this.client.put(client, username);
+        System.err.println("user "+ username + " connected and ready to die");
         //TODO: associare player instance al client
         //chiamare costruttore di player -> game.addPlayer
     }
