@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class AchievementResources implements Achievement{
@@ -25,4 +26,13 @@ public class AchievementResources implements Achievement{
         point = this.basePoint * (Math.floorDiv(player.getPlayerBoard().getSymbolCount(this.symbol), 3));
         player.addPoints(point);
     }
+
+    @Override
+    public int getPoints(){ return this.basePoint; }
+    @Override
+    public Color getColor(){ return null; }
+    @Override
+    public ArrayList<Symbols> getSymbols(){ return null; }
+    @Override
+    public Symbols getSymbol(){ return this.symbol; }
 }

@@ -38,4 +38,13 @@ public class AchievementItem implements Achievement{
         }
         player.addPoints(point);
     }
+
+    @Override
+    public int getPoints(){ return this.basePoint; }
+    @Override
+    public Color getColor(){ return null; }
+    @Override
+    public ArrayList<Symbols> getSymbols(){ return this.symbol; }
+    @Override
+    public Symbols getSymbol(){ return null; }
 }

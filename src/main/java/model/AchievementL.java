@@ -78,4 +78,13 @@ public class AchievementL implements Achievement{
         }
         player.addPoints(point);
     }
+
+    @Override
+    public int getPoints(){ return this.basePoint; }
+    @Override
+    public Color getColor(){ return this.color; }
+    @Override
+    public ArrayList<Symbols> getSymbols(){ return null; }
+    @Override
+    public Symbols getSymbol(){ return null; }
 }

@@ -15,8 +15,8 @@ public enum Symbols {
     EMPTY("✔"),
     NOCORNER("ㅤ"),
     EMPTY_SPACE("ㅤ"),
-    CORNER("\u2196");
-
+    CORNER("\u2196"),
+    CARD("\u2B1B");
     String string;
     Symbols(String string){ this.string = string; }
 
