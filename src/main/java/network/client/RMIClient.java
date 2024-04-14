@@ -19,13 +19,13 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler{
         this.view = view;
         final String serverName = "GameServer";
         try {
-            Registry registry = LocateRegistry.getRegistry(host, port); //passare l'host name del server
-            server =(VirtualServer) registry.lookup(serverName);
+            Registry registry = LocateRegistry.getRegistry(host, port);
+            server = (VirtualServer) registry.lookup(serverName);
             while (server.usernameTaken(this.username)){
-                System.out.println("username is already taken, please choose another: ");
+                System.out.println("Username is already taken, please choose another: ");
                 this.username = view.askNickname();
             }
-            server.login(this, username);
+            server.login(this, this.username);
         } catch (RemoteException | NotBoundException e){
             System.out.println(e.getMessage());
         }
