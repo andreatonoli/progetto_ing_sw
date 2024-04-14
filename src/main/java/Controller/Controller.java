@@ -3,7 +3,7 @@ import model.*;
 import model.exceptions.*;
 
 import java.util.LinkedList;
-
+//TODO: replace System.out.println with messages
 public class Controller {
     private Game game; //reference to model
     public Controller(Game game){
@@ -54,6 +54,85 @@ public class Controller {
         throw new FullHandException();
     }
 
+    /**
+     * Permits the player to take one card from the board, then replaces it with the same type card drawed from the decks
+     * @param player who wants to take the card
+     * @param card taken by the player
+     */
+    public void drawCardFromBoard(Player player, Card card){
+        try {
+            GameBoard gameBoard = this.game.getGameBoard();
+            Card taken;
+            int takenIndex;
+            canDrawFromBoard(player, card);
+            if (card.getType().equalsIgnoreCase("Resource")){
+                if (card.equals(gameBoard.getCommonResource()[0])){
+                    taken = gameBoard.getCommonResource()[0];
+                    gameBoard.getCommonResource()[0] = null;
+                    takenIndex = 0;
+                }
+                else{
+                    taken = gameBoard.getCommonResource()[1];
+                    gameBoard.getCommonResource()[1] = null;
+                    takenIndex = 1;
+                }
+                player.addInHand(taken);
+                gameBoard.replaceResourceCard(takenIndex);
+            }
+            else if (card.getType().equalsIgnoreCase("Gold")){
+                if (card.equals(gameBoard.getCommonGold()[0])){
+                    taken = gameBoard.getCommonGold()[0];
+                    gameBoard.getCommonGold()[0] = null;
+                    takenIndex = 0;
+                }
+                else{
+                    taken = gameBoard.getCommonGold()[1];
+                    gameBoard.getCommonGold()[1] = null;
+                    takenIndex = 1;
+                }
+                player.addInHand(taken);
+                gameBoard.replaceGoldCard(takenIndex);
+            }
+        } catch (CardNotFoundException e) {
+            System.out.println("Cannot draw - Card is not on the board");
+        } catch (NotInTurnException e) {
+            System.out.println("Cannot draw - Player is not in draw card state");
+        } catch (FullHandException e) {
+            System.out.println("Cannot draw - Player's hand is full");
+        }
+    }
+
+    /**
+     * Checks if the player can draw from the board
+     * @param player who wants to take the card from the board
+     * @param card the player wants to take
+     * @throws CardNotFoundException the card the player wants to draw isn't on the board
+     * @throws NotInTurnException the player is not in the DRAW_CARD state
+     * @throws FullHandException player's hand is full
+     */
+    public void canDrawFromBoard(Player player, Card card) throws CardNotFoundException, NotInTurnException, FullHandException{
+        GameBoard gBoard = this.game.getGameBoard();
+        if (player.getPlayerState().equals(PlayerState.NOT_IN_TURN) || player.getPlayerState().equals(PlayerState.PLAY_CARD)){
+            throw new NotInTurnException();
+        }
+        if (card.getType().equalsIgnoreCase("Resource")){
+            //TODO: ottimizza
+            if (!card.equals(gBoard.getCommonResource()[0]) && !card.equals(gBoard.getCommonResource()[1])){
+                throw new CardNotFoundException();
+            }
+        }
+        else if (card.getType().equalsIgnoreCase("Gold")){
+            if (!card.equals(gBoard.getCommonGold()[0]) && !card.equals(gBoard.getCommonGold()[1])){
+                throw new CardNotFoundException();
+            }
+        }
+        for (int i = 0; i < 3; i++) {
+            if (player.getCardInHand()[i] == null){
+                return;
+            }
+        }
+        throw new FullHandException();
+    }
     /**
      * Place card then removes it from the player's hand
      * @param player who asked to place the card

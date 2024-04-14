@@ -41,4 +41,11 @@ public abstract class Card {
     public void setCornerState(CornerEnum corner, CornerState state){
         currentSide.corners[corner.ordinal()].setState(state);
     }
+
+    /**
+     * @return the type of the card (e.g. Resource, Gold)
+     */
+    public String getType(){
+        return  this.type;
+    }
 }
