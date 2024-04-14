@@ -1,6 +1,8 @@
 package view;
 
 import network.client.*;
+import network.server.Server;
+
 import java.io.PrintStream;
 import java.rmi.RemoteException;
 import java.util.Scanner;
@@ -23,13 +25,13 @@ public class TuiHandler implements Ui{
             String username = askNickname();
             out.println("Please specify the following settings. The default value is shown between brackets.");
             String address = askServerAddress();
-            int port = askServerPort();
-            out.println("Please, choose your connection method:\n\tI)RMI\n\tII)Socket");
+            out.println("Choose your connection method: Write:\n\tI)RMI\n\tII)Socket");
             choice = scanner.nextLine();
             while(!choice.equalsIgnoreCase("RMI") && !choice.equalsIgnoreCase("Socket")){
-                out.println("Wrong input.\nPlease, choose your connection method. Press:\n\tRMI\n\tSocket");
+                out.println("Wrong input.\nPlease, choose your connection method. Write:\n\tRMI\n\tSocket");
                 choice = scanner.nextLine();
             }
+            int port = askServerPort(choice);
             if (choice.equalsIgnoreCase("RMI")){
                 //probabilmente va salvata l'istanza di client
                 new RMIClient(username, address, port, this);
@@ -76,9 +78,15 @@ public class TuiHandler implements Ui{
      * @return the chosen server port
      */
     @Override
-    public int askServerPort() {
+    public int askServerPort(String connection) {
         String port;
-        String defaultPort = "1234";
+        String defaultPort;
+        if (connection.equalsIgnoreCase("RMI")){
+            defaultPort = String.valueOf(Server.rmiPort);
+        }
+        else{
+            defaultPort = String.valueOf(Server.socketPort);
+        }
         System.out.print("Enter the server port [" + defaultPort + "]: ");
         port = scanner.nextLine();
         if (port.isEmpty()) {

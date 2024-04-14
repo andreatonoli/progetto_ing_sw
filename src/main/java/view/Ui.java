@@ -8,5 +8,5 @@ import java.rmi.RemoteException;
 public interface Ui{
     String askNickname();
     String askServerAddress();
-    int askServerPort();
+    int askServerPort(String connectionType);
 }
