@@ -7,7 +7,6 @@ import org.junit.jupiter.api.DisplayName;
 import java.io.IOException;
 import java.util.LinkedList;
 
-//Non funzia perchè mano popolata da costruttore player
 public class DrawTest {
     /**
      * Test checks that a player that can draw a card draws it and adds it to his hand, then the card is removed from the deck
