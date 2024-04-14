@@ -37,7 +37,7 @@ public class TuiHandler implements Ui{
                 new RMIClient(username, address, port, this);
             }
             else{
-                new SocketClient();
+                new SocketClient(username, address, port, this);
             }
         } catch (RemoteException e) {
             throw new RuntimeException(e);

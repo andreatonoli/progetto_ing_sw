@@ -9,4 +9,9 @@ public class RMIConnection extends Connection {
         this.client = client;
         this.server = server;
     }
+
+    @Override
+    public void sendMessage() {
+
+    }
 }

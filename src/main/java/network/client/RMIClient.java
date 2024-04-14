@@ -1,7 +1,10 @@
 package network.client;
 
+import java.util.*;
+
 import network.server.VirtualServer;
 import view.Ui;
+import model.Game;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -30,4 +33,15 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler{
             System.out.println(e.getMessage());
         }
     }
+
+    public Game selectGame(List<Game> activeGames){
+        System.out.println("select one of the following game's lobby");
+        for (int i=1; i<=activeGames.size(); i++){
+            System.out.println("lobby " + i);
+        }
+        Scanner scanner = new Scanner(System.in);
+        scanner.next();
+        return activeGames.get(scanner.nextInt());
+    }
+
 }
