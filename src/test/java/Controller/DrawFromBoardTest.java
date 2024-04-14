@@ -10,7 +10,7 @@ public class DrawFromBoardTest {
     @Test
     @DisplayName("Take Resource from Board")
     public void takeResource(){
-        Game game = new Game();
+        Game game = new Game(4);
         Controller c = new Controller(game);
         Player p = new Player("pippo", game);
         Card rCard = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null, new Corner(Symbols.FUNGI) }, 1, 0);

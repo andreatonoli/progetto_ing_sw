@@ -67,7 +67,7 @@ public class SocketConnection extends Connection implements Runnable {
     public int setLobbySize() {
         return 0;
     }
-
+    //TODO: game controller?
     public void onMessage(Message message){
         switch (message.getType()){
             case LOGIN_RESPONSE:

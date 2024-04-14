@@ -18,7 +18,7 @@ public class PlayerChatTest {
      * Exception for not existing file
      */
     public PlayerChatTest() throws IOException {
-        this.game1 = new Game();
+        this.game1 = new Game(4);
         this.board1 = new GameBoard(game1);
     }
 

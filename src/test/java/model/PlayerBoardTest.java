@@ -12,10 +12,10 @@ public class PlayerBoardTest {
     @Test
     @DisplayName("Assigning Starter Card")
     public void PlayerStarterCardTest() throws IOException {
-        Game game = new Game();
+        Game game = new Game(4);
         Player player = new Player("Ugo", game);
         //game.addPlayer(player);
-        //game.startGame();
+        //game.startGame(4);
         StarterCard a = new StarterCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}, 2, new CardBack(new ArrayList<>(List.of(Symbols.FUNGI)), Color.WHITE, new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY)}));
         player.getPlayerBoard().setStarterCard(a);
         assertEquals(1, player.getPlayerBoard().getSymbolCount(Symbols.FUNGI));
@@ -27,7 +27,7 @@ public class PlayerBoardTest {
     @Test
     @DisplayName("Assigning a Flipped Starter Card")
     public void PlayerFlippedStarterCardTest() throws IOException{
-        Game game = new Game();
+        Game game = new Game(4);
         Player player = new Player("pippo", game);
         Controller c = new Controller(game);
         StarterCard a = new StarterCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}, 2, new CardBack(new ArrayList<>(List.of(Symbols.FUNGI)), Color.WHITE, new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY)}));
