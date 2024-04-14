@@ -19,6 +19,7 @@ public class RMIServer implements VirtualServer {
     //private final Controller controller;
     private final Server server;
     private final int port;
+    private RMIConnection connection;
     private final static int CAPACITY = 10;
     private final BlockingQueue<String> updates = new ArrayBlockingQueue<>(CAPACITY);
 
@@ -42,7 +43,8 @@ public class RMIServer implements VirtualServer {
 
     //@Override
     public void login(RMIClientHandler client, String username) throws RemoteException {
-        server.login(client, username);
+        connection = new RMIConnection(server, client);
+        server.login(connection, username);
     }
 
     public void startServer(){

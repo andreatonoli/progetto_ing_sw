@@ -4,7 +4,7 @@ import model.exceptions.PlayerNotFoundException;
 
 import java.util.*;
 
-public class Player {
+public class  Player {
     private final String username;
     private boolean firstToEnd;
     private boolean firstToPlay;

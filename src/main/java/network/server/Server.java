@@ -13,7 +13,7 @@ import java.util.*;
 
 public class Server {
     private List<Game> activeGames;
-    private final Map<RMIClientHandler, String> client;
+    private final Map<Connection, String> client;
     public final static int rmiPort = 1234;
     public final static int socketPort = 1235;
     public Server(){
@@ -30,13 +30,15 @@ public class Server {
         new RMIServer(this, rmiPort);
         new SocketServer(this, socketPort);
     }
-    //TODO: creare un handler in comune tra socket e RMI
-    public void login(RMIClientHandler client, String username) throws RemoteException {
+    //TODO: creare un handler in comune tra socket e RMI => inserirci booleano connesso/non connesso
+    public void login(Connection client, String username) throws RemoteException {
         this.client.put(client, username);
         System.err.println("user "+ username + " connected and ready to die");
         //TODO: associare player instance al client
+
         //chiamare costruttore di player -> game.addPlayer
     }
+
     public boolean usernameTaken(String username) throws RemoteException{
         return client.containsValue(username);
     }
