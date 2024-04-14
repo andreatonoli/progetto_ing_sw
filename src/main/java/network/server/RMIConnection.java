@@ -1,7 +1,10 @@
 package network.server;
 
+import model.Game;
 import network.client.RMIClientHandler;
 import network.messages.Message;
+
+import java.util.List;
 
 public class RMIConnection extends Connection {
     RMIClientHandler client;
@@ -14,5 +17,10 @@ public class RMIConnection extends Connection {
     @Override
     public void sendMessage(Message message) {
 
+    }
+
+    @Override
+    public int joinGame(List<Game> startingGames) {
+        return this.client.joinGame(startingGames);
     }
 }

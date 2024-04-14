@@ -13,6 +13,7 @@ public class Game {
     private GameBoard gameBoard;
     private GameState gameState;
     private ArrayList<Player> players;
+    private boolean gameFull;
     private Player firstPlayer;
     private Player playerInTurn;
     private Chat chatHandler;
@@ -26,6 +27,7 @@ public class Game {
 
     public Game() {
         this.gameState = GameState.WAIT_PLAYERS;
+        this.gameFull = false;
         this.players = new ArrayList<Player>();
         //this.players.add(first);
         this.firstPlayer = null;
@@ -167,6 +169,13 @@ public class Game {
     //temporaneo
     public void addPlayer(Player player){
         this.players.add(player);
+        if (players.size()==4){
+            gameFull=true;
+        }
+    }
+
+    public boolean isFull(){
+        return gameFull;
     }
 
     public GameBoard getGameBoard(){

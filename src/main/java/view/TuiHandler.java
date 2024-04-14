@@ -97,12 +97,13 @@ public class TuiHandler implements Ui{
         return Integer.parseInt(port);
     }
     @Override
-    public int selectGame(List<Game> activeGames){
+    public int selectGame(List<Game> startingGames){
         System.out.println("select one of the following game's lobby by writing the respective number");
-        System.out.println("lobby 0 (create new game)");
-        for (int i=1; i<=activeGames.size(); i++){
+        int i;
+        for (i = 0; i < startingGames.size(); i++){
             System.out.println("lobby " + i);
         }
+        System.out.println("lobby " + (i + 1) + "(create new game)");
         return scanner.nextInt();
     }
 }

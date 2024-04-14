@@ -1,6 +1,6 @@
 package network.messages;
 
 public enum MessageType {
-    LOGIN_REQUEST,
-    LOGIN_RESPONSE
+    LOGIN_RESPONSE,
+    USERNAME_REQUEST
 }

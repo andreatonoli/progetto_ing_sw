@@ -34,9 +34,8 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler{
         }
     }
 
-    public int joinGame(List<Game> activeGames){
-        int lobby = this.view.selectGame(activeGames);
-        return lobby-1;
+    public int joinGame(List<Game> startingGames){
+        return this.view.selectGame(startingGames);
     }
 
 }
