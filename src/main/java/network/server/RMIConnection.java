@@ -4,6 +4,7 @@ import model.Game;
 import network.client.RMIClientHandler;
 import network.messages.Message;
 
+import java.rmi.RemoteException;
 import java.util.List;
 
 public class RMIConnection extends Connection {
@@ -20,7 +21,23 @@ public class RMIConnection extends Connection {
     }
 
     @Override
-    public int joinGame(List<Game> startingGames) {
-        return this.client.joinGame(startingGames);
+    public int joinGame(List<Game> startingGames){
+        try{
+            return this.client.joinGame(startingGames);
+        } catch (RemoteException e){
+            System.err.println(e.getMessage());
+        }
+        return -1;
     }
+
+    @Override
+    public int setLobbySize(){
+        try {
+            return this.client.setLobbySize();
+        } catch (RemoteException e) {
+            System.err.println(e.getMessage());
+        }
+        return -1;
+    }
+
 }

@@ -62,6 +62,12 @@ public class SocketConnection extends Connection implements Runnable {
     public int joinGame(List<Game> activeGames) {
         return 0;
     }
+
+    @Override
+    public int setLobbySize() {
+        return 0;
+    }
+
     public void onMessage(Message message){
         switch (message.getType()){
             case LOGIN_RESPONSE:

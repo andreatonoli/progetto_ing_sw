@@ -8,8 +8,6 @@ import java.util.List;
 
 //utiliziamo dal server per contattare il client
 public interface RMIClientHandler extends Remote {
-    int joinGame(List<Game> activeGames);
-
-    //void showUpdate(String update) throws RemoteException;
-    //String askNickname();
+    int joinGame(List<Game> activeGames) throws RemoteException;
+    int setLobbySize() throws RemoteException;
 }

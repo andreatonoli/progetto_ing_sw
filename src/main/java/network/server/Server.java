@@ -3,6 +3,7 @@ package network.server;
 import Controller.Controller;
 import model.Game;
 import model.GameState;
+import model.Player;
 
 import java.util.*;
 
@@ -16,6 +17,7 @@ public class Server {
     public Server(){
         this.client = Collections.synchronizedMap(new HashMap<>());
         this.activeGames = Collections.synchronizedList(new ArrayList<>());
+        this.startingGames = Collections.synchronizedList(new ArrayList<>());
         //Starts the RMI server and the socket server
         startServer();
     }
@@ -31,21 +33,25 @@ public class Server {
     public void login(Connection client, String username){
         this.client.put(client, username);
         System.err.println("user "+ username + " connected and ready to die");
-        //TODO: associare player instance al client
-        int gameIndex = client.joinGame(startingGames);
-        if (gameIndex == startingGames.size()){
-            this.startingGames.add(new Game());
+        Game game;
+        if (this.startingGames.isEmpty()){
+            game = new Game(client.setLobbySize());
+            this.startingGames.add(game);
         }
-        
-        //chiamare costruttore di player -> game.addPlayer
-        Game game = startingGames.get(gameIndex);
-        game.addPlayer();
+        else{
+            int gameIndex = client.joinGame(startingGames);
+            if (gameIndex == startingGames.size()){
+                this.startingGames.add(new Game(client.setLobbySize()));
+            }
+            game = startingGames.get(gameIndex);
+        }
+        Player player = new Player(username, game);
+        game.addPlayer(player);
         if (game.isFull()){
-            game.setGameState(GameState.START);
+            game.startGame();
             activeGames.add(game);
             startingGames.remove(game);
         }
-        //TODO: aggiungere modo per avviare il game e quindi aggiugngere il game a activeGames
     }
 
     public boolean usernameTaken(String username){

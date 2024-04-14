@@ -12,4 +12,6 @@ public interface Ui{
     String askServerAddress();
     int askServerPort(String connectionType);
     int selectGame(List<Game> activeGames);
+
+    int setLobbySize();
 }

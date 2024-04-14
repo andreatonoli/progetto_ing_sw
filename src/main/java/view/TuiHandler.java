@@ -98,12 +98,27 @@ public class TuiHandler implements Ui{
     }
     @Override
     public int selectGame(List<Game> startingGames){
-        System.out.println("select one of the following game's lobby by writing the respective number");
+        System.out.println("Select one of the following game's lobby by writing the respective number");
         int i;
         for (i = 0; i < startingGames.size(); i++){
-            System.out.println("lobby " + i);
+            System.out.println("Lobby " + i);
         }
-        System.out.println("lobby " + (i + 1) + "(create new game)");
-        return scanner.nextInt();
+        System.out.println("Lobby " + (i + 1) + "(create new game)");
+        int choice = scanner.nextInt();
+        while (choice > startingGames.size() || choice < 0){
+            System.out.print("Invalid input.\nInsert the lobby number: ");
+            choice = scanner.nextInt();
+        }
+        return choice;
+    }
+
+    public int setLobbySize(){
+        System.out.println("Select the lobby's capacity (min is 2 and max is 4 players)");
+        int lobbySize = scanner.nextInt();
+        while (lobbySize<2 || lobbySize>4){
+            System.out.println("Invalid input.\n Insert a valid number");
+            lobbySize = scanner.nextInt();
+        }
+        return lobbySize;
     }
 }
