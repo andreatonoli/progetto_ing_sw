@@ -1,8 +1,9 @@
 package model;
 
+import java.io.Serializable;
 import java.util.List;
 
-public abstract class Card {
+public abstract class Card implements Serializable {
     //TODO: fare in modo di sfruttare correttamente l'ereditarietà
     protected Corner[] corners;
     /** Card's ID is composed of its type and its card_number value */

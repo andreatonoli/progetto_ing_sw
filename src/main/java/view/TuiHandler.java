@@ -103,7 +103,7 @@ public class TuiHandler implements Ui{
         for (i = 0; i < startingGames.size(); i++){
             System.out.println("Lobby " + i);
         }
-        System.out.println("Lobby " + (i + 1) + "(create new game)");
+        System.out.println("Lobby " + i + "(create new game)");
         int choice = scanner.nextInt();
         while (choice > startingGames.size() || choice < 0){
             System.out.print("Invalid input.\nInsert the lobby number: ");
