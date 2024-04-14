@@ -1,10 +1,12 @@
 package view;
 
+import model.Game;
 import network.client.*;
 import network.server.Server;
 
 import java.io.PrintStream;
 import java.rmi.RemoteException;
+import java.util.List;
 import java.util.Scanner;
 //TODO: Mergeare TUI e TUIHandler
 public class TuiHandler implements Ui{
@@ -93,5 +95,14 @@ public class TuiHandler implements Ui{
             port = defaultPort;
         }
         return Integer.parseInt(port);
+    }
+    @Override
+    public int selectGame(List<Game> activeGames){
+        System.out.println("select one of the following game's lobby by writing the respective number");
+        System.out.println("lobby 0 (create new game)");
+        for (int i=1; i<=activeGames.size(); i++){
+            System.out.println("lobby " + i);
+        }
+        return scanner.nextInt();
     }
 }

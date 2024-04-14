@@ -27,7 +27,7 @@ public class SocketServer {
         while(true){
             try {
                 Socket socket = serverSocket.accept();
-                executor.submit(new SocketClientHandler(socket));
+                executor.submit(new SocketConnection(this.server, socket));
             } catch (IOException e) {
                 System.err.println(e.getMessage());
                 return;

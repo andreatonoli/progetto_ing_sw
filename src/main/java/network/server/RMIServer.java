@@ -49,10 +49,9 @@ public class RMIServer implements VirtualServer {
 
     public void startServer(){
         try {
-            final String serverName = "GameServer";
             VirtualServer stub = (VirtualServer) UnicastRemoteObject.exportObject(this, 0);
             Registry registry = LocateRegistry.createRegistry(1234);
-            registry.rebind(serverName, stub);
+            registry.rebind(Server.serverName, stub);
             System.out.println("RMI server bound.");
         } catch (RemoteException e) {
             System.out.println("Connection error");

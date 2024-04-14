@@ -34,14 +34,9 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler{
         }
     }
 
-    public Game selectGame(List<Game> activeGames){
-        System.out.println("select one of the following game's lobby");
-        for (int i=1; i<=activeGames.size(); i++){
-            System.out.println("lobby " + i);
-        }
-        Scanner scanner = new Scanner(System.in);
-        scanner.next();
-        return activeGames.get(scanner.nextInt());
+    public int joinGame(List<Game> activeGames){
+        int lobby = this.view.selectGame(activeGames);
+        return lobby-1;
     }
 
 }

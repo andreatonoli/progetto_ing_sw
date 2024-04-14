@@ -1,6 +1,7 @@
 package network.server;
 
 import network.client.RMIClientHandler;
+import network.messages.Message;
 
 public class RMIConnection extends Connection {
     RMIClientHandler client;
@@ -11,7 +12,7 @@ public class RMIConnection extends Connection {
     }
 
     @Override
-    public void sendMessage() {
+    public void sendMessage(Message message) {
 
     }
 }

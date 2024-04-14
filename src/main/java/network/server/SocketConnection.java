@@ -1,5 +1,8 @@
 package network.server;
 
+import network.messages.LoginRequest;
+import network.messages.Message;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -24,6 +27,7 @@ public class SocketConnection extends Connection implements Runnable {
     @Override
     public void run(){
         //TODO: capire quando chiudere connessione
+        sendMessage(new LoginRequest());
         //while(true){
         //
         //}
@@ -39,7 +43,7 @@ public class SocketConnection extends Connection implements Runnable {
     }
 
     @Override
-    public void sendMessage() {
-
+    public void sendMessage(Message message) {
+        out.write(String.valueOf(message));
     }
 }
