@@ -18,13 +18,13 @@ public class SocketConnection extends Connection implements Runnable {
     private Message message;
 
     public SocketConnection(Server server, Socket socket){
-        this.server = server;
-        this.socket = socket;
-        try {
-            in = new ObjectInputStream(socket.getInputStream());
+        try{
+            this.server = server;
+            this.socket = socket;
             out = new ObjectOutputStream(socket.getOutputStream());
+            in = new ObjectInputStream(socket.getInputStream());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.err.println(e.getMessage());
         }
     }
     @Override
@@ -73,6 +73,7 @@ public class SocketConnection extends Connection implements Runnable {
         switch (message.getType()){
             case LOGIN_RESPONSE:
                 if (server.usernameTaken(message.getSender())){
+                    System.out.println("Ciao carlo");
                     sendMessage(new UsernameRequestMessage());
                 }
                 else{

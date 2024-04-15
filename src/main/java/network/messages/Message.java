@@ -1,6 +1,8 @@
 package network.messages;
 
-public abstract class Message {
+import java.io.Serializable;
+
+public abstract class Message implements Serializable {
     private MessageType type;
     private String sender;
     public Message(MessageType type, String sender){

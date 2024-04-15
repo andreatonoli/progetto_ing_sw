@@ -24,9 +24,8 @@ public class SocketClient {
     public void startClient(String address, int port){
         try {
             Socket socket = new Socket(address, port);
-            System.out.println("Connection established"); //TOGLI
-            in = new ObjectInputStream(socket.getInputStream());
             out = new ObjectOutputStream(socket.getOutputStream());
+            in = new ObjectInputStream(socket.getInputStream());
             sendMessage(new LoginResponseMessage(this.username));
             //TODO: capire come far chiudere la connessione
             while(true){
