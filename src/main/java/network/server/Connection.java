@@ -6,7 +6,11 @@ import network.messages.Message;
 import java.util.List;
 
 public abstract class Connection {
+    private boolean isConnected;
+    public boolean getConnectionStatus(){
+        return isConnected;
+    }
     public abstract void sendMessage(Message message);
-    public abstract int joinGame(List<Game> startingGames);
-    public abstract int setLobbySize();
+    public abstract void joinGame(List<Game> startingGames);
+    public abstract void createGame();
 }

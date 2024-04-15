@@ -14,7 +14,7 @@ public class Game implements Serializable {
     private int lobbySize;
     private GameBoard gameBoard;
     private GameState gameState;
-    private ArrayList<Player> players;
+    private final ArrayList<Player> players;
     private boolean gameFull;
     private Player firstPlayer;
     private Player playerInTurn;
@@ -154,11 +154,12 @@ public class Game implements Serializable {
         return this.players;
     }
 
-    //temporaneo
     public void addPlayer(Player player){
-        this.players.add(player);
-        if (players.size()==this.lobbySize){
-            gameFull=true;
+        synchronized (this.players){
+            this.players.add(player);
+            if (players.size()==this.lobbySize){
+                gameFull=true;
+            }
         }
     }
 

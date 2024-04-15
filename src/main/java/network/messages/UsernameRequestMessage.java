@@ -2,8 +2,8 @@ package network.messages;
 
 import network.server.Server;
 
-public class UsernameRequest extends Message{
-    public UsernameRequest() {
+public class UsernameRequestMessage extends Message{
+    public UsernameRequestMessage() {
         super(MessageType.USERNAME_REQUEST, Server.serverName);
     }
     @Override

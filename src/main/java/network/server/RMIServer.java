@@ -43,7 +43,7 @@ public class RMIServer implements VirtualServer {
 
     //@Override
     public void login(RMIClientHandler client, String username) throws RemoteException {
-        connection = new RMIConnection(server, client);
+        connection = new RMIConnection(server, client, username);
         server.login(connection, username);
     }
 

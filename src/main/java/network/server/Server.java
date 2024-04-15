@@ -32,19 +32,31 @@ public class Server {
     //TODO: creare un handler in comune tra socket e RMI => inserirci booleano connesso/non connesso
     public void login(Connection client, String username){
         this.client.put(client, username);
-        System.err.println("user "+ username + " connected and ready to die");
-        Game game;
+        System.err.println("user " + username + " connected and ready to die");
         if (this.startingGames.isEmpty()){
-            game = new Game(client.setLobbySize());
-            this.startingGames.add(game);
+            client.createGame();
         }
         else{
-            int gameIndex = client.joinGame(startingGames);
-            if (gameIndex == startingGames.size()){
-                this.startingGames.add(new Game(client.setLobbySize()));
-            }
-            game = startingGames.get(gameIndex);
+            client.joinGame(this.startingGames);
         }
+    }
+
+    public boolean usernameTaken(String username){
+        return client.containsValue(username);
+    }
+    public void createLobby(String username, int numPlayers){
+        Game game = new Game(numPlayers);
+        this.startingGames.add(game);
+        Player player = new Player(username, game);
+        game.addPlayer(player);
+        if (game.isFull()){ //si può incorporare in addPlayer?
+            game.startGame();
+            activeGames.add(game);
+            startingGames.remove(game);
+        }
+    }
+    public void joinLobby(String username, int indexGame){
+        Game game = this.startingGames.get(indexGame);
         Player player = new Player(username, game);
         game.addPlayer(player);
         if (game.isFull()){
@@ -52,9 +64,5 @@ public class Server {
             activeGames.add(game);
             startingGames.remove(game);
         }
-    }
-
-    public boolean usernameTaken(String username){
-        return client.containsValue(username);
     }
 }

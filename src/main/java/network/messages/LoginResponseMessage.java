@@ -1,7 +1,7 @@
 package network.messages;
 //TODO: completa il messaggio
-public class LoginResponse extends Message{
-    public LoginResponse(String username){
+public class LoginResponseMessage extends Message{
+    public LoginResponseMessage(String username){
         super(MessageType.LOGIN_RESPONSE, username);
     }
     @Override

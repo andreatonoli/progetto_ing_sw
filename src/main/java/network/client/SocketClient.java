@@ -1,13 +1,11 @@
 package network.client;
 
-import network.messages.LoginResponse;
-import network.messages.Message;
+import network.messages.*;
 import view.Ui;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
 
@@ -29,7 +27,7 @@ public class SocketClient {
             System.out.println("Connection established"); //TOGLI
             in = new ObjectInputStream(socket.getInputStream());
             out = new ObjectOutputStream(socket.getOutputStream());
-            sendMessage(new LoginResponse(this.username));
+            sendMessage(new LoginResponseMessage(this.username));
             //TODO: capire come far chiudere la connessione
             while(true){
                 readMessage();
@@ -62,7 +60,22 @@ public class SocketClient {
             case USERNAME_REQUEST:
                 System.out.println("Username is already taken, please choose another: ");
                 this.username = this.view.askNickname();
-                sendMessage(new LoginResponse(this.username));
+                sendMessage(new LoginResponseMessage(this.username));
+                break;
+            case FREE_LOBBY:
+                int freeLobbySize = ((FreeLobbyMessage) message).getStartingGames().size();
+                int response = this.view.selectGame(((FreeLobbyMessage) message).getStartingGames());
+                if (response == freeLobbySize){
+                    int lobbySize = this.view.setLobbySize();
+                    sendMessage(new NumPlayerResponseMessage(this.username, lobbySize));
+                }
+                else {
+                    sendMessage(new LobbyIndexMessage(this.username, response));
+                }
+                break;
+            case NUM_PLAYER_REQUEST:
+                int lobbySize = this.view.setLobbySize();
+                sendMessage(new NumPlayerResponseMessage(this.username, lobbySize));
                 break;
             default:
                 break;

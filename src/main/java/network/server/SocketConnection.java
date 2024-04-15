@@ -1,8 +1,7 @@
 package network.server;
 
 import model.Game;
-import network.messages.UsernameRequest;
-import network.messages.Message;
+import network.messages.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -16,6 +15,8 @@ public class SocketConnection extends Connection implements Runnable {
     private Socket socket;
     private ObjectInputStream in;
     private ObjectOutputStream out;
+    private Message message;
+
     public SocketConnection(Server server, Socket socket){
         this.server = server;
         this.socket = socket;
@@ -59,24 +60,30 @@ public class SocketConnection extends Connection implements Runnable {
     }
 
     @Override
-    public int joinGame(List<Game> activeGames) {
-        return 0;
+    public void joinGame(List<Game> activeGames) {
+        sendMessage(new FreeLobbyMessage(activeGames));
     }
 
     @Override
-    public int setLobbySize() {
-        return 0;
+    public void createGame() {
+        sendMessage(new NumPlayerRequestMessage());
     }
     //TODO: game controller?
     public void onMessage(Message message){
         switch (message.getType()){
             case LOGIN_RESPONSE:
                 if (server.usernameTaken(message.getSender())){
-                    sendMessage(new UsernameRequest());
+                    sendMessage(new UsernameRequestMessage());
                 }
                 else{
                     server.login(this, message.getSender());
                 }
+                break;
+            case NUM_PLAYER_RESPONSE:
+                server.createLobby(message.getSender(), ((NumPlayerResponseMessage) message).getSize());
+                break;
+            case LOBBY_INDEX:
+                server.joinLobby(message.getSender(), ((LobbyIndexMessage) message).getChoice());
                 break;
             default:
                 break;

@@ -11,6 +11,11 @@ public class FreeLobbyMessage extends Message{
         super(MessageType.FREE_LOBBY, Server.serverName);
         this.startingGames = startingGames;
     }
+
+    public List<Game> getStartingGames() {
+        return startingGames;
+    }
+
     @Override
     public String toString(){
         return "FreeLobbyMessage{" +

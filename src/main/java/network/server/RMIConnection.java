@@ -8,11 +8,13 @@ import java.rmi.RemoteException;
 import java.util.List;
 
 public class RMIConnection extends Connection {
-    RMIClientHandler client;
-    Server server;
-    public RMIConnection(Server server, RMIClientHandler client){
+    private RMIClientHandler client;
+    private Server server;
+    private String username;
+    public RMIConnection(Server server, RMIClientHandler client, String username){
         this.client = client;
         this.server = server;
+        this.username = username;
     }
 
     @Override
@@ -21,23 +23,27 @@ public class RMIConnection extends Connection {
     }
 
     @Override
-    public int joinGame(List<Game> startingGames){
+    public void joinGame(List<Game> startingGames){
         try{
-            return this.client.joinGame(startingGames);
+            int response = this.client.joinGame(startingGames);
+            if (response == startingGames.size()){
+                this.server.createLobby(this.username, this.client.setLobbySize());
+            }
+            else{
+                this.server.joinLobby(this.username, response);
+            }
         } catch (RemoteException e){
             System.err.println(e.getMessage());
         }
-        return -1;
     }
 
     @Override
-    public int setLobbySize(){
+    public void createGame(){
         try {
-            return this.client.setLobbySize();
+            this.server.createLobby(this.username, this.client.setLobbySize());
         } catch (RemoteException e) {
             System.err.println(e.getMessage());
         }
-        return -1;
     }
 
 }
