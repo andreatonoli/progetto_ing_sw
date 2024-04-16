@@ -45,14 +45,9 @@ public class SocketClient {
         try {
             message = (Message) in.readObject();
             update(message);
-        } catch (IOException e) {
+        } catch (IOException | ClassNotFoundException e) {
             this.onDisconnect();
             System.err.println(e.getMessage());
-            System.out.println("CULO");
-        } catch (ClassNotFoundException e) {
-            this.onDisconnect();
-            System.err.println(e.getMessage());
-            System.out.println("PALLE");
         }
     }
     public void sendMessage(Message message){

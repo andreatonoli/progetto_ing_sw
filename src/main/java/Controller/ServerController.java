@@ -29,6 +29,9 @@ public class ServerController {
         game.addPlayer(player);
         if (game.isFull()){
             game.startGame();
+            for (Player p : game.getPlayers()){
+                this.obs.get(p).sendMessage(new GenericMessage(Server.serverName, "Starting game..."));
+            }
             return true;
         }
         for (Player p : game.getPlayers()){

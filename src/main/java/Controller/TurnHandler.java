@@ -1,7 +1,9 @@
 package Controller;
 import model.*;
 
-public class TurnHandler {
+import java.io.Serializable;
+
+public class TurnHandler implements Serializable {
     Game game;
 
     public TurnHandler(Game game){

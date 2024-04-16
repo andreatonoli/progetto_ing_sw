@@ -2,9 +2,10 @@ package Controller;
 import model.*;
 import model.exceptions.*;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 //TODO: replace System.out.println with messages
-public class Controller {
+public class Controller implements Serializable {
     private final Game game; //reference to model
     private TurnHandler turnHandler;
     public Controller(int numPlayers){
