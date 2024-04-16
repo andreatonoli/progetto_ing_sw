@@ -16,6 +16,7 @@ public class SocketClient {
     private Scanner stdin; //forse inutile
     private ObjectInputStream in;
     private ObjectOutputStream out;
+    private boolean disconnected = false;
     public SocketClient(String username, String address, int port, Ui view){
         this.username = username;
         this.view = view;
@@ -29,7 +30,7 @@ public class SocketClient {
             in = new ObjectInputStream(socket.getInputStream());
             sendMessage(new LoginResponseMessage(this.username));
             //TODO: capire come far chiudere la connessione
-            while(true){
+            while(!disconnected){
                 readMessage();
             }
         } catch (IOException e) {
@@ -44,10 +45,14 @@ public class SocketClient {
         try {
             message = (Message) in.readObject();
             update(message);
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException e) {
             this.onDisconnect();
             System.err.println(e.getMessage());
-            System.out.println("Connection successfully ended");
+            System.out.println("CULO");
+        } catch (ClassNotFoundException e) {
+            this.onDisconnect();
+            System.err.println(e.getMessage());
+            System.out.println("PALLE");
         }
     }
     public void sendMessage(Message message){
@@ -90,6 +95,7 @@ public class SocketClient {
     public void onDisconnect(){
         try {
             this.sendMessage(new ErrorMessage(this.username, "Disconnection"));
+            this.disconnected = true;
             in.close();
             out.close();
             socket.close();
