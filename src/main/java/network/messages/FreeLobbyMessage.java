@@ -2,17 +2,19 @@ package network.messages;
 
 import model.Game;
 import network.server.Server;
+import view.Ui;
+import Controller.*;
 
 import java.util.List;
 
 public class FreeLobbyMessage extends Message{
-    private List<Game> startingGames;
-    public FreeLobbyMessage(List<Game> startingGames) {
+    private List<Controller> startingGames;
+    public FreeLobbyMessage(List<Controller> startingGames) {
         super(MessageType.FREE_LOBBY, Server.serverName);
         this.startingGames = startingGames;
     }
 
-    public List<Game> getStartingGames() {
+    public List<Controller> getStartingGames() {
         return startingGames;
     }
 

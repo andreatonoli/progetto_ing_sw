@@ -10,11 +10,12 @@ public class ServerController {
     public ServerController(Server server){
         this.server = server;
     }
-    public Game createLobby(String username, int numPlayers){
-        Game game = new Game(numPlayers);
+    public Controller createLobby(String username, int numPlayers){
+        Controller controller = new Controller(numPlayers);
+        Game game = controller.getGame();
         Player player = new Player(username, game);
         game.addPlayer(player);
-        return game;
+        return controller;
     }
     public boolean joinLobby(String username, Game game){
         Player player = new Player(username, game);

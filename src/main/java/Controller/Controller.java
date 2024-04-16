@@ -5,10 +5,10 @@ import model.exceptions.*;
 import java.util.LinkedList;
 //TODO: replace System.out.println with messages
 public class Controller {
-    private Game game; //reference to model
+    private final Game game; //reference to model
     private TurnHandler turnHandler;
-    public Controller(Game game){
-        this.game = game;
+    public Controller(int numPlayers){
+        this.game = new Game(numPlayers);
         this.turnHandler = new TurnHandler();
     }
     /**
@@ -237,6 +237,10 @@ public class Controller {
         if (choice <= 1){
             player.setChosenObj(player.getPersonalObj()[choice]);
         }
+    }
+
+    public Game getGame(){
+        return this.game;
     }
 
 }

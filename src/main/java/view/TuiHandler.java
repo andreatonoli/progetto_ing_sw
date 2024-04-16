@@ -1,5 +1,6 @@
 package view;
 
+import Controller.Controller;
 import model.Game;
 import network.client.*;
 import network.server.Server;
@@ -97,7 +98,7 @@ public class TuiHandler implements Ui{
         return Integer.parseInt(port);
     }
     @Override
-    public int selectGame(List<Game> startingGames){
+    public int selectGame(List<Controller> startingGames){
         System.out.println("Select one of the following game's lobby by writing the respective number");
         int i;
         for (i = 0; i < startingGames.size(); i++){

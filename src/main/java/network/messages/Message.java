@@ -1,5 +1,9 @@
 package network.messages;
 
+import network.server.Connection;
+import network.server.Server;
+import view.Ui;
+
 import java.io.Serializable;
 
 public abstract class Message implements Serializable {

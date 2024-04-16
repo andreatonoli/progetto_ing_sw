@@ -1,6 +1,7 @@
 package network.messages;
 
 import network.server.Server;
+import view.Ui;
 
 public class LobbyIndexMessage extends Message{
     private int choice;
@@ -11,6 +12,8 @@ public class LobbyIndexMessage extends Message{
     public int getChoice(){
         return choice;
     }
+
+
     @Override
     public String toString(){
         return "LobbyIndexMessage{" +

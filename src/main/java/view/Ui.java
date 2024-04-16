@@ -1,5 +1,6 @@
 package view;
 
+import Controller.Controller;
 import model.Game;
 import network.server.VirtualServer;
 
@@ -11,7 +12,7 @@ public interface Ui{
     String askNickname();
     String askServerAddress();
     int askServerPort(String connectionType);
-    int selectGame(List<Game> activeGames);
+    int selectGame(List<Controller> activeGames);
 
     int setLobbySize();
 }

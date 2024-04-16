@@ -8,8 +8,8 @@ import model.Player;
 import java.util.*;
 
 public class Server {
-    private List<Game> activeGames;
-    private List<Game> startingGames;
+    private List<Controller> activeGames;
+    private List<Controller> startingGames;
     private final Map<Connection, String> client;
     private final ServerController controller;
     public final static String serverName = "GameServer";
@@ -50,11 +50,12 @@ public class Server {
         this.startingGames.add(controller.createLobby(username, numPlayers));
     }
     public void joinLobby(String username, int indexGame){
-        Game game = this.startingGames.get(indexGame);
-        boolean full = controller.joinLobby(username, game);
+        Controller controller = this.startingGames.get(indexGame);
+        Game game = controller.getGame();
+        boolean full = this.controller.joinLobby(username, game);
         if (full){
-            activeGames.add(game);
-            startingGames.remove(game);
+            activeGames.add(controller);
+            startingGames.remove(controller);
         }
     }
 

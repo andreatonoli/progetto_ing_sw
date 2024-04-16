@@ -1,6 +1,6 @@
 package network.server;
 
-import Controller.ServerController;
+import Controller.*;
 import model.Game;
 import network.messages.*;
 
@@ -68,7 +68,7 @@ public class SocketConnection extends Connection implements Runnable {
     }
 
     @Override
-    public void joinGame(List<Game> activeGames) {
+    public void joinGame(List<Controller> activeGames) {
         sendMessage(new FreeLobbyMessage(activeGames));
     }
 

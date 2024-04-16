@@ -1,6 +1,7 @@
 package network.server;
 
-import Controller.ServerController;
+import Controller.Controller;
+import Controller.*;
 import model.Game;
 import network.client.RMIClientHandler;
 import network.messages.Message;
@@ -27,7 +28,7 @@ public class RMIConnection extends Connection {
     }
 
     @Override
-    public void joinGame(List<Game> startingGames){
+    public void joinGame(List<Controller> startingGames){
         try{
             int response = this.client.joinGame(startingGames);
             if (response == startingGames.size()){
