@@ -71,7 +71,7 @@ public class Controller {
             newCoordinates[1] = coordinates[1] + corner.getY();
             player.getPlayerBoard().setCardPosition(card, newCoordinates);
             player.getPlayerBoard().coverCorner(card, newCoordinates);
-            card.calcPoint(player);
+            card.calcPoints(player);
             player.removeFromHand(card);
             System.out.println("Card successfully placed");
         } catch (NotInTurnException e) {

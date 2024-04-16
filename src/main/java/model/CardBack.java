@@ -42,7 +42,7 @@ public class CardBack extends Card{
     }
 
     @Override
-    public void calcPoint(Player player) {
+    public void calcPoints(Player player) {
 
     }
     @Override

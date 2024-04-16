@@ -15,7 +15,7 @@ public abstract class Card {
     protected CardBack retro;
     public abstract List<Symbols> getSymbols();
     public abstract boolean checkCost(Player player);
-    public abstract void calcPoint(Player player);
+    public abstract void calcPoints(Player player);
     public abstract int[] getCost();
     public abstract int getPoints();
     public abstract Condition getCondition();

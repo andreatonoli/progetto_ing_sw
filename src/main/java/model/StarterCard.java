@@ -33,7 +33,7 @@ public class StarterCard extends Card{
         return true;
     }
     @Override
-    public void calcPoint(Player player) {
+    public void calcPoints(Player player) {
     }
 
     @Override
