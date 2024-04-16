@@ -141,6 +141,7 @@ public class Game implements Serializable {
             willPlay++;
         }
         this.playerInTurn = players.get(willPlay);
+        playerInTurn.setPlayerState(PlayerState.PLAY_CARD);
     }
 
     public GameState getGameState()

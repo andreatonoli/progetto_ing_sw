@@ -9,7 +9,7 @@ public class Controller {
     private TurnHandler turnHandler;
     public Controller(int numPlayers){
         this.game = new Game(numPlayers);
-        this.turnHandler = new TurnHandler();
+        this.turnHandler = new TurnHandler(game);
     }
     /**
      *Picks the top card of the deck and calls addInHand to give it to the player
@@ -23,6 +23,7 @@ public class Controller {
             Card drawedCard = deck.getFirst();
             player.addInHand(drawedCard);
             deck.removeFirst();
+            turnHandler.changePlayerState(player);
             System.out.println("Successfully drew a card");
         } catch (EmptyException e) {
             System.out.println("Cannot draw - The deck is empty");
@@ -155,6 +156,7 @@ public class Controller {
             card.calcPoint(player);
             player.removeFromHand(card);
             System.out.println("Card successfully placed");
+            turnHandler.changePlayerState(player);
         } catch (NotInTurnException e) {
             if (player.getPlayerState().equals(PlayerState.NOT_IN_TURN)){
                 System.out.println("Cannot place - Its not your turn");
