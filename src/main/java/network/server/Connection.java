@@ -1,6 +1,6 @@
 package network.server;
 
-import model.Game;
+import Controller.Controller;
 import network.messages.Message;
 import Controller.*;
 
