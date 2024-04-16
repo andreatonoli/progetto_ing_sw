@@ -2,7 +2,6 @@ package model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class GoldCard extends Card {
     int basePoint;
@@ -77,9 +76,9 @@ public class GoldCard extends Card {
         return null;
     }
     @Override //TODO: riscrivere bene
-    public void calcPoint(Player player) {
+    public void calcPoints(Player player) {
         if (this.back){
-            this.currentSide.calcPoint(player);
+            this.currentSide.calcPoints(player);
             return;
         }
         int point = 0;

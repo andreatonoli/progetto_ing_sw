@@ -1,7 +1,5 @@
 package model;
 
-import model.Card;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,9 +56,9 @@ public class ResourceCard extends Card {
     }
 
     @Override
-    public void calcPoint(Player player) {
+    public void calcPoints(Player player) {
         if (this.back){
-            this.currentSide.calcPoint(player);
+            this.currentSide.calcPoints(player);
             return;
         }
         player.addPoints(this.point);

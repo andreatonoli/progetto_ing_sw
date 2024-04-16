@@ -7,19 +7,21 @@ public class Chat {
 
     public static final int CHATDIM = 7;
 
-    //id del game
+    /** game's id */
     private Game game;
 
-    //ogni player ha la sua chat
+    /** every player has his own chat and there is also a global chat*/
     private Player player;
 
-    //lista dei player
+    /** players' list */
     private ArrayList<Player> players;
 
     public Chat(Game game) {
         this.game = game;
         this.players = game.getPlayers();
     }
+
+    /** this method is useful to send messages */
 
     public void forwardMessage(Player sender, Player receiver, boolean global, String message) throws PlayerNotFoundException{
         if (global){
