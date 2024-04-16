@@ -2,6 +2,7 @@ package network.server;
 
 import model.Game;
 import network.messages.Message;
+import Controller.*;
 
 import java.util.List;
 
@@ -14,6 +15,6 @@ public abstract class Connection {
         this.isConnected = status;
     }
     public abstract void sendMessage(Message message);
-    public abstract void joinGame(List<Game> startingGames);
+    public abstract void joinGame(List<Controller> startingGames);
     public abstract void createGame();
 }

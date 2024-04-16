@@ -24,6 +24,7 @@ public class SocketServer {
         ExecutorService executor = Executors.newCachedThreadPool();
         try {
             serverSocket = new ServerSocket(this.port);
+            System.out.println("Started Socket connection.");
         } catch (IOException e) {
             System.err.println(e.getMessage());
             return;

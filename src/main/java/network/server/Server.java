@@ -10,7 +10,7 @@ import java.util.*;
 public class Server {
     private List<Controller> activeGames;
     private List<Controller> startingGames;
-    private final Map<Connection, String> client;
+    private final Map<String, Connection> client;
     private final ServerController controller;
     public final static String serverName = "GameServer";
     public final static int rmiPort = 1234;
@@ -33,7 +33,7 @@ public class Server {
     }
     //TODO: creare un handler in comune tra socket e RMI => inserirci booleano connesso/non connesso
     public void login(Connection client, String username){
-        this.client.put(client, username);
+        this.client.put(username, client);
         System.err.println("user " + username + " connected and ready to die");
         if (this.startingGames.isEmpty()){
             client.createGame();
@@ -44,7 +44,7 @@ public class Server {
     }
 
     public boolean usernameTaken(String username){
-        return client.containsValue(username);
+        return client.containsKey(username);
     }
     public void createLobby(String username, int numPlayers){
         this.startingGames.add(controller.createLobby(username, numPlayers));
@@ -57,6 +57,9 @@ public class Server {
             activeGames.add(controller);
             startingGames.remove(controller);
         }
+    }
+    public Connection getClientFromName(String name){
+        return this.client.get(name);
     }
 
 }

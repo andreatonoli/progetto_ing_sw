@@ -238,9 +238,10 @@ public class Controller {
             player.setChosenObj(player.getPersonalObj()[choice]);
         }
     }
-
+    public int getConnectedPlayers(){
+        return this.game.getPlayers().size();
+    }
     public Game getGame(){
         return this.game;
     }
-
 }

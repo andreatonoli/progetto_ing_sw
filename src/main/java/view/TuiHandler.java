@@ -112,7 +112,6 @@ public class TuiHandler implements Ui{
         }
         return choice;
     }
-
     public int setLobbySize(){
         System.out.println("Select the lobby's capacity (min is 2 and max is 4 players)");
         int lobbySize = scanner.nextInt();
@@ -121,5 +120,9 @@ public class TuiHandler implements Ui{
             lobbySize = scanner.nextInt();
         }
         return lobbySize;
+    }
+    @Override
+    public void showText(String text){
+        System.out.println(text);
     }
 }

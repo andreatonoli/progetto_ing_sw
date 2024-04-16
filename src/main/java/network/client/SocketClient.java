@@ -81,13 +81,15 @@ public class SocketClient {
                 int lobbySize = this.view.setLobbySize();
                 sendMessage(new NumPlayerResponseMessage(this.username, lobbySize));
                 break;
+            case GENERIC_MESSAGE:
+                this.view.showText(message.toString());
             default:
                 break;
         }
     }
     public void onDisconnect(){
         try {
-            this.sendMessage(new DisconnectionMessage(this.username));
+            this.sendMessage(new ErrorMessage(this.username, "Disconnection"));
             in.close();
             out.close();
             socket.close();

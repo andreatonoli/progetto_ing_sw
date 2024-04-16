@@ -181,5 +181,7 @@ public class Game implements Serializable {
     public Chat getChat(){
         return this.chatHandler;
     }
-
+    public int getLobbySize(){
+        return lobbySize;
+    }
 }

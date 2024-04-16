@@ -13,6 +13,6 @@ public interface Ui{
     String askServerAddress();
     int askServerPort(String connectionType);
     int selectGame(List<Controller> activeGames);
-
+    void showText(String text);
     int setLobbySize();
 }
