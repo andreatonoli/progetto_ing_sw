@@ -31,10 +31,9 @@ public class Server {
         new RMIServer(this, rmiPort, this.controller);
         new SocketServer(this, socketPort, this.controller);
     }
-    //TODO: creare un handler in comune tra socket e RMI => inserirci booleano connesso/non connesso
     public void login(Connection client, String username){
         this.client.put(username, client);
-        System.err.println("user " + username + " connected and ready to die");
+        System.err.println("user " + username + " connected");
         if (this.startingGames.isEmpty()){
             client.createGame();
         }

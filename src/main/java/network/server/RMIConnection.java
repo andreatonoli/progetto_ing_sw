@@ -24,7 +24,11 @@ public class RMIConnection extends Connection {
 
     @Override
     public void sendMessage(Message message) {
-
+        try {
+            this.client.getMessage(message);
+        } catch (RemoteException e) {
+            System.err.println(e.getMessage() + "RMIConnection/sendMessage");
+        }
     }
 
     @Override

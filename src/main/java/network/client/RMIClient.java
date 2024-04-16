@@ -3,6 +3,7 @@ package network.client;
 import java.util.*;
 
 import Controller.Controller;
+import network.messages.Message;
 import network.server.VirtualServer;
 import view.Ui;
 import model.Game;
@@ -41,5 +42,21 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler{
 
     public int setLobbySize() throws RemoteException{
         return this.view.setLobbySize();
+    }
+
+    /**
+     * gets the message from the server and updates the view according to the message type
+     * @param message sent from the server
+     * @throws RemoteException
+     */
+    @Override
+    public void getMessage(Message message) throws RemoteException {
+        switch (message.getType()){
+            case GENERIC_MESSAGE:
+                this.view.showText(message.toString());
+                break;
+            default:
+                break;
+        }
     }
 }
