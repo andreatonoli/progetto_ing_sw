@@ -10,6 +10,7 @@ import java.net.Socket;
 import java.util.Scanner;
 
 public class SocketClient {
+    private Socket socket;
     private String username;
     private Ui view;
     private Scanner stdin; //forse inutile
@@ -23,7 +24,7 @@ public class SocketClient {
     }
     public void startClient(String address, int port){
         try {
-            Socket socket = new Socket(address, port);
+            socket = new Socket(address, port);
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
             sendMessage(new LoginResponseMessage(this.username));
@@ -32,7 +33,9 @@ public class SocketClient {
                 readMessage();
             }
         } catch (IOException e) {
+            this.onDisconnect();
             System.err.println(e.getMessage());
+            System.out.println("Connection successfully ended");
         }
     }
     //TODO: fare lettura parallela dei messaggi
@@ -42,7 +45,9 @@ public class SocketClient {
             message = (Message) in.readObject();
             update(message);
         } catch (IOException | ClassNotFoundException e) {
+            this.onDisconnect();
             System.err.println(e.getMessage());
+            System.out.println("Connection successfully ended");
         }
     }
     public void sendMessage(Message message){
@@ -80,5 +85,14 @@ public class SocketClient {
                 break;
         }
     }
-
+    public void onDisconnect(){
+        try {
+            this.sendMessage(new DisconnectionMessage(this.username));
+            in.close();
+            out.close();
+            socket.close();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 }

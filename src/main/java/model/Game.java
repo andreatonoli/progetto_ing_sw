@@ -15,6 +15,7 @@ public class Game implements Serializable {
     private GameBoard gameBoard;
     private GameState gameState;
     private final ArrayList<Player> players;
+    private int willPlay = -1;
     private boolean gameFull;
     private Player firstPlayer;
     private Player playerInTurn;
@@ -131,9 +132,15 @@ public class Game implements Serializable {
         this.gameState = nextGameState;
     }
 
-    public void setPlayerInTurn(Player playerPlaying)
+    public void setPlayerInTurn()
     {
-        this.playerInTurn = playerPlaying;
+        if (willPlay == lobbySize){
+            willPlay = 0;
+        }
+        else{
+            willPlay++;
+        }
+        this.playerInTurn = players.get(willPlay);
     }
 
     public GameState getGameState()

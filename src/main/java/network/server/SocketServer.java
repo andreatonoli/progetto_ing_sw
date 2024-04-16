@@ -1,5 +1,7 @@
 package network.server;
 
+import Controller.ServerController;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -10,9 +12,11 @@ import java.util.concurrent.Executors;
 public class SocketServer {
     private final Server server;
     private final int port;
-    public SocketServer(Server server, int port){
+    private final ServerController controller;
+    public SocketServer(Server server, int port, ServerController controller){
         this.server = server;
         this.port = port;
+        this.controller = controller;
         this.startServer();
     }
     public void startServer(){
@@ -27,7 +31,7 @@ public class SocketServer {
         while(true){
             try {
                 Socket socket = serverSocket.accept();
-                executor.submit(new SocketConnection(this.server, socket));
+                executor.submit(new SocketConnection(this.server, socket, this.controller));
             } catch (IOException e) {
                 System.err.println(e.getMessage());
                 return;

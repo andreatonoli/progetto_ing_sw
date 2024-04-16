@@ -1,5 +1,6 @@
 package network.server;
 
+import Controller.ServerController;
 import model.Game;
 import network.client.RMIClientHandler;
 import network.messages.Message;
@@ -9,12 +10,15 @@ import java.util.List;
 
 public class RMIConnection extends Connection {
     private RMIClientHandler client;
+    private final ServerController controller;
     private Server server;
     private String username;
-    public RMIConnection(Server server, RMIClientHandler client, String username){
+    public RMIConnection(Server server, RMIClientHandler client, String username, ServerController controller){
         this.client = client;
         this.server = server;
+        this.controller = controller;
         this.username = username;
+        this.setConnectionStatus(true);
     }
 
     @Override

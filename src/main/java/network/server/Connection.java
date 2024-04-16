@@ -10,6 +10,9 @@ public abstract class Connection {
     public boolean getConnectionStatus(){
         return isConnected;
     }
+    public void setConnectionStatus(boolean status){
+        this.isConnected = status;
+    }
     public abstract void sendMessage(Message message);
     public abstract void joinGame(List<Game> startingGames);
     public abstract void createGame();

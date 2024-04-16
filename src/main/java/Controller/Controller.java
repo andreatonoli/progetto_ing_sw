@@ -6,8 +6,10 @@ import java.util.LinkedList;
 //TODO: replace System.out.println with messages
 public class Controller {
     private Game game; //reference to model
+    private TurnHandler turnHandler;
     public Controller(Game game){
         this.game = game;
+        this.turnHandler = new TurnHandler();
     }
     /**
      *Picks the top card of the deck and calls addInHand to give it to the player
@@ -236,4 +238,5 @@ public class Controller {
             player.setChosenObj(player.getPersonalObj()[choice]);
         }
     }
+
 }

@@ -10,7 +10,7 @@ import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-import Controller.Controller;
+import Controller.ServerController;
 import model.Game;
 import network.client.RMIClientHandler;
 
@@ -20,6 +20,7 @@ public class RMIServer implements VirtualServer {
     private final Server server;
     private final int port;
     private RMIConnection connection;
+    private final ServerController controller;
     private final static int CAPACITY = 10;
     private final BlockingQueue<String> updates = new ArrayBlockingQueue<>(CAPACITY);
 
@@ -35,15 +36,16 @@ public class RMIServer implements VirtualServer {
    //     }
    // }
 
-    public RMIServer(Server server, int port){
+    public RMIServer(Server server, int port, ServerController controller){
         this.server = server;
         this.port = port;
+        this.controller = controller;
         this.startServer();
     }
 
     //@Override
     public void login(RMIClientHandler client, String username) throws RemoteException {
-        connection = new RMIConnection(server, client, username);
+        connection = new RMIConnection(server, client, username, this.controller);
         server.login(connection, username);
     }
 

@@ -1,5 +1,6 @@
 package network.server;
 
+import Controller.ServerController;
 import model.Game;
 import network.messages.*;
 
@@ -15,12 +16,15 @@ public class SocketConnection extends Connection implements Runnable {
     private Socket socket;
     private ObjectInputStream in;
     private ObjectOutputStream out;
+    private ServerController controller;
     private Message message;
 
-    public SocketConnection(Server server, Socket socket){
+    public SocketConnection(Server server, Socket socket, ServerController controller){
         try{
             this.server = server;
             this.socket = socket;
+            this.controller = controller;
+            this.setConnectionStatus(true);
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
         } catch (IOException e) {
@@ -35,7 +39,10 @@ public class SocketConnection extends Connection implements Runnable {
                 Message message = (Message) in.readObject();
                 onMessage(message);
             } catch (IOException | ClassNotFoundException e) {
+                this.onDisconnect();
                 System.err.println(e.getMessage());
+                System.out.println("Connection successfully ended");
+                return;
             }
         }
     }
@@ -44,6 +51,7 @@ public class SocketConnection extends Connection implements Runnable {
             in.close();
             out.close();
             socket.close();
+            this.setConnectionStatus(false);
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
@@ -73,7 +81,6 @@ public class SocketConnection extends Connection implements Runnable {
         switch (message.getType()){
             case LOGIN_RESPONSE:
                 if (server.usernameTaken(message.getSender())){
-                    System.out.println("Ciao carlo");
                     sendMessage(new UsernameRequestMessage());
                 }
                 else{
@@ -86,6 +93,8 @@ public class SocketConnection extends Connection implements Runnable {
             case LOBBY_INDEX:
                 server.joinLobby(message.getSender(), ((LobbyIndexMessage) message).getChoice());
                 break;
+            case GENERIC_MESSAGE:
+                System.err.println(message);
             default:
                 break;
         }

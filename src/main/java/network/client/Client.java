@@ -12,7 +12,7 @@ public class Client{
     public static void main(String[] args){
         boolean tuiParam = false;
         for (String arg : args){
-            if (arg.equals("--cli") || arg.equals("-c")){
+            if (arg.equals("--tui") || arg.equals("-t")){
                 tuiParam = true;
                 break;
             }

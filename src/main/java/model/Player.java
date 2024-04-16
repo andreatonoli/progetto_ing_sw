@@ -5,7 +5,7 @@ import model.exceptions.PlayerNotFoundException;
 import java.io.Serializable;
 import java.util.*;
 
-public class  Player implements Serializable {
+public class Player implements Serializable {
     private final String username;
     private boolean firstToEnd;
     private boolean firstToPlay;
