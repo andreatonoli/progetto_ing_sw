@@ -16,9 +16,4 @@ public class TurnHandler {
         player.setPlayerState(PlayerState.values()[i]);
     }
 
-    public void changeGameState(){
-        int i = (game.getGameState().ordinal() + 1) % 4;
-        game.setGameState(GameState.values()[i]);
-    }
-
 }
