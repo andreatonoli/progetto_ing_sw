@@ -41,6 +41,7 @@ public class Game implements Serializable {
     }
 
     public void startGame(){
+        this.setGameState(GameState.START);
         /** decks are shuffled*/
         Collections.shuffle(gameBoard.getStarterDeck());
         Collections.shuffle(gameBoard.getAchievementDeck());
@@ -80,14 +81,16 @@ public class Game implements Serializable {
         /** the first player is chosen in a random way*/
         Collections.shuffle(players);
         setFirstPlayer();
-        gameStarted = true;
+        this.setGameState(GameState.IN_GAME);
+        //gameStarted = true;
     }
 
     public void endGame() throws GameNotStartedException {
         try{
-            if(!gameStarted){
+            if(/*!gameStarted*/!this.gameState.equals(GameState.IN_GAME)){ //fare controllare a ste
                 throw new GameNotStartedException();
             }
+            this.setGameState(GameState.END);
             for (Player p: players){
                 p.getChosenObj().calcPoints(p);
                 for (Achievement a : gameBoard.getCommonAchievement()){
@@ -109,7 +112,7 @@ public class Game implements Serializable {
                     max = p.getPoints();
                 }
             }
-            gameStarted = false;
+            //gameStarted = false;
         }
         catch(GameNotStartedException e){
             System.out.println("Game not started");
