@@ -2,13 +2,11 @@ package org.example;
 
 import Controller.Controller;
 import model.*;
+import model.exceptions.NotEnoughPlayersException;
 import view.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Hello world!
@@ -16,11 +14,12 @@ import java.util.List;
  */
 public class App 
 {
-   public static void main( String[] args ) throws IOException {
+   public static void main( String[] args ) throws IOException, NotEnoughPlayersException {
 
        StarterCard s2 = new StarterCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}, 2, new CardBack(new ArrayList<>(List.of(Symbols.FUNGI)), Color.WHITE, new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY)}));
        Tui t = new Tui();
        s2.setCurrentSide();
+       t.printTitle();
        t.printCard(s2);
        GoldCard b = new GoldCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 3, Condition.CORNER, 7, new int[]{0, 3, 0, 0}, null);
        GoldCard c = new GoldCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 3, Condition.CORNER, 17, new int[]{0, 3, 0, 0}, null);
@@ -38,6 +37,36 @@ public class App
        t.printCard(a2);
        t.printCard(a3);
        t.printCard(a4);
+
+       Game game = new Game();
+       Player player = new Player("p1", game);
+       Player player2 = new Player("p2", game);
+       game.addPlayer(player);
+       game.addPlayer(player2);
+       game.startGame();
+       Controller con = new Controller(game);
+       player.setPlayerState(PlayerState.PLAY_CARD);
+       ResourceCard c1 = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 3, 0);
+       ResourceCard c2 = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 17, 0);
+       ResourceCard c3 = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 25, 0);
+       ResourceCard c4 = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 35, 0);
+       con.placeCard(player, c1, new int[]{0, 0}, CornerEnum.BL);
+       con.placeCard(player, c2, new int[]{0, 0}, CornerEnum.TL);
+       con.placeCard(player, c3, new int[]{0, 0}, CornerEnum.TR);
+       con.placeCard(player, c4, new int[]{1, 1}, CornerEnum.TR);
+       t.printPlayerBoard(player);
+
+       Scanner input = new Scanner(System.in);
+       int[] coord = new int[2];
+       while(true){
+           System.out.println("Which card do you want to display?");
+           System.out.println("Type row number");
+           coord[1] = 11 - input.nextInt();
+           System.out.println("Type column number");
+           coord[0] = input.nextInt() - 11;
+           t.printCard(player.getPlayerBoard().getCard(coord));
+       }
+
 
        //System.out.println(FUNGI + "\n");
        //System.out.println(PLANT + "\n");

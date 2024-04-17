@@ -4,19 +4,28 @@ import view.TuiColors;
 
 public enum Symbols {
 
-
-    FUNGI(TuiColors.getColor(TuiColors.ANSI_RED) + "\uD83C\uDF44" + TuiColors.getColor(TuiColors.ANSI_RESET)),
-    PLANT(TuiColors.getColor(TuiColors.ANSI_GREEN) + "\uD83C\uDF3F" + TuiColors.getColor(TuiColors.ANSI_RESET)),
-    ANIMAL(TuiColors.getColor(TuiColors.ANSI_BLUE) + "\uD83D\uDC3A" + TuiColors.getColor(TuiColors.ANSI_RESET)),
-    INSECT(TuiColors.getColor(TuiColors.ANSI_PURPLE) + "\uD83E\uDD8B" + TuiColors.getColor(TuiColors.ANSI_RESET)),
-    QUILL(TuiColors.getColor(TuiColors.ANSI_YELLOW) + "\uD83E\uDEb6" + TuiColors.getColor(TuiColors.ANSI_RESET)),
-    INKWELL(TuiColors.getColor(TuiColors.ANSI_YELLOW) + "\uD83E\uDD43" + TuiColors.getColor(TuiColors.ANSI_RESET)),
-    MANUSCRIPT(TuiColors.getColor(TuiColors.ANSI_YELLOW) + "\uD83D\uDCDC" + TuiColors.getColor(TuiColors.ANSI_RESET)),
-    EMPTY("✔"),
-    NOCORNER("ㅤ"),
-    EMPTY_SPACE("ㅤ"),
-    CORNER("\u2196"),
-    CARD("\u2B1B");
+    FUNGI(TuiColors.getColor(TuiColors.ANSI_RED) + "F" + TuiColors.getColor(TuiColors.ANSI_RESET)),
+    //"\uD83C\uDF44"
+    PLANT(TuiColors.getColor(TuiColors.ANSI_GREEN) + "P" + TuiColors.getColor(TuiColors.ANSI_RESET)),
+    //"\uD83C\uDF3F"
+    ANIMAL(TuiColors.getColor(TuiColors.ANSI_BLUE) + "A" + TuiColors.getColor(TuiColors.ANSI_RESET)),
+    //"\uD83D\uDC3A"
+    INSECT(TuiColors.getColor(TuiColors.ANSI_PURPLE) + "I" + TuiColors.getColor(TuiColors.ANSI_RESET)),
+    //"\uD83E\uDD8B"
+    QUILL(TuiColors.getColor(TuiColors.ANSI_YELLOW) + "Q" + TuiColors.getColor(TuiColors.ANSI_RESET)),
+    //"\uD83E\uDEb6"
+    INKWELL(TuiColors.getColor(TuiColors.ANSI_YELLOW) + "K" + TuiColors.getColor(TuiColors.ANSI_RESET)),
+    //"\uD83E\uDD43"
+    MANUSCRIPT(TuiColors.getColor(TuiColors.ANSI_YELLOW) + "M" + TuiColors.getColor(TuiColors.ANSI_RESET)),
+    //"\uD83D\uDCDC"
+    EMPTY("O"),
+    //"✔"
+    NOCORNER(" "),
+    EMPTY_SPACE(" "),
+    CORNER("C"),
+    //"\u2196"
+    CARD("D");
+    //"\u2B1B"
     String string;
     Symbols(String string){ this.string = string; }
 

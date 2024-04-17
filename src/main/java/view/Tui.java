@@ -7,7 +7,14 @@ import java.util.Arrays;
 public class Tui {
     private static final int ROW = 3;
     private static final int COLUMN = 11;
+    private static final int DIM = 21;
     private int[][] mat_corner = new int[][]{new int[]{0,1}, new int[]{0,9}, new int[]{2,9}, new int[]{2,1}};
+    private String topBorder = "＿＿＿＿＿＿＿";
+    private String bottomBorder = "‾‾‾‾‾‾‾‾‾‾‾";
+    private String topBorderLong = "＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿";
+    private String bottomBorderLong = "‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾";
+    private String[][] matPlayerBoard = new String[DIM][DIM];
+
     public String askNickname() {
 //        System.in
         return null;
@@ -104,12 +111,12 @@ public class Tui {
                 case NOTHING -> mat[0][topCenter] = String.valueOf(card.getPoints());
                 case CORNER -> {
                     mat[0][topCenter - 1] = String.valueOf(card.getPoints());
-                    mat[0][topCenter] = " | ";
+                    mat[0][topCenter] = "|";
                     mat[0][topCenter + 1] = Symbols.getString(Symbols.CORNER);
                 }
                 case ITEM -> {
                     mat[0][topCenter - 1] = String.valueOf(card.getPoints());
-                    mat[0][topCenter] = " | ";
+                    mat[0][topCenter] = "|";
                     mat[0][topCenter + 1] = Symbols.getString(card.getRequiredItem());
                 }
             }
@@ -133,11 +140,11 @@ public class Tui {
 
         //stampa i bordi superiori e inferiori e la matrice
         switch(card.getColor()){
-            case WHITE -> System.out.println("＿＿＿＿＿＿＿＿＿");
-            case RED -> System.out.println(TuiColors.getColor(TuiColors.ANSI_RED) + "＿＿＿＿＿＿＿＿＿" + TuiColors.getColor(TuiColors.ANSI_RESET));
-            case BLUE -> System.out.println(TuiColors.getColor(TuiColors.ANSI_BLUE) + "＿＿＿＿＿＿＿＿＿" + TuiColors.getColor(TuiColors.ANSI_RESET));
-            case GREEN -> System.out.println(TuiColors.getColor(TuiColors.ANSI_GREEN) + "＿＿＿＿＿＿＿＿＿" + TuiColors.getColor(TuiColors.ANSI_RESET));
-            case PURPLE -> System.out.println(TuiColors.getColor(TuiColors.ANSI_PURPLE) + "＿＿＿＿＿＿＿＿＿" + TuiColors.getColor(TuiColors.ANSI_RESET));
+            case WHITE -> System.out.println(topBorder);
+            case RED -> System.out.println(TuiColors.getColor(TuiColors.ANSI_RED) + topBorder + TuiColors.getColor(TuiColors.ANSI_RESET));
+            case BLUE -> System.out.println(TuiColors.getColor(TuiColors.ANSI_BLUE) + topBorder + TuiColors.getColor(TuiColors.ANSI_RESET));
+            case GREEN -> System.out.println(TuiColors.getColor(TuiColors.ANSI_GREEN) + topBorder + TuiColors.getColor(TuiColors.ANSI_RESET));
+            case PURPLE -> System.out.println(TuiColors.getColor(TuiColors.ANSI_PURPLE) + topBorder + TuiColors.getColor(TuiColors.ANSI_RESET));
         }
         for (int i = 0; i < ROW; i++){
             for (int j = 0; j < COLUMN; j++){
@@ -146,11 +153,11 @@ public class Tui {
             System.out.print("\n");
         }
         switch(card.getColor()){
-            case WHITE -> System.out.println("‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾");
-            case RED -> System.out.println(TuiColors.getColor(TuiColors.ANSI_RED) + "‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾" + TuiColors.getColor(TuiColors.ANSI_RESET));
-            case BLUE -> System.out.println(TuiColors.getColor(TuiColors.ANSI_BLUE) + "‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾" + TuiColors.getColor(TuiColors.ANSI_RESET));
-            case GREEN -> System.out.println(TuiColors.getColor(TuiColors.ANSI_GREEN) + "‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾" + TuiColors.getColor(TuiColors.ANSI_RESET));
-            case PURPLE -> System.out.println(TuiColors.getColor(TuiColors.ANSI_PURPLE) + "‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾" + TuiColors.getColor(TuiColors.ANSI_RESET));
+            case WHITE -> System.out.println(bottomBorder);
+            case RED -> System.out.println(TuiColors.getColor(TuiColors.ANSI_RED) + bottomBorder + TuiColors.getColor(TuiColors.ANSI_RESET));
+            case BLUE -> System.out.println(TuiColors.getColor(TuiColors.ANSI_BLUE) + bottomBorder + TuiColors.getColor(TuiColors.ANSI_RESET));
+            case GREEN -> System.out.println(TuiColors.getColor(TuiColors.ANSI_GREEN) + bottomBorder + TuiColors.getColor(TuiColors.ANSI_RESET));
+            case PURPLE -> System.out.println(TuiColors.getColor(TuiColors.ANSI_PURPLE) + bottomBorder + TuiColors.getColor(TuiColors.ANSI_RESET));
         }
 
 
@@ -243,13 +250,58 @@ public class Tui {
             }
         }
         //stampa i bordi superiori e inferiori e la matrice
-        System.out.println("＿＿＿＿＿＿＿＿＿");
+        System.out.println(topBorder);
         for (int i = 0; i < ROW; i++) {
             for (int j = 0; j < COLUMN; j++) {
                 System.out.print(mat[i][j]);
             }
             System.out.print("\n");
         }
-        System.out.println("‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾");
+        System.out.println(bottomBorder);
+    }
+
+    public void printPlayerBoard(Player player){
+        String ANSI_RED_BACKGROUND = "\u001B[41m";
+        String ANSI_GREEN_BACKGROUND = "\u001B[42m";
+        String ANSI_BLUE_BACKGROUND = "\u001B[44m";
+        String ANSI_PURPLE_BACKGROUND = "\u001B[45m";
+        String ANSI_WHITE_BACKGROUND = "\u001B[47m";
+        int OFFSET = 128;
+        int[] coord = new int[2];
+
+        for (int i = 0; i < DIM; i++) {
+            for (int j = 0; j < DIM; j++) {
+                if(i == 0){
+                    matPlayerBoard[i][j] = String.valueOf(j + 1);
+                }
+                else if (j == 0) {
+                    matPlayerBoard[i][j] = String.valueOf(i + 1);
+                }
+                else{
+                    matPlayerBoard[i][j] = Symbols.getString(Symbols.EMPTY_SPACE);
+                }
+            }
+        }
+
+        for (Integer i : player.getPlayerBoard().getPositionCardKeys()){
+            coord[0] = (i / 1024) - OFFSET;
+            coord[1] = (i % 1024) - OFFSET;
+            switch(player.getPlayerBoard().getCard(coord).getColor()){
+                case WHITE -> matPlayerBoard[DIM/2 - coord[1]][DIM/2 + coord[0]] = ANSI_WHITE_BACKGROUND + "  " + TuiColors.getColor(TuiColors.ANSI_RESET);
+                case RED -> matPlayerBoard[DIM/2 - coord[1]][DIM/2 + coord[0]] = ANSI_RED_BACKGROUND + "  " + TuiColors.getColor(TuiColors.ANSI_RESET);
+                case BLUE -> matPlayerBoard[DIM/2 - coord[1]][DIM/2 + coord[0]] = ANSI_BLUE_BACKGROUND + "  " + TuiColors.getColor(TuiColors.ANSI_RESET);
+                case GREEN -> matPlayerBoard[DIM/2 - coord[1]][DIM/2 + coord[0]] = ANSI_GREEN_BACKGROUND + "  " + TuiColors.getColor(TuiColors.ANSI_RESET);
+                case PURPLE -> matPlayerBoard[DIM/2 - coord[1]][DIM/2 + coord[0]] = ANSI_PURPLE_BACKGROUND + "  " + TuiColors.getColor(TuiColors.ANSI_RESET);
+            }
+        }
+
+        System.out.println(topBorderLong);
+        for(int i = 0; i < DIM; i++){
+            for(int j = 0; j < DIM; j++){
+                System.out.printf("|%2s", matPlayerBoard[i][j]);
+            }
+            System.out.println("|");
+        }
+        System.out.println(bottomBorderLong);
     }
 }
