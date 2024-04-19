@@ -61,10 +61,10 @@ public class App
        while(true){
            System.out.println("Which card do you want to display?");
            System.out.println("Type row number");
-           coord[1] = 11 - input.nextInt();
+           coord[0] = input.nextInt();
            System.out.println("Type column number");
-           coord[0] = input.nextInt() - 11;
-           t.printCard(player.getPlayerBoard().getCard(coord));
+           coord[1] = input.nextInt();
+           t.printCardFromPlayerboard(player, coord);
        }
 
 

@@ -27,6 +27,11 @@ public class PlayerBoard {
         int y = coordinates[1] + OFFSET;
         cardPosition.put(y + ((1<<10) * x), placedCard);
     }
+
+    public HashMap<Integer, Card> getCardPositon(){
+        return this.cardPosition;
+    }
+
     /**
      * method to get the coordinates of the card
      * @param card is the card we need to know the position of
