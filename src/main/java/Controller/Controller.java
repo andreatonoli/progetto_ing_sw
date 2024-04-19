@@ -111,7 +111,7 @@ public class Controller {
             throw new NotInTurnException();
         }
         //check if the corner we are placing the card on is available
-        if (pBoard.getCard(coord).getCornerState(cornerPosition).equals(CornerState.NOT_VISIBLE)){
+        if (pBoard.getCard(coord).getCornerState(cornerPosition).equals(CornerState.NOT_VISIBLE) || pBoard.getCard(coord).getCornerState(cornerPosition).equals(CornerState.OCCUPIED)){
             throw new OccupiedCornerException();
         }
         if(!cardToBePlaced.checkCost(player)){
@@ -131,7 +131,7 @@ public class Controller {
                 newCoordinates[0] = coord[0]+c.getX();
                 newCoordinates[1] = coord[1]+c.getY();
                 if (pBoard.getCard(newCoordinates) != null){
-                    if (pBoard.getCard(newCoordinates).getCornerState(c.getOppositePosition()).equals(CornerState.NOT_VISIBLE)){
+                    if (pBoard.getCard(newCoordinates).getCornerState(c.getOppositePosition()).equals(CornerState.NOT_VISIBLE) || pBoard.getCard(newCoordinates).getCornerState(c.getOppositePosition()).equals(CornerState.OCCUPIED)){
                         throw new OccupiedCornerException();
                     }
                 }

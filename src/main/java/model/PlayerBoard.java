@@ -112,7 +112,7 @@ public class PlayerBoard {
             //another corner below them
             if (this.getCard(checkCoordinates) != null) {
                 card.setCornerState(position, CornerState.NOT_VISIBLE);
-                this.getCard(checkCoordinates).setCornerState(position.getOppositePosition(), CornerState.NOT_VISIBLE);
+                this.getCard(checkCoordinates).setCornerState(position.getOppositePosition(), CornerState.OCCUPIED);
                 this.decreaseSymbolCount(this.getCard(checkCoordinates).getCornerSymbol(position.getOppositePosition()));
             }
         }
