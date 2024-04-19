@@ -7,12 +7,12 @@ import java.util.Arrays;
 public class Tui {
     private static final int ROW = 3;
     private static final int COLUMN = 11;
-    private static final int PLAYERBOARD_DIM = 21;
+    private static final int PLAYERBOARD_DIM = 11;
     private int[][] mat_corner = new int[][]{new int[]{0,1}, new int[]{0,9}, new int[]{2,9}, new int[]{2,1}};
     private String topBorder = "＿＿＿＿＿＿＿";
     private String bottomBorder = "‾‾‾‾‾‾‾‾‾‾‾";
-    private String topBorderLong = "＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿";
-    private String bottomBorderLong = "‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾";
+    private String topBorderLong = "＿＿＿＿";
+    private String bottomBorderLong = "‾‾‾‾‾‾‾";
     private String[][] matPlayerBoard = new String[PLAYERBOARD_DIM][PLAYERBOARD_DIM];
     private String[][][][] mat = new String[2][2][PLAYERBOARD_DIM][PLAYERBOARD_DIM];
     private String padding = "  ";
@@ -343,7 +343,7 @@ public class Tui {
             mat[1][1][PLAYERBOARD_DIM/2 - coord[1]][PLAYERBOARD_DIM/2 + coord[0]] = Color.getBackground(card.getColor()) + padding + Symbols.getStringBlack(card.getCorners()[2].getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
         }
 
-        System.out.println(topBorderLong);
+        System.out.println(topBorderLong.repeat(PLAYERBOARD_DIM + 1));
         for(int i = 0; i < PLAYERBOARD_DIM; i++){
             for(int t = 0; t < 2; t++){
                 for(int j = 0; j < PLAYERBOARD_DIM; j++) {
@@ -354,7 +354,7 @@ public class Tui {
                 }
                 System.out.println("|");
             }
-            System.out.println(bottomBorderLong);
+            System.out.println(bottomBorderLong.repeat(PLAYERBOARD_DIM));
         }
 
         //PLAYERBOARD SENZA ANGOLI
