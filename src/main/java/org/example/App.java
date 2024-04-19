@@ -16,19 +16,24 @@ public class App
 {
    public static void main( String[] args ) throws IOException, NotEnoughPlayersException {
 
+       Game game = new Game();
+       Player player = new Player("p1", game);
+       Player player2 = new Player("p2", game);
+       game.addPlayer(player);
+       game.addPlayer(player2);
        StarterCard s2 = new StarterCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}, 2, new CardBack(new ArrayList<>(List.of(Symbols.FUNGI)), Color.WHITE, new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY)}));
        Tui t = new Tui();
        s2.setCurrentSide();
        t.printTitle();
-       t.printCard(s2);
+       t.printCard(player, s2);
        GoldCard b = new GoldCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 3, Condition.CORNER, 7, new int[]{0, 3, 0, 0}, null);
        GoldCard c = new GoldCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 3, Condition.CORNER, 17, new int[]{0, 3, 0, 0}, null);
        GoldCard d = new GoldCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 3, Condition.CORNER, 27, new int[]{0, 3, 0, 0}, null);
        GoldCard e = new GoldCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 3, Condition.CORNER, 37, new int[]{0, 3, 0, 0}, null);
-       t.printCard(b);
-       t.printCard(c);
-       t.printCard(d);
-       t.printCard(e);
+       t.printCard(player, b);
+       t.printCard(player, c);
+       t.printCard(player, d);
+       t.printCard(player, e);
        Achievement a1 = new AchievementItem(3, new ArrayList<>(List.of(Symbols.INKWELL, Symbols.QUILL, Symbols.MANUSCRIPT)));
        Achievement a2 = new AchievementResources(Symbols.FUNGI);
        Achievement a3 = new AchievementDiagonal(Color.PURPLE);
@@ -38,11 +43,6 @@ public class App
        t.printCard(a3);
        t.printCard(a4);
 
-       Game game = new Game();
-       Player player = new Player("p1", game);
-       Player player2 = new Player("p2", game);
-       game.addPlayer(player);
-       game.addPlayer(player2);
        game.startGame();
        Controller con = new Controller(game);
        player.setPlayerState(PlayerState.PLAY_CARD);

@@ -22,7 +22,7 @@ public enum Symbols {
     //"✔"
     NOCORNER(" ", " "),
     EMPTY_SPACE(" ", " "),
-    CORNER("C", "C"),
+    CORNER("C", TuiColors.getColor(TuiColors.ANSI_BLACK) + "C" + TuiColors.getColor(TuiColors.ANSI_RESET)),
     //"\u2196"
     CARD("D", "D");
     //"\u2B1B"

@@ -111,8 +111,8 @@ public class PlayerBoard {
             //Cover its corner and removes its symbols from the counter, also cover those placedCard corners which have
             //another corner below them
             if (this.getCard(checkCoordinates) != null) {
-                card.setCornerState(position, CornerState.NOT_VISIBLE);
-                this.getCard(checkCoordinates).setCornerState(position.getOppositePosition(), CornerState.OCCUPIED);
+                card.setCornerState(position, CornerState.OCCUPIED);
+                this.getCard(checkCoordinates).setCornerState(position.getOppositePosition(), CornerState.NOT_VISIBLE);
                 this.decreaseSymbolCount(this.getCard(checkCoordinates).getCornerSymbol(position.getOppositePosition()));
             }
         }
