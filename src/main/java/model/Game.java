@@ -41,7 +41,7 @@ public class Game implements Serializable {
     }
 
     public void startGame(){
-        this.setGameState(GameState.START);
+        this.gameState = GameState.START;
         /** decks are shuffled*/
         Collections.shuffle(gameBoard.getStarterDeck());
         Collections.shuffle(gameBoard.getAchievementDeck());

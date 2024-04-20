@@ -32,6 +32,6 @@ public class DrawFromBoardTest {
         Card gCard = new GoldCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null, new Corner(Symbols.FUNGI) }, 1, Condition.NOTHING, 1, null, null);
         Card gCard2 = new GoldCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null }, 2, Condition.NOTHING, 2, null, null);
         p.setPlayerState(PlayerState.DRAW_CARD);
-        //player hand is empty and he is in draw_card state so he can draw from the board
+        //player hand is empty, and he is in draw_card state, so he can draw from the board
     }
 }
