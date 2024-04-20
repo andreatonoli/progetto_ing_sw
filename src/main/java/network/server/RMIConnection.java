@@ -11,24 +11,23 @@ import java.util.List;
 
 public class RMIConnection extends Connection {
     private RMIClientHandler client;
-    private final ServerController controller;
+    //private final ServerController controller;
     private Server server;
     private String username;
-    public RMIConnection(Server server, RMIClientHandler client, String username, ServerController controller){
+    public RMIConnection(Server server, RMIClientHandler client, String username){
         this.client = client;
         this.server = server;
-        this.controller = controller;
         this.username = username;
         this.setConnectionStatus(true);
     }
 
     @Override
     public void sendMessage(Message message) {
-        try {
-            this.client.getMessage(message);
-        } catch (RemoteException e) {
-            System.err.println(e.getMessage() + "RMIConnection/sendMessage");
-        }
+        //try {
+        //    this.client.update(message);
+        //} catch (RemoteException e) {
+        //    System.err.println(e.getMessage() + "RMIConnection/sendMessage");
+        //}
     }
 
     @Override

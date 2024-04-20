@@ -5,6 +5,7 @@ import java.util.*;
 import Controller.Controller;
 import network.messages.Message;
 import network.server.VirtualServer;
+import observer.Observer;
 import view.Ui;
 import model.Game;
 
@@ -14,7 +15,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
-public class RMIClient extends UnicastRemoteObject implements RMIClientHandler{
+public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, Observer {
     private String username;
     private Ui view;
     private VirtualServer server;
@@ -45,12 +46,11 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler{
     }
 
     /**
-     * gets the message from the server and updates the view according to the message type
+     * gets messages from the server and updates the view according to the message type
      * @param message sent from the server
-     * @throws RemoteException
      */
     @Override
-    public void getMessage(Message message) throws RemoteException {
+    public void update(Message message) {
         switch (message.getType()){
             case GENERIC_MESSAGE:
                 this.view.showText(message.toString());

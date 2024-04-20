@@ -12,5 +12,4 @@ import java.util.List;
 public interface RMIClientHandler extends Remote {
     int joinGame(List<Controller> activeGames) throws RemoteException;
     int setLobbySize() throws RemoteException;
-    void getMessage(Message message) throws RemoteException;
 }

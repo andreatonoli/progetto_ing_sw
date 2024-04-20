@@ -8,13 +8,15 @@ import model.Player;
 import java.util.*;
 
 public class Server {
+    public static final int MAX_PLAYERS_PER_LOBBY = 4; /** sets max number of players */
+    public static final int MIN_PLAYERS_PER_LOBBY = 2; /** sets min number of players */
+    public final static String serverName = "GameServer";
+    public final static int rmiPort = 1234;
+    public final static int socketPort = 1235;
     private List<Controller> activeGames;
     private List<Controller> startingGames;
     private final Map<String, Connection> client;
     private final ServerController controller;
-    public final static String serverName = "GameServer";
-    public final static int rmiPort = 1234;
-    public final static int socketPort = 1235;
     public Server(){
         this.controller = new ServerController(this);
         this.client = Collections.synchronizedMap(new HashMap<>());

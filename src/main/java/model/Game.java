@@ -2,6 +2,9 @@ package model;
 
 import model.exceptions.GameNotStartedException;
 import model.exceptions.NotEnoughPlayersException;
+import network.messages.GenericMessage;
+import network.messages.WinnerMessage;
+import observer.Observable;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -9,19 +12,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class Game implements Serializable {
-    public static final int MAX_PLAYERS = 4; /** sets max number of players */
-    public static final int MIN_PLAYERS = 2; /** sets min number of players */
     private int lobbySize;
     private GameBoard gameBoard;
     private GameState gameState;
     private final ArrayList<Player> players;
-    private int willPlay = -1;
+    private int willPlay = -1; //che fa?
     private boolean gameFull;
     private Player firstPlayer;
     private Player playerInTurn;
     private Chat chatHandler;
-
-    //private boolean gameStarted = false;
+    private Observable obs;
 
     /**
      *
@@ -32,15 +32,16 @@ public class Game implements Serializable {
         this.lobbySize = lobbySize;
         this.gameState = GameState.WAIT_PLAYERS;
         this.gameFull = false;
-        this.players = new ArrayList<Player>();
-        //this.players.add(first);
+        this.players = new ArrayList<>();
         this.firstPlayer = null;
         this.playerInTurn = null;
         this.chatHandler = new Chat(this);
         this.gameBoard = new GameBoard(this);
+        obs = new Observable();
     }
 
     public void startGame(){
+        obs.notifyAll(new GenericMessage("Starting game..."));
         this.gameState = GameState.START;
         /** decks are shuffled*/
         Collections.shuffle(gameBoard.getStarterDeck());
@@ -58,7 +59,7 @@ public class Game implements Serializable {
             /** in first place the player chose the side he prefers, in order to settle down the card*/
             /** when the controller sees that the player wants to settle down the card, it places starterCard*/
         }
-        //colore segnalino scelto dal player al login
+        //TODO: colore segnalino scelto dal player al login
         /** every player draws two resource cards and a gold card*/
         for (Player p : players) {
             p.addInHand(gameBoard.drawCard(gameBoard.getResourceDeck()));
@@ -75,29 +76,28 @@ public class Game implements Serializable {
             //scelta carta da parte del player
             //per il momento il player sceglie la prima carta
             //poi verrà gestita nel controller
+            //TODO: scegliere personal achievement
             p.setChosenObj(p.getPersonalObj()[0]);
         }
 
         /** the first player is chosen in a random way*/
         Collections.shuffle(players);
         setFirstPlayer();
-        this.setGameState(GameState.IN_GAME);
-        //gameStarted = true;
+        this.gameState = GameState.IN_GAME;
     }
 
     public void endGame() throws GameNotStartedException {
         try{
-            if(/*!gameStarted*/!this.gameState.equals(GameState.IN_GAME)){ //fare controllare a ste
+            if(!this.gameState.equals(GameState.IN_GAME)){
                 throw new GameNotStartedException();
             }
-            this.setGameState(GameState.END);
+            this.gameState = GameState.END;
             for (Player p: players){
                 p.getChosenObj().calcPoints(p);
                 for (Achievement a : gameBoard.getCommonAchievement()){
                     a.calcPoints(p);
                 }
             }
-
             /** the winner is chosen by the number of points */
             int max = 0;
             ArrayList<Player> winners = new ArrayList<>();
@@ -112,10 +112,10 @@ public class Game implements Serializable {
                     max = p.getPoints();
                 }
             }
-            //gameStarted = false;
+            obs.notifyAll(new WinnerMessage(winners));
         }
         catch(GameNotStartedException e){
-            System.out.println("Game not started");
+            System.err.println("Game not started");
         }
     }
 
@@ -145,6 +145,7 @@ public class Game implements Serializable {
         }
         this.playerInTurn = players.get(willPlay);
         playerInTurn.setPlayerState(PlayerState.PLAY_CARD);
+        //TODO: notify del player in turno
     }
 
     public GameState getGameState()
@@ -169,8 +170,9 @@ public class Game implements Serializable {
         synchronized (this.players){
             this.players.add(player);
             if (players.size()==this.lobbySize){
-                gameFull=true;
+                gameFull = true;
             }
+            obs.notifyAll(new GenericMessage("Players in lobby: " + players.size() + "/" + lobbySize));
         }
     }
 

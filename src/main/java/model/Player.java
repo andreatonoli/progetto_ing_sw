@@ -28,7 +28,7 @@ public class Player implements Serializable {
         this.playerState = PlayerState.NOT_IN_TURN;
         this.cardInHand = new Card[3];
         this.personalObj = new Achievement[2];
-        this.chat = new ArrayList<String>();
+        this.chat = new ArrayList<>();
         this.game = game;
         this.playerBoard = new PlayerBoard();
     }

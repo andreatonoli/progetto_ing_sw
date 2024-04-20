@@ -113,9 +113,9 @@ public class TuiHandler implements Ui{
         return choice;
     }
     public int setLobbySize(){
-        System.out.println("Select the lobby's capacity (min is 2 and max is 4 players)");
+        System.out.println("Select the lobby's capacity (min is " + Server.MIN_PLAYERS_PER_LOBBY + " and max is " + Server.MAX_PLAYERS_PER_LOBBY + " players)");
         int lobbySize = scanner.nextInt();
-        while (lobbySize<2 || lobbySize>4){
+        while (lobbySize < Server.MIN_PLAYERS_PER_LOBBY || lobbySize > Server.MAX_PLAYERS_PER_LOBBY){
             System.out.println("Invalid input.\n Insert a valid number");
             lobbySize = scanner.nextInt();
         }
