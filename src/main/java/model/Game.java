@@ -21,7 +21,7 @@ public class Game implements Serializable {
     private Player playerInTurn;
     private Chat chatHandler;
 
-    private boolean gameStarted = false;
+    //private boolean gameStarted = false;
 
     /**
      *
