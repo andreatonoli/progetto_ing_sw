@@ -4,6 +4,7 @@ import Controller.Controller;
 import Controller.*;
 import model.Game;
 import network.client.RMIClientHandler;
+import network.messages.LoginResponseMessage;
 import network.messages.Message;
 
 import java.rmi.RemoteException;
@@ -14,12 +15,15 @@ public class RMIConnection extends Connection {
     //private final ServerController controller;
     private Server server;
     private String username;
+    private ClientController controller;
     public RMIConnection(Server server, RMIClientHandler client, String username){
         this.client = client;
         this.server = server;
         this.username = username;
         this.setConnectionStatus(true);
+        this.controller = new ClientController(client.getView(), this.username);
     }
+
 
     @Override
     public void sendMessage(Message message) {
@@ -52,6 +56,10 @@ public class RMIConnection extends Connection {
         } catch (RemoteException e) {
             System.err.println(e.getMessage());
         }
+    }
+    @Override
+    public String getUsername(){
+        return this.username;
     }
 
 }

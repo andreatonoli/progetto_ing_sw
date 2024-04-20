@@ -9,6 +9,7 @@ import network.messages.Message;
 
 public class Observable implements Serializable {
     private final List<Observer> observers = new ArrayList<>();
+
     public void addObserver(Observer obs) {
         observers.add(obs);
     }

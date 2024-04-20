@@ -2,15 +2,15 @@ package Controller;
 
 import model.Game;
 import model.Player;
-import network.messages.GenericMessage;
 import network.server.Connection;
 import network.server.Server;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ServerController {
+public class ServerController implements Serializable {
     private Map<Player, Connection> obs; //TODO: cambia nome
     private Server server;
     public ServerController(Server server){
@@ -19,13 +19,12 @@ public class ServerController {
     }
     public Controller createLobby(String username, int numPlayers){
         Controller controller = new Controller(numPlayers);
-        Game game = controller.getGame();
-        joinLobby(username, game);
+        joinLobby(username, controller);
         return controller;
     }
-    public boolean joinLobby(String username, Game game){
+    public boolean joinLobby(String username, Controller controller){
+        Game game = controller.getGame();
         Player player = new Player(username, game);
-        obs.put(player, this.server.getClientFromName(username));
         game.addPlayer(player);
         if (game.isFull()){
             game.startGame();

@@ -52,8 +52,7 @@ public class Server {
     }
     public void joinLobby(String username, int indexGame){
         Controller controller = this.startingGames.get(indexGame);
-        Game game = controller.getGame();
-        boolean full = this.controller.joinLobby(username, game);
+        boolean full = this.controller.joinLobby(username, controller);
         if (full){
             activeGames.add(controller);
             startingGames.remove(controller);

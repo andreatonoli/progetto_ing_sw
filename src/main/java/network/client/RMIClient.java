@@ -36,6 +36,9 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
             System.out.println(e.getMessage());
         }
     }
+    public Ui getView(){
+        return view;
+    }
 
     public int joinGame(List<Controller> startingGames) throws RemoteException{
         return this.view.selectGame(startingGames);

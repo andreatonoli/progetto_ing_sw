@@ -4,12 +4,15 @@ import model.exceptions.GameNotStartedException;
 import model.exceptions.NotEnoughPlayersException;
 import network.messages.GenericMessage;
 import network.messages.WinnerMessage;
+import network.server.Connection;
 import observer.Observable;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Game implements Serializable {
     private int lobbySize;
@@ -21,7 +24,6 @@ public class Game implements Serializable {
     private Player firstPlayer;
     private Player playerInTurn;
     private Chat chatHandler;
-    private Observable obs;
 
     /**
      *
@@ -37,7 +39,6 @@ public class Game implements Serializable {
         this.playerInTurn = null;
         this.chatHandler = new Chat(this);
         this.gameBoard = new GameBoard(this);
-        obs = new Observable();
     }
 
     public void startGame(){

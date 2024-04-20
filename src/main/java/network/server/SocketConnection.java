@@ -12,18 +12,17 @@ import java.util.List;
 
 public class SocketConnection extends Connection implements Runnable {
     //Client client
-    Server server;
+    private Server server;
     private Socket socket;
     private ObjectInputStream in;
     private ObjectOutputStream out;
-    private ServerController controller;
-    private Message message;
+    private ClientController controller;
+    private String username;
 
-    public SocketConnection(Server server, Socket socket, ServerController controller){
+    public SocketConnection(Server server, Socket socket){
         try{
             this.server = server;
             this.socket = socket;
-            this.controller = controller;
             this.setConnectionStatus(true);
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
@@ -34,7 +33,7 @@ public class SocketConnection extends Connection implements Runnable {
     @Override
     public void run(){
         //TODO: capire quando chiudere connessione
-        while(true){
+        while(this.getConnectionStatus()){
             try {
                 Message message = (Message) in.readObject();
                 onMessage(message);
@@ -84,7 +83,9 @@ public class SocketConnection extends Connection implements Runnable {
                     sendMessage(new UsernameRequestMessage());
                 }
                 else{
-                    server.login(this, message.getSender());
+                    this.username = message.getSender();
+                    this.controller = new ClientController(((LoginResponseMessage)message).getView(), this.username);
+                    server.login(this, this.username);
                 }
                 break;
             case NUM_PLAYER_RESPONSE:
@@ -98,5 +99,8 @@ public class SocketConnection extends Connection implements Runnable {
             default:
                 break;
         }
+    }
+    public String getUsername(){
+        return this.username;
     }
 }
