@@ -2,7 +2,7 @@ package network.server;
 
 import Controller.Controller;
 import network.messages.Message;
-import Controller.*;
+import model.Card;
 import observer.Observer;
 
 import java.io.Serializable;
@@ -16,8 +16,11 @@ public abstract class Connection implements Observer {
     public void setConnectionStatus(boolean status){
         this.isConnected = status;
     }
+    public abstract void setLobby(Controller controller);
     public abstract void sendMessage(Message message);
     public abstract void joinGame(List<Controller> startingGames);
     public abstract void createGame();
     public abstract String getUsername();
+    public abstract void flipCard(Card card);
+    public abstract void placeStarterCard(Card card);
 }

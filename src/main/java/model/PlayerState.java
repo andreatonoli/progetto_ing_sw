@@ -6,7 +6,16 @@ package model;
  * NOT_IN_TURN => Player waiting his turn
  */
 public enum PlayerState {
-    PLAY_CARD,
-    DRAW_CARD,
-    NOT_IN_TURN
+    PLAY_CARD("place a card"),
+    DRAW_CARD("draw one of the visible cards or draw a card from a deck"),
+    NOT_IN_TURN("wait for your next turn");
+    private String text;
+    PlayerState(String text){
+        this.text=text;
+    }
+
+    @Override
+    public String toString() {
+        return text;
+    }
 }

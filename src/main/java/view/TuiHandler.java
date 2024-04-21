@@ -1,6 +1,7 @@
 package view;
 
 import Controller.Controller;
+import model.Card;
 import model.Game;
 import network.client.*;
 import network.server.Server;
@@ -10,9 +11,11 @@ import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Scanner;
 //TODO: Mergeare TUI e TUIHandler
+//TODO: Prendere comandi dell'utonto
 public class TuiHandler implements Ui{
-    Scanner scanner;
-    PrintStream out;
+    private Scanner scanner;
+    private Client client;
+    private PrintStream out;
     public TuiHandler(){
         scanner = new Scanner(System.in);
         out = System.out;
@@ -121,6 +124,27 @@ public class TuiHandler implements Ui{
         }
         return lobbySize;
     }
+
+    @Override
+    public void showCard(Card card) {
+        //TODO: stampa la carta
+    }
+    @Override
+    public boolean askToFlip(){
+        System.out.println("Do you want to flip the card?");
+        String choice = scanner.nextLine();
+        while (!choice.equalsIgnoreCase("yes") || !choice.equalsIgnoreCase("no")){
+            System.out.println("Incorrect input:\nDo you want to flip the card?\nType your answer");
+            choice = scanner.nextLine();
+        }
+        if (choice.equalsIgnoreCase("yes")){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
     @Override
     public void showText(String text){
         System.out.println(text);

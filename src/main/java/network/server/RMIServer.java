@@ -12,6 +12,7 @@ import java.util.concurrent.BlockingQueue;
 
 import Controller.ClientController;
 import Controller.ServerController;
+import model.Card;
 import model.Game;
 import network.client.RMIClientHandler;
 
@@ -62,6 +63,16 @@ public class RMIServer implements VirtualServer {
     }
     public boolean usernameTaken(String username) throws RemoteException{
         return server.usernameTaken(username);
+    }
+
+    @Override
+    public void flipCard(Card card) throws RemoteException {
+        connection.flipCard(card);
+    }
+
+    @Override
+    public void placeStarterCard(Card card) throws RemoteException {
+        connection.placeStarterCard(card);
     }
 
 }

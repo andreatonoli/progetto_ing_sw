@@ -1,7 +1,8 @@
 package Controller;
+
 import model.*;
 import model.exceptions.*;
-import network.messages.GenericMessage;
+import network.messages.*;
 import network.server.Server;
 import observer.Observable;
 
@@ -11,13 +12,13 @@ import java.util.*;
 //TODO: replace System.out.println with messages
 public class Controller extends Observable implements Serializable {
     private final Game game; //reference to model
-    private ArrayList<Player> connectedPlayers;
+    private Map<String, Player> connectedPlayers;
     private TurnHandler turnHandler;
     private transient final Server server;
     public Controller(int numPlayers, Server server){
         this.game = new Game(numPlayers, server);
-        this.turnHandler = new TurnHandler(game);
-        this.connectedPlayers = new ArrayList<>();
+        this.turnHandler = new TurnHandler(game, server);
+        this.connectedPlayers = Collections.synchronizedMap(new HashMap<>());
         this.server = server;
     }
 
@@ -28,11 +29,12 @@ public class Controller extends Observable implements Serializable {
      */
     public boolean joinGame(String username){
         Player player = new Player(username, game);
-        this.connectedPlayers.add(player);
+        this.connectedPlayers.put(username, player);
         this.addObserver(this.server.getClientFromName(username));
         game.addPlayer(player);
         if (game.isFull()){
             game.startGame();
+            //////////
             return true;
         }
         return false;
@@ -253,8 +255,13 @@ public class Controller extends Observable implements Serializable {
      * Changes the side shown to the player
      * @param card to be flipped
      */
-    public void flipCard(Card card){
+    public void flipCard(String playerName, Card card){
         card.setCurrentSide();
+        notify(this.server.getClientFromName(playerName), new StarterCardMessage(card));
+    }
+    public void placeStarterCard(String username, Card starterCard){
+        Player player = getPlayerByUsername(username);
+        player.getPlayerBoard().setStarterCard(starterCard);
     }
 
     /**
@@ -266,6 +273,9 @@ public class Controller extends Observable implements Serializable {
         if (choice <= 1){
             player.setChosenObj(player.getPersonalObj()[choice]);
         }
+    }
+    private Player getPlayerByUsername(String username){
+        return this.connectedPlayers.get(username);
     }
 
     //TODO: eliminare

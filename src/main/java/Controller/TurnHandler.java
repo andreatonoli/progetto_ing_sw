@@ -1,13 +1,19 @@
 package Controller;
 import model.*;
+import network.messages.GenericMessage;
+import network.messages.PlayerStateMessage;
+import network.server.Server;
+import observer.Observable;
 
 import java.io.Serializable;
 
-public class TurnHandler implements Serializable {
-    Game game;
+public class TurnHandler extends Observable implements Serializable {
+    private Game game;
+    private Server server;
 
-    public TurnHandler(Game game){
+    public TurnHandler(Game game, Server server){
         this.game=game;
+        this.server=server;
     }
 
     public void changePlayerState(Player player){
@@ -16,6 +22,7 @@ public class TurnHandler implements Serializable {
             game.setPlayerInTurn();
         }
         player.setPlayerState(PlayerState.values()[i]);
+        notify(this.server.getClientFromName(player.getUsername()),new PlayerStateMessage(player.getPlayerState()));
     }
 
 }

@@ -12,5 +12,6 @@ public interface Ui{
     int selectGame(List<Controller> activeGames);
     void showText(String text);
     int setLobbySize();
-    boolean askToFlip(Card card);
+    void showCard(Card card);
+    boolean askToFlip();
 }

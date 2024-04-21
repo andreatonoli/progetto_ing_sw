@@ -124,14 +124,14 @@ public class Game extends Observable implements Serializable {
             int max = 0;
             ArrayList<Player> winners = new ArrayList<>();
             for (Player p: players){
-                if (p.getPoints() == max && p.getObjCompleted()>winners.getFirst().getObjCompleted()){
-
-                    }
-                    else{
-                        winners.add(p);
-                    }
+                if (p.getPoints() == max && p.getObjCompleted()>winners.getFirst().getObjCompleted()) {
+                    winners = new ArrayList<>();
+                    winners.add(p);
                 }
-                if (p.getPoints() > max){
+                else if (p.getPoints() == max && p.getObjCompleted()==winners.getFirst().getObjCompleted()){
+                    winners.add(p);
+                }
+                else if (p.getPoints() > max){
                     winners = new ArrayList<>();
                     winners.add(p);
                     max = p.getPoints();

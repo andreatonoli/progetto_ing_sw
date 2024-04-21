@@ -2,19 +2,21 @@ package network.server;
 
 import Controller.Controller;
 import Controller.*;
+import model.Card;
 import model.Game;
 import model.Player;
 import network.client.RMIClient;
 import network.client.RMIClientHandler;
 import network.messages.LoginResponseMessage;
 import network.messages.Message;
+import network.messages.StarterCardMessage;
 
 import java.rmi.RemoteException;
 import java.util.List;
 
 public class RMIConnection extends Connection {
     private RMIClientHandler client;
-    //private final ServerController controller;
+    private Controller lobby;
     private transient Server server;
     private String username;
     public RMIConnection(Server server, RMIClientHandler client, String username){
@@ -22,6 +24,11 @@ public class RMIConnection extends Connection {
         this.server = server;
         this.username = username;
         this.setConnectionStatus(true);
+    }
+
+    @Override
+    public void setLobby(Controller controller) {
+        this.lobby = controller;
     }
 
     @Override
@@ -59,6 +66,15 @@ public class RMIConnection extends Connection {
     @Override
     public String getUsername(){
         return this.username;
+    }
+    @Override
+    public void flipCard(Card card){
+        this.lobby.flipCard(username, card);
+    }
+
+    @Override
+    public void placeStarterCard(Card card) {
+        this.lobby.placeStarterCard(username, card);
     }
 
     @Override

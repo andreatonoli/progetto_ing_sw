@@ -49,6 +49,12 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler {
     public int setLobbySize() throws RemoteException{
         return this.view.setLobbySize();
     }
+    public void flipCard(Card card) throws RemoteException{
+        this.server.flipCard(card);
+    }
+    public void placeStarterCard(Card card){
+
+    }
 
     /**
      * gets messages from the server and updates the view according to the message type
@@ -75,8 +81,18 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler {
                 break;
             case STARTER_CARD:
                 this.starterCard = ((StarterCardMessage) message).getCard();
-                boolean choice = this.view.askToFlip(starterCard);
-                //TODO: finire
+                this.view.showCard(starterCard);
+                boolean choice = this.view.askToFlip();
+                if (choice){
+                    try {
+                        this.flipCard(starterCard);
+                    } catch (RemoteException e) {
+                        System.err.println(e.getMessage() + " in RMIClient.update");
+                    }
+                }
+                else{
+                    this.placeStarterCard(starterCard);
+                }
                 break;
             case SCOREBOARD_UPDATE:
                 //TODO: stampa scoreboard
