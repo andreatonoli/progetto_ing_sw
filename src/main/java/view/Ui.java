@@ -1,11 +1,8 @@
 package view;
 
 import Controller.Controller;
-import model.Game;
-import network.server.VirtualServer;
+import model.Card;
 
-import java.rmi.Remote;
-import java.rmi.RemoteException;
 import java.util.List;
 
 public interface Ui{
@@ -15,4 +12,5 @@ public interface Ui{
     int selectGame(List<Controller> activeGames);
     void showText(String text);
     int setLobbySize();
+    boolean askToFlip(Card card);
 }

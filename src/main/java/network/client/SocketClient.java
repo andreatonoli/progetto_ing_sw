@@ -81,6 +81,9 @@ public class SocketClient {
                 int lobbySize = this.view.setLobbySize();
                 sendMessage(new NumPlayerResponseMessage(this.username, lobbySize));
                 break;
+            case SCOREBOARD_UPDATE:
+                //TODO: stampa scoreboard
+                break;
             case GENERIC_MESSAGE:
                 this.view.showText(message.toString());
             default:

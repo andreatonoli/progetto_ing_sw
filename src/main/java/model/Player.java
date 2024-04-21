@@ -17,6 +17,7 @@ public class Player implements Serializable {
     private ArrayList<String> chat;
     private Game game;
     private PlayerBoard playerBoard;
+    private int objCompleted = 0;
 
     /**
      * constructor of the player class:
@@ -84,10 +85,12 @@ public class Player implements Serializable {
 
     public int addPoints(int pointsToAdd){
         this.points = this.points + pointsToAdd;
-        if (this.points >= 20)
+        if (this.points >= 20){
             firstToEnd = true;
-        if (this.points > 29)
+        }
+        if (this.points > 29){
             this.points = 29;
+        }
         return this.points;
     }
 
@@ -154,6 +157,12 @@ public class Player implements Serializable {
                 break;
             }
         }
+    }
+    public void addObjCompleted(){
+        objCompleted++;
+    }
+    public int getObjCompleted(){
+        return objCompleted;
     }
 }
 

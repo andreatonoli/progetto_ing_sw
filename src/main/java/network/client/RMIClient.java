@@ -3,11 +3,13 @@ package network.client;
 import java.util.*;
 
 import Controller.Controller;
+import network.messages.CommonCardUpdateMessage;
 import network.messages.Message;
+import network.messages.StarterCardMessage;
 import network.server.VirtualServer;
 import observer.Observer;
 import view.Ui;
-import model.Game;
+import model.Card;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -15,10 +17,13 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
-public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, Observer {
+public class RMIClient extends UnicastRemoteObject implements RMIClientHandler {
     private String username;
     private Ui view;
     private VirtualServer server;
+    private Card[] commonResources;
+    private Card[] commonGold;
+    private Card starterCard;
 
     public RMIClient(String username, String host, int port, Ui view) throws RemoteException{
         this.username = username;
@@ -52,6 +57,30 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
     @Override
     public void update(Message message) {
         switch (message.getType()){
+            case COMMON_GOLD_UPDATE:
+                if(commonGold[0] == null){
+                    commonGold[0] = ((CommonCardUpdateMessage) message).getCard();
+                }
+                else{
+                    commonGold[1] = ((CommonCardUpdateMessage) message).getCard();
+                }
+                break;
+            case COMMON_RESOURCE_UPDATE:
+                if(commonResources[0] == null){
+                    commonResources[0] = ((CommonCardUpdateMessage) message).getCard();
+                }
+                else{
+                    commonResources[1] = ((CommonCardUpdateMessage) message).getCard();
+                }
+                break;
+            case STARTER_CARD:
+                this.starterCard = ((StarterCardMessage) message).getCard();
+                boolean choice = this.view.askToFlip(starterCard);
+                //TODO: finire
+                break;
+            case SCOREBOARD_UPDATE:
+                //TODO: stampa scoreboard
+                break;
             case GENERIC_MESSAGE:
                 this.view.showText(message.toString());
                 break;

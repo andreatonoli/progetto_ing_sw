@@ -1,21 +1,41 @@
 package Controller;
 import model.*;
 import model.exceptions.*;
+import network.messages.GenericMessage;
+import network.server.Server;
+import observer.Observable;
 
 import java.io.Serializable;
 import java.util.*;
 
 //TODO: replace System.out.println with messages
-public class Controller implements Serializable {
+public class Controller extends Observable implements Serializable {
     private final Game game; //reference to model
     private ArrayList<Player> connectedPlayers;
     private TurnHandler turnHandler;
-    private transient final ServerController serverController;
-    public Controller(int numPlayers, ServerController sController){
-        this.game = new Game(numPlayers, sController);
+    private transient final Server server;
+    public Controller(int numPlayers, Server server){
+        this.game = new Game(numPlayers, server);
         this.turnHandler = new TurnHandler(game);
         this.connectedPlayers = new ArrayList<>();
-        this.serverController = sController;
+        this.server = server;
+    }
+
+    /**
+     * Permits the client with {@code username} to join the game
+     * @param username of the client who's joining the game
+     * @return {@code true} if the game is full, {@code false} otherwise
+     */
+    public boolean joinGame(String username){
+        Player player = new Player(username, game);
+        this.connectedPlayers.add(player);
+        this.addObserver(this.server.getClientFromName(username));
+        game.addPlayer(player);
+        if (game.isFull()){
+            game.startGame();
+            return true;
+        }
+        return false;
     }
     /**
      *Picks the top card of the deck and calls addInHand to give it to the player
@@ -24,6 +44,7 @@ public class Controller implements Serializable {
      */
     public void drawCard(Player player, LinkedList<Card> deck){
         try {
+            //notify(this.server.getClientFromName(player.getUsername()),new GenericMessage("Drawing a card..."));
             System.out.println("Drawing a card...");
             canDraw(player, deck);
             Card drawedCard = deck.getFirst();
@@ -246,22 +267,8 @@ public class Controller implements Serializable {
             player.setChosenObj(player.getPersonalObj()[choice]);
         }
     }
-    public boolean joinGame(String username){
-        Player player = new Player(username, game);
-        this.connectedPlayers.add(player);
-        game.addPlayer(player);
-        if (game.isFull()){
-            game.startGame();
-            return true;
-        }
-        return false;
-    }
-    public static void notifyAllPlayers(){
 
-    }
-    public int getConnectedPlayers(){
-        return this.connectedPlayers.size();
-    }
+    //TODO: eliminare
     public Game getGame(){
         return this.game;
     }

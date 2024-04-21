@@ -60,9 +60,7 @@ public class SocketConnection extends Connection implements Runnable {
     @Override
     public void sendMessage(Message message) {
         try {
-            System.out.println("DIO CANAE2");
             out.writeObject(message);
-            System.out.println("DIO CANAE3");
             out.reset();
         } catch (IOException e) {
             System.err.println(e.getMessage() + " SocketConnection/sendMessage");
@@ -71,7 +69,6 @@ public class SocketConnection extends Connection implements Runnable {
 
     @Override
     public void joinGame(List<Controller> activeGames) {
-        System.out.println("DIO CANAE");
         sendMessage(new FreeLobbyMessage(activeGames));
     }
 

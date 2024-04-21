@@ -1,20 +1,14 @@
 package model;
 
-import Controller.ServerController;
 import model.exceptions.GameNotStartedException;
-import model.exceptions.NotEnoughPlayersException;
-import network.messages.GenericMessage;
-import network.messages.WinnerMessage;
-import network.server.Connection;
+import network.messages.*;
+import network.server.Server;
 import observer.Observable;
-import observer.Observer;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Game extends Observable implements Serializable {
     private int lobbySize;
@@ -26,14 +20,14 @@ public class Game extends Observable implements Serializable {
     private Player firstPlayer;
     private Player playerInTurn;
     private Chat chatHandler;
-    private transient ServerController sController;
+    private transient Server server;
 
     /**
      *
      * @throws IOException
      */
 
-    public Game(int lobbySize, ServerController sController) {
+    public Game(int lobbySize, Server server) {
         this.lobbySize = lobbySize;
         this.gameState = GameState.WAIT_PLAYERS;
         this.gameFull = false;
@@ -42,7 +36,7 @@ public class Game extends Observable implements Serializable {
         this.playerInTurn = null;
         this.chatHandler = new Chat(this);
         this.gameBoard = new GameBoard(this);
-        this.sController = sController;
+        this.server = server;
     }
 
     public void startGame(){
@@ -53,14 +47,26 @@ public class Game extends Observable implements Serializable {
         Collections.shuffle(gameBoard.getAchievementDeck());
         Collections.shuffle(gameBoard.getResourceDeck());
         Collections.shuffle(gameBoard.getGoldDeck());
+        //Showing the ScoreBoard to the connected players
+        notifyAll(new ScoreBoardUpdateMessage());
         /** two cards are settled in the common board*/
+        Card drawedCard = gameBoard.drawCard(gameBoard.getResourceDeck());
         gameBoard.setCommonResource(gameBoard.drawCard(gameBoard.getResourceDeck()), 0);
+        notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_RESOURCE_UPDATE, drawedCard));
+        drawedCard = gameBoard.drawCard(gameBoard.getResourceDeck());
         gameBoard.setCommonResource(gameBoard.drawCard(gameBoard.getResourceDeck()), 1);
-        gameBoard.setCommonGold(gameBoard.drawCard(gameBoard.getGoldDeck()), 0);
-        gameBoard.setCommonGold(gameBoard.drawCard(gameBoard.getGoldDeck()), 1);
+        notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_RESOURCE_UPDATE, drawedCard));
+        drawedCard = gameBoard.drawCard(gameBoard.getGoldDeck());
+        gameBoard.setCommonGold(drawedCard, 0);
+        notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_GOLD_UPDATE,drawedCard));
+        drawedCard = gameBoard.drawCard(gameBoard.getGoldDeck());
+        gameBoard.setCommonGold(drawedCard, 1);
+        notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_GOLD_UPDATE, drawedCard));
         /** starter card is given to each player*/
         for (Player p : players) {
-            p.getPlayerBoard().setStarterCard(gameBoard.drawCard(gameBoard.getStarterDeck()));
+            Card sCard = gameBoard.drawCard(gameBoard.getStarterDeck());
+            notify(this.server.getClientFromName(p.getUsername()), new StarterCardMessage(sCard));
+            //p.getPlayerBoard().setStarterCard(); -> TODO: chiamo dal controller
             /** in first place the player chose the side he prefers, in order to settle down the card*/
             /** when the controller sees that the player wants to settle down the card, it places starterCard*/
         }
@@ -89,6 +95,7 @@ public class Game extends Observable implements Serializable {
         Collections.shuffle(players);
         setFirstPlayer();
         this.gameState = GameState.IN_GAME;
+        notifyAll(new GenericMessage("Game started"));
     }
 
     public void endGame() throws GameNotStartedException {
@@ -97,19 +104,32 @@ public class Game extends Observable implements Serializable {
                 throw new GameNotStartedException();
             }
             this.gameState = GameState.END;
+            notifyAll(new GenericMessage("game is ended, counting objective points..."));
+            int endPoints;
             for (Player p: players){
+                endPoints = p.getPoints();
                 p.getChosenObj().calcPoints(p);
+                if (p.getPoints()>endPoints){
+                    p.addObjCompleted();
+                    endPoints=p.getPoints();
+                }
                 for (Achievement a : gameBoard.getCommonAchievement()){
                     a.calcPoints(p);
+                    if (p.getPoints()>endPoints){
+                        p.addObjCompleted();
+                    }
                 }
             }
             /** the winner is chosen by the number of points */
             int max = 0;
             ArrayList<Player> winners = new ArrayList<>();
             for (Player p: players){
-                if (p.getPoints() == max){
-                    winners.add(p);
-                    max = p.getPoints();
+                if (p.getPoints() == max && p.getObjCompleted()>winners.getFirst().getObjCompleted()){
+
+                    }
+                    else{
+                        winners.add(p);
+                    }
                 }
                 if (p.getPoints() > max){
                     winners = new ArrayList<>();
@@ -150,7 +170,7 @@ public class Game extends Observable implements Serializable {
         }
         this.playerInTurn = players.get(willPlay);
         playerInTurn.setPlayerState(PlayerState.PLAY_CARD);
-        //TODO: notify del player in turno
+        notifyAll(new GenericMessage("it's "+playerInTurn+" turn"));
     }
 
     public GameState getGameState()
@@ -174,7 +194,7 @@ public class Game extends Observable implements Serializable {
     public void addPlayer(Player player){
         synchronized (this.players){
             this.players.add(player);
-            addObserver(this.sController.getServer().getClientFromName(player.getUsername()));
+            addObserver(this.server.getClientFromName(player.getUsername()));
             if (players.size()==this.lobbySize){
                 gameFull = true;
             }
@@ -196,5 +216,5 @@ public class Game extends Observable implements Serializable {
     public int getLobbySize(){
         return lobbySize;
     }
-    
+
 }

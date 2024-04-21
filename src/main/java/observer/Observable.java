@@ -21,7 +21,7 @@ public class Observable {
             obs.update(message);
         }
     }
-    public void notifyPlayer(){
-
+    public void notify(Observer obs, Message message){
+        obs.update(message);
     }
 }
