@@ -5,6 +5,7 @@ import model.Game;
 import model.GameState;
 import model.Player;
 
+import java.io.Serializable;
 import java.util.*;
 
 public class Server {
@@ -52,7 +53,8 @@ public class Server {
     }
     public void joinLobby(String username, int indexGame){
         Controller controller = this.startingGames.get(indexGame);
-        boolean full = this.controller.joinLobby(username, controller);
+        Game game = controller.getGame();
+        boolean full = this.controller.joinLobby(username, game);
         if (full){
             activeGames.add(controller);
             startingGames.remove(controller);

@@ -32,7 +32,7 @@ public class SocketServer {
         while(true){
             try {
                 Socket socket = serverSocket.accept();
-                executor.submit(new SocketConnection(this.server, socket, this.controller));
+                executor.submit(new SocketConnection(this.server, socket));
             } catch (IOException e) {
                 System.err.println(e.getMessage());
                 return;

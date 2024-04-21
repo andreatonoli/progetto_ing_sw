@@ -36,7 +36,7 @@ public class GameTest {
         game1.addPlayer(player1);
         game1.addPlayer(player2);
         game1.addPlayer(player3);
-        game1.startGame(4);
+        game1.startGame();
 
         assertNotNull(game1.getGameBoard().getCommonAchievement());
         assertEquals(game1.getGameBoard().getCommonAchievement().length, 2);

@@ -45,6 +45,7 @@ public class SocketConnection extends Connection implements Runnable {
             }
         }
     }
+
     public void onDisconnect(){
         try {
             in.close();
@@ -62,7 +63,7 @@ public class SocketConnection extends Connection implements Runnable {
             out.writeObject(message);
             out.reset();
         } catch (IOException e) {
-            System.err.println(e.getMessage());
+            System.err.println(e.getMessage() + " SocketConnection sendMessage");
         }
     }
 
@@ -84,7 +85,6 @@ public class SocketConnection extends Connection implements Runnable {
                 }
                 else{
                     this.username = message.getSender();
-                    this.controller = new ClientController(((LoginResponseMessage)message).getView(), this.username);
                     server.login(this, this.username);
                 }
                 break;
@@ -102,5 +102,10 @@ public class SocketConnection extends Connection implements Runnable {
     }
     public String getUsername(){
         return this.username;
+    }
+
+    @Override
+    public void update(Message message) {
+        sendMessage(message);
     }
 }

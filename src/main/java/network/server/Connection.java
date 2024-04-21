@@ -3,11 +3,12 @@ package network.server;
 import Controller.Controller;
 import network.messages.Message;
 import Controller.*;
+import observer.Observer;
 
 import java.io.Serializable;
 import java.util.List;
 
-public abstract class Connection implements Serializable {
+public abstract class Connection implements Observer {
     private boolean isConnected;
     public boolean getConnectionStatus(){
         return isConnected;

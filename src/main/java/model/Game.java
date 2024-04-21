@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Game implements Serializable {
+public class Game extends Observable implements Serializable {
     private int lobbySize;
     private GameBoard gameBoard;
     private GameState gameState;
@@ -42,7 +42,7 @@ public class Game implements Serializable {
     }
 
     public void startGame(){
-        obs.notifyAll(new GenericMessage("Starting game..."));
+        notifyAll(new GenericMessage("Starting game..."));
         this.gameState = GameState.START;
         /** decks are shuffled*/
         Collections.shuffle(gameBoard.getStarterDeck());
@@ -113,7 +113,7 @@ public class Game implements Serializable {
                     max = p.getPoints();
                 }
             }
-            obs.notifyAll(new WinnerMessage(winners));
+            notifyAll(new WinnerMessage(winners));
         }
         catch(GameNotStartedException e){
             System.err.println("Game not started");
@@ -173,7 +173,7 @@ public class Game implements Serializable {
             if (players.size()==this.lobbySize){
                 gameFull = true;
             }
-            obs.notifyAll(new GenericMessage("Players in lobby: " + players.size() + "/" + lobbySize));
+            notifyAll(new GenericMessage("Players in lobby: " + players.size() + "/" + lobbySize));
         }
     }
 

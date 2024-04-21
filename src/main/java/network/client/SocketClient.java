@@ -28,7 +28,7 @@ public class SocketClient {
             socket = new Socket(address, port);
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
-            sendMessage(new LoginResponseMessage(this.username));
+            sendMessage(new LoginResponseMessage(this.username)); //TODO: rimuovere questo paramentro
             //TODO: capire come far chiudere la connessione
             while(!disconnected){
                 readMessage();

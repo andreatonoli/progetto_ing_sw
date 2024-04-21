@@ -4,13 +4,8 @@ import network.server.Server;
 import view.Ui;
 
 public class LoginResponseMessage extends Message{
-    private Ui view;
-    public LoginResponseMessage(String username, Ui view){
+    public LoginResponseMessage(String username){
         super(MessageType.LOGIN_RESPONSE, username);
-        this.view = view;
-    }
-    public Ui getView(){
-        return view;
     }
     @Override
     public String toString(){

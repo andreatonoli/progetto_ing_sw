@@ -17,11 +17,17 @@ public class ClientController implements Observer {
         this.username = username;
     }
     /*
-        Client -> sendMessage(view) -> Conenction -> login -> newClientController(view)
+        1)Client -> sendMessage(view) -> Conenction -> login -> newClientController(view)
         ClientController -> join(Controller)
         Controller -> getGame() -> Observable -> add((Observer)ClientController) ->
         drawCard() -> notifyAll(PORCODDUE HO PESCATO)
+        2) WHAT IF CREO ISTANZA DI PLAYER NELLA CONNECTION????
+        3) getClientByName() -> Controller -> map <Player, String> -> notifyAllPlayer -> foreach Player ->
+           getClientByName(Player.getUsername)
      */
+    public String getUsername(){
+        return this.username;
+    }
     @Override
     public void update(Message message) {
 
