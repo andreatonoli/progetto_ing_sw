@@ -12,11 +12,11 @@ import java.util.List;
 
 public class SocketConnection extends Connection implements Runnable {
     //Client client
-    private Server server;
-    private Socket socket;
-    private ObjectInputStream in;
-    private ObjectOutputStream out;
-    private ClientController controller;
+    private transient Server server;
+    private transient Socket socket;
+    private transient ObjectInputStream in;
+    private transient ObjectOutputStream out;
+    //private ClientController controller;
     private String username;
 
     public SocketConnection(Server server, Socket socket){
@@ -60,15 +60,18 @@ public class SocketConnection extends Connection implements Runnable {
     @Override
     public void sendMessage(Message message) {
         try {
+            System.out.println("DIO CANAE2");
             out.writeObject(message);
+            System.out.println("DIO CANAE3");
             out.reset();
         } catch (IOException e) {
-            System.err.println(e.getMessage() + " SocketConnection sendMessage");
+            System.err.println(e.getMessage() + " SocketConnection/sendMessage");
         }
     }
 
     @Override
     public void joinGame(List<Controller> activeGames) {
+        System.out.println("DIO CANAE");
         sendMessage(new FreeLobbyMessage(activeGames));
     }
 

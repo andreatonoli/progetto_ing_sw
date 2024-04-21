@@ -7,7 +7,7 @@ import java.util.List;
 
 import network.messages.Message;
 
-public class Observable implements Serializable {
+public class Observable {
     private final List<Observer> observers = new ArrayList<>();
 
     public void addObserver(Observer obs) {

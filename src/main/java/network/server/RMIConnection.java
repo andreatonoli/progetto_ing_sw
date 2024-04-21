@@ -15,7 +15,7 @@ import java.util.List;
 public class RMIConnection extends Connection {
     private RMIClientHandler client;
     //private final ServerController controller;
-    private Server server;
+    private transient Server server;
     private String username;
     public RMIConnection(Server server, RMIClientHandler client, String username){
         this.client = client;
@@ -26,11 +26,11 @@ public class RMIConnection extends Connection {
 
     @Override
     public void sendMessage(Message message) {
-        //try {
-        //    this.client.update(message);
-        //} catch (RemoteException e) {
-        //    System.err.println(e.getMessage() + "RMIConnection/sendMessage");
-        //}
+        try {
+            this.client.update(message);
+        } catch (RemoteException e) {
+            System.err.println(e.getMessage() + "RMIConnection/sendMessage");
+        }
     }
 
     @Override
@@ -63,6 +63,6 @@ public class RMIConnection extends Connection {
 
     @Override
     public void update(Message message) {
-
+        this.sendMessage(message);
     }
 }

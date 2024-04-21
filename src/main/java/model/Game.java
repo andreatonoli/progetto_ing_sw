@@ -1,11 +1,13 @@
 package model;
 
+import Controller.ServerController;
 import model.exceptions.GameNotStartedException;
 import model.exceptions.NotEnoughPlayersException;
 import network.messages.GenericMessage;
 import network.messages.WinnerMessage;
 import network.server.Connection;
 import observer.Observable;
+import observer.Observer;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -24,13 +26,14 @@ public class Game extends Observable implements Serializable {
     private Player firstPlayer;
     private Player playerInTurn;
     private Chat chatHandler;
+    private transient ServerController sController;
 
     /**
      *
      * @throws IOException
      */
 
-    public Game(int lobbySize) {
+    public Game(int lobbySize, ServerController sController) {
         this.lobbySize = lobbySize;
         this.gameState = GameState.WAIT_PLAYERS;
         this.gameFull = false;
@@ -39,6 +42,7 @@ public class Game extends Observable implements Serializable {
         this.playerInTurn = null;
         this.chatHandler = new Chat(this);
         this.gameBoard = new GameBoard(this);
+        this.sController = sController;
     }
 
     public void startGame(){
@@ -170,6 +174,7 @@ public class Game extends Observable implements Serializable {
     public void addPlayer(Player player){
         synchronized (this.players){
             this.players.add(player);
+            addObserver(this.sController.getServer().getClientFromName(player.getUsername()));
             if (players.size()==this.lobbySize){
                 gameFull = true;
             }
@@ -191,4 +196,5 @@ public class Game extends Observable implements Serializable {
     public int getLobbySize(){
         return lobbySize;
     }
+    
 }

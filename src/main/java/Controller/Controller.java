@@ -3,14 +3,19 @@ import model.*;
 import model.exceptions.*;
 
 import java.io.Serializable;
-import java.util.LinkedList;
+import java.util.*;
+
 //TODO: replace System.out.println with messages
 public class Controller implements Serializable {
     private final Game game; //reference to model
+    private ArrayList<Player> connectedPlayers;
     private TurnHandler turnHandler;
-    public Controller(int numPlayers){
-        this.game = new Game(numPlayers);
+    private transient final ServerController serverController;
+    public Controller(int numPlayers, ServerController sController){
+        this.game = new Game(numPlayers, sController);
         this.turnHandler = new TurnHandler(game);
+        this.connectedPlayers = new ArrayList<>();
+        this.serverController = sController;
     }
     /**
      *Picks the top card of the deck and calls addInHand to give it to the player
@@ -241,8 +246,21 @@ public class Controller implements Serializable {
             player.setChosenObj(player.getPersonalObj()[choice]);
         }
     }
+    public boolean joinGame(String username){
+        Player player = new Player(username, game);
+        this.connectedPlayers.add(player);
+        game.addPlayer(player);
+        if (game.isFull()){
+            game.startGame();
+            return true;
+        }
+        return false;
+    }
+    public static void notifyAllPlayers(){
+
+    }
     public int getConnectedPlayers(){
-        return this.game.getPlayers().size();
+        return this.connectedPlayers.size();
     }
     public Game getGame(){
         return this.game;

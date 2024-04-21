@@ -14,4 +14,6 @@ public interface RMIClientHandler extends Remote {
     int joinGame(List<Controller> activeGames) throws RemoteException;
     int setLobbySize() throws RemoteException;
     Ui getView() throws RemoteException;
+
+    void update(Message message) throws RemoteException;
 }
