@@ -1,6 +1,7 @@
 package network.server;
 
 import Controller.*;
+import model.Card;
 import model.Game;
 import network.messages.*;
 
@@ -58,6 +59,11 @@ public class SocketConnection extends Connection implements Runnable {
     }
 
     @Override
+    public void setLobby(Controller controller) {
+
+    }
+
+    @Override
     public void sendMessage(Message message) {
         try {
             out.writeObject(message);
@@ -102,6 +108,16 @@ public class SocketConnection extends Connection implements Runnable {
     }
     public String getUsername(){
         return this.username;
+    }
+
+    @Override
+    public void flipCard(Card card) {
+
+    }
+
+    @Override
+    public void placeStarterCard(Card card) {
+
     }
 
     @Override

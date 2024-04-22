@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 public class TurnHandler extends Observable implements Serializable {
     private Game game;
-    private Server server;
+    private transient Server server;
 
     public TurnHandler(Game game, Server server){
         this.game=game;

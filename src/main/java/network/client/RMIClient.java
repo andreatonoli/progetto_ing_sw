@@ -28,6 +28,9 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler {
     public RMIClient(String username, String host, int port, Ui view) throws RemoteException{
         this.username = username;
         this.view = view;
+        //TODO: capire dove metterli
+        this.commonResources = new Card[2];
+        this.commonGold = new Card[2];
         final String serverName = "GameServer";
         try {
             Registry registry = LocateRegistry.getRegistry(host, port);

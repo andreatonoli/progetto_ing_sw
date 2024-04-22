@@ -51,7 +51,7 @@ public class RMIConnection extends Connection {
                 this.server.joinLobby(this.username, response);
             }
         } catch (RemoteException e){
-            System.err.println(e.getMessage());
+            System.err.println(e.getMessage() + " in RMIConnection/joinGame");
         }
     }
 
