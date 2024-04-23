@@ -75,7 +75,7 @@ public class SocketConnection extends Connection implements Runnable {
 
     @Override
     public void joinGame(List<Controller> activeGames) {
-        sendMessage(new FreeLobbyMessage(activeGames));
+        sendMessage(new FreeLobbyMessage(activeGames.size()));
     }
 
     @Override

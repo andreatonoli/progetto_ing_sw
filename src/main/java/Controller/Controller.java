@@ -33,6 +33,7 @@ public class Controller extends Observable {
         Player player = new Player(user.getUsername(), game);
         this.connectedPlayers.put(user, player);
         this.addObserver(user);
+        user.setLobby(this);
         game.addPlayer(player);
         if (game.isFull()){
             game.startGame();

@@ -67,8 +67,8 @@ public class SocketClient {
                 sendMessage(new LoginResponseMessage(this.username));
                 break;
             case FREE_LOBBY:
-                int freeLobbySize = ((FreeLobbyMessage) message).getStartingGames().size();
-                int response = this.view.selectGame(((FreeLobbyMessage) message).getStartingGames());
+                int freeLobbySize = ((FreeLobbyMessage) message).getLobbyNumber();
+                int response = this.view.selectGame(freeLobbySize);
                 if (response == freeLobbySize){
                     int lobbySize = this.view.setLobbySize();
                     sendMessage(new NumPlayerResponseMessage(this.username, lobbySize));

@@ -1,15 +1,9 @@
 package network.server;
 
 import Controller.Controller;
-import Controller.*;
 import model.Card;
-import model.Game;
-import model.Player;
-import network.client.RMIClient;
 import network.client.RMIClientHandler;
-import network.messages.LoginResponseMessage;
 import network.messages.Message;
-import network.messages.StarterCardMessage;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -43,7 +37,7 @@ public class RMIConnection extends Connection {
     @Override
     public void joinGame(List<Controller> startingGames){
         try{
-            int response = this.client.joinGame(startingGames);
+            int response = this.client.joinGame(startingGames.size());
             if (response == startingGames.size()){
                 this.server.createLobby(this.username, this.client.setLobbySize());
             }

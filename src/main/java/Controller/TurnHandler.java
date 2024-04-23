@@ -7,7 +7,7 @@ import observer.Observable;
 
 import java.io.Serializable;
 
-public class TurnHandler extends Observable implements Serializable {
+public class TurnHandler extends Observable {
     private Game game;
     //private transient Server server;
 

@@ -115,15 +115,15 @@ public class Tui implements Ui{
     }
 
     @Override
-    public int selectGame(List<Controller> startingGames){
+    public int selectGame(int freeLobbies){
         System.out.println("Select one of the following game's lobby by writing the respective number");
         int i;
-        for (i = 0; i < startingGames.size(); i++){
+        for (i = 0; i < freeLobbies; i++){
             System.out.println("Lobby " + i);
         }
         System.out.println("Lobby " + i + "(create new game)");
         int choice = scanner.nextInt();
-        while (choice > startingGames.size() || choice < 0){
+        while (choice > freeLobbies || choice < 0){
             System.out.print("Invalid input.\nInsert the lobby number: ");
             choice = scanner.nextInt();
         }

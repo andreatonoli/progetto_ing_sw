@@ -10,7 +10,7 @@ public interface Ui{
     String askNickname();
     String askServerAddress();
     int askServerPort(String connectionType);
-    int selectGame(List<Controller> activeGames);
+    int selectGame(int freeLobbies);
     void showText(String text);
     int setLobbySize();
     boolean askToFlip();

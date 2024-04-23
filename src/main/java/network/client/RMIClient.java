@@ -1,13 +1,9 @@
 package network.client;
 
-import java.util.*;
-
-import Controller.Controller;
 import network.messages.CommonCardUpdateMessage;
 import network.messages.Message;
 import network.messages.StarterCardMessage;
 import network.server.VirtualServer;
-import observer.Observer;
 import view.Ui;
 import model.Card;
 
@@ -45,8 +41,8 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler {
         }
     }
 
-    public int joinGame(List<Controller> startingGames) throws RemoteException{
-        return this.view.selectGame(startingGames);
+    public int joinGame(int freeLobbies) throws RemoteException{
+        return this.view.selectGame(freeLobbies);
     }
 
     public int setLobbySize() throws RemoteException{

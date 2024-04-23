@@ -1,6 +1,7 @@
 package network.server;
 
 import Controller.Controller;
+import model.Game;
 import network.messages.Message;
 import model.Card;
 import observer.Observer;

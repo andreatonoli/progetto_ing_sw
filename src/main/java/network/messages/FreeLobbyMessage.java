@@ -8,20 +8,23 @@ import Controller.*;
 import java.util.List;
 
 public class FreeLobbyMessage extends Message{
-    private List<Controller> startingGames;
-    public FreeLobbyMessage(List<Controller> startingGames) {
+    /**
+     * number of not started games
+     */
+    private int lobbyNumber;
+    public FreeLobbyMessage(int lobbyNumber) {
         super(MessageType.FREE_LOBBY, Server.serverName);
-        this.startingGames = startingGames;
+        this.lobbyNumber = lobbyNumber;
     }
 
-    public List<Controller> getStartingGames() {
-        return startingGames;
+    public int getLobbyNumber() {
+        return lobbyNumber;
     }
 
     @Override
     public String toString(){
         return "FreeLobbyMessage{" +
-                "startingGames" + startingGames +
+                "lobbyNumber: " + lobbyNumber +
                 '}';
     }
 }
