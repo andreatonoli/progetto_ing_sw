@@ -1,9 +1,10 @@
 package model;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Set;
 
-public class PlayerBoard {
+public class PlayerBoard implements Serializable {
     public static final int OFFSET = 128;
     private Player player;
     private Card starterCard; //Se si vuole far tornare di tipo starter bisogna creare un metodo drawCard apposito per lei

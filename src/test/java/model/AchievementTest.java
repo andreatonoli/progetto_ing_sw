@@ -13,7 +13,7 @@ public class AchievementTest {
     @Test
     @DisplayName("Diagonal Achievement")
     public void diagonalTest() throws IOException{
-        Game game = new Game();
+        Game game = new Game(4);
         Achievement a = new AchievementDiagonal(Color.PURPLE);
         Card c = new ResourceCard(new Corner[]{new Corner(Symbols.INSECT), new Corner(Symbols.PLANT), new Corner(Symbols.NOCORNER), new Corner(Symbols.INKWELL) }, 37, 0);
         Player p = new Player("pippo", game);
@@ -27,7 +27,7 @@ public class AchievementTest {
     @Test
     @DisplayName("Diagonal Achievement - No Pattern found")
     public void noDiagonalTest() throws IOException{
-        Game game = new Game();
+        Game game = new Game(4);
         Achievement a = new AchievementDiagonal(Color.RED);
         Card c = new ResourceCard(new Corner[]{new Corner(Symbols.INSECT), new Corner(Symbols.PLANT), new Corner(Symbols.NOCORNER), new Corner(Symbols.INKWELL) }, 37, 0);
         Player p = new Player("pippo", game);
@@ -44,7 +44,7 @@ public class AchievementTest {
     @Test
     @DisplayName("Diagonal Achievement - No Card Reuse")
     public void noReuseTest() throws IOException{
-        Game game = new Game();
+        Game game = new Game(4);
         Achievement a = new AchievementDiagonal(Color.PURPLE);
         Card c = new ResourceCard(new Corner[]{new Corner(Symbols.INSECT), new Corner(Symbols.PLANT), new Corner(Symbols.NOCORNER), new Corner(Symbols.INKWELL) }, 37, 0);
         Player p = new Player("pippo", game);
@@ -60,7 +60,7 @@ public class AchievementTest {
     @Test
     @DisplayName("Item Achievement - 3 Items")
     public void itemTest() throws IOException{
-        Game game = new Game();
+        Game game = new Game(4);
         Player p = new Player("pippo", game);
         Controller co = new Controller(game);
         Achievement a = new AchievementItem(3, new ArrayList<>(List.of(Symbols.INKWELL, Symbols.QUILL, Symbols.MANUSCRIPT)));
@@ -89,7 +89,7 @@ public class AchievementTest {
     @Test
     @DisplayName("Item Achievement - No Enough Items")
     public void noItemTest() throws IOException{
-        Game game = new Game();
+        Game game = new Game(4);
         Player p = new Player("pippo", game);
         Achievement a = new AchievementItem(3, new ArrayList<>(List.of(Symbols.INKWELL, Symbols.QUILL, Symbols.MANUSCRIPT)));
         Achievement b = new AchievementItem(2, new ArrayList<>(List.of(Symbols.INKWELL)));
@@ -109,7 +109,7 @@ public class AchievementTest {
     @Test
     @DisplayName("Resources Achievement")
     public void resourcesTest() throws IOException{
-        Game game = new Game();
+        Game game = new Game(4);
         Player p = new Player("pippo", game);
         Controller co = new Controller(game);
         Achievement a = new AchievementResources(Symbols.FUNGI);
@@ -152,7 +152,7 @@ public class AchievementTest {
     @Test
     @DisplayName("L Achievement")
     public void lTest() throws IOException{
-        Game game = new Game();
+        Game game = new Game(4);
         Player p = new Player("pippo", game);
         Controller co = new Controller(game);
         Achievement a = new AchievementL(Color.RED);
@@ -200,7 +200,7 @@ public class AchievementTest {
     @Test
     @DisplayName("Mixed Achievement")
     public void mixedAchievementTest() throws IOException{
-        Game game = new Game();
+        Game game = new Game(4);
         Player p = new Player("pippo", game);
         Controller co = new Controller(game);
         Achievement a = new AchievementL(Color.RED);

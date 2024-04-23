@@ -1,127 +1,146 @@
 package model;
 
 import model.exceptions.GameNotStartedException;
-import model.exceptions.NotEnoughPlayersException;
+import network.messages.*;
+import network.server.Server;
+import observer.Observable;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class Game {
-    public static final int MAX_PLAYERS = 4; /** sets max number of players */
-    public static final int MIN_PLAYERS = 2; /** sets min number of players */
+public class Game extends Observable implements Serializable {
+    private int lobbySize;
     private GameBoard gameBoard;
     private GameState gameState;
-    private ArrayList<Player> players;
+    private final ArrayList<Player> players;
+    private int willPlay = -1; //che fa?
+    private boolean gameFull;
     private Player firstPlayer;
     private Player playerInTurn;
     private Chat chatHandler;
-
-    private boolean gameStarted = false;
+    private transient Server server;
 
     /**
      *
      * @throws IOException
      */
 
-    public Game() {
+    public Game(int lobbySize, Server server) {
+        this.lobbySize = lobbySize;
         this.gameState = GameState.WAIT_PLAYERS;
-        this.players = new ArrayList<Player>();
-        //this.players.add(first);
+        this.gameFull = false;
+        this.players = new ArrayList<>();
         this.firstPlayer = null;
         this.playerInTurn = null;
         this.chatHandler = new Chat(this);
         this.gameBoard = new GameBoard(this);
+        this.server = server;
     }
 
-    public void startGame() throws NotEnoughPlayersException {
-
-        try {
-            if(players.isEmpty() || players.size() == 1) {
-                throw new NotEnoughPlayersException();
-            }
-            /** decks are shuffled*/
-            Collections.shuffle(gameBoard.getStarterDeck());
-            Collections.shuffle(gameBoard.getAchievementDeck());
-            Collections.shuffle(gameBoard.getResourceDeck());
-            Collections.shuffle(gameBoard.getGoldDeck());
-
-            /** two cards are settled in the common board*/
-            gameBoard.setCommonResource(gameBoard.drawCard(gameBoard.getResourceDeck()), 0);
-            gameBoard.setCommonResource(gameBoard.drawCard(gameBoard.getResourceDeck()), 1);
-            gameBoard.setCommonGold(gameBoard.drawCard(gameBoard.getGoldDeck()), 0);
-            gameBoard.setCommonGold(gameBoard.drawCard(gameBoard.getGoldDeck()), 1);
-
-            /** starter card is given to each player*/
-            for (Player p : players) {
-                p.getPlayerBoard().setStarterCard(gameBoard.drawCard(gameBoard.getStarterDeck()));
-                /** in first place the player chose the side he prefers, in order to settle down the card*/
-                /** when the controller sees that the player wants to settle down the card, it places starterCard*/
-            }
-
-            //colore segnalino scelto dal player al login
-
-            /** every player draws two resource cards and a gold card*/
-            for (Player p : players) {
-                p.addInHand(gameBoard.drawCard(gameBoard.getResourceDeck()));
-                p.addInHand(gameBoard.drawCard(gameBoard.getResourceDeck()));
-                p.addInHand(gameBoard.drawCard(gameBoard.getGoldDeck()));
-            }
-
-            /** two achievement cards are settled in the common board */
-            gameBoard.setCommonAchievement(gameBoard.drawCard(), 0);
-            gameBoard.setCommonAchievement(gameBoard.drawCard(), 1);
-
-            /** at this moment each player chose the achievement card */
-            for (Player p : players) {
-                p.getPersonalObj()[0] = gameBoard.drawCard();
-                p.getPersonalObj()[1] = gameBoard.drawCard();
-                //scelta carta da parte del player
-                //per il momento il player sceglie la prima carta
-                //poi verrà gestita nel controller
-                p.setChosenObj(p.getPersonalObj()[0]);
-            }
-
-            /** the first player is chosen in a random way*/
-            Collections.shuffle(players);
-            setFirstPlayer();
+    public void startGame(){
+        notifyAll(new GenericMessage("Starting game..."));
+        this.gameState = GameState.START;
+        /** decks are shuffled*/
+        Collections.shuffle(gameBoard.getStarterDeck());
+        Collections.shuffle(gameBoard.getAchievementDeck());
+        Collections.shuffle(gameBoard.getResourceDeck());
+        Collections.shuffle(gameBoard.getGoldDeck());
+        //Showing the ScoreBoard to the connected players
+        notifyAll(new ScoreBoardUpdateMessage());
+        /** two cards are settled in the common board*/
+        Card drawedCard = gameBoard.drawCard(gameBoard.getResourceDeck());
+        gameBoard.setCommonResource(gameBoard.drawCard(gameBoard.getResourceDeck()), 0);
+        notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_RESOURCE_UPDATE, drawedCard));
+        drawedCard = gameBoard.drawCard(gameBoard.getResourceDeck());
+        gameBoard.setCommonResource(gameBoard.drawCard(gameBoard.getResourceDeck()), 1);
+        notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_RESOURCE_UPDATE, drawedCard));
+        drawedCard = gameBoard.drawCard(gameBoard.getGoldDeck());
+        gameBoard.setCommonGold(drawedCard, 0);
+        notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_GOLD_UPDATE,drawedCard));
+        drawedCard = gameBoard.drawCard(gameBoard.getGoldDeck());
+        gameBoard.setCommonGold(drawedCard, 1);
+        notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_GOLD_UPDATE, drawedCard));
+        /** starter card is given to each player*/
+        for (Player p : players) {
+            Card sCard = gameBoard.drawCard(gameBoard.getStarterDeck());
+            notify(this.server.getClientFromName(p.getUsername()), new StarterCardMessage(sCard));
+            //p.getPlayerBoard().setStarterCard(); -> TODO: chiamo dal controller
+            /** in first place the player chose the side he prefers, in order to settle down the card*/
+            /** when the controller sees that the player wants to settle down the card, it places starterCard*/
         }
-        catch(NotEnoughPlayersException e){
-            System.out.println("At least two players to start the game");
+        //TODO: colore segnalino scelto dal player al login
+        /** every player draws two resource cards and a gold card*/
+        for (Player p : players) {
+            p.addInHand(gameBoard.drawCard(gameBoard.getResourceDeck()));
+            p.addInHand(gameBoard.drawCard(gameBoard.getResourceDeck()));
+            p.addInHand(gameBoard.drawCard(gameBoard.getGoldDeck()));
         }
-        gameStarted = true;
+        /** two achievement cards are settled in the common board */
+        gameBoard.setCommonAchievement(gameBoard.drawCard(), 0);
+        gameBoard.setCommonAchievement(gameBoard.drawCard(), 1);
+        /** at this moment each player chose the achievement card */
+        for (Player p : players) {
+            p.getPersonalObj()[0] = gameBoard.drawCard();
+            p.getPersonalObj()[1] = gameBoard.drawCard();
+            //scelta carta da parte del player
+            //per il momento il player sceglie la prima carta
+            //poi verrà gestita nel controller
+            //TODO: scegliere personal achievement
+            p.setChosenObj(p.getPersonalObj()[0]);
+        }
+
+        /** the first player is chosen in a random way*/
+        Collections.shuffle(players);
+        setFirstPlayer();
+        this.gameState = GameState.IN_GAME;
+        notifyAll(new GenericMessage("Game started"));
     }
 
     public void endGame() throws GameNotStartedException {
         try{
-            if(!gameStarted){
+            if(!this.gameState.equals(GameState.IN_GAME)){
                 throw new GameNotStartedException();
             }
+            this.gameState = GameState.END;
+            notifyAll(new GenericMessage("game is ended, counting objective points..."));
+            int endPoints;
             for (Player p: players){
+                endPoints = p.getPoints();
                 p.getChosenObj().calcPoints(p);
+                if (p.getPoints()>endPoints){
+                    p.addObjCompleted();
+                    endPoints=p.getPoints();
+                }
                 for (Achievement a : gameBoard.getCommonAchievement()){
                     a.calcPoints(p);
+                    if (p.getPoints()>endPoints){
+                        p.addObjCompleted();
+                    }
                 }
             }
-
             /** the winner is chosen by the number of points */
             int max = 0;
             ArrayList<Player> winners = new ArrayList<>();
             for (Player p: players){
-                if (p.getPoints() == max){
+                if (p.getPoints() == max && p.getObjCompleted()>winners.getFirst().getObjCompleted()) {
+                    winners = new ArrayList<>();
                     winners.add(p);
-                    max = p.getPoints();
                 }
-                if (p.getPoints() > max){
+                else if (p.getPoints() == max && p.getObjCompleted()==winners.getFirst().getObjCompleted()){
+                    winners.add(p);
+                }
+                else if (p.getPoints() > max){
                     winners = new ArrayList<>();
                     winners.add(p);
                     max = p.getPoints();
                 }
             }
-            gameStarted = false;
+            notifyAll(new WinnerMessage(winners));
         }
         catch(GameNotStartedException e){
-            System.out.println("Game not started");
+            System.err.println("Game not started");
         }
     }
 
@@ -141,9 +160,17 @@ public class Game {
         this.gameState = nextGameState;
     }
 
-    public void setPlayerInTurn(Player playerPlaying)
+    public void setPlayerInTurn()
     {
-        this.playerInTurn = playerPlaying;
+        if (willPlay == lobbySize){
+            willPlay = 0;
+        }
+        else{
+            willPlay++;
+        }
+        this.playerInTurn = players.get(willPlay);
+        playerInTurn.setPlayerState(PlayerState.PLAY_CARD);
+        notifyAll(new GenericMessage("it's "+playerInTurn+" turn"));
     }
 
     public GameState getGameState()
@@ -164,9 +191,19 @@ public class Game {
         return this.players;
     }
 
-    //temporaneo
     public void addPlayer(Player player){
-        this.players.add(player);
+        synchronized (this.players){
+            this.players.add(player);
+            addObserver(this.server.getClientFromName(player.getUsername()));
+            if (players.size()==this.lobbySize){
+                gameFull = true;
+            }
+            notifyAll(new GenericMessage("Players in lobby: " + players.size() + "/" + lobbySize));
+        }
+    }
+
+    public boolean isFull(){
+        return gameFull;
     }
 
     public GameBoard getGameBoard(){
@@ -175,6 +212,9 @@ public class Game {
 
     public Chat getChat(){
         return this.chatHandler;
+    }
+    public int getLobbySize(){
+        return lobbySize;
     }
 
 }

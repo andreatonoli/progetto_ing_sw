@@ -11,7 +11,6 @@ import org.junit.jupiter.api.DisplayName;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class GameTest {
@@ -20,9 +19,9 @@ public class GameTest {
     private Player player1, player2, player3;
 
     public GameTest() throws IOException {
-        this.game1 = new Game();
+        this.game1 = new Game(4);
     }
-
+    //TODO: testare costruttore e addPlayers
 
     /**
      * This test check that a game with three players assigns correctly the common cards
@@ -241,7 +240,7 @@ public class GameTest {
 
     /**
      * this test checks that a game with three players that placed some cards
-     * to make all types of achievements but without calling startGame() method
+     * to make all types of achievements but without calling startGame(4) method
      * is ended with the GameNotStartedException and with no points added
      * to each player
      * @throws GameNotStartedException
@@ -256,7 +255,7 @@ public class GameTest {
         game1.addPlayer(player1);
         game1.addPlayer(player2);
         game1.addPlayer(player3);
-        //starting the game without actually calling game1.startGame()
+        //starting the game without actually calling game1.startGame(4)
         AchievementL a1 = new AchievementL(Color.RED);
         AchievementItem a2 = new AchievementItem(3, new ArrayList<>(List.of(Symbols.QUILL, Symbols.INKWELL, Symbols.MANUSCRIPT)));
         AchievementDiagonal a3 = new AchievementDiagonal(Color.PURPLE);

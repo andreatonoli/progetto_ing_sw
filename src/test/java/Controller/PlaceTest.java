@@ -14,7 +14,7 @@ public class PlaceTest{
     @Test
     @DisplayName("Place a card")
     public void PlaceACardTest() throws IOException{
-        game = new Game();
+        game = new Game(4);
         Player player = new Player("pippo", game);
         player.setPlayerState(PlayerState.PLAY_CARD);
         Controller c = new Controller(game);
@@ -35,7 +35,7 @@ public class PlaceTest{
     @Test
     @DisplayName("Cannot Place - Not in turn or Already Placed")
     public void NotInTurnTest() throws IOException{
-        game = new Game();
+        game = new Game(4);
         Controller c = new Controller(game);
         Player player = new Player("pippo", game);
         StarterCard s = new StarterCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}, 2, new CardBack(new ArrayList<>(List.of(Symbols.FUNGI)), Color.WHITE, new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY)}));
@@ -64,7 +64,7 @@ public class PlaceTest{
     @Test
     @DisplayName("Cannot Place - Trying to place over a NOCORNER")
     public void PlaceOnNoCornerTest() throws IOException{
-        game = new Game();
+        game = new Game(4);
         Controller c = new Controller(game);
         Player player = new Player("pippo", game);
         StarterCard s = new StarterCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}, 2, new CardBack(new ArrayList<>(List.of(Symbols.FUNGI)), Color.WHITE, new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY)}));
@@ -98,7 +98,7 @@ public class PlaceTest{
     @Test
     @DisplayName("Cannot Place - Covers a NOCORNER")
     public void CoversNoCornerTest() throws IOException{
-        game = new Game();
+        game = new Game(4);
         Controller c = new Controller(game);
         Player player = new Player("pippo", game);
         StarterCard s = new StarterCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}, 2, new CardBack(new ArrayList<>(List.of(Symbols.FUNGI)), Color.WHITE, new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY)}));
@@ -136,7 +136,7 @@ public class PlaceTest{
     @Test
     @DisplayName("Cannot Place - Cost not satisfied")
     public void CostTest() throws IOException{
-        game = new Game();
+        game = new Game(4);
         Controller c = new Controller(game);
         int plantCost = 3;
         Player player = new Player("pippo", game);

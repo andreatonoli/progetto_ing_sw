@@ -1,6 +1,8 @@
 package model;
 
-public class Corner {
+import java.io.Serializable;
+
+public class Corner implements Serializable {
     //Bisogna anche pensare a come gestire i "non angoli"
 
     private Symbols symbol;

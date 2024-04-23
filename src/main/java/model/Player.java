@@ -2,9 +2,10 @@ package model;
 
 import model.exceptions.PlayerNotFoundException;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class Player {
+public class Player implements Serializable {
     private final String username;
     private boolean firstToEnd;
     private boolean firstToPlay;
@@ -16,6 +17,7 @@ public class Player {
     private ArrayList<String> chat;
     private Game game;
     private PlayerBoard playerBoard;
+    private int objCompleted = 0;
 
     /**
      * constructor of the player class:
@@ -27,7 +29,7 @@ public class Player {
         this.playerState = PlayerState.NOT_IN_TURN;
         this.cardInHand = new Card[3];
         this.personalObj = new Achievement[2];
-        this.chat = new ArrayList<String>();
+        this.chat = new ArrayList<>();
         this.game = game;
         this.playerBoard = new PlayerBoard();
     }
@@ -83,10 +85,12 @@ public class Player {
 
     public int addPoints(int pointsToAdd){
         this.points = this.points + pointsToAdd;
-        if (this.points >= 20)
+        if (this.points >= 20){
             firstToEnd = true;
-        if (this.points > 29)
+        }
+        if (this.points > 29){
             this.points = 29;
+        }
         return this.points;
     }
 
@@ -153,6 +157,12 @@ public class Player {
                 break;
             }
         }
+    }
+    public void addObjCompleted(){
+        objCompleted++;
+    }
+    public int getObjCompleted(){
+        return objCompleted;
     }
 }
 

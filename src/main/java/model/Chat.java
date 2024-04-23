@@ -1,9 +1,11 @@
 package model;
 
 import model.exceptions.PlayerNotFoundException;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Chat {
+public class Chat implements Serializable {
 
     public static final int CHATDIM = 7;
 
