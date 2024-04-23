@@ -17,8 +17,7 @@ public class App
 {
    public static void main( String[] args ) throws IOException, NotEnoughPlayersException {
 
-       Server server = new Server();
-       Game game = new Game(2, server);
+       Game game = new Game(2);
        Player player = new Player("p1", game);
        Player player2 = new Player("p2", game);
        game.addPlayer(player);
@@ -27,15 +26,15 @@ public class App
        Tui t = new Tui();
        s2.setCurrentSide();
        t.printTitle();
-       t.printCard(player.getPlayerBoard(), s2);
+       t.printCard(s2);
        GoldCard b = new GoldCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 3, Condition.CORNER, 7, new int[]{0, 3, 0, 0}, null);
        GoldCard c = new GoldCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 3, Condition.CORNER, 17, new int[]{0, 3, 0, 0}, null);
        GoldCard d = new GoldCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 3, Condition.CORNER, 27, new int[]{0, 3, 0, 0}, null);
        GoldCard e = new GoldCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 3, Condition.CORNER, 37, new int[]{0, 3, 0, 0}, null);
-       t.printCard(player.getPlayerBoard(), b);
-       t.printCard(player.getPlayerBoard(), c);
-       t.printCard(player.getPlayerBoard(), d);
-       t.printCard(player.getPlayerBoard(), e);
+       t.printCard(b);
+       t.printCard(c);
+       t.printCard(d);
+       t.printCard(e);
        Achievement a1 = new AchievementItem(3, new ArrayList<>(List.of(Symbols.INKWELL, Symbols.QUILL, Symbols.MANUSCRIPT)));
        Achievement a2 = new AchievementResources(Symbols.FUNGI);
        Achievement a3 = new AchievementDiagonal(Color.PURPLE);
@@ -45,18 +44,22 @@ public class App
        t.printAchievement(a3);
        t.printAchievement(a4);
 
+       player.getPlayerBoard().setStarterCard(s2);
        game.startGame();
-       Controller con = new Controller(2, server);
+       Controller con = new Controller(2);
        player.setPlayerState(PlayerState.PLAY_CARD);
        ResourceCard c1 = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 3, 0);
-       ResourceCard c2 = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 17, 0);
+       ResourceCard c2 = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.PLANT), new Corner(Symbols.QUILL)}, 17, 0);
        ResourceCard c3 = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 25, 0);
        ResourceCard c4 = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 35, 0);
        ResourceCard c5 = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), new Corner(Symbols.NOCORNER), new Corner(Symbols.MANUSCRIPT)}, 35, 2);
 
        con.placeCard(player, c1, new int[]{0, 0}, CornerEnum.BL);
+       player.setPlayerState(PlayerState.PLAY_CARD);
        con.placeCard(player, c2, new int[]{0, 0}, CornerEnum.TL);
+       player.setPlayerState(PlayerState.PLAY_CARD);
        con.placeCard(player, c3, new int[]{0, 0}, CornerEnum.TR);
+       player.setPlayerState(PlayerState.PLAY_CARD);
        con.placeCard(player, c4, new int[]{1, 1}, CornerEnum.TR);
        player.removeFromHand(player.getCardInHand()[0]);
        player.addInHand(c1);
@@ -64,19 +67,19 @@ public class App
        player.addInHand(c2);
        player.removeFromHand(player.getCardInHand()[2]);
        player.addInHand(c5);
-       //t.printView(player);
+       t.printView(player.getPlayerBoard(), player.getCardInHand(), player.getUsername());
        //t.printPlayerBoard(player);
 //
-       //Scanner input = new Scanner(System.in);
-       //int[] coord = new int[2];
-       //while(true){
-       //    System.out.println("Which card do you want to display?");
-       //    System.out.println("Type row number");
-       //    coord[0] = input.nextInt();
-       //    System.out.println("Type column number");
-       //    coord[1] = input.nextInt();
-       //    t.printCardFromPlayerboard(player, coord);
-       //}
+       Scanner input = new Scanner(System.in);
+       int[] coord = new int[2];
+       while(true){
+           System.out.println("Which card do you want to display?");
+           System.out.println("Type row number");
+           coord[0] = input.nextInt();
+           System.out.println("Type column number");
+           coord[1] = input.nextInt();
+           t.printCardFromPlayerBoard(player.getPlayerBoard(), coord);
+       }
 
 
        //System.out.println(FUNGI + "\n");
