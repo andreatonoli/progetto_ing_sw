@@ -1,7 +1,7 @@
 package network.messages;
 
 public class NumPlayerResponseMessage extends Message{
-    private int size;
+    private final int size;
     public NumPlayerResponseMessage(String username, int size){
         super(MessageType.NUM_PLAYER_RESPONSE, username);
         this.size = size;

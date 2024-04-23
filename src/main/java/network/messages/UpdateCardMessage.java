@@ -3,10 +3,10 @@ package network.messages;
 import model.card.Card;
 import network.server.Server;
 
-public class StarterCardMessage extends Message{
+public class UpdateCardMessage extends Message {
     private final Card card;
-    public StarterCardMessage(Card card){
-        super(MessageType.STARTER_CARD, Server.serverName);
+    public UpdateCardMessage(Card card){
+        super(MessageType.CARD_UPDATE, Server.serverName);
         this.card = card;
     }
 
@@ -16,7 +16,7 @@ public class StarterCardMessage extends Message{
 
     @Override
     public String toString() {
-        return "StarterCardMessage{"+
+        return "UpdateCardMessage{"+
                 "Card : " + card +
                 '}';
     }

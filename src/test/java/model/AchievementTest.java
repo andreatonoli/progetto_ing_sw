@@ -6,6 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Controller.Controller;
+import model.card.*;
+import model.enums.Color;
+import model.enums.CornerEnum;
+import model.enums.PlayerState;
+import model.enums.Symbols;
+import model.player.Player;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import java.io.IOException;

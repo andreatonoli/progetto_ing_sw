@@ -2,10 +2,17 @@ package Controller;
 
 import static org.junit.jupiter.api.Assertions.*;
 import model.*;
+import model.card.Card;
+import model.card.Corner;
+import model.card.GoldCard;
+import model.card.ResourceCard;
+import model.enums.Condition;
+import model.enums.PlayerState;
+import model.enums.Symbols;
+import model.player.Player;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
-import java.io.IOException;
-import java.util.LinkedList;
+
 public class DrawFromBoardTest {
     @Test
     @DisplayName("Take Resource from Board")

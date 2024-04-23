@@ -1,5 +1,9 @@
 package model;
 
+import model.card.*;
+import model.enums.Color;
+import model.enums.Condition;
+import model.enums.Symbols;
 import org.json.JSONArray;
 import org.json.JSONObject;
 

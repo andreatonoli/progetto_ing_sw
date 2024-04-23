@@ -1,7 +1,16 @@
-package Controller;
+package model;
 
 import static org.junit.jupiter.api.Assertions.*;
 import model.*;
+import model.card.Card;
+import model.card.Corner;
+import model.card.ResourceCard;
+import model.enums.PlayerState;
+import model.enums.Symbols;
+import model.exceptions.EmptyException;
+import model.exceptions.FullHandException;
+import model.exceptions.NotInTurnException;
+import model.player.Player;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import java.io.IOException;
@@ -16,7 +25,6 @@ public class DrawTest {
     @DisplayName("Draw a Card")
     public void DrawACardTest() throws IOException {
         Game game = new Game(4);
-        GameBoard board = new GameBoard(game);
         Player player = new Player("pippo", game);
         player.setPlayerState(PlayerState.DRAW_CARD);
         LinkedList<Card> deck = new LinkedList<>();
@@ -24,8 +32,11 @@ public class DrawTest {
         deck.add(drawed);
         deck.add(new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null }, 2, 0));
         deck.add(new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), null, new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI)}, 3, 0));
-        Controller c = new Controller(game);
-        c.drawCard(player, deck);
+        try {
+            player.drawCard(deck);
+        } catch (EmptyException | NotInTurnException | FullHandException e) {
+            System.out.println(e.getMessage());
+        }
         assertEquals(player.getCardInHand()[0], drawed);
         assertNotEquals(player.getCardInHand()[0], deck.getFirst());
     }
@@ -42,12 +53,15 @@ public class DrawTest {
         Player player = new Player("pippo", game);
         player.setPlayerState(PlayerState.DRAW_CARD);
         LinkedList<Card> deck = new LinkedList<>();
-        Controller c = new Controller(game);
         ResourceCard a = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null, new Corner(Symbols.FUNGI) }, 1, 0);
         ResourceCard b = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null }, 2, 0);
         player.addInHand(a);
         player.addInHand(b);
-        c.drawCard(player, deck);
+        try {
+            player.drawCard(deck);
+        } catch (EmptyException | NotInTurnException | FullHandException e) {
+            System.out.println(e.getMessage());
+        }
         assertEquals(player.getCardInHand()[0], a);
         assertEquals(player.getCardInHand()[1], b);
     }
@@ -59,7 +73,6 @@ public class DrawTest {
         Player player = new Player("pippo", game);
         player.setPlayerState(PlayerState.DRAW_CARD);
         LinkedList<Card> deck = new LinkedList<>();
-        Controller c = new Controller(game);
         ResourceCard a = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null, new Corner(Symbols.FUNGI) }, 1, 0);
         ResourceCard b = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null }, 2, 0);
         ResourceCard d = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), null, new Corner(Symbols.EMPTY) }, 8, 1);
@@ -71,7 +84,11 @@ public class DrawTest {
         //Populate the deck
         deck.add(e);
         //Trying to draw a card but player's hand is full
-        c.drawCard(player, deck);
+        try {
+            player.drawCard(deck);
+        } catch (EmptyException | NotInTurnException | FullHandException s) {
+            System.out.println(s.getMessage());
+        }
         //Checking that Card e isn't in the player's hand
         for (Card card : player.getCardInHand()){
             assertNotEquals(card, e);
@@ -89,16 +106,23 @@ public class DrawTest {
         Player player = new Player("pippo", game);
         player.setPlayerState(PlayerState.NOT_IN_TURN);
         LinkedList<Card> deck = new LinkedList<>();
-        Controller c = new Controller(game);
         ResourceCard a = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null, new Corner(Symbols.FUNGI) }, 1, 0);
         ResourceCard b = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null }, 2, 0);
         deck.add(a);
         player.addInHand(b);
-        c.drawCard(player, deck);
+        try {
+            player.drawCard(deck);
+        } catch (EmptyException | NotInTurnException | FullHandException e) {
+            System.out.println(e.getMessage());
+        }
         assertEquals(deck.getFirst(), a);
         assertNotEquals(player.getCardInHand()[1], a);
         player.setPlayerState(PlayerState.PLAY_CARD);
-        c.drawCard(player, deck);
+        try {
+            player.drawCard(deck);
+        } catch (EmptyException | NotInTurnException | FullHandException e) {
+            System.out.println(e.getMessage());
+        }
         assertEquals(deck.getFirst(), a);
         assertNotEquals(player.getCardInHand()[1], a);
     }

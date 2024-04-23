@@ -5,4 +5,8 @@ public class NotInTurnException extends Exception{
     public NotInTurnException(){
         super();
     }
+    @Override
+    public String getMessage(){
+        return "Not player's turn";
+    }
 }

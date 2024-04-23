@@ -1,5 +1,7 @@
 package network.client;
 
+import model.card.Card;
+import model.player.Player;
 import network.messages.*;
 import view.Ui;
 
@@ -7,9 +9,16 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class SocketClient {
+    //private HashMap<Integer, Card> board1;
+    //private HashMap<Integer, Card> board2;
+    //private HashMap<Integer, Card> board3;
+    //private HashMap<Integer, Card> board4;
+    private ArrayList<Player> opponents;
     private Socket socket;
     private String username;
     private Ui view;
@@ -92,7 +101,6 @@ public class SocketClient {
     }
     public void onDisconnect(){
         try {
-            this.sendMessage(new ErrorMessage(this.username, "Disconnection"));
             this.disconnected = true;
             in.close();
             out.close();

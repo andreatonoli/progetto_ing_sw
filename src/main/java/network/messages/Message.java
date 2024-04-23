@@ -7,8 +7,8 @@ import view.Ui;
 import java.io.Serializable;
 
 public abstract class Message implements Serializable {
-    private MessageType type;
-    private String sender;
+    private final MessageType type;
+    private final String sender;
     public Message(MessageType type, String sender){
         this.type = type;
         this.sender = sender;

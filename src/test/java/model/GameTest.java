@@ -4,8 +4,14 @@ import Controller.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import model.card.*;
+import model.enums.Color;
+import model.enums.CornerEnum;
+import model.enums.PlayerState;
+import model.enums.Symbols;
 import model.exceptions.GameNotStartedException;
 import model.exceptions.NotEnoughPlayersException;
+import model.player.Player;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 

@@ -1,7 +1,11 @@
-package model;
+package model.card;
+
+import model.enums.Color;
+import model.player.Player;
+import model.player.PlayerBoard;
+import model.enums.Symbols;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Set;
 
 public class AchievementL implements Achievement{

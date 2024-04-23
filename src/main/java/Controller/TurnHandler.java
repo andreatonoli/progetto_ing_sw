@@ -1,11 +1,8 @@
 package Controller;
 import model.*;
-import network.messages.GenericMessage;
-import network.messages.PlayerStateMessage;
-import network.server.Server;
+import model.enums.PlayerState;
+import model.player.Player;
 import observer.Observable;
-
-import java.io.Serializable;
 
 public class TurnHandler extends Observable {
     private Game game;
@@ -22,7 +19,6 @@ public class TurnHandler extends Observable {
             game.setPlayerInTurn();
         }
         player.setPlayerState(PlayerState.values()[i]);
-        //notify(this.server.getClientFromName(player.getUsername()),new PlayerStateMessage(player.getPlayerState()));
     }
 
 }

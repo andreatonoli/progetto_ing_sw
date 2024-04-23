@@ -1,7 +1,7 @@
 package network.server;
 
 import Controller.Controller;
-import model.Card;
+import model.card.Card;
 import network.client.RMIClientHandler;
 import network.messages.Message;
 

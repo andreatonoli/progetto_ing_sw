@@ -11,7 +11,7 @@ public class FreeLobbyMessage extends Message{
     /**
      * number of not started games
      */
-    private int lobbyNumber;
+    private final int lobbyNumber;
     public FreeLobbyMessage(int lobbyNumber) {
         super(MessageType.FREE_LOBBY, Server.serverName);
         this.lobbyNumber = lobbyNumber;

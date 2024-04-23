@@ -1,12 +1,16 @@
 package Controller;
 
 import model.*;
+import model.card.Card;
+import model.enums.CornerEnum;
+import model.enums.PlayerState;
 import model.exceptions.*;
+import model.player.Player;
 import network.messages.*;
 import network.server.Connection;
+import network.server.Server;
 import observer.Observable;
 
-import java.io.Serializable;
 import java.util.*;
 
 //TODO: replace System.out.println with messages
@@ -16,12 +20,11 @@ public class Controller extends Observable {
     private final Game game; //reference to model
     private Map<Connection, Player> connectedPlayers;
     private TurnHandler turnHandler;
-    //private transient final Server server;
-    public Controller(int numPlayers/*, Server server*/){
-        this.game = new Game(numPlayers/*, server*/);
-        this.turnHandler = new TurnHandler(game/*, server*/);
+
+    public Controller(int numPlayers){
+        this.game = new Game(numPlayers);
+        this.turnHandler = new TurnHandler(game);
         this.connectedPlayers = Collections.synchronizedMap(new HashMap<>());
-        //this.server = server;
     }
 
     /**
@@ -37,222 +40,79 @@ public class Controller extends Observable {
         game.addPlayer(player);
         if (game.isFull()){
             game.startGame();
-            //TODO: notify game started
+            notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState()));
             return true;
         }
         return false;
     }
     /**
      *Picks the top card of the deck and calls addInHand to give it to the player
-     * @param player who wants to draw a card
+     * @param user who wants to draw a card
      * @param deck from which the player choose to pick a card
      */
-    public void drawCard(Player player, LinkedList<Card> deck){
+    public void drawCard(Connection user, LinkedList<Card> deck){
         try {
-            //notify(this.server.getClientFromName(player.getUsername()),new GenericMessage("Drawing a card..."));
-            System.out.println("Drawing a card...");
-            canDraw(player, deck);
-            Card drawedCard = deck.getFirst();
-            player.addInHand(drawedCard);
-            deck.removeFirst();
-            turnHandler.changePlayerState(player);
-            System.out.println("Successfully drew a card");
+            notify(user,new GenericMessage("Drawing a card..."));
+            this.getPlayerByClient(user).drawCard(deck);
+            turnHandler.changePlayerState(this.getPlayerByClient(user));
+            notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState()));
+            notify(user,new GenericMessage("Successfully drew a card"));
         } catch (EmptyException e) {
-            System.out.println("Cannot draw - The deck is empty");
+            notify(user,new ErrorMessage(e.getMessage()));
         } catch (NotInTurnException e) {
-            System.out.println("Cannot draw - Player is not in draw card state");
+            notify(user,new ErrorMessage(e.getMessage()));
         } catch (FullHandException e) {
-            System.out.println("Cannot draw - Player's hand is full");
+            notify(user,new ErrorMessage(e.getMessage()));
         }
-    }
-
-    /**
-     * Check if the player can draw from a specified deck
-     * @param player who has to be checked
-     * @param deck the player wants to draw from
-     * @throws EmptyException the deck is empty
-     * @throws NotInTurnException the player is not in DRAW_CARD state
-     * @throws FullHandException player's hand is full so there's no space for another card
-     */
-    public void canDraw(Player player, LinkedList<Card> deck) throws EmptyException, NotInTurnException, FullHandException{
-        if (deck.isEmpty()){
-            throw new EmptyException();
-        }
-        if (player.getPlayerState().equals(PlayerState.NOT_IN_TURN) || player.getPlayerState().equals(PlayerState.PLAY_CARD)){
-            throw new NotInTurnException();
-        }
-        for (int i = 0; i < 3; i++) {
-            if (player.getCardInHand()[i] == null){
-                return;
-            }
-        }
-        throw new FullHandException();
     }
 
     /**
      * Permits the player to take one card from the board, then replaces it with the same type card drawed from the decks
-     * @param player who wants to take the card
+     * @param user who wants to take the card
      * @param card taken by the player
      */
-    public void drawCardFromBoard(Player player, Card card){
+    public void drawCardFromBoard(Connection user, Card card){
         try {
-            GameBoard gameBoard = this.game.getGameBoard();
-            Card taken;
-            int takenIndex;
-            canDrawFromBoard(player, card);
-            if (card.getType().equalsIgnoreCase("Resource")){
-                if (card.equals(gameBoard.getCommonResource()[0])){
-                    taken = gameBoard.getCommonResource()[0];
-                    gameBoard.getCommonResource()[0] = null;
-                    takenIndex = 0;
-                }
-                else{
-                    taken = gameBoard.getCommonResource()[1];
-                    gameBoard.getCommonResource()[1] = null;
-                    takenIndex = 1;
-                }
-                player.addInHand(taken);
-                gameBoard.replaceResourceCard(takenIndex);
-            }
-            else if (card.getType().equalsIgnoreCase("Gold")){
-                if (card.equals(gameBoard.getCommonGold()[0])){
-                    taken = gameBoard.getCommonGold()[0];
-                    gameBoard.getCommonGold()[0] = null;
-                    takenIndex = 0;
-                }
-                else{
-                    taken = gameBoard.getCommonGold()[1];
-                    gameBoard.getCommonGold()[1] = null;
-                    takenIndex = 1;
-                }
-                player.addInHand(taken);
-                gameBoard.replaceGoldCard(takenIndex);
-            }
+            notify(user,new GenericMessage("Drawing a card..."));
+            this.getPlayerByClient(user).drawCardFromBoard(card);
+            notify(user,new GenericMessage("Successfully drew a card"));
         } catch (CardNotFoundException e) {
-            System.out.println("Cannot draw - Card is not on the board");
+            notify(user,new ErrorMessage(e.getMessage()));
         } catch (NotInTurnException e) {
-            System.out.println("Cannot draw - Player is not in draw card state");
+            notify(user,new ErrorMessage(e.getMessage()));
         } catch (FullHandException e) {
-            System.out.println("Cannot draw - Player's hand is full");
+            notify(user,new ErrorMessage(e.getMessage()));
         }
-    }
-
-    /**
-     * Checks if the player can draw from the board
-     * @param player who wants to take the card from the board
-     * @param card the player wants to take
-     * @throws CardNotFoundException the card the player wants to draw isn't on the board
-     * @throws NotInTurnException the player is not in the DRAW_CARD state
-     * @throws FullHandException player's hand is full
-     */
-    public void canDrawFromBoard(Player player, Card card) throws CardNotFoundException, NotInTurnException, FullHandException{
-        GameBoard gBoard = this.game.getGameBoard();
-        if (player.getPlayerState().equals(PlayerState.NOT_IN_TURN) || player.getPlayerState().equals(PlayerState.PLAY_CARD)){
-            throw new NotInTurnException();
-        }
-        if (card.getType().equalsIgnoreCase("Resource")){
-            //TODO: ottimizza
-            if (!card.equals(gBoard.getCommonResource()[0]) && !card.equals(gBoard.getCommonResource()[1])){
-                throw new CardNotFoundException();
-            }
-        }
-        else if (card.getType().equalsIgnoreCase("Gold")){
-            if (!card.equals(gBoard.getCommonGold()[0]) && !card.equals(gBoard.getCommonGold()[1])){
-                throw new CardNotFoundException();
-            }
-        }
-        for (int i = 0; i < 3; i++) {
-            if (player.getCardInHand()[i] == null){
-                return;
-            }
-        }
-        throw new FullHandException();
     }
     /**
      * Place card then removes it from the player's hand
-     * @param player who asked to place the card
+     * @param user who asked to place the card
      * @param card to place
      * @param coordinates of the card which corner will be covered after the placement
      * @param corner where player wants to place the card
      */
-    public void placeCard(Player player, Card card, int[] coordinates, CornerEnum corner) {
+    public void placeCard(Connection user, Card card, int[] coordinates, CornerEnum corner) {
         try {
-            System.out.println("Placing a card...");
-            canPlace(corner, coordinates, player, card);
-            //coordinates of the new card
-            int[] newCoordinates = new int[2];
-            newCoordinates[0] = coordinates[0] + corner.getX();
-            newCoordinates[1] = coordinates[1] + corner.getY();
-            player.getPlayerBoard().setCardPosition(card, newCoordinates);
-            player.getPlayerBoard().coverCorner(card, newCoordinates);
-            card.calcPoints(player);
-            player.removeFromHand(card);
-            System.out.println("Card successfully placed");
-            turnHandler.changePlayerState(player);
+            notify(user,new GenericMessage("placing card..."));
+            this.getPlayerByClient(user).placeCard(card,coordinates,corner);
+            notify(user,new GenericMessage("Successfully palced a card"));
+            turnHandler.changePlayerState(this.getPlayerByClient(user));
+            notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState()));
         } catch (NotInTurnException e) {
-            if (player.getPlayerState().equals(PlayerState.NOT_IN_TURN)){
-                System.out.println("Cannot place - Its not your turn");
+            if (this.getPlayerByClient(user).getPlayerState().equals(PlayerState.NOT_IN_TURN)){
+                notify(user,new ErrorMessage(e.getMessage()));
             }
             else{
-                System.out.println("Cannot place - Draw a card");
+                notify(user,new ErrorMessage(e.getMessage()));
             }
         } catch (OccupiedCornerException e) {
-            System.out.println("Cannot place - One of the corner covered by your card is already occupied");
+            notify(user,new ErrorMessage(e.getMessage()));
         } catch (CostNotSatisfiedException e) {
-            System.out.println("Cannot place - Not enough resources to place the gold card");
+            notify(user,new ErrorMessage(e.getMessage()));
         } catch (AlreadyUsedPositionException e) {
-            System.out.println("Cannot place - There is already a card in " + coordinates[0] + " " + coordinates[1]);
-        }
+            notify(user,new ErrorMessage(e.getMessage()));        }
     }
 
-    /**
-     * check if the card can be placed in the designed spot
-     * @param cornerPosition position of one of the corner the card will be placed on
-     * @param coordinates position of the card containing the corner on cornerPosition
-     * @param player is the player who are placing the card
-     * @param cardToBePlaced card the player wants to place
-     * @throws NotInTurnException player is not in PLACE_CARD state
-     * @throws OccupiedCornerException one of the corners CardToBePlaced will cover is already covered or is hidden
-     * @throws CostNotSatisfiedException player doesn't own enough resources to place a gold card
-     * @throws AlreadyUsedPositionException player tries to place a card in a position already occupied by another card
-     */
-    public void canPlace(CornerEnum cornerPosition, int[] coordinates, Player player, Card cardToBePlaced) throws NotInTurnException, OccupiedCornerException, CostNotSatisfiedException, AlreadyUsedPositionException{
-        int[] newCoordinates = new int[2];
-        int[] coord = new int[2];
-        PlayerBoard pBoard = player.getPlayerBoard();
-        System.arraycopy(coordinates, 0, coord, 0, 2);
-        //check if the player placing the card is the player in turn
-        if (player.getPlayerState().equals(PlayerState.NOT_IN_TURN) || player.getPlayerState().equals(PlayerState.DRAW_CARD)){
-            throw new NotInTurnException();
-        }
-        //check if the corner we are placing the card on is available
-        if (pBoard.getCard(coord).getCornerState(cornerPosition).equals(CornerState.NOT_VISIBLE) || pBoard.getCard(coord).getCornerState(cornerPosition).equals(CornerState.OCCUPIED)){
-            throw new OccupiedCornerException();
-        }
-        if(!cardToBePlaced.checkCost(player)){
-            throw new CostNotSatisfiedException();
-        }
-        //check if the card cover other corners and if those corner are available
-        //Calculates the PlacedCard position
-        coord[0] = coord[0]+cornerPosition.getX();
-        coord[1] = coord[1]+cornerPosition.getY();
-        //Check if that position is available
-        if (pBoard.getCard(coord) != null){
-            throw new AlreadyUsedPositionException();
-        }
-        //for each corner of the placed card checks if the corner below is visible
-        for (CornerEnum c: CornerEnum.values()){
-            if(!cardToBePlaced.getCornerSymbol(c).equals(Symbols.NOCORNER)){
-                newCoordinates[0] = coord[0]+c.getX();
-                newCoordinates[1] = coord[1]+c.getY();
-                if (pBoard.getCard(newCoordinates) != null){
-                    if (pBoard.getCard(newCoordinates).getCornerState(c.getOppositePosition()).equals(CornerState.NOT_VISIBLE) || pBoard.getCard(newCoordinates).getCornerState(c.getOppositePosition()).equals(CornerState.OCCUPIED)){
-                        throw new OccupiedCornerException();
-                    }
-                }
-            }
-        }
-    }
 
     /**
      * Changes the side shown to the player
@@ -260,7 +120,7 @@ public class Controller extends Observable {
      */
     public void flipCard(Connection user, Card card){
         card.setCurrentSide();
-        notify(user, new StarterCardMessage(card));
+        notify(user, new UpdateCardMessage(card));
     }
     public void placeStarterCard(Connection user, Card starterCard){
         Player player = getPlayerByClient(user);

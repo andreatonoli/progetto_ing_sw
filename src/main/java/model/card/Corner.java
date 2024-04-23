@@ -1,4 +1,7 @@
-package model;
+package model.card;
+
+import model.enums.CornerState;
+import model.enums.Symbols;
 
 import java.io.Serializable;
 

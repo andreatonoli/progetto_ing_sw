@@ -1,17 +1,20 @@
 package network.client;
 
+import model.player.Player;
 import network.messages.CommonCardUpdateMessage;
 import network.messages.Message;
 import network.messages.StarterCardMessage;
 import network.server.VirtualServer;
 import view.Ui;
-import model.Card;
+import model.card.Card;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class RMIClient extends UnicastRemoteObject implements RMIClientHandler {
     private String username;
@@ -20,6 +23,11 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler {
     private Card[] commonResources;
     private Card[] commonGold;
     private Card starterCard;
+    private ArrayList<Player> opponents;
+    //private HashMap<Integer, Card> board1;
+    //private HashMap<Integer, Card> board2;
+    //private HashMap<Integer, Card> board3;
+    //private HashMap<Integer, Card> board4;
 
     public RMIClient(String username, String host, int port, Ui view) throws RemoteException{
         this.username = username;

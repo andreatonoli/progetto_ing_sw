@@ -1,6 +1,4 @@
-package model;
-
-import view.TuiColors;
+package model.enums;
 
 public enum Color {
     //RED(1, "\u001B[41m" + "  " + TuiColors.getColor(TuiColors.ANSI_RESET)),

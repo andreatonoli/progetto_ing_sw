@@ -1,4 +1,4 @@
-package model;
+package model.enums;
 
 public enum CornerEnum {
     TL(-1, 1),

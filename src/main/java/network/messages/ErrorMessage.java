@@ -1,9 +1,11 @@
 package network.messages;
 
+import network.server.Server;
+
 public class ErrorMessage extends Message{
-    private String text;
-    public ErrorMessage(String username, String text){
-        super(MessageType.GENERIC_MESSAGE, username);
+    private final String text;
+    public ErrorMessage(String text){
+        super(MessageType.GENERIC_MESSAGE, Server.serverName);
         this.text = text;
     }
 

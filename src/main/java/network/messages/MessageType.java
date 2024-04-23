@@ -3,6 +3,7 @@ package network.messages;
 public enum MessageType {
     COMMON_GOLD_UPDATE,
     COMMON_RESOURCE_UPDATE,
+    CARD_UPDATE,
     FREE_LOBBY,
     GENERIC_MESSAGE,
     LOBBY_INDEX,

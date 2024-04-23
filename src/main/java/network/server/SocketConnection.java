@@ -1,8 +1,7 @@
 package network.server;
 
 import Controller.*;
-import model.Card;
-import model.Game;
+import model.card.Card;
 import network.messages.*;
 
 import java.io.IOException;

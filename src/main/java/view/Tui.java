@@ -1,7 +1,11 @@
 package view;
 
-import Controller.Controller;
-import model.*;
+import model.card.*;
+import model.enums.Color;
+import model.enums.CornerEnum;
+import model.enums.CornerState;
+import model.enums.Symbols;
+import model.player.PlayerBoard;
 import network.client.Client;
 import network.client.RMIClient;
 import network.client.SocketClient;
@@ -9,8 +13,6 @@ import network.server.Server;
 
 import java.io.PrintStream;
 import java.rmi.RemoteException;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Scanner;
 
 public class Tui implements Ui{

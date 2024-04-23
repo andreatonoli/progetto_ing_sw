@@ -1,10 +1,10 @@
 package network.messages;
 
-import model.PlayerState;
+import model.enums.PlayerState;
 import network.server.Server;
 
 public class PlayerStateMessage extends Message{
-    private PlayerState playerState;
+    private final PlayerState playerState;
     public PlayerStateMessage(PlayerState playerState){
         super(MessageType.PLAYER_STATE, Server.serverName);
         this.playerState=playerState;

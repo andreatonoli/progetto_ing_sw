@@ -1,4 +1,9 @@
-package model;
+package model.card;
+
+import model.enums.Color;
+import model.enums.Condition;
+import model.enums.Symbols;
+import model.player.Player;
 
 import java.util.List;
 

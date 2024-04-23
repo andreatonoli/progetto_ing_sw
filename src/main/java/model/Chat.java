@@ -1,6 +1,7 @@
 package model;
 
 import model.exceptions.PlayerNotFoundException;
+import model.player.Player;
 
 import java.io.Serializable;
 import java.util.ArrayList;

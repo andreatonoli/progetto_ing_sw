@@ -1,7 +1,7 @@
 package network.server;
 
 import network.client.RMIClientHandler;
-import model.Card;
+import model.card.Card;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

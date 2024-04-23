@@ -1,4 +1,8 @@
-package model;
+package model.card;
+
+import model.enums.Color;
+import model.player.Player;
+import model.enums.Symbols;
 
 import java.util.ArrayList;
 import java.io.Serializable;

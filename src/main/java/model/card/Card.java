@@ -1,4 +1,7 @@
-package model;
+package model.card;
+
+import model.enums.*;
+import model.player.Player;
 
 import java.io.Serializable;
 import java.util.List;

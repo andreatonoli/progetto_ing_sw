@@ -1,8 +1,12 @@
 package model;
 
+import model.card.Achievement;
+import model.card.Card;
+import model.enums.GameState;
+import model.enums.PlayerState;
 import model.exceptions.GameNotStartedException;
+import model.player.Player;
 import network.messages.*;
-import network.server.Server;
 import observer.Observable;
 
 import java.io.IOException;
@@ -20,14 +24,13 @@ public class Game extends Observable implements Serializable {
     private Player firstPlayer;
     private Player playerInTurn;
     private Chat chatHandler;
-    //private transient Server server;
 
     /**
      *
      * @throws IOException
      */
 
-    public Game(int lobbySize/*, Server server*/) {
+    public Game(int lobbySize) {
         this.lobbySize = lobbySize;
         this.gameState = GameState.WAIT_PLAYERS;
         this.gameFull = false;
@@ -36,7 +39,6 @@ public class Game extends Observable implements Serializable {
         this.playerInTurn = null;
         this.chatHandler = new Chat(this);
         this.gameBoard = new GameBoard(this);
-        //this.server = server;
     }
 
     public void startGame(){
@@ -65,7 +67,6 @@ public class Game extends Observable implements Serializable {
         /** starter card is given to each player*/
         for (Player p : players) {
             Card sCard = gameBoard.drawCard(gameBoard.getStarterDeck());
-            //notify(this.server.getClientFromName(p.getUsername()), new StarterCardMessage(sCard));
             //p.getPlayerBoard().setStarterCard(); -> TODO: chiamo dal controller
             /** in first place the player chose the side he prefers, in order to settle down the card*/
             /** when the controller sees that the player wants to settle down the card, it places starterCard*/
@@ -194,7 +195,6 @@ public class Game extends Observable implements Serializable {
     public void addPlayer(Player player){
         synchronized (this.players){
             this.players.add(player);
-            //addObserver(this.server.getClientFromName(player.getUsername()));
             if (players.size()==this.lobbySize){
                 gameFull = true;
             }

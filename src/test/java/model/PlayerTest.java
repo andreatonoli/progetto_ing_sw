@@ -2,11 +2,18 @@ package model;
 
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.Arrays;
+
+import model.card.Corner;
+import model.card.GoldCard;
+import model.card.ResourceCard;
+import model.enums.Condition;
+import model.enums.Symbols;
+import model.player.Player;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 
 public class PlayerTest {
-    private final Game game = new Game();
+    private final Game game = new Game(4);
 
     /**
      * This test check that a card that has been removed from player's hand is

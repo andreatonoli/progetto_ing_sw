@@ -1,6 +1,6 @@
 package network.messages;
 
-import model.Player;
+import model.player.Player;
 import network.server.Server;
 
 import java.util.ArrayList;

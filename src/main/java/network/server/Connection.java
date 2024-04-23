@@ -1,12 +1,10 @@
 package network.server;
 
 import Controller.Controller;
-import model.Game;
 import network.messages.Message;
-import model.Card;
+import model.card.Card;
 import observer.Observer;
 
-import java.io.Serializable;
 import java.util.List;
 
 public abstract class Connection implements Observer {

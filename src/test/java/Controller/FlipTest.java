@@ -1,13 +1,24 @@
-//package Controller;
-//
-//import model.*;
-//import static org.junit.jupiter.api.Assertions.*;
-//
-//import java.util.ArrayList;
-//import java.util.List;
-//import org.junit.jupiter.api.Test;
-//import org.junit.jupiter.api.DisplayName;
-//import java.io.IOException;
+package Controller;
+
+import model.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import model.card.CardBack;
+import model.card.Corner;
+import model.card.ResourceCard;
+import model.card.StarterCard;
+import model.enums.Color;
+import model.enums.CornerEnum;
+import model.enums.PlayerState;
+import model.enums.Symbols;
+import model.player.Player;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
+import java.io.IOException;
+//TODO: rifare da 0 con mockito
 //public class FlipTest {
 //    @Test
 //    @DisplayName("Flip a card")
@@ -23,7 +34,7 @@
 //        for (CornerEnum co : CornerEnum.values()){
 //            assertEquals(a.getCornerSymbol(co), player.getCardInHand()[0].getCornerSymbol(co));
 //        }
-//        c.flipCard(player.getCardInHand()[0]); //Setto current side a retro
+//        c.flipCard(null, player.getCardInHand()[0]); //Setto current side a retro
 //        assertEquals(a.getColor(), player.getCardInHand()[0].getColor());
 //        assertNotNull(player.getCardInHand()[0].getSymbols());
 //        assertEquals(Symbols.PLANT, player.getCardInHand()[0].getSymbols().getFirst());
@@ -35,16 +46,16 @@
 //    @Test
 //    @DisplayName("Flip and Place a Card")
 //    public void FlipPlaceTest() throws IOException{
-//        Game game = new Game(4);
+//        Controller c = new Controller(4);
+//        Game game = c.getGame();
 //        Player player = new Player("pippo", game);
-//        Controller c = new Controller(game);
 //        //a is a green card => has a permanent plant symbol on its back
 //        ResourceCard a = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), new Corner(Symbols.PLANT), new Corner(Symbols.NOCORNER)}, 19, 1);
 //        StarterCard s = new StarterCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}, 2, new CardBack(new ArrayList<>(List.of(Symbols.FUNGI)), Color.WHITE, new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY)}));
 //        player.setPlayerState(PlayerState.PLAY_CARD);
 //        player.getPlayerBoard().setStarterCard(s);
 //        player.addInHand(a);
-//        c.flipCard(a);
+//        c.flipCard(null, a);
 //        c.placeCard(player, a, new int[]{0,0}, CornerEnum.BL);
 //        assertEquals(2, player.getPlayerBoard().getPositionCardKeys().size());
 //        //Back points = 0 (always)
@@ -60,11 +71,10 @@
 //    public void FlipStarterNotValidPlacement() throws IOException{
 //        Game game = new Game(4);
 //        Player player = new Player("pippo", game);
-//        Controller c = new Controller(game);
 //        ResourceCard a = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), new Corner(Symbols.PLANT), new Corner(Symbols.NOCORNER)}, 19, 1);
 //        StarterCard s = new StarterCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}, 2, new CardBack(new ArrayList<>(List.of(Symbols.FUNGI)), Color.WHITE, new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.EMPTY)}));
 //        player.setPlayerState(PlayerState.PLAY_CARD);
-//        c.flipCard(s);
+//        c.flipCard(null, s);
 //        player.getPlayerBoard().setStarterCard(s);
 //        //Check if starterCard was correctly flipped
 //        assertEquals(Symbols.ANIMAL, player.getPlayerBoard().getCard(new int[]{0,0}).getCornerSymbol(CornerEnum.TL));

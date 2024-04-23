@@ -1,10 +1,8 @@
 package view;
 
-import Controller.Controller;
-import model.*;
-import model.Achievement;
-
-import java.util.List;
+import model.card.Achievement;
+import model.card.Card;
+import model.player.PlayerBoard;
 
 public interface Ui{
     String askNickname();

@@ -1,11 +1,10 @@
 package network.messages;
 
-import model.Card;
-import model.GoldCard;
+import model.card.Card;
 import network.server.Server;
 
 public class CommonCardUpdateMessage extends Message{
-    private Card card;
+    private final Card card;
     public CommonCardUpdateMessage(MessageType mType, Card card){
         super(mType, Server.serverName);
         this.card = card;

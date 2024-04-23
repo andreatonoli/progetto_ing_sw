@@ -1,6 +1,8 @@
 package model;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import model.player.Player;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 

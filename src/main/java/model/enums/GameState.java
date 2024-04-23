@@ -1,4 +1,4 @@
-package model;
+package model.enums;
 
 /**
  * WAIT_PLAYERS => Waiting for the minimum amount of players to start the game

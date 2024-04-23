@@ -1,7 +1,7 @@
 //package view;
 //
 //import Controller.Controller;
-//import model.Card;
+//import model.card.Card;
 //import model.Game;
 //import network.client.*;
 //import network.server.Server;

@@ -1,19 +1,14 @@
 package network.server;
 
-import java.io.IOException;
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-import Controller.ClientController;
 import Controller.ServerController;
-import model.Card;
-import model.Game;
+import model.card.Card;
 import network.client.RMIClientHandler;
 
 public class RMIServer implements VirtualServer {

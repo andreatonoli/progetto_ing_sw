@@ -1,7 +1,10 @@
-package model;
+package model.card;
+
+import model.enums.Color;
+import model.player.Player;
+import model.enums.Symbols;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class AchievementResources implements Achievement{
     private int basePoint;

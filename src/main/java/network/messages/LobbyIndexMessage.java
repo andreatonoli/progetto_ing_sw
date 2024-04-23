@@ -4,7 +4,7 @@ import network.server.Server;
 import view.Ui;
 
 public class LobbyIndexMessage extends Message{
-    private int choice;
+    private final int choice;
     public LobbyIndexMessage(String username, int choice){
         super(MessageType.LOBBY_INDEX, username);
         this.choice = choice;

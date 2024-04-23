@@ -1,4 +1,9 @@
-package model;
+package model.player;
+
+import model.card.Card;
+import model.enums.CornerEnum;
+import model.enums.CornerState;
+import model.enums.Symbols;
 
 import java.io.Serializable;
 import java.util.HashMap;

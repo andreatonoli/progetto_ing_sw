@@ -1,4 +1,4 @@
-package model;
+package model.enums;
 
 /**
  * PLAY_CARD => player is placing a card
