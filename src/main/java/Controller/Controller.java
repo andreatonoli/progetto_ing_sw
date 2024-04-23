@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.util.*;
 
 //TODO: replace System.out.println with messages
+//Se ci sono problemi in placeCard piazza una copia del parametro e non il parametro
 public class Controller extends Observable implements Serializable {
     private final Game game; //reference to model
     private Map<String, Player> connectedPlayers;
