@@ -4,11 +4,12 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
-public class GameBoard {
+public class GameBoard implements Serializable {
     private Game game;
     private LinkedList<Achievement> achievementDeck;
     private LinkedList<Card> goldDeck;
@@ -193,5 +194,16 @@ public class GameBoard {
 
     public void setCommonAchievement(Achievement commonAchievement, int i){
         this.commonAchievement[i] = commonAchievement;
+    }
+
+    /**
+     * Replaces the common resource card at indexToReplace with a new resource card drew from the deck
+     * @param indexToReplace index of the CommonResource array to be replaced
+     */
+    public void replaceResourceCard(int indexToReplace){
+        this.commonResource[indexToReplace] = this.drawCard(this.resourceDeck);
+    }
+    public void replaceGoldCard(int indexToReplace){
+        this.commonGold[indexToReplace] = this.drawCard(this.goldDeck);
     }
 }

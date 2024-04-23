@@ -1,13 +1,44 @@
 package Controller;
+
 import model.*;
 import model.exceptions.*;
+import network.messages.*;
+import network.server.Server;
+import observer.Observable;
 
-import java.util.LinkedList;
+import java.io.Serializable;
+import java.util.*;
 
-public class Controller {
-    private Game game; //reference to model
-    public Controller(Game game){
-        this.game = game;
+//TODO: replace System.out.println with messages
+//Se ci sono problemi in placeCard piazza una copia del parametro e non il parametro
+public class Controller extends Observable implements Serializable {
+    private final Game game; //reference to model
+    private Map<String, Player> connectedPlayers;
+    private TurnHandler turnHandler;
+    private transient final Server server;
+    public Controller(int numPlayers, Server server){
+        this.game = new Game(numPlayers, server);
+        this.turnHandler = new TurnHandler(game, server);
+        this.connectedPlayers = Collections.synchronizedMap(new HashMap<>());
+        this.server = server;
+    }
+
+    /**
+     * Permits the client with {@code username} to join the game
+     * @param username of the client who's joining the game
+     * @return {@code true} if the game is full, {@code false} otherwise
+     */
+    public boolean joinGame(String username){
+        Player player = new Player(username, game);
+        this.connectedPlayers.put(username, player);
+        this.addObserver(this.server.getClientFromName(username));
+        game.addPlayer(player);
+        if (game.isFull()){
+            game.startGame();
+            //////////
+            return true;
+        }
+        return false;
     }
     /**
      *Picks the top card of the deck and calls addInHand to give it to the player
@@ -16,11 +47,13 @@ public class Controller {
      */
     public void drawCard(Player player, LinkedList<Card> deck){
         try {
+            //notify(this.server.getClientFromName(player.getUsername()),new GenericMessage("Drawing a card..."));
             System.out.println("Drawing a card...");
             canDraw(player, deck);
             Card drawedCard = deck.getFirst();
             player.addInHand(drawedCard);
             deck.removeFirst();
+            turnHandler.changePlayerState(player);
             System.out.println("Successfully drew a card");
         } catch (EmptyException e) {
             System.out.println("Cannot draw - The deck is empty");
@@ -55,6 +88,85 @@ public class Controller {
     }
 
     /**
+     * Permits the player to take one card from the board, then replaces it with the same type card drawed from the decks
+     * @param player who wants to take the card
+     * @param card taken by the player
+     */
+    public void drawCardFromBoard(Player player, Card card){
+        try {
+            GameBoard gameBoard = this.game.getGameBoard();
+            Card taken;
+            int takenIndex;
+            canDrawFromBoard(player, card);
+            if (card.getType().equalsIgnoreCase("Resource")){
+                if (card.equals(gameBoard.getCommonResource()[0])){
+                    taken = gameBoard.getCommonResource()[0];
+                    gameBoard.getCommonResource()[0] = null;
+                    takenIndex = 0;
+                }
+                else{
+                    taken = gameBoard.getCommonResource()[1];
+                    gameBoard.getCommonResource()[1] = null;
+                    takenIndex = 1;
+                }
+                player.addInHand(taken);
+                gameBoard.replaceResourceCard(takenIndex);
+            }
+            else if (card.getType().equalsIgnoreCase("Gold")){
+                if (card.equals(gameBoard.getCommonGold()[0])){
+                    taken = gameBoard.getCommonGold()[0];
+                    gameBoard.getCommonGold()[0] = null;
+                    takenIndex = 0;
+                }
+                else{
+                    taken = gameBoard.getCommonGold()[1];
+                    gameBoard.getCommonGold()[1] = null;
+                    takenIndex = 1;
+                }
+                player.addInHand(taken);
+                gameBoard.replaceGoldCard(takenIndex);
+            }
+        } catch (CardNotFoundException e) {
+            System.out.println("Cannot draw - Card is not on the board");
+        } catch (NotInTurnException e) {
+            System.out.println("Cannot draw - Player is not in draw card state");
+        } catch (FullHandException e) {
+            System.out.println("Cannot draw - Player's hand is full");
+        }
+    }
+
+    /**
+     * Checks if the player can draw from the board
+     * @param player who wants to take the card from the board
+     * @param card the player wants to take
+     * @throws CardNotFoundException the card the player wants to draw isn't on the board
+     * @throws NotInTurnException the player is not in the DRAW_CARD state
+     * @throws FullHandException player's hand is full
+     */
+    public void canDrawFromBoard(Player player, Card card) throws CardNotFoundException, NotInTurnException, FullHandException{
+        GameBoard gBoard = this.game.getGameBoard();
+        if (player.getPlayerState().equals(PlayerState.NOT_IN_TURN) || player.getPlayerState().equals(PlayerState.PLAY_CARD)){
+            throw new NotInTurnException();
+        }
+        if (card.getType().equalsIgnoreCase("Resource")){
+            //TODO: ottimizza
+            if (!card.equals(gBoard.getCommonResource()[0]) && !card.equals(gBoard.getCommonResource()[1])){
+                throw new CardNotFoundException();
+            }
+        }
+        else if (card.getType().equalsIgnoreCase("Gold")){
+            if (!card.equals(gBoard.getCommonGold()[0]) && !card.equals(gBoard.getCommonGold()[1])){
+                throw new CardNotFoundException();
+            }
+        }
+        for (int i = 0; i < 3; i++) {
+            if (player.getCardInHand()[i] == null){
+                return;
+            }
+        }
+        throw new FullHandException();
+    }
+    /**
      * Place card then removes it from the player's hand
      * @param player who asked to place the card
      * @param card to place
@@ -74,6 +186,7 @@ public class Controller {
             card.calcPoint(player);
             player.removeFromHand(card);
             System.out.println("Card successfully placed");
+            turnHandler.changePlayerState(player);
         } catch (NotInTurnException e) {
             if (player.getPlayerState().equals(PlayerState.NOT_IN_TURN)){
                 System.out.println("Cannot place - Its not your turn");
@@ -143,8 +256,13 @@ public class Controller {
      * Changes the side shown to the player
      * @param card to be flipped
      */
-    public void flipCard(Card card){
+    public void flipCard(String playerName, Card card){
         card.setCurrentSide();
+        notify(this.server.getClientFromName(playerName), new StarterCardMessage(card));
+    }
+    public void placeStarterCard(String username, Card starterCard){
+        Player player = getPlayerByUsername(username);
+        player.getPlayerBoard().setStarterCard(starterCard);
     }
 
     /**
@@ -156,5 +274,13 @@ public class Controller {
         if (choice <= 1){
             player.setChosenObj(player.getPersonalObj()[choice]);
         }
+    }
+    private Player getPlayerByUsername(String username){
+        return this.connectedPlayers.get(username);
+    }
+
+    //TODO: eliminare
+    public Game getGame(){
+        return this.game;
     }
 }

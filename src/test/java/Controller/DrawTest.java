@@ -7,7 +7,6 @@ import org.junit.jupiter.api.DisplayName;
 import java.io.IOException;
 import java.util.LinkedList;
 
-//Non funzia perchè mano popolata da costruttore player
 public class DrawTest {
     /**
      * Test checks that a player that can draw a card draws it and adds it to his hand, then the card is removed from the deck
@@ -16,7 +15,7 @@ public class DrawTest {
     @Test
     @DisplayName("Draw a Card")
     public void DrawACardTest() throws IOException {
-        Game game = new Game();
+        Game game = new Game(4);
         GameBoard board = new GameBoard(game);
         Player player = new Player("pippo", game);
         player.setPlayerState(PlayerState.DRAW_CARD);
@@ -38,7 +37,7 @@ public class DrawTest {
     @Test
     @DisplayName("Cannot Draw - Empty Deck")
     public void EmptyTest() throws IOException{
-        Game game = new Game();
+        Game game = new Game(4);
         GameBoard board = new GameBoard(game);
         Player player = new Player("pippo", game);
         player.setPlayerState(PlayerState.DRAW_CARD);
@@ -55,7 +54,7 @@ public class DrawTest {
     @Test
     @DisplayName("Cannot Draw - Full Hand")
     public void FullHandTest() throws IOException{
-        Game game = new Game();
+        Game game = new Game(4);
         GameBoard board = new GameBoard(game);
         Player player = new Player("pippo", game);
         player.setPlayerState(PlayerState.DRAW_CARD);
@@ -85,7 +84,7 @@ public class DrawTest {
     @Test
     @DisplayName("Cannot Draw - Not in Turn/Place Card")
     public void NotInTurnTest() throws IOException{
-        Game game = new Game();
+        Game game = new Game(4);
         GameBoard board = new GameBoard(game);
         Player player = new Player("pippo", game);
         player.setPlayerState(PlayerState.NOT_IN_TURN);

@@ -1,6 +1,17 @@
 package view;
 
-public interface Ui {
-    String askNickname();
+import Controller.Controller;
+import model.Card;
 
+import java.util.List;
+
+public interface Ui{
+    String askNickname();
+    String askServerAddress();
+    int askServerPort(String connectionType);
+    int selectGame(List<Controller> activeGames);
+    void showText(String text);
+    int setLobbySize();
+    void showCard(Card card);
+    boolean askToFlip();
 }
