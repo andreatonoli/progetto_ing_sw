@@ -37,13 +37,13 @@ public class StarterCard extends Card{
     }
 
     @Override
-    public int[] getCost(){ return new int[]{0,0,0,0}; }
+    public int[] getCost(){ return null; }
 
     @Override
     public int getPoints(){ return 0; }
 
     @Override
-    public Condition getCondition(){ return null; }
+    public Condition getCondition(){ return Condition.NOTHING; }
 
     @Override
     public Symbols getRequiredItem(){ return null; }

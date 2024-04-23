@@ -54,18 +54,37 @@ public class App
        con.placeCard(player, c2, new int[]{0, 0}, CornerEnum.TL);
        con.placeCard(player, c3, new int[]{0, 0}, CornerEnum.TR);
        con.placeCard(player, c4, new int[]{1, 1}, CornerEnum.TR);
-       t.printPlayerBoard(player);
-
-       Scanner input = new Scanner(System.in);
-       int[] coord = new int[2];
-       while(true){
-           System.out.println("Which card do you want to display?");
-           System.out.println("Type row number");
-           coord[0] = input.nextInt();
-           System.out.println("Type column number");
-           coord[1] = input.nextInt();
-           t.printCardFromPlayerboard(player, coord);
-       }
+       player.removeFromHand(player.getCardInHand()[0]);
+       player.addInHand(c1);
+       player.removeFromHand(player.getCardInHand()[1]);
+       player.addInHand(c2);
+       player.removeFromHand(player.getCardInHand()[2]);
+       player.addInHand(c3);
+       System.out.println(player.getCardInHand()[0].getClass());
+       System.out.println(player.getCardInHand()[0].getColor());
+       System.out.println(c1.getClass());
+       System.out.println(c1.getColor());
+       System.out.println(player.getCardInHand()[1].getClass());
+       System.out.println(player.getCardInHand()[1].getColor());
+       System.out.println(c2.getClass());
+       System.out.println(c2.getColor());
+       System.out.println(player.getCardInHand()[2].getClass());
+       System.out.println(player.getCardInHand()[2].getColor());
+       System.out.println(c3.getClass());
+       System.out.println(c3.getColor());
+       t.printView(player);
+       //t.printPlayerBoard(player);
+//
+       //Scanner input = new Scanner(System.in);
+       //int[] coord = new int[2];
+       //while(true){
+       //    System.out.println("Which card do you want to display?");
+       //    System.out.println("Type row number");
+       //    coord[0] = input.nextInt();
+       //    System.out.println("Type column number");
+       //    coord[1] = input.nextInt();
+       //    t.printCardFromPlayerboard(player, coord);
+       //}
 
 
        //System.out.println(FUNGI + "\n");

@@ -10,7 +10,7 @@ public class Tui {
     private static final int PLAYERBOARD_DIM = 11;
     //private String topBorder = "＿＿＿＿＿＿＿";
     //private String bottomBorder = "‾‾‾‾‾‾‾‾‾‾‾";
-    private String matCard[][] = new String[ROW][COLUMN];
+    private String[][] matCard = new String[ROW][COLUMN];
     private String topBorderLong = "＿＿＿＿";
     private String bottomBorderLong = "‾‾‾‾‾‾‾";
     //private String[][] matPlayerBoard = new String[PLAYERBOARD_DIM][PLAYERBOARD_DIM];
@@ -23,6 +23,7 @@ public class Tui {
     }
 
     public String[][] createPrintableCard(Player player, Card card) {
+        String[][] matCard = new String[ROW][COLUMN];
         //creazione matrice vuota e bordi a destra e sinistra
         for (int i = 0; i < ROW; i++) {
             for (int j = 0; j < COLUMN; j++) {
@@ -211,7 +212,11 @@ public class Tui {
         int topCenter = 4;
         if (card.getPoints() != 0) {
             switch (card.getCondition()) {
-                case NOTHING -> matCard[0][topCenter] = Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_BLACK) + String.valueOf(card.getPoints()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                case NOTHING -> {
+                    if(card.getPoints() != 0){
+                        matCard[0][topCenter] = Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_BLACK) + String.valueOf(card.getPoints()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                    }
+                }
                 case CORNER -> {
                     matCard[0][topCenter - 1] = Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_BLACK) + String.valueOf(card.getPoints()) + TuiColors.getColor(TuiColors.ANSI_RESET);
                     matCard[0][topCenter] = Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "|" + TuiColors.getColor(TuiColors.ANSI_RESET);
@@ -226,18 +231,18 @@ public class Tui {
         }
 
         //aggiungi costo se c'è
-        int costSum = Arrays.stream(card.getCost()).sum();
-        int bottomCenter = 4 - costSum / 2;
-        for (int i = 0; i < card.getCost().length; i++) {
-            for (int j = 0; j < card.getCost()[i]; j++) {
-                switch (i) {
-                    case 0 -> matCard[2][bottomCenter] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.FUNGI) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                    case 1 -> matCard[2][bottomCenter] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.PLANT) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                    case 2 -> matCard[2][bottomCenter] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.ANIMAL) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                    case 3 -> matCard[2][bottomCenter] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.INSECT) + TuiColors.getColor(TuiColors.ANSI_RESET);
-
+        if(card.getCost() != null){
+            int bottomCenter = 4 - card.getCost().length / 2 + 1;
+            for (int i = 0; i < card.getCost().length; i++) {
+                for (int j = 0; j < card.getCost()[i]; j++) {
+                    switch (i) {
+                        case 0 -> matCard[2][bottomCenter] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.FUNGI) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        case 1 -> matCard[2][bottomCenter] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.PLANT) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        case 2 -> matCard[2][bottomCenter] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.ANIMAL) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        case 3 -> matCard[2][bottomCenter] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.INSECT) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                    }
+                    bottomCenter += 1;
                 }
-                bottomCenter += 1;
             }
         }
         return matCard;
@@ -464,6 +469,108 @@ public class Tui {
         //System.out.println(bottomBorderLong);
     }
 
+    public void printView(Player player){
+        String[][][][] playerBoard = this.createPrintablePlayerBoard(player);
+        String[][] hand1 = this.createPrintableCard(player, player.getCardInHand()[0]);
+        String[][] hand2 = this.createPrintableCard(player, player.getCardInHand()[1]);
+        String[][] hand3 = this.createPrintableCard(player, player.getCardInHand()[2]);
+
+        System.out.println();
+        System.out.print(player.getUsername() + "'s PlayerBoard");
+        System.out.print("    ".repeat(PLAYERBOARD_DIM + 1));
+        System.out.print("     ");
+        System.out.println("  " + player.getUsername() + "'s hand");
+
+
+        for(int i = 0; i < PLAYERBOARD_DIM; i++){
+
+            for(int j = 0; j < PLAYERBOARD_DIM; j++){
+                System.out.print(playerBoard[0][0][i][j]);
+                System.out.print(playerBoard[0][1][i][j]);
+            }
+            System.out.print("     ");
+
+            if(hand1 != null){
+                if(2*i < hand1.length){
+                    for(int j = 0; j < COLUMN; j++){
+                        System.out.print(hand1[2*i][j]);
+                    }
+                }
+                else{
+                    System.out.print(" ".repeat(COLUMN));
+                }
+                System.out.print("     ");
+            }
+
+            if(hand2 != null){
+                if(2*i < hand2.length){
+                    for(int j = 0; j < COLUMN; j++){
+                        System.out.print(hand2[2*i][j]);
+                    }
+                }
+                else{
+                    System.out.print(" ".repeat(COLUMN));
+                }
+                System.out.print("     ");
+            }
+
+            if(hand3 != null){
+                if(2*i < hand3.length){
+                    for(int j = 0; j < COLUMN; j++){
+                        System.out.print(hand3[2*i][j]);
+                    }
+                }
+                else{
+                    System.out.print(" ".repeat(COLUMN));
+                }
+                System.out.print("     ");
+            }
+            System.out.println();
+
+            for(int j = 0; j < PLAYERBOARD_DIM; j++){
+                System.out.print(playerBoard[1][0][i][j]);
+                System.out.print(playerBoard[1][1][i][j]);
+            }
+            System.out.print("     ");
+
+            if(hand1 != null){
+                if(2*i + 1 < hand1.length){
+                    for(int j = 0; j < COLUMN; j++){
+                        System.out.print(hand1[2*i + 1][j]);
+                    }
+                }
+                else{
+                    System.out.print(" ".repeat(COLUMN));
+                }
+                System.out.print("     ");
+            }
+
+            if(hand2 != null){
+                if(2*i + 1 < hand2.length){
+                    for(int j = 0; j < COLUMN; j++){
+                        System.out.print(hand2[2*i + 1][j]);
+                    }
+                }
+                else{
+                    System.out.print(" ".repeat(COLUMN));
+                }
+                System.out.print("     ");
+            }
+
+            if(hand3 != null){
+                if(2*i + 1 < hand3.length){
+                    for(int j = 0; j < COLUMN; j++){
+                        System.out.print(hand3[2*i + 1][j]);
+                    }
+                }
+                else{
+                    System.out.print(" ".repeat(COLUMN));
+                }
+                System.out.print("     ");
+            }
+            System.out.println();
+        }
+    }
 
     public void printTitle(){
         System.out.print("\n");
@@ -545,18 +652,19 @@ public class Tui {
     public void printPlayerBoard(Player player){
         String [][][][] mat = this.createPrintablePlayerBoard(player);
 
-        System.out.println(topBorderLong.repeat(PLAYERBOARD_DIM + 1));
+        //System.out.println(topBorderLong.repeat(PLAYERBOARD_DIM + 1));
         for(int i = 0; i < PLAYERBOARD_DIM; i++){
             for(int t = 0; t < 2; t++){
                 for(int j = 0; j < PLAYERBOARD_DIM; j++) {
-                    System.out.print("|");
+                    //System.out.print("|");
                     for (int s = 0; s < 2; s++) {
-                        System.out.print(mat[t][s][i][j]);
+                            System.out.print(mat[t][s][i][j]);
                     }
                 }
-                System.out.println("|");
+                //System.out.println("|");
+                System.out.println();
             }
-            System.out.println(bottomBorderLong.repeat(PLAYERBOARD_DIM));
+            //System.out.println(bottomBorderLong.repeat(PLAYERBOARD_DIM));
         }
     }
 
