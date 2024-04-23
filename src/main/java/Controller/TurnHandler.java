@@ -9,11 +9,11 @@ import java.io.Serializable;
 
 public class TurnHandler extends Observable implements Serializable {
     private Game game;
-    private transient Server server;
+    //private transient Server server;
 
-    public TurnHandler(Game game, Server server){
+    public TurnHandler(Game game/*, Server server*/){
         this.game=game;
-        this.server=server;
+        //this.server=server;
     }
 
     public void changePlayerState(Player player){
@@ -22,7 +22,7 @@ public class TurnHandler extends Observable implements Serializable {
             game.setPlayerInTurn();
         }
         player.setPlayerState(PlayerState.values()[i]);
-        notify(this.server.getClientFromName(player.getUsername()),new PlayerStateMessage(player.getPlayerState()));
+        //notify(this.server.getClientFromName(player.getUsername()),new PlayerStateMessage(player.getPlayerState()));
     }
 
 }

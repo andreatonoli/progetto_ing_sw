@@ -3,7 +3,7 @@ package Controller;
 import model.*;
 import model.exceptions.*;
 import network.messages.*;
-import network.server.Server;
+import network.server.Connection;
 import observer.Observable;
 
 import java.io.Serializable;
@@ -11,31 +11,32 @@ import java.util.*;
 
 //TODO: replace System.out.println with messages
 //Se ci sono problemi in placeCard piazza una copia del parametro e non il parametro
-public class Controller extends Observable implements Serializable {
+//Se problema tenere server -> ritrasformare liste del server in List<Game> -> piangere :'(
+public class Controller extends Observable {
     private final Game game; //reference to model
-    private Map<String, Player> connectedPlayers;
+    private Map<Connection, Player> connectedPlayers;
     private TurnHandler turnHandler;
-    private transient final Server server;
-    public Controller(int numPlayers, Server server){
-        this.game = new Game(numPlayers, server);
-        this.turnHandler = new TurnHandler(game, server);
+    //private transient final Server server;
+    public Controller(int numPlayers/*, Server server*/){
+        this.game = new Game(numPlayers/*, server*/);
+        this.turnHandler = new TurnHandler(game/*, server*/);
         this.connectedPlayers = Collections.synchronizedMap(new HashMap<>());
-        this.server = server;
+        //this.server = server;
     }
 
     /**
      * Permits the client with {@code username} to join the game
-     * @param username of the client who's joining the game
+     * @param user of the client who's joining the game
      * @return {@code true} if the game is full, {@code false} otherwise
      */
-    public boolean joinGame(String username){
-        Player player = new Player(username, game);
-        this.connectedPlayers.put(username, player);
-        this.addObserver(this.server.getClientFromName(username));
+    public boolean joinGame(Connection user){
+        Player player = new Player(user.getUsername(), game);
+        this.connectedPlayers.put(user, player);
+        this.addObserver(user);
         game.addPlayer(player);
         if (game.isFull()){
             game.startGame();
-            //////////
+            //TODO: notify game started
             return true;
         }
         return false;
@@ -256,12 +257,12 @@ public class Controller extends Observable implements Serializable {
      * Changes the side shown to the player
      * @param card to be flipped
      */
-    public void flipCard(String playerName, Card card){
+    public void flipCard(Connection user, Card card){
         card.setCurrentSide();
-        notify(this.server.getClientFromName(playerName), new StarterCardMessage(card));
+        notify(user, new StarterCardMessage(card));
     }
-    public void placeStarterCard(String username, Card starterCard){
-        Player player = getPlayerByUsername(username);
+    public void placeStarterCard(Connection user, Card starterCard){
+        Player player = getPlayerByClient(user);
         player.getPlayerBoard().setStarterCard(starterCard);
     }
 
@@ -275,8 +276,8 @@ public class Controller extends Observable implements Serializable {
             player.setChosenObj(player.getPersonalObj()[choice]);
         }
     }
-    private Player getPlayerByUsername(String username){
-        return this.connectedPlayers.get(username);
+    private Player getPlayerByClient(Connection user){
+        return this.connectedPlayers.get(user);
     }
 
     //TODO: eliminare

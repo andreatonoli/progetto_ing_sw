@@ -69,12 +69,12 @@ public class RMIConnection extends Connection {
     }
     @Override
     public void flipCard(Card card){
-        this.lobby.flipCard(username, card);
+        this.lobby.flipCard(this, card);
     }
 
     @Override
     public void placeStarterCard(Card card) {
-        this.lobby.placeStarterCard(username, card);
+        this.lobby.placeStarterCard(this, card);
     }
 
     @Override
