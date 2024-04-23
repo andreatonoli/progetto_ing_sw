@@ -84,7 +84,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler {
                 break;
             case STARTER_CARD:
                 this.starterCard = ((StarterCardMessage) message).getCard();
-                this.view.showCard(starterCard);
+                this.view.printCard(starterCard);
                 boolean choice = this.view.askToFlip();
                 if (choice){
                     try {

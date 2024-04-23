@@ -3,6 +3,7 @@ package org.example;
 import Controller.Controller;
 import model.*;
 import model.exceptions.NotEnoughPlayersException;
+import network.server.Server;
 import view.*;
 
 import java.io.IOException;
@@ -16,7 +17,8 @@ public class App
 {
    public static void main( String[] args ) throws IOException, NotEnoughPlayersException {
 
-       Game game = new Game();
+       Server server = new Server();
+       Game game = new Game(2, server);
        Player player = new Player("p1", game);
        Player player2 = new Player("p2", game);
        game.addPlayer(player);
@@ -25,26 +27,26 @@ public class App
        Tui t = new Tui();
        s2.setCurrentSide();
        t.printTitle();
-       t.printCard(player, s2);
+       t.printCard(player.getPlayerBoard(), s2);
        GoldCard b = new GoldCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 3, Condition.CORNER, 7, new int[]{0, 3, 0, 0}, null);
        GoldCard c = new GoldCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 3, Condition.CORNER, 17, new int[]{0, 3, 0, 0}, null);
        GoldCard d = new GoldCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 3, Condition.CORNER, 27, new int[]{0, 3, 0, 0}, null);
        GoldCard e = new GoldCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 3, Condition.CORNER, 37, new int[]{0, 3, 0, 0}, null);
-       t.printCard(player, b);
-       t.printCard(player, c);
-       t.printCard(player, d);
-       t.printCard(player, e);
+       t.printCard(player.getPlayerBoard(), b);
+       t.printCard(player.getPlayerBoard(), c);
+       t.printCard(player.getPlayerBoard(), d);
+       t.printCard(player.getPlayerBoard(), e);
        Achievement a1 = new AchievementItem(3, new ArrayList<>(List.of(Symbols.INKWELL, Symbols.QUILL, Symbols.MANUSCRIPT)));
        Achievement a2 = new AchievementResources(Symbols.FUNGI);
        Achievement a3 = new AchievementDiagonal(Color.PURPLE);
        Achievement a4 = new AchievementL(Color.GREEN);
-       t.printCard(a1);
-       t.printCard(a2);
-       t.printCard(a3);
-       t.printCard(a4);
+       t.printAchievement(a1);
+       t.printAchievement(a2);
+       t.printAchievement(a3);
+       t.printAchievement(a4);
 
        game.startGame();
-       Controller con = new Controller(game);
+       Controller con = new Controller(2, server);
        player.setPlayerState(PlayerState.PLAY_CARD);
        ResourceCard c1 = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 3, 0);
        ResourceCard c2 = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 17, 0);
@@ -72,7 +74,7 @@ public class App
        System.out.println(player.getCardInHand()[2].getColor());
        System.out.println(c3.getClass());
        System.out.println(c3.getColor());
-       t.printView(player);
+       //t.printView(player);
        //t.printPlayerBoard(player);
 //
        //Scanner input = new Scanner(System.in);

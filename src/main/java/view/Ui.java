@@ -1,7 +1,8 @@
 package view;
 
 import Controller.Controller;
-import model.Card;
+import model.*;
+import model.Achievement;
 
 import java.util.List;
 
@@ -12,6 +13,10 @@ public interface Ui{
     int selectGame(List<Controller> activeGames);
     void showText(String text);
     int setLobbySize();
-    void showCard(Card card);
     boolean askToFlip();
+    void printView(PlayerBoard playerBoard, Card[] hand, String username);
+    void printCardFromPlayerBoard(PlayerBoard playerBoard, int[] coord);
+    void printCard(PlayerBoard playerBoard, Card card);
+    void printCard(Card card);
+    void printAchievement(Achievement achievement);
 }

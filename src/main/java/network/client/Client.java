@@ -18,11 +18,11 @@ public class Client{
             }
         }
         if (tuiParam){
-           new TuiHandler().run();
+           new Tui().run();
         }
         else{
             //TODO: avvio applicazione grafica
-            new TuiHandler().run(); //Placeholder
+            new Tui().run(); //Placeholder
         }
     }
 }
