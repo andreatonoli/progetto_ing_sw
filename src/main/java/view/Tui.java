@@ -225,14 +225,14 @@ public class Tui implements Ui{
                 coordCover[0] = corner.getX();
                 coordCover[1] = corner.getY();
                 if(playerBoard.getCard(coordCover) != null && playerBoard.getCard(coordCover).getCorner(corner.getOppositePosition()).getState().equals(CornerState.OCCUPIED)){
-                    matCard[(corner.getY()-1)/-2][(corner.getX()-1)/2] = Color.getBackground(playerBoard.getCard(coordCover).getColor()) + Symbols.getStringBlack(playerBoard.getCard(coordCover).getCorner(corner).getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                    matCard[(corner.getY() - 1)/(-2)][(corner.getX() - 1)/2] = Color.getBackground(playerBoard.getCard(coordCover).getColor()) + Symbols.getStringBlack(playerBoard.getCard(coordCover).getCorner(corner).getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
                 }
                 else{
-                    matCard[(corner.getY()-1)/-2][(corner.getX()-1)/2] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(card.getCorner(corner).getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                    matCard[(corner.getY() - 1)/(-2)][(corner.getX() - 1)/(2)] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(card.getCorner(corner).getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
                 }
             }
             else{
-                matCard[(corner.getY()-1)/-2][(corner.getX()-1)/2] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(card.getCorner(corner).getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                matCard[(corner.getY() - 1)/(-2)][(corner.getX() - 1)/(2)] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(card.getCorner(corner).getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
             }
 
         }
@@ -760,71 +760,91 @@ public class Tui implements Ui{
             coord = playerBoard.getCardCoordinates(playerBoard.getCardPositon().get(i));
             int[] coordCover = new int[2];
             Card card = playerBoard.getCard(coord);
-            if (card.getCorners()[0].getState() == CornerState.NOT_VISIBLE) {
-                coordCover[0] = coord[0] - 1;
-                coordCover[1] = coord[1] + 1;
-                if (playerBoard.getCard(coordCover) != null && playerBoard.getCard(coordCover).getCorner(CornerEnum.BR).getState() == CornerState.OCCUPIED) {
-                    matPlayerBoard[0][0][PLAYERBOARD_DIM / 2 - coord[1]][PLAYERBOARD_DIM / 2 + coord[0]] = Color.getBackground(playerBoard.getCard(coordCover).getColor()) + Symbols.getStringBlack(playerBoard.getCard(coordCover).getCorners()[2].getSymbol()) + Color.getBackground(card.getColor()) + padding + TuiColors.getColor(TuiColors.ANSI_RESET);
-                } else {
-                    matPlayerBoard[0][0][PLAYERBOARD_DIM / 2 - coord[1]][PLAYERBOARD_DIM / 2 + coord[0]] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(card.getCorners()[0].getSymbol()) + Color.getBackground(card.getColor()) + padding + TuiColors.getColor(TuiColors.ANSI_RESET);
+
+            for(CornerEnum corner : CornerEnum.values()){
+                if(card.getCorner(corner).getState().equals(CornerState.NOT_VISIBLE)){
+                    coordCover[0] = corner.getOppositePosition().getX();
+                    coordCover[1] = corner.getOppositePosition().getY();
+                    if(playerBoard.getCard(coordCover) != null && playerBoard.getCard(coordCover).getCorner(corner.getOppositePosition()).getState().equals(CornerState.OCCUPIED)){
+                        matPlayerBoard[(corner.getY() - 1)/(-2)][(corner.getY() - 1)/2][PLAYERBOARD_DIM / 2 - coord[1]][PLAYERBOARD_DIM / 2 + coord[0]] = Color.getBackground(playerBoard.getCard(coordCover).getColor()) + Symbols.getStringBlack(playerBoard.getCard(coordCover).getCorners()[2].getSymbol()) + Color.getBackground(card.getColor()) + padding + TuiColors.getColor(TuiColors.ANSI_RESET);
+                    }
+                    else{
+                        matPlayerBoard[(corner.getY() - 1)/(-2)][(corner.getY() - 1)/2][PLAYERBOARD_DIM / 2 - coord[1]][PLAYERBOARD_DIM / 2 + coord[0]] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(card.getCorners()[0].getSymbol()) + Color.getBackground(card.getColor()) + padding + TuiColors.getColor(TuiColors.ANSI_RESET);
+                    }
                 }
-            }
-            else if (card.getCorners()[0].getState() == CornerState.OCCUPIED) {
-                matPlayerBoard[0][0][PLAYERBOARD_DIM / 2 - coord[1]][PLAYERBOARD_DIM / 2 + coord[0]] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.NOCORNER) + Color.getBackground(card.getColor()) + padding + TuiColors.getColor(TuiColors.ANSI_RESET);
-            }
-            else {
-                matPlayerBoard[0][0][PLAYERBOARD_DIM / 2 - coord[1]][PLAYERBOARD_DIM / 2 + coord[0]] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(card.getCorners()[0].getSymbol()) + Color.getBackground(card.getColor()) + padding + TuiColors.getColor(TuiColors.ANSI_RESET);
+                else if(card.getCorner(corner).getState() == CornerState.OCCUPIED){
+                    matPlayerBoard[(corner.getY() - 1)/(-2)][(corner.getY() - 1)/2][PLAYERBOARD_DIM / 2 - coord[1]][PLAYERBOARD_DIM / 2 + coord[0]] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.NOCORNER) + Color.getBackground(card.getColor()) + padding + TuiColors.getColor(TuiColors.ANSI_RESET);
+                }
+                else{
+                    matPlayerBoard[(corner.getY() - 1)/(-2)][(corner.getY() - 1)/2][PLAYERBOARD_DIM / 2 - coord[1]][PLAYERBOARD_DIM / 2 + coord[0]] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(card.getCorners()[0].getSymbol()) + Color.getBackground(card.getColor()) + padding + TuiColors.getColor(TuiColors.ANSI_RESET);
+                }
             }
 
-            if (card.getCorners()[1].getState() == CornerState.NOT_VISIBLE) {
-                coordCover[0] = coord[0] + 1;
-                coordCover[1] = coord[1] + 1;
-                if (playerBoard.getCard(coordCover) != null && playerBoard.getCard(coordCover).getCorner(CornerEnum.BL).getState() == CornerState.OCCUPIED) {
-                    matPlayerBoard[0][1][PLAYERBOARD_DIM / 2 - coord[1]][PLAYERBOARD_DIM / 2 + coord[0]] = Color.getBackground(card.getColor()) + padding + Color.getBackground(playerBoard.getCard(coordCover).getColor()) + Symbols.getStringBlack(playerBoard.getCard(coordCover).getCorners()[3].getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                } else {
-                    matPlayerBoard[0][1][PLAYERBOARD_DIM / 2 - coord[1]][PLAYERBOARD_DIM / 2 + coord[0]] = Color.getBackground(card.getColor()) + padding + Symbols.getStringBlack(card.getCorners()[1].getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                }
-            }
-            else if(card.getCorners()[1].getState() == CornerState.OCCUPIED){
-                matPlayerBoard[0][1][PLAYERBOARD_DIM / 2 - coord[1]][PLAYERBOARD_DIM / 2 + coord[0]] = Color.getBackground(card.getColor()) + padding + Symbols.getStringBlack(Symbols.NOCORNER) + TuiColors.getColor(TuiColors.ANSI_RESET);
-            }
-            else {
-                matPlayerBoard[0][1][PLAYERBOARD_DIM / 2 - coord[1]][PLAYERBOARD_DIM / 2 + coord[0]] = Color.getBackground(card.getColor()) + padding + Symbols.getStringBlack(card.getCorners()[1].getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
-            }
-
-            if(card.getCorners()[3].getState() == CornerState.NOT_VISIBLE){
-                coordCover[0] = coord[0] - 1;
-                coordCover[1] = coord[1] - 1;
-                if (playerBoard.getCard(coordCover) != null && playerBoard.getCard(coordCover).getCorner(CornerEnum.TR).getState() == CornerState.OCCUPIED) {
-                    matPlayerBoard[1][0][PLAYERBOARD_DIM/2 - coord[1]][PLAYERBOARD_DIM/2 + coord[0]] = Color.getBackground(playerBoard.getCard(coordCover).getColor()) + Symbols.getStringBlack(playerBoard.getCard(coordCover).getCorners()[1].getSymbol()) + Color.getBackground(card.getColor()) + padding + TuiColors.getColor(TuiColors.ANSI_RESET);
-                }
-                else {
-                    matPlayerBoard[1][0][PLAYERBOARD_DIM/2 - coord[1]][PLAYERBOARD_DIM/2 + coord[0]] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(card.getCorners()[3].getSymbol()) + Color.getBackground(card.getColor()) + padding + TuiColors.getColor(TuiColors.ANSI_RESET);
-                }
-            }
-            else if(card.getCorners()[3].getState() == CornerState.OCCUPIED){
-                matPlayerBoard[1][0][PLAYERBOARD_DIM/2 - coord[1]][PLAYERBOARD_DIM/2 + coord[0]] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.NOCORNER) + Color.getBackground(card.getColor()) + padding + TuiColors.getColor(TuiColors.ANSI_RESET);
-            }
-            else{
-                matPlayerBoard[1][0][PLAYERBOARD_DIM/2 - coord[1]][PLAYERBOARD_DIM/2 + coord[0]] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(card.getCorners()[3].getSymbol()) + Color.getBackground(card.getColor()) + padding + TuiColors.getColor(TuiColors.ANSI_RESET);
-            }
-
-            if(card.getCorners()[2].getState() == CornerState.NOT_VISIBLE){
-                coordCover[0] = coord[0] + 1;
-                coordCover[1] = coord[1] - 1;
-                if (playerBoard.getCard(coordCover) != null && playerBoard.getCard(coordCover).getCorner(CornerEnum.TL).getState() == CornerState.OCCUPIED) {
-                    matPlayerBoard[1][1][PLAYERBOARD_DIM/2 - coord[1]][PLAYERBOARD_DIM/2 + coord[0]] = Color.getBackground(card.getColor()) + padding + Color.getBackground(playerBoard.getCard(coordCover).getColor()) + Symbols.getStringBlack(playerBoard.getCard(coordCover).getCorners()[0].getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                }
-                else {
-                    matPlayerBoard[1][1][PLAYERBOARD_DIM/2 - coord[1]][PLAYERBOARD_DIM/2 + coord[0]] = Color.getBackground(card.getColor()) + padding + Symbols.getStringBlack(card.getCorners()[2].getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                }
-            }
-            else if(card.getCorners()[3].getState() == CornerState.OCCUPIED){
-                matPlayerBoard[1][1][PLAYERBOARD_DIM/2 - coord[1]][PLAYERBOARD_DIM/2 + coord[0]] = Color.getBackground(card.getColor()) + padding + Symbols.getStringBlack(Symbols.NOCORNER) + TuiColors.getColor(TuiColors.ANSI_RESET);
-            }
-            else{
-                matPlayerBoard[1][1][PLAYERBOARD_DIM/2 - coord[1]][PLAYERBOARD_DIM/2 + coord[0]] = Color.getBackground(card.getColor()) + padding + Symbols.getStringBlack(card.getCorners()[2].getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
-            }
+            //if (card.getCorners()[0].getState() == CornerState.NOT_VISIBLE) {
+            //    coordCover[0] = coord[0] - 1;
+            //    coordCover[1] = coord[1] + 1;
+            //    if (playerBoard.getCard(coordCover) != null && playerBoard.getCard(coordCover).getCorner(CornerEnum.BR).getState() == CornerState.OCCUPIED) {
+            //        matPlayerBoard[0][0][PLAYERBOARD_DIM / 2 - coord[1]][PLAYERBOARD_DIM / 2 + coord[0]] = Color.getBackground(playerBoard.getCard(coordCover).getColor()) + Symbols.getStringBlack(playerBoard.getCard(coordCover).getCorners()[2].getSymbol()) + Color.getBackground(card.getColor()) + padding + TuiColors.getColor(TuiColors.ANSI_RESET);
+            //    } else {
+            //        matPlayerBoard[0][0][PLAYERBOARD_DIM / 2 - coord[1]][PLAYERBOARD_DIM / 2 + coord[0]] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(card.getCorners()[0].getSymbol()) + Color.getBackground(card.getColor()) + padding + TuiColors.getColor(TuiColors.ANSI_RESET);
+            //    }
+            //}
+            //else if (card.getCorners()[0].getState() == CornerState.OCCUPIED) {
+            //    matPlayerBoard[0][0][PLAYERBOARD_DIM / 2 - coord[1]][PLAYERBOARD_DIM / 2 + coord[0]] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.NOCORNER) + Color.getBackground(card.getColor()) + padding + TuiColors.getColor(TuiColors.ANSI_RESET);
+            //}
+            //else {
+            //    matPlayerBoard[0][0][PLAYERBOARD_DIM / 2 - coord[1]][PLAYERBOARD_DIM / 2 + coord[0]] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(card.getCorners()[0].getSymbol()) + Color.getBackground(card.getColor()) + padding + TuiColors.getColor(TuiColors.ANSI_RESET);
+            //}
+//
+            //if (card.getCorners()[1].getState() == CornerState.NOT_VISIBLE) {
+            //    coordCover[0] = coord[0] + 1;
+            //    coordCover[1] = coord[1] + 1;
+            //    if (playerBoard.getCard(coordCover) != null && playerBoard.getCard(coordCover).getCorner(CornerEnum.BL).getState() == CornerState.OCCUPIED) {
+            //        matPlayerBoard[0][1][PLAYERBOARD_DIM / 2 - coord[1]][PLAYERBOARD_DIM / 2 + coord[0]] = Color.getBackground(card.getColor()) + padding + Color.getBackground(playerBoard.getCard(coordCover).getColor()) + Symbols.getStringBlack(playerBoard.getCard(coordCover).getCorners()[3].getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+            //    } else {
+            //        matPlayerBoard[0][1][PLAYERBOARD_DIM / 2 - coord[1]][PLAYERBOARD_DIM / 2 + coord[0]] = Color.getBackground(card.getColor()) + padding + Symbols.getStringBlack(card.getCorners()[1].getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+            //    }
+            //}
+            //else if(card.getCorners()[1].getState() == CornerState.OCCUPIED){
+            //    matPlayerBoard[0][1][PLAYERBOARD_DIM / 2 - coord[1]][PLAYERBOARD_DIM / 2 + coord[0]] = Color.getBackground(card.getColor()) + padding + Symbols.getStringBlack(Symbols.NOCORNER) + TuiColors.getColor(TuiColors.ANSI_RESET);
+            //}
+            //else {
+            //    matPlayerBoard[0][1][PLAYERBOARD_DIM / 2 - coord[1]][PLAYERBOARD_DIM / 2 + coord[0]] = Color.getBackground(card.getColor()) + padding + Symbols.getStringBlack(card.getCorners()[1].getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+            //}
+//
+            //if(card.getCorners()[3].getState() == CornerState.NOT_VISIBLE){
+            //    coordCover[0] = coord[0] - 1;
+            //    coordCover[1] = coord[1] - 1;
+            //    if (playerBoard.getCard(coordCover) != null && playerBoard.getCard(coordCover).getCorner(CornerEnum.TR).getState() == CornerState.OCCUPIED) {
+            //        matPlayerBoard[1][0][PLAYERBOARD_DIM/2 - coord[1]][PLAYERBOARD_DIM/2 + coord[0]] = Color.getBackground(playerBoard.getCard(coordCover).getColor()) + Symbols.getStringBlack(playerBoard.getCard(coordCover).getCorners()[1].getSymbol()) + Color.getBackground(card.getColor()) + padding + TuiColors.getColor(TuiColors.ANSI_RESET);
+            //    }
+            //    else {
+            //        matPlayerBoard[1][0][PLAYERBOARD_DIM/2 - coord[1]][PLAYERBOARD_DIM/2 + coord[0]] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(card.getCorners()[3].getSymbol()) + Color.getBackground(card.getColor()) + padding + TuiColors.getColor(TuiColors.ANSI_RESET);
+            //    }
+            //}
+            //else if(card.getCorners()[3].getState() == CornerState.OCCUPIED){
+            //    matPlayerBoard[1][0][PLAYERBOARD_DIM/2 - coord[1]][PLAYERBOARD_DIM/2 + coord[0]] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.NOCORNER) + Color.getBackground(card.getColor()) + padding + TuiColors.getColor(TuiColors.ANSI_RESET);
+            //}
+            //else{
+            //    matPlayerBoard[1][0][PLAYERBOARD_DIM/2 - coord[1]][PLAYERBOARD_DIM/2 + coord[0]] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(card.getCorners()[3].getSymbol()) + Color.getBackground(card.getColor()) + padding + TuiColors.getColor(TuiColors.ANSI_RESET);
+            //}
+//
+            //if(card.getCorners()[2].getState() == CornerState.NOT_VISIBLE){
+            //    coordCover[0] = coord[0] + 1;
+            //    coordCover[1] = coord[1] - 1;
+            //    if (playerBoard.getCard(coordCover) != null && playerBoard.getCard(coordCover).getCorner(CornerEnum.TL).getState() == CornerState.OCCUPIED) {
+            //        matPlayerBoard[1][1][PLAYERBOARD_DIM/2 - coord[1]][PLAYERBOARD_DIM/2 + coord[0]] = Color.getBackground(card.getColor()) + padding + Color.getBackground(playerBoard.getCard(coordCover).getColor()) + Symbols.getStringBlack(playerBoard.getCard(coordCover).getCorners()[0].getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+            //    }
+            //    else {
+            //        matPlayerBoard[1][1][PLAYERBOARD_DIM/2 - coord[1]][PLAYERBOARD_DIM/2 + coord[0]] = Color.getBackground(card.getColor()) + padding + Symbols.getStringBlack(card.getCorners()[2].getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+            //    }
+            //}
+            //else if(card.getCorners()[3].getState() == CornerState.OCCUPIED){
+            //    matPlayerBoard[1][1][PLAYERBOARD_DIM/2 - coord[1]][PLAYERBOARD_DIM/2 + coord[0]] = Color.getBackground(card.getColor()) + padding + Symbols.getStringBlack(Symbols.NOCORNER) + TuiColors.getColor(TuiColors.ANSI_RESET);
+            //}
+            //else{
+            //    matPlayerBoard[1][1][PLAYERBOARD_DIM/2 - coord[1]][PLAYERBOARD_DIM/2 + coord[0]] = Color.getBackground(card.getColor()) + padding + Symbols.getStringBlack(card.getCorners()[2].getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+            //}
         }
         return matPlayerBoard;
 

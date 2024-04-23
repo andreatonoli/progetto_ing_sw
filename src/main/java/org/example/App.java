@@ -52,6 +52,8 @@ public class App
        ResourceCard c2 = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 17, 0);
        ResourceCard c3 = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 25, 0);
        ResourceCard c4 = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 35, 0);
+       ResourceCard c5 = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), new Corner(Symbols.NOCORNER), new Corner(Symbols.MANUSCRIPT)}, 35, 2);
+
        con.placeCard(player, c1, new int[]{0, 0}, CornerEnum.BL);
        con.placeCard(player, c2, new int[]{0, 0}, CornerEnum.TL);
        con.placeCard(player, c3, new int[]{0, 0}, CornerEnum.TR);
@@ -61,19 +63,7 @@ public class App
        player.removeFromHand(player.getCardInHand()[1]);
        player.addInHand(c2);
        player.removeFromHand(player.getCardInHand()[2]);
-       player.addInHand(c3);
-       System.out.println(player.getCardInHand()[0].getClass());
-       System.out.println(player.getCardInHand()[0].getColor());
-       System.out.println(c1.getClass());
-       System.out.println(c1.getColor());
-       System.out.println(player.getCardInHand()[1].getClass());
-       System.out.println(player.getCardInHand()[1].getColor());
-       System.out.println(c2.getClass());
-       System.out.println(c2.getColor());
-       System.out.println(player.getCardInHand()[2].getClass());
-       System.out.println(player.getCardInHand()[2].getColor());
-       System.out.println(c3.getClass());
-       System.out.println(c3.getColor());
+       player.addInHand(c5);
        //t.printView(player);
        //t.printPlayerBoard(player);
 //
