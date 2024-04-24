@@ -23,7 +23,7 @@ public abstract class Card implements Serializable {
     /**
      * is the id of the card
      */
-    protected int card_number;
+    protected int cardNumber;
     /**
      * card side that is currently visible
      */
@@ -157,5 +157,12 @@ public abstract class Card implements Serializable {
      */
     public String getType(){
         return  this.type;
+    }
+    /**
+     * getter of the {@code cardNumber} attribute
+     * @return the number of the card chosen in the json files
+     */
+    public int getCardNumber(){
+        return this.cardNumber;
     }
 }

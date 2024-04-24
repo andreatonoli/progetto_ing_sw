@@ -46,7 +46,7 @@ public class GoldCard extends Card {
         this.type = "gold";
         this.basePoint = basePoint;
         this.condition = condition;
-        this.card_number = card_number;
+        this.cardNumber = card_number;
         this.back = false;
         System.arraycopy(cost, 0, this.cost, 0, 4);
         if (card_number <= 10){ /**Gold fungi retro*/

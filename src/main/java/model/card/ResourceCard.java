@@ -25,7 +25,7 @@ public class ResourceCard extends Card {
         this.corners = new Corner[4];
         System.arraycopy(corners, 0, this.corners, 0, 4);
         this.type = "resource";
-        this.card_number = card_number;
+        this.cardNumber = card_number;
         this.point = point;
         this.back = false;
         if (card_number <= 10) /**FUNGI retro*/

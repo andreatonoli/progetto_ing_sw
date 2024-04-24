@@ -11,6 +11,10 @@ import model.enums.Color;
 import model.enums.CornerEnum;
 import model.enums.PlayerState;
 import model.enums.Symbols;
+import model.exceptions.AlreadyUsedPositionException;
+import model.exceptions.CostNotSatisfiedException;
+import model.exceptions.NotInTurnException;
+import model.exceptions.OccupiedCornerException;
 import model.player.Player;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
@@ -68,7 +72,6 @@ public class AchievementTest {
     public void itemTest() throws IOException{
         Game game = new Game(4);
         Player p = new Player("pippo", game);
-        Controller co = new Controller(game);
         Achievement a = new AchievementItem(3, new ArrayList<>(List.of(Symbols.INKWELL, Symbols.QUILL, Symbols.MANUSCRIPT)));
         Card b = new ResourceCard(new Corner[]{new Corner(Symbols.QUILL), new Corner(Symbols.INKWELL), new Corner(Symbols.MANUSCRIPT), new Corner(Symbols.EMPTY) }, 14, 0);
         Card c = new ResourceCard(new Corner[]{new Corner(Symbols.QUILL), new Corner(Symbols.MANUSCRIPT), new Corner(Symbols.PLANT), new Corner(Symbols.QUILL) }, 15, 0);
@@ -79,11 +82,16 @@ public class AchievementTest {
         p.setPlayerState(PlayerState.PLAY_CARD);
         //Place some cards
         p.getPlayerBoard().setStarterCard(s);
-        co.placeCard(p, b, new int[]{0,0}, CornerEnum.TL);
-        co.placeCard(p, c, new int[]{0,0}, CornerEnum.TR);
-        co.placeCard(p, d, new int[]{0,0}, CornerEnum.BL);
-        co.placeCard(p, e, new int[]{0,0}, CornerEnum.BR);
-        co.placeCard(p, f, new int[]{-1,1}, CornerEnum.BL);
+        try {
+            p.placeCard(b, new int[]{0,0}, CornerEnum.TL);
+            p.placeCard(c, new int[]{0,0}, CornerEnum.TR);
+            p.placeCard(d, new int[]{0,0}, CornerEnum.BL);
+            p.placeCard(e, new int[]{0,0}, CornerEnum.BR);
+            p.placeCard(f, new int[]{-1,1}, CornerEnum.BL);
+        } catch (OccupiedCornerException | NotInTurnException | AlreadyUsedPositionException |
+                 CostNotSatisfiedException ex) {
+            System.out.println(ex.getMessage());
+        }
         //Number of items:
         //  Manuscript: 3
         //  Inkwell: 4
@@ -117,7 +125,6 @@ public class AchievementTest {
     public void resourcesTest() throws IOException{
         Game game = new Game(4);
         Player p = new Player("pippo", game);
-        Controller co = new Controller(game);
         Achievement a = new AchievementResources(Symbols.FUNGI);
         Achievement b = new AchievementResources(Symbols.PLANT);
         Achievement c = new AchievementResources(Symbols.ANIMAL);
@@ -133,11 +140,16 @@ public class AchievementTest {
         //p can place card
         p.setPlayerState(PlayerState.PLAY_CARD);
         //place the cards
-        co.placeCard(p, e, new int[]{0,0}, CornerEnum.TL);
-        co.placeCard(p, f, new int[]{0,0}, CornerEnum.TR);
-        co.placeCard(p, g, new int[]{0,0}, CornerEnum.BL);
-        co.placeCard(p, h, new int[]{0,0}, CornerEnum.BR);
-        co.placeCard(p, i, new int[]{1,1}, CornerEnum.TL);
+        try {
+            p.placeCard(e, new int[]{0,0}, CornerEnum.TL);
+            p.placeCard(f, new int[]{0,0}, CornerEnum.TR);
+            p.placeCard(g, new int[]{0,0}, CornerEnum.BL);
+            p.placeCard(h, new int[]{0,0}, CornerEnum.BR);
+            p.placeCard(i, new int[]{1,1}, CornerEnum.TL);
+        } catch (OccupiedCornerException | NotInTurnException | AlreadyUsedPositionException |
+                 CostNotSatisfiedException ex) {
+            System.out.println(ex.getMessage());
+        }
         //Number of not covered symbols:
         //Fungi: 4 => 2 point
         a.calcPoints(p);
@@ -160,7 +172,6 @@ public class AchievementTest {
     public void lTest() throws IOException{
         Game game = new Game(4);
         Player p = new Player("pippo", game);
-        Controller co = new Controller(game);
         Achievement a = new AchievementL(Color.RED);
         Achievement b = new AchievementL(Color.BLUE);
         Achievement c = new AchievementL(Color.GREEN);
@@ -184,17 +195,22 @@ public class AchievementTest {
         StarterCard s = new StarterCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT)}, 1, new CardBack(new ArrayList<Symbols>(List.of(Symbols.INSECT)), Color.WHITE, new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.PLANT), new Corner(Symbols.EMPTY), new Corner(Symbols.INSECT)}));
         p.setPlayerState(PlayerState.PLAY_CARD);
         p.getPlayerBoard().setStarterCard(s);
-        co.placeCard(p, r1, new int[]{0, 0}, CornerEnum.TR);
-        co.placeCard(p, r2, new int[]{0, 0}, CornerEnum.BR);
-        co.placeCard(p, g1, new int[]{1, -1}, CornerEnum.BR);
-        co.placeCard(p, b1, new int[]{1, -1}, CornerEnum.BL);
-        co.placeCard(p, place1, new int[]{2, -2}, CornerEnum.BR);
-        co.placeCard(p, place2, new int[]{0, -2}, CornerEnum.BL);
-        co.placeCard(p, b2, new int[]{-1, -3}, CornerEnum.BR);
-        co.placeCard(p, g2, new int[]{3, -3}, CornerEnum.BL);
-        co.placeCard(p, p1, new int[]{0, -4}, CornerEnum.BR);
-        co.placeCard(p, place3, new int[]{1, -5}, CornerEnum.BL);
-        co.placeCard(p, p2, new int[]{0, -6}, CornerEnum.BR);
+        try {
+            p.placeCard(r1, new int[]{0, 0}, CornerEnum.TR);
+            p.placeCard(r2, new int[]{0, 0}, CornerEnum.BR);
+            p.placeCard(g1, new int[]{1, -1}, CornerEnum.BR);
+            p.placeCard(b1, new int[]{1, -1}, CornerEnum.BL);
+            p.placeCard(place1, new int[]{2, -2}, CornerEnum.BR);
+            p.placeCard(place2, new int[]{0, -2}, CornerEnum.BL);
+            p.placeCard(b2, new int[]{-1, -3}, CornerEnum.BR);
+            p.placeCard(g2, new int[]{3, -3}, CornerEnum.BL);
+            p.placeCard(p1, new int[]{0, -4}, CornerEnum.BR);
+            p.placeCard(place3, new int[]{1, -5}, CornerEnum.BL);
+            p.placeCard(p2, new int[]{0, -6}, CornerEnum.BR);
+        } catch (OccupiedCornerException | NotInTurnException | AlreadyUsedPositionException |
+                 CostNotSatisfiedException ex) {
+            System.out.println(ex.getMessage());
+        }
         a.calcPoints(p);
         b.calcPoints(p);
         c.calcPoints(p);
@@ -208,7 +224,6 @@ public class AchievementTest {
     public void mixedAchievementTest() throws IOException{
         Game game = new Game(4);
         Player p = new Player("pippo", game);
-        Controller co = new Controller(game);
         Achievement a = new AchievementL(Color.RED);
         Achievement b = new AchievementDiagonal(Color.GREEN);
         Achievement c = new AchievementItem(2, new ArrayList<>(List.of(Symbols.QUILL)));
@@ -229,17 +244,22 @@ public class AchievementTest {
         p.setPlayerState(PlayerState.PLAY_CARD);
         p.getPlayerBoard().setStarterCard(s);
         //Placing the cards
-        co.placeCard(p, r1, new int[]{0, 0}, CornerEnum.TR);
-        co.placeCard(p, r2, new int[]{0, 0}, CornerEnum.BR);
-        co.placeCard(p, g1, new int[]{1, -1}, CornerEnum.BR);
-        co.placeCard(p, g2, new int[]{2, -2}, CornerEnum.BR);
-        co.placeCard(p, g3, new int[]{3, -3}, CornerEnum.BR);
-        co.placeCard(p, b1, new int[]{1, -1}, CornerEnum.BL);
-        co.placeCard(p, p3, new int[]{2, -2}, CornerEnum.BL);
-        co.placeCard(p, b2, new int[]{3, -3}, CornerEnum.BL);
-        co.placeCard(p, p1, new int[]{0, 0}, CornerEnum.TL);
-        co.placeCard(p, b3, new int[]{4, -4}, CornerEnum.TR);
-        co.placeCard(p, p2, new int[]{2, -2}, CornerEnum.TR);
+        try {
+            p.placeCard(r1, new int[]{0, 0}, CornerEnum.TR);
+            p.placeCard(r2, new int[]{0, 0}, CornerEnum.BR);
+            p.placeCard(g1, new int[]{1, -1}, CornerEnum.BR);
+            p.placeCard(g2, new int[]{2, -2}, CornerEnum.BR);
+            p.placeCard(g3, new int[]{3, -3}, CornerEnum.BR);
+            p.placeCard(b1, new int[]{1, -1}, CornerEnum.BL);
+            p.placeCard(p3, new int[]{2, -2}, CornerEnum.BL);
+            p.placeCard(b2, new int[]{3, -3}, CornerEnum.BL);
+            p.placeCard(p1, new int[]{0, 0}, CornerEnum.TL);
+            p.placeCard(b3, new int[]{4, -4}, CornerEnum.TR);
+            p.placeCard(p2, new int[]{2, -2}, CornerEnum.TR);
+        } catch (OccupiedCornerException | NotInTurnException | AlreadyUsedPositionException |
+                 CostNotSatisfiedException ex) {
+            System.out.println(ex.getMessage());
+        }
         //point = 3 => only one red L shape
         a.calcPoints(p);
         // point = 2 => only one green diagonal

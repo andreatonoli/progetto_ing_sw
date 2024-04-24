@@ -19,7 +19,7 @@ public class StarterCard extends Card{
         this.front = this;
         this.corners = new Corner[4];
         System.arraycopy(corners, 0, this.corners, 0, 4);
-        this.card_number = card_number;
+        this.cardNumber = card_number;
         this.type = "starter";
         this.retro = retro;
         this.back = false;

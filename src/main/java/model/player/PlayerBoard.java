@@ -21,7 +21,6 @@ public class PlayerBoard implements Serializable {
         this.cardPosition = new HashMap<>();
         this.symbolCount= new HashMap<>();
     }
-    // passa l'array da un'altra parte, lì viene fatta la decisione e poi richiama setChosenObj
     /**
      * requires valid coordinates.
      * the controller will place the card wherever is possible and then call this method to update the game board
@@ -43,7 +42,6 @@ public class PlayerBoard implements Serializable {
      * @param card is the card we need to know the position of
      * @return the position of the card
      */
-    //TODO: da modificare
     public int[] getCardCoordinates(Card card){
         int[] coord = new int[]{0,0};
         for (int i : this.getPositionCardKeys()){
