@@ -7,8 +7,20 @@ import model.enums.Symbols;
 import java.util.ArrayList;
 
 public class AchievementItem implements Achievement{
+    /**
+     * points given upon completion of the achievement
+     */
     private int basePoint;
+    /**
+     * symbols to collect
+     */
     private ArrayList<Symbols> symbol;
+
+    /**
+     * Builds cards which achievement is getting some uncovered symbol
+     * @param basePoint are the points that the player will get each time it completes the achievement
+     * @param symbols are the needed symbols to get to complete the achievement
+     */
     public AchievementItem(int basePoint, ArrayList<Symbols> symbols){
         this.basePoint = basePoint;
         this.symbol = symbols;
@@ -18,7 +30,6 @@ public class AchievementItem implements Achievement{
      * if (basePoint == 3) then point = basePoint * min(Item_symbolCount)
      * if (basePoint == 2) then point = basePoint * (item_count / 2)
      * @param player on which calculate the score
-     * @return the amount of points done with this achievement card
      */
     @Override
     public void calcPoints(Player player) {

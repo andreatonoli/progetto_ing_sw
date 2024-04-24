@@ -10,10 +10,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GoldCard extends Card {
+    /**
+     * point given by the card
+     */
     int basePoint;
+    /**
+     * condition to calc points
+     */
     Condition condition;
+    /**
+     * is the item needed for the condition.ITEM
+     */
     Symbols requiredItem;
-    int[] cost; //number of symbols to place the card
+    /**
+     * represents the cost, in terms of symbols, necessary to place the card
+     */
+    int[] cost;
 
     /**
      * Builds the front of the gold cards with corners, points and the card's cost
@@ -22,6 +34,7 @@ public class GoldCard extends Card {
      * @param condition condition (if present) to calc points. For example 1 point for every visible quill
      * @param card_number unique number to distinguish through various cards
      * @param cost represents the cost, in terms of symbols, necessary to place the card
+     * @param requiredItem is the item needed for the condition.ITEM
      */
     public GoldCard(Corner[] corners, int basePoint, Condition condition, int card_number, int[] cost, Symbols requiredItem){
         this.currentSide = this;
@@ -58,9 +71,6 @@ public class GoldCard extends Card {
         this.back = false;
     }
 
-    /**
-     * @return if the player could handle the cost of the gold card
-     */
     //TODO: riscrivere meglio questa funzione
     @Override
     public boolean checkCost(Player player) {

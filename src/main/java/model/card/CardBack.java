@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CardBack extends Card{
+    /**
+     * list of one or more symbols which appear in the center of the card
+     */
     private List<Symbols> centerSymbols;
     /**
      * Builds the back of the cards, even the empty corners
@@ -25,6 +28,11 @@ public class CardBack extends Card{
         this.back = true;
         this.type = "retro";
     }
+    /**
+     * Builds the back of the cards (in case all corner ar empty)
+     * @param centerSymbols one or more symbols which appear in the center of the card
+     * @param color color of the card
+     */
     public CardBack(List<Symbols> centerSymbols, Color color) {
         this.centerSymbols = new ArrayList<>();
         this.corners = new Corner[4];
@@ -45,11 +53,8 @@ public class CardBack extends Card{
     public boolean checkCost(Player player) {
         return true;
     }
-
     @Override
-    public void calcPoints(Player player) {
-
-    }
+    public void calcPoints(Player player) { }
     @Override
     public int[] getCost(){ return new int[]{0,0,0,0}; }
     @Override

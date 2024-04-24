@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ResourceCard extends Card {
+    /**
+     * point given by the card
+     */
     private int point;
     /**
      * Resource Card constructor.

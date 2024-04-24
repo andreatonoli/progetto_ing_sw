@@ -8,10 +8,16 @@ import model.enums.Symbols;
 import java.util.*;
 
 public class AchievementDiagonal implements Achievement{
+    /**
+     * points given upon completion of the achievement
+     */
     private int basePoint;
+    /**
+     * the needed color of the cards in a diagonal-shaped pattern have to be
+     */
     private Color color;
     /**
-     * Builds cards which achievement is created a diagonal with cards of the same color.
+     * Builds cards which achievement is creating a diagonal with cards of the same color.
      * They've all the same base points (2)
      * @param color color of the diagonal
      */
@@ -21,7 +27,7 @@ public class AchievementDiagonal implements Achievement{
     }
     //TODO: Riscrivere commento e spiegare correttamente l'algoritmo
     /**
-     *This method calculates the points made by a player with the diagonal achievement. It exploits an ArrayList to mark
+     * This method calculates the points made by a player with the diagonal achievement. It exploits an ArrayList to mark
      * the elements already visited. For each card it takes also its predecessor and it successor on the diagonal and checks
      * if they've all the same color. In that case it adds their position in the marked list
      * @param player to calculate the points

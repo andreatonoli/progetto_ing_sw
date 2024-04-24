@@ -38,18 +38,13 @@ public class StarterCard extends Card{
         return true;
     }
     @Override
-    public void calcPoints(Player player) {
-    }
-
+    public void calcPoints(Player player) { }
     @Override
     public int[] getCost(){ return null; }
-
     @Override
     public int getPoints(){ return 0; }
-
     @Override
     public Condition getCondition(){ return Condition.NOTHING; }
-
     @Override
     public Symbols getRequiredItem(){ return null; }
 }

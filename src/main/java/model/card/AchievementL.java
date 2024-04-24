@@ -9,7 +9,13 @@ import java.util.ArrayList;
 import java.util.Set;
 
 public class AchievementL implements Achievement{
+    /**
+     * points given upon completion of the achievement
+     */
     private int basePoint;
+    /**
+     * the needed color 2/3 of the cards in an L-shaped pattern have to be
+     */
     private Color color;
     /**
      * Builds cards which achievement is "create a L with two cards of the same color, and one different".
@@ -21,12 +27,11 @@ public class AchievementL implements Achievement{
         this.color = color;
     }
     /**
-     *This method calculates the points made by a player with the L achievement. It exploits an ArrayList to mark
+     * This method calculates the points made by a player with the L achievement. It exploits an ArrayList to mark
      * the elements already visited. For each card it takes also the card over and under and checks
      * if they correctly reproduce the L form showed on the achievement card.
      * In that case it adds their position in the marked list and the points to the point variable
      * @param player to calculate the points
-     * @return amount of points made with this achievement
      */
     @Override
     public void calcPoints(Player player) {

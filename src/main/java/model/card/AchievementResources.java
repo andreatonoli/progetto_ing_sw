@@ -7,7 +7,13 @@ import model.enums.Symbols;
 import java.util.ArrayList;
 
 public class AchievementResources implements Achievement{
+    /**
+     * points given upon completion of the achievement
+     */
     private int basePoint;
+    /**
+     * symbol to collect
+     */
     private Symbols symbol;
     /**
      * Builds card which achievement is "Collect 3 symbols of the same type"
@@ -21,7 +27,6 @@ public class AchievementResources implements Achievement{
     /**
      * points = basePoint * (symbol_count / 3)
      * @param player on which calculate the score
-     * @return amount of points done with this achievement
      */
     @Override
     public void calcPoints(Player player) {
