@@ -25,24 +25,24 @@ public class App
        StarterCard s2 = new StarterCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}, 2, new CardBack(new ArrayList<>(List.of(Symbols.FUNGI)), Color.WHITE, new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY)}));
        Tui t = new Tui();
        s2.setCurrentSide();
-       t.printTitle();
-       t.printCard(s2);
+       //t.printTitle();
+       //t.printCard(s2);
        GoldCard b = new GoldCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 3, Condition.CORNER, 7, new int[]{0, 3, 0, 0}, null);
        GoldCard c = new GoldCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 3, Condition.CORNER, 17, new int[]{0, 3, 0, 0}, null);
        GoldCard d = new GoldCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 3, Condition.CORNER, 27, new int[]{0, 3, 0, 0}, null);
        GoldCard e = new GoldCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 3, Condition.CORNER, 37, new int[]{0, 3, 0, 0}, null);
-       t.printCard(b);
-       t.printCard(c);
-       t.printCard(d);
-       t.printCard(e);
+       //t.printCard(b);
+       //t.printCard(c);
+       //t.printCard(d);
+       //t.printCard(e);
        Achievement a1 = new AchievementItem(3, new ArrayList<>(List.of(Symbols.INKWELL, Symbols.QUILL, Symbols.MANUSCRIPT)));
        Achievement a2 = new AchievementResources(Symbols.FUNGI);
        Achievement a3 = new AchievementDiagonal(Color.PURPLE);
        Achievement a4 = new AchievementL(Color.GREEN);
-       t.printAchievement(a1);
-       t.printAchievement(a2);
-       t.printAchievement(a3);
-       t.printAchievement(a4);
+       //t.printAchievement(a1);
+       //t.printAchievement(a2);
+       //t.printAchievement(a3);
+       //t.printAchievement(a4);
 
        player.getPlayerBoard().setStarterCard(s2);
        game.startGame();
@@ -67,7 +67,7 @@ public class App
        player.addInHand(c2);
        player.removeFromHand(player.getCardInHand()[2]);
        player.addInHand(c5);
-       t.printView(player.getPlayerBoard(), player.getCardInHand(), player.getUsername());
+       t.printView(player.getPlayerBoard(), player.getCardInHand(), player.getUsername(), game.getGameBoard());
        //t.printPlayerBoard(player);
 //
        Scanner input = new Scanner(System.in);

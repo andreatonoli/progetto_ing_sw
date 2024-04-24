@@ -24,7 +24,7 @@ public enum Symbols {
     EMPTY_SPACE(" ", " "),
     CORNER("C", TuiColors.getColor(TuiColors.ANSI_BLACK) + "C" + TuiColors.getColor(TuiColors.ANSI_RESET)),
     //"\u2196"
-    CARD("D", "D");
+    CARD("D", TuiColors.getColor(TuiColors.ANSI_BLACK) + "D" + TuiColors.getColor(TuiColors.ANSI_RESET));
     //"\u2B1B"
 
     String string;
