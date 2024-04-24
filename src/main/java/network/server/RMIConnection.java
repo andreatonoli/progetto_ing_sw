@@ -61,12 +61,10 @@ public class RMIConnection extends Connection {
     public String getUsername(){
         return this.username;
     }
-    @Override
     public void flipCard(Card card){
         this.lobby.flipCard(this, card);
     }
 
-    @Override
     public void placeStarterCard(Card card) {
         this.lobby.placeStarterCard(this, card);
     }

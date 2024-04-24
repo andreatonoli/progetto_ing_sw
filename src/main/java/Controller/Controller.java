@@ -1,6 +1,6 @@
 package Controller;
 
-import model.*;
+import model.Game;
 import model.card.Card;
 import model.enums.CornerEnum;
 import model.enums.PlayerState;
@@ -8,18 +8,19 @@ import model.exceptions.*;
 import model.player.Player;
 import network.messages.*;
 import network.server.Connection;
-import network.server.Server;
 import observer.Observable;
 
 import java.util.*;
 
 //TODO: replace System.out.println with messages
 //Se ci sono problemi in placeCard piazza una copia del parametro e non il parametro
-//Se problema tenere server -> ritrasformare liste del server in List<Game> -> piangere :'(
 public class Controller extends Observable {
-    private final Game game; //reference to model
-    private Map<Connection, Player> connectedPlayers;
-    private TurnHandler turnHandler;
+    /**
+     * Reference to the game (model) controlled by {@code this}
+     */
+    private final Game game;
+    private final Map<Connection, Player> connectedPlayers;
+    private final TurnHandler turnHandler;
 
     public Controller(int numPlayers){
         this.game = new Game(numPlayers);
@@ -28,7 +29,7 @@ public class Controller extends Observable {
     }
 
     /**
-     * Permits the client with {@code username} to join the game
+     * Permits the client {@param user} to join the game
      * @param user of the client who's joining the game
      * @return {@code true} if the game is full, {@code false} otherwise
      */
@@ -57,11 +58,7 @@ public class Controller extends Observable {
             turnHandler.changePlayerState(this.getPlayerByClient(user));
             notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState()));
             notify(user,new GenericMessage("Successfully drew a card"));
-        } catch (EmptyException e) {
-            notify(user,new ErrorMessage(e.getMessage()));
-        } catch (NotInTurnException e) {
-            notify(user,new ErrorMessage(e.getMessage()));
-        } catch (FullHandException e) {
+        } catch (EmptyException | NotInTurnException | FullHandException e) {
             notify(user,new ErrorMessage(e.getMessage()));
         }
     }

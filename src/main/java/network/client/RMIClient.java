@@ -104,6 +104,9 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler {
             case SCOREBOARD_UPDATE:
                 //TODO: stampa scoreboard
                 break;
+            case PLAYER_STATE:
+                //TODO: non so che fare
+                break;
             case GENERIC_MESSAGE:
                 this.view.showText(message.toString());
                 break;

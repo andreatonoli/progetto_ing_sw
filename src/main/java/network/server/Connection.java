@@ -20,6 +20,4 @@ public abstract class Connection implements Observer {
     public abstract void joinGame(List<Controller> startingGames);
     public abstract void createGame();
     public abstract String getUsername();
-    public abstract void flipCard(Card card);
-    public abstract void placeStarterCard(Card card);
 }

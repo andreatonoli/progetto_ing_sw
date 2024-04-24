@@ -10,26 +10,27 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Scanner;
 
 public class SocketClient {
+    private Socket socket;
+    private String username;
+    private Ui view;
+    private ObjectInputStream in;
+    private ObjectOutputStream out;
+    private boolean disconnected = false;
+    private Card starterCard;
+    private Card[] commonGold;
+    private Card[] commonResources;
+    private ArrayList<Player> opponents;
     //private HashMap<Integer, Card> board1;
     //private HashMap<Integer, Card> board2;
     //private HashMap<Integer, Card> board3;
     //private HashMap<Integer, Card> board4;
-    private ArrayList<Player> opponents;
-    private Socket socket;
-    private String username;
-    private Ui view;
-    private Scanner stdin; //forse inutile
-    private ObjectInputStream in;
-    private ObjectOutputStream out;
-    private boolean disconnected = false;
     public SocketClient(String username, String address, int port, Ui view){
         this.username = username;
         this.view = view;
-        this.stdin = new Scanner(System.in); //probabilmente gli input arriveranno tutti dalla view
+        this.commonGold = new Card[2];
+        this.commonResources = new Card[2];
         this.startClient(address, port);
     }
     public void startClient(String address, int port){
@@ -90,8 +91,38 @@ public class SocketClient {
                 int lobbySize = this.view.setLobbySize();
                 sendMessage(new NumPlayerResponseMessage(this.username, lobbySize));
                 break;
+            case COMMON_GOLD_UPDATE:
+                if(commonGold[0] == null){
+                    commonGold[0] = ((CommonCardUpdateMessage) message).getCard();
+                }
+                else{
+                    commonGold[1] = ((CommonCardUpdateMessage) message).getCard();
+                }
+                break;
+            case COMMON_RESOURCE_UPDATE:
+                if(commonResources[0] == null){
+                    commonResources[0] = ((CommonCardUpdateMessage) message).getCard();
+                }
+                else{
+                    commonResources[1] = ((CommonCardUpdateMessage) message).getCard();
+                }
+                break;
+            case STARTER_CARD:
+                this.starterCard = ((StarterCardMessage) message).getCard();
+                this.view.printCard(starterCard);
+                boolean choice = this.view.askToFlip();
+                if (choice){
+                    sendMessage(new FlipRequestMessage(this.username, this.starterCard));
+                }
+                else{
+                    sendMessage(new PlaceStarterRequestMessage(this.username, this.starterCard));
+                }
+                break;
             case SCOREBOARD_UPDATE:
                 //TODO: stampa scoreboard
+                break;
+            case PLAYER_STATE:
+                //TODO: non so che fare
                 break;
             case GENERIC_MESSAGE:
                 this.view.showText(message.toString());

@@ -1,7 +1,6 @@
 package network.server;
 
 import Controller.*;
-import model.card.Card;
 import network.messages.*;
 
 import java.io.IOException;
@@ -11,12 +10,11 @@ import java.net.Socket;
 import java.util.List;
 
 public class SocketConnection extends Connection implements Runnable {
-    //Client client
-    private transient Server server;
-    private transient Socket socket;
-    private transient ObjectInputStream in;
-    private transient ObjectOutputStream out;
-    //private ClientController controller;
+    private Server server;
+    private Socket socket;
+    private ObjectInputStream in;
+    private ObjectOutputStream out;
+    private Controller lobby;
     private String username;
 
     public SocketConnection(Server server, Socket socket){
@@ -59,7 +57,7 @@ public class SocketConnection extends Connection implements Runnable {
 
     @Override
     public void setLobby(Controller controller) {
-
+        this.lobby = controller;
     }
 
     @Override
@@ -81,7 +79,6 @@ public class SocketConnection extends Connection implements Runnable {
     public void createGame() {
         sendMessage(new NumPlayerRequestMessage());
     }
-    //TODO: game controller?
     public void onMessage(Message message){
         switch (message.getType()){
             case LOGIN_RESPONSE:
@@ -99,6 +96,12 @@ public class SocketConnection extends Connection implements Runnable {
             case LOBBY_INDEX:
                 server.joinLobby(message.getSender(), ((LobbyIndexMessage) message).getChoice());
                 break;
+            case FLIP_CARD:
+                lobby.flipCard(this, ((FlipRequestMessage) message).getCard());
+                break;
+            case PLACE_STARTER_CARD:
+                lobby.placeStarterCard(this, ((PlaceStarterRequestMessage) message).getCard());
+                break;
             case GENERIC_MESSAGE:
                 System.err.println(message);
             default:
@@ -108,17 +111,6 @@ public class SocketConnection extends Connection implements Runnable {
     public String getUsername(){
         return this.username;
     }
-
-    @Override
-    public void flipCard(Card card) {
-
-    }
-
-    @Override
-    public void placeStarterCard(Card card) {
-
-    }
-
     @Override
     public void update(Message message) {
         sendMessage(message);
