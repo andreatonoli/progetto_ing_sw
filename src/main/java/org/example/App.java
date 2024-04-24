@@ -20,8 +20,10 @@ public class App
        Game game = new Game(2);
        Player player = new Player("p1", game);
        Player player2 = new Player("p2", game);
+       Player player3 = new Player("p3", game);
        game.addPlayer(player);
        game.addPlayer(player2);
+       game.addPlayer(player3);
        StarterCard s2 = new StarterCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}, 2, new CardBack(new ArrayList<>(List.of(Symbols.FUNGI)), Color.WHITE, new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY)}));
        Tui t = new Tui();
        s2.setCurrentSide();
@@ -67,7 +69,7 @@ public class App
        player.addInHand(c2);
        player.removeFromHand(player.getCardInHand()[2]);
        player.addInHand(c5);
-       t.printView(player.getPlayerBoard(), player.getCardInHand(), player.getUsername(), game.getGameBoard());
+       t.printView(player.getPlayerBoard(), player.getCardInHand(), player.getUsername(), game.getGameBoard(), game.getPlayers());
        //t.printPlayerBoard(player);
 //
        Scanner input = new Scanner(System.in);
