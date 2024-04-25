@@ -7,7 +7,8 @@ public enum TuiColors {
     ANSI_YELLOW("\u001B[33;1m"),
     ANSI_BLUE("\u001B[34;1m"),
     ANSI_PURPLE("\u001B[35;1m"),
-    ANSI_BLACK("\u001B[30;1m");
+    ANSI_BLACK("\u001B[30;1m"),
+    ANSI_WHITE("\u001B[37;1m");
 
     String color;
 
