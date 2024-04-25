@@ -351,41 +351,45 @@ public class Tui implements Ui{
             }
         }
 
-        //aggiungi punti se ci sono
-        int topCenter = 4;
-        if (card.getPoints() != 0) {
-            switch (card.getCondition()) {
-                case NOTHING -> {
-                    if(card.getPoints() != 0){
-                        matCard[0][topCenter] = Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_BLACK) + String.valueOf(card.getPoints()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+        if(!card.isBack()){
+            //aggiungi punti se ci sono
+            int topCenter = 4;
+            if (card.getPoints() != 0) {
+                switch (card.getCondition()) {
+                    case NOTHING -> {
+                        if(card.getPoints() != 0){
+                            matCard[0][topCenter] = Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_BLACK) + String.valueOf(card.getPoints()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        }
                     }
-                }
-                case CORNER -> {
-                    matCard[0][topCenter - 1] = Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_BLACK) + String.valueOf(card.getPoints()) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                    matCard[0][topCenter] = Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "|" + TuiColors.getColor(TuiColors.ANSI_RESET);
-                    matCard[0][topCenter + 1] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.CORNER) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                }
-                case ITEM -> {
-                    matCard[0][topCenter - 1] = Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_BLACK) + String.valueOf(card.getPoints()) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                    matCard[0][topCenter] = Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "|" + TuiColors.getColor(TuiColors.ANSI_RESET);
-                    matCard[0][topCenter + 1] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(card.getRequiredItem()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                    case CORNER -> {
+                        matCard[0][topCenter - 1] = Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_BLACK) + String.valueOf(card.getPoints()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matCard[0][topCenter] = Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "|" + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matCard[0][topCenter + 1] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.CORNER) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                    }
+                    case ITEM -> {
+                        matCard[0][topCenter - 1] = Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_BLACK) + String.valueOf(card.getPoints()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matCard[0][topCenter] = Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "|" + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matCard[0][topCenter + 1] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(card.getRequiredItem()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                    }
                 }
             }
         }
 
-        //aggiungi costo se c'è
-        if(card.getCost() != null){
-            int costSum = Arrays.stream(card.getCost()).sum();
-            int bottomCenter = 4 - costSum / 2;
-            for (int i = 0; i < card.getCost().length; i++) {
-                for (int j = 0; j < card.getCost()[i]; j++) {
-                    switch (i) {
-                        case 0 -> matCard[2][bottomCenter] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.FUNGI) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                        case 1 -> matCard[2][bottomCenter] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.PLANT) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                        case 2 -> matCard[2][bottomCenter] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.ANIMAL) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                        case 3 -> matCard[2][bottomCenter] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.INSECT) + TuiColors.getColor(TuiColors.ANSI_RESET);
+        if(!card.isBack()){
+            //aggiungi costo se c'è
+            if(card.getCost() != null){
+                int costSum = Arrays.stream(card.getCost()).sum();
+                int bottomCenter = 4 - costSum / 2;
+                for (int i = 0; i < card.getCost().length; i++) {
+                    for (int j = 0; j < card.getCost()[i]; j++) {
+                        switch (i) {
+                            case 0 -> matCard[2][bottomCenter] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.FUNGI) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                            case 1 -> matCard[2][bottomCenter] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.PLANT) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                            case 2 -> matCard[2][bottomCenter] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.ANIMAL) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                            case 3 -> matCard[2][bottomCenter] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.INSECT) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        }
+                        bottomCenter += 1;
                     }
-                    bottomCenter += 1;
                 }
             }
         }
@@ -592,7 +596,7 @@ public class Tui implements Ui{
     public String[][][][] createPrintableScoreBoard(ArrayList<Player> players){
         String[][][][] matScoreBoard = new String[3][3][SCOREBOARD_ROW][SCOREBOARD_COLUMN];
         int[][] scoreBoardPoints = new int[][]{{8, 1}, {8, 2}, {8, 3}, {7, 4}, {7, 3}, {7, 2}, {7, 1}, {6, 0}, {6, 1}, {6, 2}, {6, 3}, {5, 4}, {5, 3}, {5, 2}, {5, 1}, {4, 0}, {4, 1}, {4, 2}, {4, 3}, {3, 4}, {3, 2}, {3, 0}, {2, 0}, {1, 0}, {0, 1}, {0, 2}, {0, 3}, {1, 4}, {2, 4}, {1, 2}};
-        int[][] scoreBoardPosition = new int[][]{{0, 0}, {2, 0}, {0, 2}, {2, 2}};
+        int[][] scoreBoardPosition = new int[][]{{0, 0}, {0, 2}, {2, 0}, {2, 2}};
 
         for(int i = 0; i < SCOREBOARD_ROW; i++){
             for(int j = 0; j < SCOREBOARD_COLUMN; j++){
@@ -621,10 +625,10 @@ public class Tui implements Ui{
         //per il momento viene inserito il numero del player poi verrà stampato il colore del token
         for(int i = 0; i < players.size(); i++){
             if(players.get(i).getPoints() > 29){
-                matScoreBoard[scoreBoardPosition[i][0]][scoreBoardPosition[i][1]][scoreBoardPoints[29][0]][scoreBoardPoints[29][1]] = String.valueOf(i + 1);
+                matScoreBoard[scoreBoardPosition[i][0]][scoreBoardPosition[i][1]][scoreBoardPoints[29][0]][scoreBoardPoints[29][1]] = String.valueOf(i);
             }
             else{
-                matScoreBoard[scoreBoardPosition[i][0]][scoreBoardPosition[i][1]][scoreBoardPoints[players.get(i).getPoints()][0]][scoreBoardPoints[players.get(i).getPoints()][1]] = String.valueOf(i + 1);
+                matScoreBoard[scoreBoardPosition[i][0]][scoreBoardPosition[i][1]][scoreBoardPoints[players.get(i).getPoints()][0]][scoreBoardPoints[players.get(i).getPoints()][1]] = String.valueOf(i);
             }
         }
         return matScoreBoard;
@@ -732,10 +736,10 @@ public class Tui implements Ui{
         System.out.println("‾".repeat(26));
         System.out.println();
 
-        System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + username + "'s playerboard" + TuiColors.getColor(TuiColors.ANSI_RESET));
+        System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "your playerboard" + TuiColors.getColor(TuiColors.ANSI_RESET));
         System.out.print(" ".repeat(6*(PLAYERBOARD_DIM) - 14 - username.length()));
         System.out.print("      ");
-        System.out.println(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + username + "'s hand" + TuiColors.getColor(TuiColors.ANSI_RESET));
+        System.out.println(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "your hand" + TuiColors.getColor(TuiColors.ANSI_RESET));
         System.out.println();
 
         for(int i = 0; i < PLAYERBOARD_DIM; i++){
@@ -828,6 +832,198 @@ public class Tui implements Ui{
         }
     }
 
+    public void printViewWithCommands(PlayerBoard pBoard, Card[] hand, String username, GameBoard gameBoard, ArrayList<Player> players){
+        Scanner input = new Scanner(System.in);
+        int[] coord = new int[2];
+        while(true){
+            System.out.println("Press [1] to view a card from your hand");
+            System.out.println("Press [2] to view a card from your board");
+            System.out.println("Press [3] to view another player's board");
+            System.out.println("Press [4] to place a card");
+            int choice = input.nextInt();
+            this.clearConsole();
+            this.printView(pBoard, hand, username, gameBoard, players);
+            if(choice == 1){
+                System.out.println("Which card do you want to display? [1] [2] [3]");
+                int h = input.nextInt();
+                this.clearConsole();
+                this.printView(pBoard, hand, username, gameBoard, players);
+                while(h != 1 && h != 2 && h != 3){
+                    System.out.println("Which card do you want to display? [1] [2] [3]");
+                    h = input.nextInt();
+                    this.clearConsole();
+                    this.printView(pBoard, hand, username, gameBoard, players);
+                }
+                System.out.println("Which side do you want to display? [f] for front [b] for back");
+                char s = input.next().charAt(0);
+                this.clearConsole();
+                this.printView(pBoard, hand, username, gameBoard, players);
+                while(s != 'f' && s != 'b'){
+                    System.out.println("Which side do you want to display? [f] for front [b] for back");
+                    s = input.next().charAt(0);
+                    this.clearConsole();
+                    this.printView(pBoard, hand, username, gameBoard, players);
+                }
+                if(s == 'f'){
+                    this.printCard(hand[h-1]);
+                }
+                else if(s == 'b'){
+                    hand[h-1].setCurrentSide();
+                    this.printCard(hand[h-1]);
+                    hand[h-1].setCurrentSide();
+                }
+            }
+            else if(choice == 2){
+                System.out.println("Which card do you want to display?");
+                System.out.println("Type row number");
+                coord[0] = input.nextInt();
+                this.clearConsole();
+                this.printView(pBoard, hand, username, gameBoard, players);
+                while(coord[0] > (Integer) PLAYERBOARD_DIM){
+                    System.out.println("Retype row number");
+                    coord[0] = input.nextInt();
+                    this.clearConsole();
+                    this.printView(pBoard, hand, username, gameBoard, players);
+                }
+                System.out.println("Type column number");
+                coord[1] = input.nextInt();
+                this.clearConsole();
+                this.printView(pBoard, hand, username, gameBoard, players);
+                while(coord[1] > (Integer) PLAYERBOARD_DIM){
+                    System.out.println("Retype column number");
+                    coord[1] = input.nextInt();
+                    this.clearConsole();
+                    this.printView(pBoard, hand, username, gameBoard, players);
+                }
+                this.clearConsole();
+                this.printView(pBoard, hand, username, gameBoard, players);
+                this.printCardFromPlayerBoard(pBoard, coord);
+            }
+            else if(choice == 3){
+                ArrayList<Player> othersPlayers = new ArrayList<>();
+                for(Player p : players){
+                    if(!p.getUsername().equals(username)){
+                        othersPlayers.add(p);
+                    }
+                }
+                System.out.println("Which player's do you want to display?");
+                for(int i = 0; i < othersPlayers.size(); i++){
+                    System.out.println("\t Press " + String.valueOf(i+1) + " to display " + othersPlayers.get(i).getUsername() + "'s board");
+                }
+                int u = input.nextInt();
+                this.clearConsole();
+                this.printView(pBoard, hand, username, gameBoard, players);
+                while(u > othersPlayers.size()){
+                    System.out.println("Which player's do you want to display?");
+                    for(int i = 0; i < othersPlayers.size(); i++){
+                        System.out.println("\t Press " + i+1 + " to display " + othersPlayers.get(i).getUsername() + "'s board");
+                    }
+                    u = input.nextInt();
+                    this.clearConsole();
+                    this.printView(pBoard, hand, username, gameBoard, players);
+                }
+                this.clearConsole();
+                this.printView(pBoard, hand, username, gameBoard, players);
+                System.out.println(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + othersPlayers.get(u-1).getUsername() + "'s playerboard" + TuiColors.getColor(TuiColors.ANSI_RESET));
+                System.out.println();
+                this.printPlayerBoard(othersPlayers.get(u-1).getPlayerBoard());
+            }
+            else if(choice ==  4){
+                System.out.println("Which card do you want to place? [1] [2] [3]");
+                int p = input.nextInt();
+                this.clearConsole();
+                this.printView(pBoard, hand, username, gameBoard, players);
+                while(p != 1 && p != 2 && p != 3){
+                    System.out.println("Which card do you want to place? [1] [2] [3]");
+                    p = input.nextInt();
+                    this.clearConsole();
+                    this.printView(pBoard, hand, username, gameBoard, players);
+                }
+                System.out.println("Which side do you want to place? [f] for front [b] for back");
+                String[][] front = this.createPrintableCard(hand[p-1]);
+                hand[p-1].setCurrentSide();
+                String[][] back = this.createPrintableCard(hand[p-1]);
+                hand[p-1].setCurrentSide();
+                System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "front" + TuiColors.getColor(TuiColors.ANSI_RESET));
+                System.out.print(" ".repeat(COLUMN + 6 - 5));
+                System.out.println(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "back" + TuiColors.getColor(TuiColors.ANSI_RESET));
+                System.out.println();
+                for(int i = 0; i < ROW; i++){
+                    for(int j = 0; j < COLUMN; j++){
+                        System.out.print(front[i][j]);
+                    }
+                    System.out.print("      ");
+                    for(int j = 0; j < COLUMN; j++){
+                        System.out.print(back[i][j]);
+                    }
+                    System.out.println();
+                }
+                char s = input.next().charAt(0);
+                this.clearConsole();
+                this.printView(pBoard, hand, username, gameBoard, players);
+                while(s != 'f' && s != 'b'){
+                    System.out.println("Which side do you want to place? [f] for front [b] for back");
+                    System.out.println();
+                    System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "front" + TuiColors.getColor(TuiColors.ANSI_RESET));
+                    System.out.print(" ".repeat(COLUMN + 6 - 5));
+                    System.out.println(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "back" + TuiColors.getColor(TuiColors.ANSI_RESET));
+                    System.out.println();
+                    for(int i = 0; i < ROW; i++){
+                        for(int j = 0; j < COLUMN; j++){
+                            System.out.print(front[i][j]);
+                        }
+                        System.out.print("      ");
+                        for(int j = 0; j < COLUMN; j++){
+                            System.out.print(back[i][j]);
+                        }
+                        System.out.println();
+                    }
+                    s = input.next().charAt(0);
+                }
+                if(s == 'f'){
+                    this.printCard(hand[p-1]);
+                }
+                else if(s == 'b'){
+                    hand[p-1].setCurrentSide();
+                    this.printCard(hand[p-1]);
+                    hand[p-1].setCurrentSide();
+                }
+                System.out.println("Where do you want to place it?");
+                System.out.println("Type row number");
+                coord[0] = input.nextInt();
+                this.clearConsole();
+                this.printView(pBoard, hand, username, gameBoard, players);
+                while(coord[0] > (Integer) PLAYERBOARD_DIM){
+                    System.out.println("Retype row number");
+                    coord[0] = input.nextInt();
+                    this.clearConsole();
+                    this.printView(pBoard, hand, username, gameBoard, players);
+                }
+                System.out.println("Type column number");
+                coord[1] = input.nextInt();
+                this.clearConsole();
+                this.printView(pBoard, hand, username, gameBoard, players);
+                while(coord[1] > (Integer) PLAYERBOARD_DIM){
+                    System.out.println("Retype column number");
+                    coord[1] = input.nextInt();
+                    this.clearConsole();
+                    this.printView(pBoard, hand, username, gameBoard, players);
+                }
+                for(int i = 0; i < players.size(); i++){
+                    if(players.get(i).getUsername().equals(username)){
+                        Player player = players.get(i);
+                    }
+                }
+                this.clearConsole();
+                this.printView(pBoard, hand, username, gameBoard, players);
+                System.out.println("QUI IL CONTROLLER DEVE AVER PIAZZATO LA CARTA");
+            }
+            else{
+                this.clearConsole();
+            }
+        }
+    }
+
     public void printTitle(){
         System.out.print("\n");
         System.out.print(TuiColors.getColor(TuiColors.ANSI_YELLOW) + " ██████╗ ██████╗ ██████╗ ███████╗██╗  ██╗    ███╗   ██╗ █████╗ ████████╗██╗   ██╗██████╗  █████╗ ██╗     ██╗███████╗\n" +
@@ -850,7 +1046,7 @@ public class Tui implements Ui{
     @Override
     public void printCard(PlayerBoard playerBoard, Card card){
         if(card == null){
-            System.out.println("Card not exsisting at this coordinates");
+            System.out.println("Card not existing at this coordinates");
         }
         else{
             String[][] mat = this.createPrintableCard(playerBoard, card);
@@ -893,7 +1089,7 @@ public class Tui implements Ui{
     @Override
     public void printCard(Card card){
         if(card == null){
-            System.out.println("Card not exsisting at this coordinates");
+            System.out.println("Card not existing");
         }
         else{
             String[][] mat = this.createPrintableCard(card);
@@ -964,6 +1160,21 @@ public class Tui implements Ui{
                 System.out.println();
             }
             //System.out.println(bottomBorderLong.repeat(PLAYERBOARD_DIM));
+        }
+    }
+
+    public void clearConsole(){
+        try{
+            final String os = System.getProperty("os.name");
+            if(os.contains("window")){
+                Runtime.getRuntime().exec("cls");
+            }
+            else{
+                Runtime.getRuntime().exec("clear");
+            }
+        }
+        catch (final Exception e){
+            System.out.println("error");
         }
     }
 
