@@ -50,7 +50,7 @@ public class App
        game.startGame();
        Controller con = new Controller(2);
        player.setPlayerState(PlayerState.PLAY_CARD);
-       ResourceCard c1 = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 3, 0);
+       ResourceCard c1 = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 3, 2);
        ResourceCard c2 = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.PLANT), new Corner(Symbols.QUILL)}, 17, 0);
        ResourceCard c3 = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 25, 0);
        ResourceCard c4 = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 35, 0);
@@ -72,16 +72,7 @@ public class App
        t.printView(player.getPlayerBoard(), player.getCardInHand(), player.getUsername(), game.getGameBoard(), game.getPlayers());
        //t.printPlayerBoard(player);
 //
-       Scanner input = new Scanner(System.in);
-       int[] coord = new int[2];
-       while(true){
-           System.out.println("Which card do you want to display?");
-           System.out.println("Type row number");
-           coord[0] = input.nextInt();
-           System.out.println("Type column number");
-           coord[1] = input.nextInt();
-           t.printCardFromPlayerBoard(player.getPlayerBoard(), coord);
-       }
+       t.printViewWithCommands(player.getPlayerBoard(), player.getCardInHand(), player.getUsername(), game.getGameBoard(), game.getPlayers());
 
 
        //System.out.println(FUNGI + "\n");
