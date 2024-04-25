@@ -15,7 +15,13 @@ import java.io.Serializable;
 import java.util.*;
 
 public class Player implements Serializable {
+    /**
+     * unique player name
+     */
     private final String username;
+    /**
+     *
+     */
     private boolean firstToEnd;
     private boolean firstToPlay;
     private Card[] cardInHand;
@@ -51,17 +57,34 @@ public class Player implements Serializable {
         return username;
     }
 
+    /**
+     * getter to get the chosenObj of the player
+     * @return player's chosen objective
+     */
     public Achievement getChosenObj() {
         return chosenObj;
     }
 
+    /**
+     * getter to get the cardInHand value
+     * @return the player's cards
+     */
     public Card[] getCardInHand() { //cercare valore per definire "no carta"
         return cardInHand;
     }
 
+    /**
+     * getter to get the personalObj value
+     * @return the objective the player can choose from
+     */
     public Achievement[] getPersonalObj() {
         return personalObj;
     }
+    //TODO: controllare se è giusto il commento
+    /**
+     * getter to get the chat log
+     * @return the chat log
+     */
     public ArrayList<String> getChat() {
         return chat;
     }
@@ -81,6 +104,11 @@ public class Player implements Serializable {
     public PlayerState getPlayerState() {
         return playerState;
     }
+
+    /**
+     * setter to set the chosenObj value
+     * @param choice is the objective the player have chosen from the personalObj
+     */
     public void setChosenObj(Achievement choice){
         this.chosenObj = choice;
     }
@@ -92,6 +120,11 @@ public class Player implements Serializable {
         return points;
     }
 
+    /**
+     * adder to add points to the score
+     * @param pointsToAdd are the points that will be added
+     * @return the updated player score
+     */
     public int addPoints(int pointsToAdd){
         this.points = this.points + pointsToAdd;
         if (this.points >= 20){
@@ -103,10 +136,19 @@ public class Player implements Serializable {
         return this.points;
     }
 
+    /**
+     * set the boolean value used to know who is the starting player
+     * @param username is the username of the first player
+     */
     public void isFirstToPlay(String username){
         firstToPlay = this.username.equals(username);
     }
 
+    /**
+     * used when a player need to send a message to another player
+     * @param receiver is the player that is receiving the message
+     * @param message is the core of the message
+     */
     public void sendMessage(Player receiver, String message){
         try{
             this.game.getChat().forwardMessage(this, receiver, false, message);
@@ -116,6 +158,10 @@ public class Player implements Serializable {
         }
     }
 
+    /**
+     * used when a player need to send a message to all the other players
+     * @param message is the core of the message
+     */
     public void sendMessage(String message){
         try{
             this.game.getChat().forwardMessage(this, null, true, message);
@@ -124,7 +170,7 @@ public class Player implements Serializable {
             System.out.println("Player not found");
         }
     }
-
+    //TODO: commentare
     public void displayMessage(Player sender, String message){
         if(chat.size() >= Chat.CHATDIM){
             chat.set(Chat.CHATDIM - 1, message);
@@ -139,18 +185,35 @@ public class Player implements Serializable {
         //}
     }
 
+    /**
+     * setter to set the game parameter
+     * @param game is the game the player is in
+     */
     //temporaneo
     public void setGame(Game game){
         this.game = game;
     }
 
+    /**
+     * getter to get the game parameter
+     * @return the game the player is in
+     */
     public Game getGame(){
         return this.game;
     }
 
+    /**
+     * getter to get the playerBoard parameter
+     * @return the player board of this player
+     */
     public PlayerBoard getPlayerBoard(){
         return this.playerBoard;
     }
+
+    /**
+     * adder to add cards at the player hand
+     * @param card is the card that will be added to the hand
+     */
     public void addInHand(Card card){
         for (int i = 0; i < this.cardInHand.length; i++) {
             if (this.cardInHand[i] == null){
@@ -159,6 +222,11 @@ public class Player implements Serializable {
             }
         }
     }
+
+    /**
+     * counterpart of the method addInHand
+     * @param cardToRemove is the card that will be removed by the player's hand
+     */
     public void removeFromHand(Card cardToRemove){
         for (int i = 0; i < this.cardInHand.length && this.cardInHand[i] != null; i++) {
             if (this.cardInHand[i].equals(cardToRemove)){
@@ -167,9 +235,19 @@ public class Player implements Serializable {
             }
         }
     }
+
+    /**
+     * adder to update the value of objCompleted
+     * it'll be called every time the player completes one achievement
+     */
     public void addObjCompleted(){
         objCompleted++;
     }
+
+    /**
+     * getter to get the objCompleted value
+     * @return the number of objective the player have completed
+     */
     public int getObjCompleted(){
         return objCompleted;
     }
@@ -298,6 +376,7 @@ public class Player implements Serializable {
         card.calcPoints(this);
         removeFromHand(card);
     }
+
     /**
      * check if the card can be placed in the designed spot
      * @param cornerPosition position of one of the corner the card will be placed on

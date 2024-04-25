@@ -17,7 +17,7 @@ public abstract class Card implements Serializable {
      */
     protected String type;
     /**
-     * indicates the card's color
+     * indicates the card's color (from the color enumeration)
      */
     protected Color color;
     /**

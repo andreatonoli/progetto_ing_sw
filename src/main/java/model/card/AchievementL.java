@@ -14,7 +14,7 @@ public class AchievementL implements Achievement{
      */
     private int basePoint;
     /**
-     * the needed color 2/3 of the cards in an L-shaped pattern have to be
+     * the needed color ((from the color enumeration)) 2/3 of the cards in an L-shaped pattern have to be
      */
     private Color color;
     /**

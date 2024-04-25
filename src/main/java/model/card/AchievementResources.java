@@ -12,7 +12,7 @@ public class AchievementResources implements Achievement{
      */
     private int basePoint;
     /**
-     * symbol to collect
+     * indicates the symbols (from the symbols enumeration) to collect
      */
     private Symbols symbol;
     /**

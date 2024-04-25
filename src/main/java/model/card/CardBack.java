@@ -10,7 +10,7 @@ import java.util.List;
 
 public class CardBack extends Card{
     /**
-     * list of one or more symbols which appear in the center of the card
+     * list of one or more symbols (from the symbols enumeration) which appear in the center of the card
      */
     private List<Symbols> centerSymbols;
     /**

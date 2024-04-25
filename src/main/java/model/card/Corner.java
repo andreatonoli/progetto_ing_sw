@@ -8,7 +8,7 @@ import java.io.Serializable;
 public class Corner implements Serializable {
     //Bisogna anche pensare a come gestire i "non angoli"
     /**
-     * symbol contained in the corner
+     * indicates the symbol (from the symbols enumeration) contained in the corner
      */
     private Symbols symbol;
     /**

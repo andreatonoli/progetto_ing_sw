@@ -15,11 +15,11 @@ public class GoldCard extends Card {
      */
     int basePoint;
     /**
-     * condition to calc points
+     * condition to calc points (from the condition enumeration)
      */
     Condition condition;
     /**
-     * is the item needed for the condition.ITEM
+     * is the item (from the color enumeration) needed for the condition.ITEM
      */
     Symbols requiredItem;
     /**

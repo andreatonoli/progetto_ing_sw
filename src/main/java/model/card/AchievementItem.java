@@ -12,7 +12,7 @@ public class AchievementItem implements Achievement{
      */
     private int basePoint;
     /**
-     * symbols to collect
+     * indicates the symbols (from the symbols enumeration) to collect
      */
     private ArrayList<Symbols> symbol;
 

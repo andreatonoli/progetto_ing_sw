@@ -13,7 +13,7 @@ public class AchievementDiagonal implements Achievement{
      */
     private int basePoint;
     /**
-     * the needed color of the cards in a diagonal-shaped pattern have to be
+     * the needed color (from the color enumeration) of the cards in a diagonal-shaped pattern have to be
      */
     private Color color;
     /**
