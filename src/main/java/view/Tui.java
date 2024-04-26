@@ -238,7 +238,7 @@ public class Tui implements Ui{
         if (card.getSymbols() != null) {
             for (int i = 0; i < card.getSymbols().size(); i++) {
                 matCard[1][center] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(card.getSymbols().get(i)) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                center += center;
+                center += 1;
             }
         }
 
@@ -344,7 +344,7 @@ public class Tui implements Ui{
         if (card.getSymbols() != null) {
             for (int i = 0; i < card.getSymbols().size(); i++) {
                 matCard[1][center] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(card.getSymbols().get(i)) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                center += center;
+                center += 1;
             }
         }
 
