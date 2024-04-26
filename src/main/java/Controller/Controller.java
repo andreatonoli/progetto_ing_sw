@@ -1,6 +1,7 @@
 package Controller;
 
 import model.Game;
+import model.card.Achievement;
 import model.card.Card;
 import model.enums.CornerEnum;
 import model.enums.PlayerState;
@@ -13,6 +14,7 @@ import observer.Observable;
 import java.util.*;
 
 //TODO: replace System.out.println with messages
+//TODO: scelta achievement privato
 //Se ci sono problemi in placeCard piazza una copia del parametro e non il parametro
 public class Controller extends Observable {
     /**
@@ -40,11 +42,42 @@ public class Controller extends Observable {
         user.setLobby(this);
         game.addPlayer(player);
         if (game.isFull()){
-            game.startGame();
-            notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState()));
+            this.startGame();
             return true;
         }
         return false;
+    }
+
+    /**
+     * Notifies the clients of all the changes done from the model's method startGame. It sends the users their cards,
+     * the scoreboard, their starter card, asks the color they want and selects the first player to play.
+     */
+    private void startGame(){
+        game.startGame();
+        //Sends the scoreboard to the players
+        notifyAll(new ScoreBoardUpdateMessage());
+        //Sends the common resource and gold cards
+        notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_RESOURCE_UPDATE, game.getGameBoard().getCommonResource()[0]));
+        notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_RESOURCE_UPDATE, game.getGameBoard().getCommonResource()[1]));
+        notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_GOLD_UPDATE, game.getGameBoard().getCommonResource()[0]));
+        notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_GOLD_UPDATE, game.getGameBoard().getCommonResource()[1]));
+        //Sends the starter card to each player
+        for (Connection u : this.connectedPlayers.keySet()){
+            notify(u, new StarterCardMessage(getPlayerByClient(u).getPlayerBoard().getStarterCard()));
+        }
+        //TODO: gestire scelta del colore (farla in modo sequenziale in base all'ordine?)
+        //Sends the players their hand
+        for (Connection u : this.connectedPlayers.keySet()){
+            notify(u, new CardInHandMessage(getPlayerByClient(u).getCardInHand()));
+        }
+        //Sends the common achievements to the players
+        notifyAll(new AchievementMessage(MessageType.COMMON_ACHIEVEMENT, game.getGameBoard().getCommonAchievement()));
+        //Sends the players the private achievements to choose from
+        for (Connection u : this.connectedPlayers.keySet()){
+            notify(u, new AchievementMessage(MessageType.PRIVATE_ACHIEVEMENT, getPlayerByClient(u).getPersonalObj()));
+        }
+        //TODO: scrivere meglio
+        //notifyAll(new PlayerStateMessage(this.getPlayerByClient().getPlayerState()));
     }
     /**
      *Picks the top card of the deck and calls addInHand to give it to the player
@@ -125,14 +158,12 @@ public class Controller extends Observable {
     }
 
     /**
-     * Gives the player the secret achievement he chose
-     * @param player who chose the card
-     * @param choice index of the chosen card
+     * Permits the player to set its personal achievement
+     * @param user to which belongs the chosen achievement
+     * @param achievement to be set
      */
-    public void chooseObj(Player player, int choice){
-        if (choice <= 1){
-            player.setChosenObj(player.getPersonalObj()[choice]);
-        }
+    public void chooseObj(Connection user, Achievement achievement){
+        getPlayerByClient(user).setChosenObj(achievement);
     }
     private Player getPlayerByClient(Connection user){
         return this.connectedPlayers.get(user);

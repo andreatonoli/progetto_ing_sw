@@ -1,6 +1,7 @@
 package network.server;
 
 import Controller.Controller;
+import model.card.Achievement;
 import model.card.Card;
 import network.client.RMIClientHandler;
 import network.messages.Message;
@@ -62,11 +63,17 @@ public class RMIConnection extends Connection {
         return this.username;
     }
     public void flipCard(Card card){
+        /*
+        * coda.add(new Action (()->lobby.flipCard(this, card)));
+        * */
         this.lobby.flipCard(this, card);
     }
 
     public void placeStarterCard(Card card) {
         this.lobby.placeStarterCard(this, card);
+    }
+    public void setAchievement(Achievement achievement){
+        this.lobby.chooseObj(this, achievement);
     }
 
     @Override

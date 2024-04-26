@@ -1,6 +1,7 @@
 package network.server;
 
 import Controller.*;
+import model.card.Achievement;
 import network.messages.*;
 
 import java.io.IOException;
@@ -102,6 +103,9 @@ public class SocketConnection extends Connection implements Runnable {
             case PLACE_STARTER_CARD:
                 lobby.placeStarterCard(this, ((PlaceStarterRequestMessage) message).getCard());
                 break;
+            case SET_ACHIEVEMENT:
+                lobby.chooseObj(this, ((SetPrivateAchievementMessage) message).getAchievement());
+                break;
             case GENERIC_MESSAGE:
                 System.err.println(message);
             default:
@@ -111,6 +115,12 @@ public class SocketConnection extends Connection implements Runnable {
     public String getUsername(){
         return this.username;
     }
+
+    @Override
+    public void setAchievement(Achievement achievement) {
+        this.lobby.chooseObj(this, achievement);
+    }
+
     @Override
     public void update(Message message) {
         sendMessage(message);

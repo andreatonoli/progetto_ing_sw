@@ -43,59 +43,40 @@ public class Game extends Observable implements Serializable {
 
     public void startGame(){
         this.gameState = GameState.START;
-        /** decks are shuffled*/
+        //Decks are shuffled
         Collections.shuffle(gameBoard.getStarterDeck());
         Collections.shuffle(gameBoard.getAchievementDeck());
         Collections.shuffle(gameBoard.getResourceDeck());
         Collections.shuffle(gameBoard.getGoldDeck());
-        //Showing the ScoreBoard to the connected players
-        notifyAll(new ScoreBoardUpdateMessage());
-        /** two cards are settled in the common board*/
-        Card drawedCard = gameBoard.drawCard(gameBoard.getResourceDeck());
+        //two cards for each type are settled in the common board
         gameBoard.setCommonResource(gameBoard.drawCard(gameBoard.getResourceDeck()), 0);
-        notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_RESOURCE_UPDATE, drawedCard));
-        drawedCard = gameBoard.drawCard(gameBoard.getResourceDeck());
         gameBoard.setCommonResource(gameBoard.drawCard(gameBoard.getResourceDeck()), 1);
-        notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_RESOURCE_UPDATE, drawedCard));
-        drawedCard = gameBoard.drawCard(gameBoard.getGoldDeck());
-        gameBoard.setCommonGold(drawedCard, 0);
-        notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_GOLD_UPDATE,drawedCard));
-        drawedCard = gameBoard.drawCard(gameBoard.getGoldDeck());
-        gameBoard.setCommonGold(drawedCard, 1);
-        notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_GOLD_UPDATE, drawedCard));
-        /** starter card is given to each player*/
+        gameBoard.setCommonGold(gameBoard.drawCard(gameBoard.getGoldDeck()), 0);
+        gameBoard.setCommonGold(gameBoard.drawCard(gameBoard.getGoldDeck()), 1);
+        //starter card is given to each player
         for (Player p : players) {
-            Card sCard = gameBoard.drawCard(gameBoard.getStarterDeck());
-            //p.getPlayerBoard().setStarterCard(); -> TODO: chiamo dal controller
-            /** in first place the player chose the side he prefers, in order to settle down the card*/
-            /** when the controller sees that the player wants to settle down the card, it places starterCard*/
+            p.getPlayerBoard().giveStarterCard(gameBoard.drawCard(gameBoard.getStarterDeck()));
+            //in first place the player chose the side he prefers, in order to settle down the card
+            //when the controller sees that the player wants to settle down the card, it places starterCard
         }
-        //TODO: colore segnalino scelto dal player al login
-        /** every player draws two resource cards and a gold card*/
+        // every player draws two resource cards and a gold card
         for (Player p : players) {
             p.addInHand(gameBoard.drawCard(gameBoard.getResourceDeck()));
             p.addInHand(gameBoard.drawCard(gameBoard.getResourceDeck()));
             p.addInHand(gameBoard.drawCard(gameBoard.getGoldDeck()));
         }
-        /** two achievement cards are settled in the common board */
+        //two achievement cards are settled in the common board
         gameBoard.setCommonAchievement(gameBoard.drawCard(), 0);
         gameBoard.setCommonAchievement(gameBoard.drawCard(), 1);
-        /** at this moment each player chose the achievement card */
+        //at this moment each player chose the achievement card
         for (Player p : players) {
             p.getPersonalObj()[0] = gameBoard.drawCard();
             p.getPersonalObj()[1] = gameBoard.drawCard();
-            //scelta carta da parte del player
-            //per il momento il player sceglie la prima carta
-            //poi verrà gestita nel controller
-            //TODO: scegliere personal achievement
-            p.setChosenObj(p.getPersonalObj()[0]);
         }
-
-        /** the first player is chosen in a random way*/
+        //the first player is chosen in a random way
         Collections.shuffle(players);
         setFirstPlayer();
         this.gameState = GameState.IN_GAME;
-        notifyAll(new GenericMessage("Game started"));
     }
 
     public void endGame() throws GameNotStartedException {
@@ -144,7 +125,7 @@ public class Game extends Observable implements Serializable {
         }
     }
 
-    public void setFirstPlayer()
+    private void setFirstPlayer()
     {
         firstPlayer = players.getFirst();
         firstPlayer.isFirstToPlay(firstPlayer.getUsername());

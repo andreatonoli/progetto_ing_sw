@@ -1,14 +1,14 @@
 package network.client;
 
+import model.card.Achievement;
 import model.player.Player;
-import network.messages.CommonCardUpdateMessage;
-import network.messages.Message;
-import network.messages.StarterCardMessage;
+import network.messages.*;
 import network.server.VirtualServer;
 import view.Ui;
 import model.card.Card;
 
 import java.rmi.NotBoundException;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -17,12 +17,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class RMIClient extends UnicastRemoteObject implements RMIClientHandler {
+    private static final String serverName = "GameServer";
     private String username;
-    private Ui view;
+    private final Ui view;
     private VirtualServer server;
     private Card[] commonResources;
     private Card[] commonGold;
     private Card starterCard;
+    private Card[] hand;
+    private final Achievement[] commonAchievement;
+    private Achievement privateAchievement;
     private ArrayList<Player> opponents;
     //private HashMap<Integer, Card> board1;
     //private HashMap<Integer, Card> board2;
@@ -32,10 +36,11 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler {
     public RMIClient(String username, String host, int port, Ui view) throws RemoteException{
         this.username = username;
         this.view = view;
-        //TODO: capire dove metterli
+        //Initialization of player's attributes
+        this.commonAchievement = new Achievement[2];
         this.commonResources = new Card[2];
         this.commonGold = new Card[2];
-        final String serverName = "GameServer";
+        this.hand = new Card[3];
         try {
             Registry registry = LocateRegistry.getRegistry(host, port);
             server = (VirtualServer) registry.lookup(serverName);
@@ -62,6 +67,9 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler {
     public void placeStarterCard(Card card){
 
     }
+    public void setPrivateAchievement(Achievement toBeSet) throws RemoteException {
+        this.server.setAchievement(toBeSet);
+    }
 
     /**
      * gets messages from the server and updates the view according to the message type
@@ -70,6 +78,21 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler {
     @Override
     public void update(Message message) {
         switch (message.getType()){
+            case CARD_HAND:
+                //Copied the message body into the player's cards
+                System.arraycopy(((CardInHandMessage) message).getHand(), 0, this.hand, 0, 3);
+                break;
+            case COMMON_ACHIEVEMENT:
+                System.arraycopy(((AchievementMessage) message).getAchievements(), 0, this.commonAchievement, 0, 2);
+                break;
+            case PRIVATE_ACHIEVEMENT:
+                this.privateAchievement = this.view.chooseAchievement(((AchievementMessage) message).getAchievements());
+                try {
+                    this.setPrivateAchievement(privateAchievement);
+                } catch (RemoteException e) {
+                    System.err.println(e.getMessage() + " in RMIClient.update");
+                }
+                break;
             case COMMON_GOLD_UPDATE:
                 if(commonGold[0] == null){
                     commonGold[0] = ((CommonCardUpdateMessage) message).getCard();

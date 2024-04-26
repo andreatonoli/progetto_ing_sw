@@ -1,6 +1,7 @@
 package network.server;
 
 import Controller.Controller;
+import model.card.Achievement;
 import network.messages.Message;
 import model.card.Card;
 import observer.Observer;
@@ -20,4 +21,5 @@ public abstract class Connection implements Observer {
     public abstract void joinGame(List<Controller> startingGames);
     public abstract void createGame();
     public abstract String getUsername();
+    public abstract void setAchievement(Achievement achievement);
 }

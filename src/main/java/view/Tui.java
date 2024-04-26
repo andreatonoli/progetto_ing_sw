@@ -1090,6 +1090,7 @@ public class Tui implements Ui{
         //System.out.println(bottomBorder);
     }
 
+
     //inutile probabilmente
     //public void printPlayerBoard(Player player){
     //    String [][][][] mat = this.createPrintablePlayerBoard(player);
@@ -1110,5 +1111,20 @@ public class Tui implements Ui{
     //    }
     //}
 
+    //TODO: spostare in TUIHandler e cancellare fino al prossimo merge
+    @Override
+    public Achievement chooseAchievement(Achievement[] choices) {
+        System.out.println("I)");
+        this.printAchievement(choices[0]);
+        System.out.println("II)");
+        this.printAchievement(choices[1]);
+        System.out.println("Choose one of the two Achievements");
+        int choice = scanner.nextInt();
+        while (choice < 1 || choice > 2){
+            System.out.println("Wrong input.\nWrite 1 for the first achievement and 2 for the second");
+            choice = scanner.nextInt();
+        }
+        return choices[choice - 1];
+    }
 
 }

@@ -1,3 +1,13 @@
+//private final Runnable action;
+//public Action(Runnable action){
+//    this.action=action;
+//}
+////public void execute(){
+////    action.run();
+////}
+//public void execute(){
+//
+//}
 //package org.example;
 //
 //import Controller.Controller;

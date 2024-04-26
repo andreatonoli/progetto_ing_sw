@@ -17,4 +17,5 @@ public interface Ui{
     void printCard(PlayerBoard playerBoard, Card card);
     void printCard(Card card);
     void printAchievement(Achievement achievement);
+    Achievement chooseAchievement(Achievement[] choices);
 }

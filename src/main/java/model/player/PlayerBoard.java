@@ -80,6 +80,14 @@ public class PlayerBoard implements Serializable {
         return this.starterCard;
     }
 
+    /**
+     * Gives the player his starter card without placing it
+     * @param card player's starter card drew from the deck
+     */
+    public void giveStarterCard(Card card){
+        this.starterCard = card;
+    }
+
     public void increaseSymbolCount(Symbols symbol){
         if (!symbol.equals(Symbols.NOCORNER) || !symbol.equals(Symbols.EMPTY)){
             this.symbolCount.compute(symbol, (key, value) -> (value == null) ? 1 : value + 1);

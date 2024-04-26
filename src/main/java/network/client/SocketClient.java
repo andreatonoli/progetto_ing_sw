@@ -1,5 +1,6 @@
 package network.client;
 
+import model.card.Achievement;
 import model.card.Card;
 import model.player.Player;
 import network.messages.*;
@@ -9,6 +10,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 public class SocketClient {
@@ -19,8 +21,11 @@ public class SocketClient {
     private ObjectOutputStream out;
     private boolean disconnected = false;
     private Card starterCard;
+    private final Card[] hand;
     private Card[] commonGold;
     private Card[] commonResources;
+    private final Achievement[] commonAchievement;
+    private Achievement privateAchievement;
     private ArrayList<Player> opponents;
     //private HashMap<Integer, Card> board1;
     //private HashMap<Integer, Card> board2;
@@ -29,8 +34,10 @@ public class SocketClient {
     public SocketClient(String username, String address, int port, Ui view){
         this.username = username;
         this.view = view;
-        this.commonGold = new Card[2];
+        this.commonAchievement = new Achievement[2];
         this.commonResources = new Card[2];
+        this.commonGold = new Card[2];
+        this.hand = new Card[3];
         this.startClient(address, port);
     }
     public void startClient(String address, int port){
@@ -90,6 +97,17 @@ public class SocketClient {
             case NUM_PLAYER_REQUEST:
                 int lobbySize = this.view.setLobbySize();
                 sendMessage(new NumPlayerResponseMessage(this.username, lobbySize));
+                break;
+            case CARD_HAND:
+                //Copied the message body into the player's cards
+                System.arraycopy(((CardInHandMessage) message).getHand(), 0, this.hand, 0, 3);
+                break;
+            case COMMON_ACHIEVEMENT:
+                System.arraycopy(((AchievementMessage) message).getAchievements(), 0, this.commonAchievement, 0, 2);
+                break;
+            case PRIVATE_ACHIEVEMENT:
+                this.privateAchievement = this.view.chooseAchievement(((AchievementMessage) message).getAchievements());
+                sendMessage(new SetPrivateAchievementMessage(this.username, privateAchievement));
                 break;
             case COMMON_GOLD_UPDATE:
                 if(commonGold[0] == null){

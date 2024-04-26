@@ -1,5 +1,6 @@
 package network.server;
 
+import model.card.Achievement;
 import network.client.RMIClientHandler;
 import model.card.Card;
 
@@ -12,4 +13,5 @@ public interface VirtualServer extends Remote {
     boolean usernameTaken(String username) throws RemoteException;
     void flipCard(Card card) throws RemoteException;
     void placeStarterCard(Card card) throws RemoteException;
+    void setAchievement(Achievement achievement) throws RemoteException;
 }
