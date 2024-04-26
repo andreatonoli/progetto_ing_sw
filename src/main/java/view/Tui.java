@@ -593,7 +593,7 @@ public class Tui implements Ui{
     public String[][][][] createPrintableScoreBoard(ArrayList<Player> players){
         String[][][][] matScoreBoard = new String[3][3][SCOREBOARD_ROW][SCOREBOARD_COLUMN];
         int[][] scoreBoardPoints = new int[][]{{8, 1}, {8, 2}, {8, 3}, {7, 4}, {7, 3}, {7, 2}, {7, 1}, {6, 0}, {6, 1}, {6, 2}, {6, 3}, {5, 4}, {5, 3}, {5, 2}, {5, 1}, {4, 0}, {4, 1}, {4, 2}, {4, 3}, {3, 4}, {3, 2}, {3, 0}, {2, 0}, {1, 0}, {0, 1}, {0, 2}, {0, 3}, {1, 4}, {2, 4}, {1, 2}};
-        int[][] scoreBoardPosition = new int[][]{{0, 0}, {0, 2}, {2, 0}, {2, 2}};
+        int[][] scoreBoardPosition = new int[][]{{0, 0}, {2, 0}, {0, 2}, {2, 2}};
 
         for(int i = 0; i < SCOREBOARD_ROW; i++){
             for(int j = 0; j < SCOREBOARD_COLUMN; j++){
@@ -647,10 +647,17 @@ public class Tui implements Ui{
 
         this.printTitle();
 
+        for(int i = 0; i < players.size(); i++){
+            System.out.println(players.get(i).getPoints());
+        }
+
         System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "commonboard" + TuiColors.getColor(TuiColors.ANSI_RESET));
         System.out.print(" ".repeat((2*COLUMN) + 6 - 11));
         System.out.print("      ");
-        System.out.println(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "scoreboard" + TuiColors.getColor(TuiColors.ANSI_RESET));
+        System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "scoreboard" + TuiColors.getColor(TuiColors.ANSI_RESET));
+        System.out.print(" ".repeat((5*SCOREBOARD_COLUMN) + 1 - 10));
+        System.out.print("      ");
+        System.out.println(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "chat" + TuiColors.getColor(TuiColors.ANSI_RESET));
         System.out.println();
 
         int q = 0;
@@ -872,6 +879,9 @@ public class Tui implements Ui{
     }
 
     public void printViewWithCommands(PlayerBoard pBoard, Card[] hand, String username, GameBoard gameBoard, ArrayList<Player> players){
+
+        this.printView(pBoard, hand, username, gameBoard, players);
+
         Scanner input = new Scanner(System.in);
         int[] coord = new int[2];
         while(true){
@@ -988,6 +998,7 @@ public class Tui implements Ui{
                     this.printView(pBoard, hand, username, gameBoard, players);
                 }
                 System.out.println("Which side do you want to place? [f] for front [b] for back");
+                System.out.println();
                 String[][] front = this.createPrintableCard(hand[p-1]);
                 hand[p-1].setCurrentSide();
                 String[][] back = this.createPrintableCard(hand[p-1]);
