@@ -6,10 +6,10 @@ import network.server.Server;
 import java.rmi.ServerError;
 
 public class CardInHandMessage extends Message{
-    Card[] hand;
+    private Card[] hand;
     public CardInHandMessage(Card[] hand){
         super(MessageType.CARD_HAND, Server.serverName);
-        hand = new Card[3];
+        this.hand = new Card[3];
         System.arraycopy(hand, 0, this.hand, 0, 3);
     }
 

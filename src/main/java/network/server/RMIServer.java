@@ -6,8 +6,12 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 import Controller.ServerController;
 import model.card.Achievement;
@@ -23,8 +27,6 @@ public class RMIServer implements VirtualServer {
     private final int port;
     private RMIConnection connection;
     private final ServerController controller;
-    private final static int CAPACITY = 10;
-    private final BlockingQueue<String> updates = new ArrayBlockingQueue<>(CAPACITY);
 
     //da usare tramite updates.put(valore) cosi che aggora tutti i cliet
    // private void broadcastUpdateThread() throws InterruptedException {
@@ -42,11 +44,11 @@ public class RMIServer implements VirtualServer {
         this.server = server;
         this.port = port;
         this.controller = controller;
-        this.startServer();
         actionQueue = new LinkedList<>();
         processingAction = false;
+        pingQueue();
+        this.startServer();
     }
-
 
     @Override
     public void login(RMIClientHandler client, String username) throws RemoteException {
@@ -71,24 +73,30 @@ public class RMIServer implements VirtualServer {
     @Override
     public void flipCard(Card card) throws RemoteException {
         addToQueue(() -> connection.flipCard(card));
-        //connection.flipCard(card);
     }
 
     @Override
     public void placeStarterCard(Card card) throws RemoteException {
-        connection.placeStarterCard(card);
+        addToQueue(() -> connection.placeStarterCard(card));
     }
 
     @Override
     public void setAchievement(Achievement achievement) throws RemoteException {
-        connection.setAchievement(achievement);
+        addToQueue(() -> connection.setAchievement(achievement));
     }
 
     private void addToQueue(Action action) {
         actionQueue.add(action);
-        if (!processingAction){
-            processQueue();
-        }
+    }
+
+    private void pingQueue(){
+        Timer t = new Timer();
+        t.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                processQueue();
+            }
+        }, 0, 500);
     }
 
     private synchronized void processQueue() {

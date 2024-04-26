@@ -41,6 +41,7 @@ public class Controller extends Observable {
         this.addObserver(user);
         user.setLobby(this);
         game.addPlayer(player);
+        notifyAll(new GenericMessage("Players: " + this.connectedPlayers.keySet().size() + "/" + this.game.getLobbySize()));
         if (game.isFull()){
             this.startGame();
             return true;
@@ -65,6 +66,9 @@ public class Controller extends Observable {
         for (Connection u : this.connectedPlayers.keySet()){
             notify(u, new StarterCardMessage(getPlayerByClient(u).getPlayerBoard().getStarterCard()));
         }
+    }
+    //TODO: boh, secondo me fa caha
+    private void commonCardSetup(){
         //TODO: gestire scelta del colore (farla in modo sequenziale in base all'ordine?)
         //Sends the players their hand
         for (Connection u : this.connectedPlayers.keySet()){
@@ -77,7 +81,9 @@ public class Controller extends Observable {
             notify(u, new AchievementMessage(MessageType.PRIVATE_ACHIEVEMENT, getPlayerByClient(u).getPersonalObj()));
         }
         //TODO: scrivere meglio
-        //notifyAll(new PlayerStateMessage(this.getPlayerByClient().getPlayerState()));
+        for (Connection u : this.connectedPlayers.keySet()){
+            notify(u, new PlayerStateMessage(getPlayerByClient(u).getPlayerState()));
+        }
     }
     /**
      *Picks the top card of the deck and calls addInHand to give it to the player
@@ -150,11 +156,13 @@ public class Controller extends Observable {
      */
     public void flipCard(Connection user, Card card){
         card.setCurrentSide();
-        notify(user, new UpdateCardMessage(card));
+        notify(user, new StarterCardMessage(card));
     }
     public void placeStarterCard(Connection user, Card starterCard){
+        System.out.println("pipi pupu");
         Player player = getPlayerByClient(user);
         player.getPlayerBoard().setStarterCard(starterCard);
+        commonCardSetup();
     }
 
     /**

@@ -63,9 +63,6 @@ public class RMIConnection extends Connection {
         return this.username;
     }
     public void flipCard(Card card){
-        /*
-        * coda.add(new Action (()->lobby.flipCard(this, card)));
-        * */
         this.lobby.flipCard(this, card);
     }
 
