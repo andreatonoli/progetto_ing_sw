@@ -27,6 +27,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler {
     private Card[] hand;
     private final Achievement[] commonAchievement;
     private Achievement privateAchievement;
+    private Player player;
     private ArrayList<Player> opponents;
     //private HashMap<Integer, Card> board1;
     //private HashMap<Integer, Card> board2;
