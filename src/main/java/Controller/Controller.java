@@ -68,22 +68,17 @@ public class Controller extends Observable {
         }
     }
     //TODO: boh, secondo me fa caha
-    private void commonCardSetup(){
+    //TODO: farlo chiamare solo per i client che hanno piazzato la starterCard, quindi vado a fare solo notify e non notify all
+    private void commonCardSetup(Connection u){
         //TODO: gestire scelta del colore (farla in modo sequenziale in base all'ordine?)
         //Sends the players their hand
-        for (Connection u : this.connectedPlayers.keySet()){
-            notify(u, new CardInHandMessage(getPlayerByClient(u).getCardInHand()));
-        }
+        notify(u, new CardInHandMessage(getPlayerByClient(u).getCardInHand()));
         //Sends the common achievements to the players
-        notifyAll(new AchievementMessage(MessageType.COMMON_ACHIEVEMENT, game.getGameBoard().getCommonAchievement()));
+        notify(u, new AchievementMessage(MessageType.COMMON_ACHIEVEMENT, game.getGameBoard().getCommonAchievement()));
         //Sends the players the private achievements to choose from
-        for (Connection u : this.connectedPlayers.keySet()){
-            notify(u, new AchievementMessage(MessageType.PRIVATE_ACHIEVEMENT, getPlayerByClient(u).getPersonalObj()));
-        }
-        //TODO: scrivere meglio
-        for (Connection u : this.connectedPlayers.keySet()){
-            notify(u, new PlayerStateMessage(getPlayerByClient(u).getPlayerState()));
-        }
+        notify(u, new AchievementMessage(MessageType.PRIVATE_ACHIEVEMENT, getPlayerByClient(u).getPersonalObj()));
+        //Notifies the player his state (i.e. it's his turn or not)
+        notify(u, new PlayerStateMessage(getPlayerByClient(u).getPlayerState()));
     }
     /**
      *Picks the top card of the deck and calls addInHand to give it to the player
@@ -159,10 +154,9 @@ public class Controller extends Observable {
         notify(user, new StarterCardMessage(card));
     }
     public void placeStarterCard(Connection user, Card starterCard){
-        System.out.println("pipi pupu");
         Player player = getPlayerByClient(user);
         player.getPlayerBoard().setStarterCard(starterCard);
-        commonCardSetup();
+        commonCardSetup(user);
     }
 
     /**
