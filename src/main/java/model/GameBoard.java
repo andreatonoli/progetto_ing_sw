@@ -115,8 +115,8 @@ public class GameBoard implements Serializable {
             this.starterDeck = new LinkedList<>();
             content = new String(Files.readAllBytes(Paths.get("src/main/input_file/starterCard.json")));
             jo = new JSONObject(content);
-            items = new ArrayList<>();
             for (String starterCard : jo.keySet()) {
+                items = new ArrayList<>();
                 symbols = jo.getJSONObject(starterCard).getJSONObject("retro").getJSONArray("symbols");
                 for (int i=0; i<symbols.length(); i++){
                     items.add(Symbols.valueOf(symbols.getString(i)));
