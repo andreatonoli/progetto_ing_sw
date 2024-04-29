@@ -154,8 +154,9 @@ public class GameBoard implements Serializable {
         deck.removeFirst();
         return drawedCard;
     }
+
     /**
-     * Receives a shuffled achivementDeck and takes the first card also removing it
+     * Receives a shuffled achievementDeck and takes the first card also removing it
      * @return Achievement drew from the deck
      */
     protected Achievement drawCard(){
@@ -207,6 +208,11 @@ public class GameBoard implements Serializable {
     public void replaceResourceCard(int indexToReplace){
         this.commonResource[indexToReplace] = this.drawCard(this.resourceDeck);
     }
+
+    /**
+     * Replaces the common gold card at indexToReplace with a new gold card drew from the deck
+     * @param indexToReplace index of the CommonGold array to be replaced
+     */
     public void replaceGoldCard(int indexToReplace){
         this.commonGold[indexToReplace] = this.drawCard(this.goldDeck);
     }
