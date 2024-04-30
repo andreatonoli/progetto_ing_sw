@@ -9,20 +9,23 @@ import network.server.VirtualServer;
 import view.*;
 
 public class Client{
-    public static void main(String[] args){
-        boolean tuiParam = false;
-        for (String arg : args){
-            if (arg.equals("--tui") || arg.equals("-t")){
-                tuiParam = true;
-                break;
-            }
-        }
-        if (tuiParam){
-           new Tui().run();
-        }
-        else{
-            //TODO: avvio applicazione grafica
-            new Tui().run(); //Placeholder
-        }
+    //public static void main(String[] args){
+    //    boolean tuiParam = false;
+    //    for (String arg : args){
+    //        if (arg.equals("--tui") || arg.equals("-t")){
+    //            tuiParam = true;
+    //            break;
+    //        }
+    //    }
+    //    if (tuiParam){
+    //       new Tui().run();
+    //    }
+    //    else{
+    //        //TODO: avvio applicazione grafica
+    //        new Tui().run(); //Placeholder
+    //    }
+    //}
+    public Client(){
+        new Tui().run();
     }
 }

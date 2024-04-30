@@ -1,3 +1,8 @@
+package org.example;
+
+import network.client.Client;
+import network.server.Server;
+
 //private final Runnable action;
 //public Action(Runnable action){
 //    this.action=action;
@@ -23,69 +28,19 @@
 // * Hello world!
 // *
 // */
-//public class App
-//{
-//   public static void main( String[] args ) throws IOException, NotEnoughPlayersException {
-//
-//       //Server server = new Server();
-//       Game game = new Game(2, server);
-//       Player player = new Player("p1", game);
-//       Player player2 = new Player("p2", game);
-//       game.addPlayer(player);
-//       game.addPlayer(player2);
-//       StarterCard s2 = new StarterCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}, 2, new CardBack(new ArrayList<>(List.of(Symbols.FUNGI)), Color.WHITE, new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY)}));
-//       Tui t = new Tui();
-//       s2.setCurrentSide();
-//       t.printTitle();
-//       t.printCard(player.getPlayerBoard(), s2);
-//       GoldCard b = new GoldCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 3, Condition.CORNER, 7, new int[]{0, 3, 0, 0}, null);
-//       GoldCard c = new GoldCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 3, Condition.CORNER, 17, new int[]{0, 3, 0, 0}, null);
-//       GoldCard d = new GoldCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 3, Condition.CORNER, 27, new int[]{0, 3, 0, 0}, null);
-//       GoldCard e = new GoldCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 3, Condition.CORNER, 37, new int[]{0, 3, 0, 0}, null);
-//       t.printCard(player.getPlayerBoard(), b);
-//       t.printCard(player.getPlayerBoard(), c);
-//       t.printCard(player.getPlayerBoard(), d);
-//       t.printCard(player.getPlayerBoard(), e);
-//       Achievement a1 = new AchievementItem(3, new ArrayList<>(List.of(Symbols.INKWELL, Symbols.QUILL, Symbols.MANUSCRIPT)));
-//       Achievement a2 = new AchievementResources(Symbols.FUNGI);
-//       Achievement a3 = new AchievementDiagonal(Color.PURPLE);
-//       Achievement a4 = new AchievementL(Color.GREEN);
-//       t.printAchievement(a1);
-//       t.printAchievement(a2);
-//       t.printAchievement(a3);
-//       t.printAchievement(a4);
-//
-//       game.startGame();
-//       Controller con = new Controller(2, server);
-//       player.setPlayerState(PlayerState.PLAY_CARD);
-//       ResourceCard c1 = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 3, 0);
-//       ResourceCard c2 = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 17, 0);
-//       ResourceCard c3 = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 25, 0);
-//       ResourceCard c4 = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 35, 0);
-//       con.placeCard(player, c1, new int[]{0, 0}, CornerEnum.BL);
-//       con.placeCard(player, c2, new int[]{0, 0}, CornerEnum.TL);
-//       con.placeCard(player, c3, new int[]{0, 0}, CornerEnum.TR);
-//       con.placeCard(player, c4, new int[]{1, 1}, CornerEnum.TR);
-//       player.removeFromHand(player.getCardInHand()[0]);
-//       player.addInHand(c1);
-//       player.removeFromHand(player.getCardInHand()[1]);
-//       player.addInHand(c2);
-//       player.removeFromHand(player.getCardInHand()[2]);
-//       player.addInHand(c3);
-//       System.out.println(player.getCardInHand()[0].getClass());
-//       System.out.println(player.getCardInHand()[0].getColor());
-//       System.out.println(c1.getClass());
-//       System.out.println(c1.getColor());
-//       System.out.println(player.getCardInHand()[1].getClass());
-//       System.out.println(player.getCardInHand()[1].getColor());
-//       System.out.println(c2.getClass());
-//       System.out.println(c2.getColor());
-//       System.out.println(player.getCardInHand()[2].getClass());
-//       System.out.println(player.getCardInHand()[2].getColor());
-//       System.out.println(c3.getClass());
-//       System.out.println(c3.getColor());
-//       //t.printView(player);
-//       //t.printPlayerBoard(player);
+public class App {
+    public static void main(String[] args) {
+        if (args[0].equalsIgnoreCase("0")){
+            new Server();
+        }
+        else{
+            new Client();
+        }
+    }
+}
+
+       //t.printView(player);
+       //t.printPlayerBoard(player);
 //=======
 ////package org.example;
 //>>>>>>> Stashed changes
