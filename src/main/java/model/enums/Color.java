@@ -11,7 +11,8 @@ public enum Color {
     BLUE(0, "\u001B[0;104m"),
     PURPLE(2, "\u001B[0;105m"),
     WHITE(4, "\u001B[0;107m"),
-    YELLOW(5, "\u001B[43m");
+    YELLOW(5, "\u001B[43m"),
+    ORANGE(6, "\u001B[48;5;208m");
     Integer associatedIndex;
     String background;
 
