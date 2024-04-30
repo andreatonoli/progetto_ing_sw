@@ -661,10 +661,6 @@ public class Tui implements Ui{
 
         this.printTitle();
 
-        for(int i = 0; i < players.size(); i++){
-            System.out.println(players.get(i).getPoints());
-        }
-
         System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "commonboard" + TuiColors.getColor(TuiColors.ANSI_RESET));
         System.out.print(" ".repeat((2*COLUMN) + 6 - 11));
         System.out.print("      ");
@@ -675,6 +671,7 @@ public class Tui implements Ui{
         System.out.println();
 
         int q = 0;
+        int k = 6;
         boolean r = true;
         boolean g = false;
         boolean a = false;
@@ -749,8 +746,9 @@ public class Tui implements Ui{
                     }
                 }
                 System.out.print("      ");
-                if(q < 7){
-                    System.out.print(chat[q][0] + ": " + chat[q][1]);
+                if(k >= 0){
+                    System.out.print(chat[k][0] + ": " + chat[k][1]);
+                    k -= 1;
                 }
                 System.out.println();
             }

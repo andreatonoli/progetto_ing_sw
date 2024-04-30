@@ -51,7 +51,9 @@ public class App
        player.addInHand(c2);
        player.removeFromHand(player.getCardInHand()[2]);
        player.addInHand(c5);
-       player.sendMessage(player2, "ciao");
+       player2.sendMessage(player, "ciao scritto da p2");
+       player3.sendMessage(player, "ciao scritto da p3");
+       player2.sendMessage(player, "come va? scritto da p2");
        t.printViewWithCommands(player.getPlayerBoard(), player.getCardInHand(), player.getUsername(), game.getGameBoard(), game.getPlayers(), player.getChat());
    }
 }
