@@ -1,7 +1,9 @@
 package view;
 
+import model.GameBoard;
 import model.card.Achievement;
 import model.card.Card;
+import model.player.Player;
 import model.player.PlayerBoard;
 
 import java.util.ArrayList;

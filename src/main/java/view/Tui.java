@@ -1,10 +1,12 @@
 package view;
 
+import model.GameBoard;
 import model.card.*;
 import model.enums.Color;
 import model.enums.CornerEnum;
 import model.enums.CornerState;
 import model.enums.Symbols;
+import model.player.Player;
 import model.player.PlayerBoard;
 import network.client.Client;
 import network.client.RMIClient;

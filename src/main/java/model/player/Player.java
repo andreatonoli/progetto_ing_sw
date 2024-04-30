@@ -177,7 +177,7 @@ public class Player implements Serializable {
             Collections.rotate(chat, 1);
         }
         else{
-            chat.addFirst(message);
+            chat.addFirst(sender + ":" + message);
         }
         //Stampa per test
         //for(int i = 0; i < chat.size(); i++){
