@@ -89,12 +89,12 @@ public class PlayerBoard implements Serializable {
     }
 
     public void increaseSymbolCount(Symbols symbol){
-        if (!symbol.equals(Symbols.NOCORNER) || !symbol.equals(Symbols.EMPTY)){
+        if (!symbol.equals(Symbols.NOCORNER) && !symbol.equals(Symbols.EMPTY)){
             this.symbolCount.compute(symbol, (key, value) -> (value == null) ? 1 : value + 1);
         }
     }
     public void decreaseSymbolCount(Symbols symbol){
-        if (!symbol.equals(Symbols.NOCORNER)|| !symbol.equals(Symbols.EMPTY)){
+        if (!symbol.equals(Symbols.NOCORNER) && !symbol.equals(Symbols.EMPTY)){
             this.symbolCount.compute(symbol, (key, value) -> (value == null || value == 0) ? 0 : value - 1);
         }
     }

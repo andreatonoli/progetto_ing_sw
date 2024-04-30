@@ -19,7 +19,7 @@ public class Game extends Observable implements Serializable {
     private GameBoard gameBoard;
     private GameState gameState;
     private final ArrayList<Player> players;
-    private int willPlay = -1; //che fa?
+    private int willPlay = -1;
     private boolean gameFull;
     private Player firstPlayer;
     private Player playerInTurn;
