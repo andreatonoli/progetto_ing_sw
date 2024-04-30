@@ -20,7 +20,7 @@ class GameBoardTest {
     @DisplayName("checking resourceCard deck")
     public void resourceCardTest(){
         Game game = new Game(2);
-        GameBoard board = new GameBoard(game);
+        GameBoard board = game.getGameBoard();
         ResourceCard firstCard = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.FUNGI)}, 1, 0);
         ResourceCard midCard = new ResourceCard(new Corner[]{new Corner(Symbols.NOCORNER), new Corner(Symbols.PLANT), new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY)}, 20, 1);
         ResourceCard lastCard = new ResourceCard(new Corner[]{new Corner(Symbols.NOCORNER), new Corner(Symbols.INSECT), new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY)}, 40, 1);
@@ -59,7 +59,7 @@ class GameBoardTest {
     @DisplayName("checking resourceCard deck")
     public void goldCardTest(){
         Game game = new Game(2);
-        GameBoard board = new GameBoard(game);
+        GameBoard board = game.getGameBoard();
         GoldCard firstCard = new GoldCard(new Corner[]{new Corner(Symbols.NOCORNER), new Corner(Symbols.EMPTY), new Corner(Symbols.QUILL), new Corner(Symbols.EMPTY)}, 1, Condition.ITEM, 1,new int[]{2,0,1,0},Symbols.QUILL);
         GoldCard midCard = new GoldCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER)}, 5, Condition.NOTHING, 20,new int[]{0,5,0,0}, null);
         GoldCard lastCard = new GoldCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER)}, 5, Condition.NOTHING, 40,new int[]{0,0,0,5},null);
@@ -117,7 +117,7 @@ class GameBoardTest {
     @DisplayName("checking starterCard deck")
     public void starterCardTest(){
         Game game = new Game(2);
-        GameBoard board = new GameBoard(game);
+        GameBoard board = game.getGameBoard();
         StarterCard firstCard = new StarterCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT)}, 1, new CardBack(new ArrayList<>(List.of(Symbols.INSECT)), Color.WHITE, new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.PLANT), new Corner(Symbols.EMPTY), new Corner(Symbols.INSECT)}));
         StarterCard midCard = new StarterCard(new Corner[]{new Corner(Symbols.INSECT), new Corner(Symbols.ANIMAL), new Corner(Symbols.PLANT), new Corner(Symbols.FUNGI)}, 3, new CardBack(new ArrayList<>(List.of(Symbols.PLANT,Symbols.FUNGI)), Color.WHITE, new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY)}));
         StarterCard lastCard = new StarterCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.PLANT)}, 6, new CardBack(new ArrayList<>(List.of(Symbols.PLANT,Symbols.ANIMAL,Symbols.FUNGI)), Color.WHITE, new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER)}));
@@ -134,6 +134,7 @@ class GameBoardTest {
         assertEquals(firstCard.getCornerSymbol(CornerEnum.BL),starterDeck.get(5).getCornerSymbol(CornerEnum.BL));
         assertEquals(firstCard.getCornerSymbol(CornerEnum.BR),starterDeck.get(5).getCornerSymbol(CornerEnum.BR));
         //firstCard back
+        //TODO: cambia getBack girando prima la carta con il metodo setCurrentSide
         for (int i=0; i<starterDeck.get(0).getBack().getSymbols().size(); i++) {
             assertEquals(firstCard.getBack().getSymbols().get(i), starterDeck.get(5).getBack().getSymbols().get(i));
         }
@@ -182,7 +183,7 @@ class GameBoardTest {
     @DisplayName("drawing from resource deck")
     public void drawResourceCardTest() {
         Game game = new Game(2);
-        GameBoard board = new GameBoard(game);
+        GameBoard board = game.getGameBoard();
         LinkedList<Card> resourceDeck = board.getResourceDeck();
         Card firstCard = resourceDeck.getFirst();
         Card drawedCard = board.drawCard(resourceDeck);
@@ -194,7 +195,7 @@ class GameBoardTest {
     @DisplayName("drawing from gold deck")
     public void drawGoldCardTest() {
         Game game = new Game(2);
-        GameBoard board = new GameBoard(game);
+        GameBoard board = game.getGameBoard();
         LinkedList<Card> goldDeck = board.getGoldDeck();
         Card firstCard = goldDeck.getFirst();
         Card drawedCard = board.drawCard(goldDeck);
@@ -206,7 +207,7 @@ class GameBoardTest {
     @DisplayName("drawing from achievement deck")
     public void drawAchievementCardTest() {
         Game game = new Game(2);
-        GameBoard board = new GameBoard(game);
+        GameBoard board = game.getGameBoard();
         LinkedList<Achievement> achievementDeck = board.getAchievementDeck();
         Achievement firstCard = achievementDeck.getFirst();
         Achievement drawnCard = board.drawCard();

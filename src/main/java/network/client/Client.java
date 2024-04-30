@@ -9,23 +9,15 @@ import network.server.VirtualServer;
 import view.*;
 
 public class Client{
-    //public static void main(String[] args){
-    //    boolean tuiParam = false;
-    //    for (String arg : args){
-    //        if (arg.equals("--tui") || arg.equals("-t")){
-    //            tuiParam = true;
-    //            break;
-    //        }
-    //    }
-    //    if (tuiParam){
-    //       new Tui().run();
-    //    }
-    //    else{
-    //        //TODO: avvio applicazione grafica
-    //        new Tui().run(); //Placeholder
-    //    }
-    //}
     public Client(){
-        new Tui().run();
+        System.out.println("Premi [0] per giocare con la TUI.\nPremi un qualsiasi altro numero per giocare con la GUI");
+        Scanner scan = new Scanner(System.in);
+        int choice = scan.nextInt();
+        if (choice == 0){
+            new Tui().run();
+        }
+        else{
+            new Tui().run(); //TODO: mettere la gui
+        }
     }
 }

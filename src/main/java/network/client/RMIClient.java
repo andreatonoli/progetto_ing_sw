@@ -3,6 +3,7 @@ package network.client;
 import model.card.Achievement;
 import model.player.Player;
 import network.messages.*;
+import network.server.Action;
 import network.server.VirtualServer;
 import view.Ui;
 import model.card.Card;
@@ -13,10 +14,11 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
 public class RMIClient extends UnicastRemoteObject implements RMIClientHandler {
+    private Queue<Action> actionQueue;
+    private boolean processingAction;
     private static final String serverName = "GameServer";
     private String username;
     private final Ui view;
@@ -42,6 +44,9 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler {
         this.commonResources = new Card[2];
         this.commonGold = new Card[2];
         this.hand = new Card[3];
+        actionQueue = new LinkedList<>();
+        processingAction = false;
+        pingQueue();
         try {
             Registry registry = LocateRegistry.getRegistry(host, port);
             server = (VirtualServer) registry.lookup(serverName);
@@ -70,6 +75,32 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler {
     }
     public void setPrivateAchievement(Achievement toBeSet) throws RemoteException {
         this.server.setAchievement(toBeSet);
+    }
+
+    private void addToQueue(Action action) {
+        actionQueue.add(action);
+    }
+
+    private void pingQueue(){
+        Timer t = new Timer();
+        t.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                processQueue();
+            }
+        }, 0, 500);
+    }
+
+    private synchronized void processQueue() {
+        if (!actionQueue.isEmpty() && !processingAction) {
+            Action nextAction = actionQueue.poll();
+            processingAction = true;
+            nextAction.execute();
+            processingAction = false;
+            if (!actionQueue.isEmpty()) {
+                processQueue();
+            }
+        }
     }
 
     /**
@@ -143,4 +174,5 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler {
     //    return view;
         return null;
     }
+
 }

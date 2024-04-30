@@ -22,10 +22,6 @@ public class Server {
         //Starts the RMI server and the socket server
         startServer();
     }
-    public static void main(String[] args){
-        //Starts the main server
-        new Server();
-    }
     public void startServer(){
         new RMIServer(this, rmiPort, this.controller);
         new SocketServer(this, socketPort, this.controller);
