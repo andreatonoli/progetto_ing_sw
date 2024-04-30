@@ -1,6 +1,7 @@
 package network.client;
 
 import model.card.Achievement;
+import model.enums.PlayerState;
 import model.player.Player;
 import network.messages.*;
 import network.server.Action;
@@ -29,8 +30,8 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler {
     private Card[] hand;
     private final Achievement[] commonAchievement;
     private Achievement privateAchievement;
-    private Player player;
-    private ArrayList<Player> opponents;
+    private PlayerBean player;
+    private ArrayList<PlayerBean> opponents;
     //private HashMap<Integer, Card> board1;
     //private HashMap<Integer, Card> board2;
     //private HashMap<Integer, Card> board3;
@@ -40,10 +41,10 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler {
         this.username = username;
         this.view = view;
         //Initialization of player's attributes
+        this.player = new PlayerBean();
         this.commonAchievement = new Achievement[2];
         this.commonResources = new Card[2];
         this.commonGold = new Card[2];
-        this.hand = new Card[3];
         actionQueue = new LinkedList<>();
         processingAction = false;
         pingQueue();
@@ -68,13 +69,25 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler {
         return this.view.setLobbySize();
     }
     public void flipCard(Card card) throws RemoteException{
-        this.server.flipCard(card);
+        addToQueue(() -> {
+            try {
+                this.server.flipCard(card);
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
-    public void placeStarterCard(Card card){
-
+    public void placeStarterCard(Card card) throws RemoteException{
+        this.server.placeStarterCard(card);
     }
     public void setPrivateAchievement(Achievement toBeSet) throws RemoteException {
-        this.server.setAchievement(toBeSet);
+        addToQueue(() -> {
+            try {
+                this.server.setAchievement(toBeSet);
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     private void addToQueue(Action action) {
@@ -153,14 +166,22 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler {
                     }
                 }
                 else{
-                    this.placeStarterCard(starterCard);
+                    try{
+                        this.placeStarterCard(starterCard);
+                    }
+                    catch (RemoteException e){
+                        System.err.println(e.getMessage());
+                    }
                 }
                 break;
             case SCOREBOARD_UPDATE:
                 //TODO: stampa scoreboard
+                this.view.printView(player.getBoard(),this.hand,this.username);
                 break;
             case PLAYER_STATE:
                 //TODO: non so che fare
+                PlayerState playerState = ((PlayerStateMessage) message).getState();
+                //this.view.printPlayerState(playerState);
                 break;
             case GENERIC_MESSAGE:
                 this.view.showText(message.toString());

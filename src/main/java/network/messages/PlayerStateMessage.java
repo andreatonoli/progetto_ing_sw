@@ -10,8 +10,8 @@ public class PlayerStateMessage extends Message{
         this.playerState=playerState;
     }
 
-    public String getState(){
-        return playerState.toString();
+    public PlayerState getState(){
+        return playerState;
     }
 
     public String toString(){
