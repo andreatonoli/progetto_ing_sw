@@ -141,18 +141,14 @@ public class Tui implements Ui{
 
     @Override
     public boolean askToFlip(){
+        scanner.skip("\n");
         System.out.println("Do you want to flip the card?");
-        String choice = scanner.nextLine();
-        while (!choice.equalsIgnoreCase("yes") || !choice.equalsIgnoreCase("no")){
-            System.out.println("Incorrect input:\nDo you want to flip the card?\nType your answer");
+        String choice = scanner.next();
+        while (!choice.equalsIgnoreCase("yes") && !choice.equalsIgnoreCase("no")){
+            System.out.println("Incorrect input \nDo you want to flip the card?\nType your answer");
             choice = scanner.nextLine();
         }
-        if (choice.equalsIgnoreCase("yes")){
-            return true;
-        }
-        else{
-            return false;
-        }
+        return choice.equalsIgnoreCase("yes");
     }
 
     @Override
