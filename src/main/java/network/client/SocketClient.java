@@ -2,6 +2,7 @@ package network.client;
 
 import model.card.Achievement;
 import model.card.Card;
+import model.enums.PlayerState;
 import model.player.Player;
 import network.messages.*;
 import view.Ui;
@@ -21,12 +22,11 @@ public class SocketClient {
     private ObjectOutputStream out;
     private boolean disconnected = false;
     private Card starterCard;
-    private final Card[] hand;
     private Card[] commonGold;
     private Card[] commonResources;
     private final Achievement[] commonAchievement;
-    private Achievement privateAchievement;
-    private ArrayList<Player> opponents;
+    private PlayerBean player;
+    private ArrayList<PlayerBean> opponents;
     //private HashMap<Integer, Card> board1;
     //private HashMap<Integer, Card> board2;
     //private HashMap<Integer, Card> board3;
@@ -34,10 +34,10 @@ public class SocketClient {
     public SocketClient(String username, String address, int port, Ui view){
         this.username = username;
         this.view = view;
+        this.player = new PlayerBean(this.username);
         this.commonAchievement = new Achievement[2];
         this.commonResources = new Card[2];
         this.commonGold = new Card[2];
-        this.hand = new Card[3];
         this.startClient(address, port);
     }
     public void startClient(String address, int port){
@@ -45,7 +45,7 @@ public class SocketClient {
             socket = new Socket(address, port);
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
-            sendMessage(new LoginResponseMessage(this.username)); //TODO: rimuovere questo paramentro
+            sendMessage(new LoginResponseMessage(this.username));
             //TODO: capire come far chiudere la connessione
             while(!disconnected){
                 readMessage();
@@ -75,13 +75,13 @@ public class SocketClient {
             System.err.println(e.getMessage());
         }
     }
-    //TODO: Si può fare con override?
     public void update(Message message){
         switch (message.getType()){
             case USERNAME_REQUEST:
                 System.out.println("Username is already taken, please choose another: ");
                 this.username = this.view.askNickname();
                 sendMessage(new LoginResponseMessage(this.username));
+                player.setUsername(this.username);
                 break;
             case FREE_LOBBY:
                 int freeLobbySize = ((FreeLobbyMessage) message).getLobbyNumber();
@@ -100,14 +100,14 @@ public class SocketClient {
                 break;
             case CARD_HAND:
                 //Copied the message body into the player's cards
-                System.arraycopy(((CardInHandMessage) message).getHand(), 0, this.hand, 0, 3);
+                System.arraycopy(((CardInHandMessage) message).getHand(), 0, player.getHand(), 0, 3);
                 break;
             case COMMON_ACHIEVEMENT:
                 System.arraycopy(((AchievementMessage) message).getAchievements(), 0, this.commonAchievement, 0, 2);
                 break;
             case PRIVATE_ACHIEVEMENT:
-                this.privateAchievement = this.view.chooseAchievement(((AchievementMessage) message).getAchievements());
-                sendMessage(new SetPrivateAchievementMessage(this.username, privateAchievement));
+                this.player.setAchievement(this.view.chooseAchievement(((AchievementMessage) message).getAchievements()));
+                sendMessage(new SetPrivateAchievementMessage(this.username, this.player.getAchievement()));
                 break;
             case COMMON_GOLD_UPDATE:
                 if(commonGold[0] == null){
@@ -137,10 +137,11 @@ public class SocketClient {
                 }
                 break;
             case SCOREBOARD_UPDATE:
-                //TODO: stampa scoreboard
+                this.view.printView(this.player.getBoard(), this.player.getHand(), this.username, this.commonResources, this.commonGold, this.commonAchievement, this.opponents, this.player.getChat());
                 break;
             case PLAYER_STATE:
-                //TODO: non so che fare
+                PlayerState playerState = ((PlayerStateMessage) message).getState();
+                //this.view.printPlayerState(playerState);
                 break;
             case GENERIC_MESSAGE:
                 this.view.showText(message.toString());

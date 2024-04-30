@@ -46,7 +46,7 @@ public class RMIServer implements VirtualServer {
         this.controller = controller;
         actionQueue = new LinkedList<>();
         processingAction = false;
-        pingQueue();
+        pickQueue();
         this.startServer();
     }
 
@@ -89,7 +89,7 @@ public class RMIServer implements VirtualServer {
         actionQueue.add(action);
     }
 
-    private void pingQueue(){
+    private void pickQueue(){
         Timer t = new Timer();
         t.schedule(new TimerTask() {
             @Override
@@ -99,7 +99,7 @@ public class RMIServer implements VirtualServer {
         }, 0, 500);
     }
 
-    private synchronized void processQueue() {
+    private void processQueue() {
         if (!actionQueue.isEmpty() && !processingAction) {
             Action nextAction = actionQueue.poll();
             processingAction = true;
@@ -110,5 +110,6 @@ public class RMIServer implements VirtualServer {
             }
         }
     }
+
 
 }

@@ -18,7 +18,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
 public class RMIClient extends UnicastRemoteObject implements RMIClientHandler {
-    private Queue<Action> actionQueue;
+    private Queue<Message> messageQueue;
     private boolean processingAction;
     private static final String serverName = "GameServer";
     private String username;
@@ -27,9 +27,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler {
     private Card[] commonResources;
     private Card[] commonGold;
     private Card starterCard;
-    private Card[] hand;
     private final Achievement[] commonAchievement;
-    private Achievement privateAchievement;
     private PlayerBean player;
     private ArrayList<PlayerBean> opponents;
     //private HashMap<Integer, Card> board1;
@@ -41,19 +39,20 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler {
         this.username = username;
         this.view = view;
         //Initialization of player's attributes
-        this.player = new PlayerBean();
+        this.player = new PlayerBean(username);
         this.commonAchievement = new Achievement[2];
         this.commonResources = new Card[2];
         this.commonGold = new Card[2];
-        actionQueue = new LinkedList<>();
+        messageQueue = new LinkedList<>();
         processingAction = false;
-        pingQueue();
+        pickQueue();
         try {
             Registry registry = LocateRegistry.getRegistry(host, port);
             server = (VirtualServer) registry.lookup(serverName);
             while (server.usernameTaken(this.username)){
                 System.out.println("Username is already taken, please choose another: ");
                 this.username = view.askNickname();
+                player.setUsername(this.username);
             }
             server.login(this, this.username);
         } catch (RemoteException | NotBoundException e){
@@ -69,32 +68,15 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler {
         return this.view.setLobbySize();
     }
     public void flipCard(Card card) throws RemoteException{
-        addToQueue(() -> {
-            try {
-                this.server.flipCard(card);
-            } catch (RemoteException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        this.server.flipCard(card);
     }
     public void placeStarterCard(Card card) throws RemoteException{
         this.server.placeStarterCard(card);
     }
     public void setPrivateAchievement(Achievement toBeSet) throws RemoteException {
-        addToQueue(() -> {
-            try {
-                this.server.setAchievement(toBeSet);
-            } catch (RemoteException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        this.server.setAchievement(toBeSet);
     }
-
-    private void addToQueue(Action action) {
-        actionQueue.add(action);
-    }
-
-    private void pingQueue(){
+    private void pickQueue(){
         Timer t = new Timer();
         t.schedule(new TimerTask() {
             @Override
@@ -104,36 +86,46 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler {
         }, 0, 500);
     }
 
-    private synchronized void processQueue() {
-        if (!actionQueue.isEmpty() && !processingAction) {
-            Action nextAction = actionQueue.poll();
+    private void processQueue() {
+        if (!messageQueue.isEmpty() && !processingAction) {
+            Message message = messageQueue.poll();
             processingAction = true;
-            nextAction.execute();
+            this.onMessage(message);
             processingAction = false;
-            if (!actionQueue.isEmpty()) {
+            if (!messageQueue.isEmpty()) {
                 processQueue();
             }
         }
     }
 
+    //TODO: ANDREAAAAAAAAAAAAAAAAAAAAa
+    @Override
+    public void pingNetwork() throws RemoteException{
+
+    }
+
+    @Override
+    public void update(Message message){
+        this.messageQueue.add(message);
+    }
+
     /**
-     * gets messages from the server and updates the view according to the message type
+     * gets messages from the messageQueue and updates the view according to the message type
      * @param message sent from the server
      */
-    @Override
-    public void update(Message message) {
+    public void onMessage(Message message) {
         switch (message.getType()){
             case CARD_HAND:
                 //Copied the message body into the player's cards
-                System.arraycopy(((CardInHandMessage) message).getHand(), 0, this.hand, 0, 3);
+                System.arraycopy(((CardInHandMessage) message).getHand(), 0, this.player.getHand(), 0, 3);
                 break;
             case COMMON_ACHIEVEMENT:
                 System.arraycopy(((AchievementMessage) message).getAchievements(), 0, this.commonAchievement, 0, 2);
                 break;
             case PRIVATE_ACHIEVEMENT:
-                this.privateAchievement = this.view.chooseAchievement(((AchievementMessage) message).getAchievements());
+                this.player.setAchievement(this.view.chooseAchievement(((AchievementMessage) message).getAchievements()));
                 try {
-                    this.setPrivateAchievement(privateAchievement);
+                    this.setPrivateAchievement(player.getAchievement());
                 } catch (RemoteException e) {
                     System.err.println(e.getMessage() + " in RMIClient.update");
                 }
@@ -175,11 +167,9 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler {
                 }
                 break;
             case SCOREBOARD_UPDATE:
-                //TODO: stampa scoreboard
-                this.view.printView(player.getBoard(),this.hand,this.username);
+                this.view.printView(this.player.getBoard(),this.player.getHand(),this.username,this.commonResources,this.commonGold, this.commonAchievement, this.opponents,this.player.getChat());
                 break;
             case PLAYER_STATE:
-                //TODO: non so che fare
                 PlayerState playerState = ((PlayerStateMessage) message).getState();
                 //this.view.printPlayerState(playerState);
                 break;

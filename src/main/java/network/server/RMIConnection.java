@@ -8,6 +8,8 @@ import network.messages.Message;
 
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class RMIConnection extends Connection {
     private RMIClientHandler client;
@@ -19,7 +21,27 @@ public class RMIConnection extends Connection {
         this.server = server;
         this.username = username;
         this.setConnectionStatus(true);
+        ping();
     }
+
+    //TODO ping al client
+    private void ping(){
+        Timer t = new Timer();
+        t.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                pingClient();
+            }
+        }, 0, 500);
+    }
+    private void pingClient(){
+        try {
+            client.pingNetwork();
+        } catch (RemoteException e) {
+            System.err.println(e.getMessage() + " " + "in pingClient/RMIConnection");
+        }
+    }
+    //TODO che se fa se non responde er pupone?
 
     @Override
     public void setLobby(Controller controller) {

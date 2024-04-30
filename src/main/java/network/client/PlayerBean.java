@@ -8,6 +8,7 @@ import model.player.PlayerBoard;
 import java.util.ArrayList;
 
 public class PlayerBean {
+    private String username;
     private Card[] hand;
     private Achievement achievement;
     private int points;
@@ -15,9 +16,18 @@ public class PlayerBean {
     private ArrayList<String> chat;
     private PlayerBoard board;
 
-    public PlayerBean(){
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public PlayerBean(String username){
         this.hand = new Card[3];
         this.chat = new ArrayList<>();
+        this.username = username;
     }
     public Card[] getHand() {
         return hand;

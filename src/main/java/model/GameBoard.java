@@ -174,7 +174,7 @@ public class GameBoard implements Serializable {
         return resourceDeck;
     }
     public LinkedList<Card> getStarterDeck() {
-        return starterDeck;
+        return this.starterDeck;
     }
 
     public Card[] getCommonResource(){

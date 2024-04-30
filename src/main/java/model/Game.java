@@ -42,6 +42,7 @@ public class Game extends Observable implements Serializable {
     }
 
     public void startGame(){
+        System.out.println("start game");
         this.gameState = GameState.START;
         //Decks are shuffled
         Collections.shuffle(gameBoard.getStarterDeck());

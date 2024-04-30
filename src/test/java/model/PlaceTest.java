@@ -105,7 +105,7 @@ public class PlaceTest{
         int Bfungi = player.getPlayerBoard().getSymbolCount(Symbols.FUNGI);
         int Banimal = player.getPlayerBoard().getSymbolCount(Symbols.ANIMAL);
         int Bplant = player.getPlayerBoard().getSymbolCount(Symbols.PLANT);
-        int Binsect = player.getPlayerBoard().getSymbolCount(Symbols.EMPTY);
+        int Binsect = player.getPlayerBoard().getSymbolCount(Symbols.INSECT);
         int Bpoint = player.getPoints();
         //a's BR corner is hidden, so we cannot place the b card on that spot
         try {

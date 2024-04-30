@@ -55,13 +55,13 @@ public class Controller extends Observable {
      */
     private void startGame(){
         game.startGame();
-        //Sends the scoreboard to the players
-        notifyAll(new ScoreBoardUpdateMessage());
         //Sends the common resource and gold cards
         notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_RESOURCE_UPDATE, game.getGameBoard().getCommonResource()[0]));
         notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_RESOURCE_UPDATE, game.getGameBoard().getCommonResource()[1]));
         notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_GOLD_UPDATE, game.getGameBoard().getCommonResource()[0]));
         notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_GOLD_UPDATE, game.getGameBoard().getCommonResource()[1]));
+        //Sends the scoreboard to the players
+        notifyAll(new ScoreBoardUpdateMessage());
         //Sends the starter card to each player
         for (Connection u : this.connectedPlayers.keySet()){
             notify(u, new StarterCardMessage(getPlayerByClient(u).getPlayerBoard().getStarterCard()));
