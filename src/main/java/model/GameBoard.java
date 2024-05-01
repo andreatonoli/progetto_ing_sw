@@ -45,7 +45,6 @@ public class GameBoard implements Serializable {
             this.achievementDeck = new LinkedList<>();
             content = new String(Files.readAllBytes(Paths.get("src/main/input_file/achievementCard.json")));
             jo = new JSONObject(content);
-            items = new ArrayList<>();
             for (String achievementCard : jo.keySet()) {
                 if (achievementCard.startsWith("DiagonalAndL")){
                     colorOrSymbol = jo.getJSONObject(achievementCard).getString("color");
@@ -61,6 +60,7 @@ public class GameBoard implements Serializable {
                 else{
                     basePoint = jo.getJSONObject(achievementCard).getInt("basePoint");
                     symbols = jo.getJSONObject(achievementCard).getJSONArray("symbols");
+                    items = new ArrayList<>();
                     for (int i=0; i<symbols.length(); i++){
                         items.add(Symbols.valueOf(symbols.getString(i)));
                     }
