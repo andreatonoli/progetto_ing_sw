@@ -30,6 +30,7 @@ public class Player implements Serializable {
     private int points = 0;
     private PlayerState playerState;
     private ArrayList<String> chat;
+    private ArrayList<Player> chatSender;
     private Game game;
     private PlayerBoard playerBoard;
     private int objCompleted = 0;
@@ -45,6 +46,7 @@ public class Player implements Serializable {
         this.cardInHand = new Card[3];
         this.personalObj = new Achievement[2];
         this.chat = new ArrayList<>();
+        this.chatSender = new ArrayList<>();
         this.game = game;
         this.playerBoard = new PlayerBoard();
     }
@@ -87,6 +89,10 @@ public class Player implements Serializable {
      */
     public ArrayList<String> getChat() {
         return chat;
+    }
+    //così fa schifo
+    public ArrayList<Player> getChatSender() {
+        return chatSender;
     }
 
     /**
@@ -174,10 +180,13 @@ public class Player implements Serializable {
     public void displayMessage(Player sender, String message){
         if(chat.size() >= Chat.CHATDIM){
             chat.set(Chat.CHATDIM - 1, message);
+            chatSender.set(Chat.CHATDIM - 1, sender);
             Collections.rotate(chat, 1);
+            Collections.rotate(chatSender, 1);
         }
         else{
-            chat.addFirst(sender + ":" + message);
+            chat.addFirst(message);
+            chatSender.addFirst(sender);
         }
         //Stampa per test
         //for(int i = 0; i < chat.size(); i++){

@@ -37,7 +37,7 @@ public class Chat implements Serializable {
                 throw new PlayerNotFoundException();
             }
             sender.displayMessage(sender, message);
-            receiver.displayMessage(receiver, message);
+            receiver.displayMessage(sender, message);
         }
     }
 }

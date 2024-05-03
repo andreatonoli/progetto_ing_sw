@@ -13,6 +13,7 @@ import network.client.RMIClient;
 import network.client.SocketClient;
 import network.server.Server;
 
+import javax.print.attribute.IntegerSyntax;
 import java.io.PrintStream;
 import java.rmi.RemoteException;
 import java.util.Scanner;
@@ -634,7 +635,7 @@ public class Tui implements Ui{
         return matScoreBoard;
     }
 
-    public String[][] createPrintableChat(ArrayList<String> chat){
+    public String[][] createPrintableChat(ArrayList<String> chat, ArrayList<Player> sender){
         String[][] matChat = new String[7][2];
 
         for(int i = 0; i < 7; i++){
@@ -644,15 +645,15 @@ public class Tui implements Ui{
         }
 
         for(int i = 0; i < chat.size(); i++){
-            matChat[i][0] = chat.get(i).splitWithDelimiters(":", 2)[0];
-            matChat[i][1] = chat.get(i).splitWithDelimiters(":", 2)[2];
+            matChat[i][0] = sender.get(i).getUsername();
+            matChat[i][1] = chat.get(i);
         }
 
         return matChat;
     }
 
     @Override
-    public void printView(PlayerBoard pBoard, Card[] hand, String username, GameBoard gameBoard, ArrayList<Player> players, ArrayList<String> messages){
+    public void printView(PlayerBoard pBoard, Card[] hand, String username, GameBoard gameBoard, ArrayList<Player> players, ArrayList<String> messages, ArrayList<Player> sender){
         String[][] commonResource1 = this.createPrintableCard(gameBoard.getCommonResource()[0]);
         String[][] commonResource2 = this.createPrintableCard(gameBoard.getCommonResource()[1]);
         String[][] commonGold1 = this.createPrintableCard(gameBoard.getCommonGold()[0]);
@@ -660,7 +661,7 @@ public class Tui implements Ui{
         String[][] commonAchievement1 = this.createPrintableAchievement(gameBoard.getCommonAchievement()[0]);
         String[][] commonAchievement2 = this.createPrintableAchievement(gameBoard.getCommonAchievement()[1]);
         String[][][][] scoreBoard = this.createPrintableScoreBoard(players);
-        String[][] chat = this.createPrintableChat(messages);
+        String[][] chat = this.createPrintableChat(messages, sender);
         String[][][][] playerBoard = this.createPrintablePlayerBoard(pBoard);
         String[][] hand1 = this.createPrintableCard(pBoard, hand[0]);
         String[][] hand2 = this.createPrintableCard(pBoard, hand[1]);
@@ -754,7 +755,9 @@ public class Tui implements Ui{
                 }
                 System.out.print("      ");
                 if(k >= 0){
-                    System.out.print(chat[k][0] + ": " + chat[k][1]);
+                    if(!chat[k][0].isEmpty()){
+                        System.out.print(chat[k][0] + ": " + chat[k][1]);
+                    }
                     k -= 1;
                 }
                 System.out.println();
@@ -901,9 +904,9 @@ public class Tui implements Ui{
         }
     }
 
-    public void printViewWithCommands(PlayerBoard pBoard, Card[] hand, String username, GameBoard gameBoard, ArrayList<Player> players, ArrayList<String> messages){
+    public void printViewWithCommands(PlayerBoard pBoard, Card[] hand, String username, GameBoard gameBoard, ArrayList<Player> players, ArrayList<String> messages, ArrayList<Player> sender){
 
-        this.printView(pBoard, hand, username, gameBoard, players, messages);
+        this.printView(pBoard, hand, username, gameBoard, players, messages, sender);
 
         Scanner input = new Scanner(System.in);
         int[] coord = new int[2];
@@ -912,214 +915,299 @@ public class Tui implements Ui{
             System.out.println("Press [2] to view a card from your board");
             System.out.println("Press [3] to view another player's board");
             System.out.println("Press [4] to place a card");
-            int choice = input.nextInt();
+            System.out.println("Press [c] anytime to send a message");
+            String choice = input.next();
             this.clearConsole();
-            this.printView(pBoard, hand, username, gameBoard, players, messages);
-            if(choice == 1){
-                System.out.println("Which card do you want to display? [1] [2] [3]");
-                int h = input.nextInt();
-                this.clearConsole();
-                this.printView(pBoard, hand, username, gameBoard, players, messages);
-                while(h != 1 && h != 2 && h != 3){
+            this.printView(pBoard, hand, username, gameBoard, players, messages, sender);
+            switch (choice) {
+                case "1" -> {
                     System.out.println("Which card do you want to display? [1] [2] [3]");
-                    h = input.nextInt();
+                    String a = input.next();
                     this.clearConsole();
-                    this.printView(pBoard, hand, username, gameBoard, players, messages);
-                }
-                String[][] frontHand = this.createPrintableCard(hand[h-1]);
-                hand[h-1].setCurrentSide();
-                String[][] backHand = this.createPrintableCard(hand[h-1]);
-                hand[h-1].setCurrentSide();
-                for(int i = 0; i < ROW; i++){
-                    if(i == 0){
-                        System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "front:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
+                    this.printView(pBoard, hand, username, gameBoard, players, messages, sender);
+                    while (!a.equals("1") && !a.equals("2") && !a.equals("3") && !a.equals("c")) {
+                        System.out.println("Which card do you want to display? [1] [2] [3]");
+                        a = input.next();
+                        this.clearConsole();
+                        this.printView(pBoard, hand, username, gameBoard, players, messages, sender);
+                    }
+                    if(a.equals("c")){
+                        this.printChat(pBoard, hand, username, gameBoard, players, messages, sender);
                     }
                     else{
-                        System.out.print("       ");
-                    }
-                    for(int j = 0; j < COLUMN; j++){
-                        System.out.print(frontHand[i][j]);
-                    }
-                    System.out.print("      ");
-                    if(i == 0){
-                        System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "back:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
-                    }
-                    else{
-                        System.out.print("      ");
-                    }
-                    for(int j = 0; j < COLUMN; j++){
-                        System.out.print(backHand[i][j]);
-                    }
-                    System.out.println();
-                }
-                System.out.println();
-            }
-            else if(choice == 2){
-                System.out.println("Which card do you want to display?");
-                System.out.println("Type row number");
-                coord[0] = input.nextInt();
-                this.clearConsole();
-                this.printView(pBoard, hand, username, gameBoard, players, messages);
-                while(coord[0] > (Integer) PLAYERBOARD_DIM){
-                    System.out.println("Retype row number");
-                    coord[0] = input.nextInt();
-                    this.clearConsole();
-                    this.printView(pBoard, hand, username, gameBoard, players, messages);
-                }
-                System.out.println("Type column number");
-                coord[1] = input.nextInt();
-                this.clearConsole();
-                this.printView(pBoard, hand, username, gameBoard, players, messages);
-                while(coord[1] > (Integer) PLAYERBOARD_DIM){
-                    System.out.println("Retype column number");
-                    coord[1] = input.nextInt();
-                    this.clearConsole();
-                    this.printView(pBoard, hand, username, gameBoard, players, messages);
-                }
-                this.clearConsole();
-                this.printView(pBoard, hand, username, gameBoard, players, messages);
-                this.printCardFromPlayerBoard(pBoard, coord);
-            }
-            else if(choice == 3){
-                ArrayList<Player> othersPlayers = new ArrayList<>();
-                for(Player p : players){
-                    if(!p.getUsername().equals(username)){
-                        othersPlayers.add(p);
-                    }
-                }
-                System.out.println("Which player's do you want to display?");
-                for(int i = 0; i < othersPlayers.size(); i++){
-                    System.out.println("\t Press " + String.valueOf(i+1) + " to display " + othersPlayers.get(i).getUsername() + "'s board");
-                }
-                int u = input.nextInt();
-                this.clearConsole();
-                this.printView(pBoard, hand, username, gameBoard, players, messages);
-                while(u > othersPlayers.size()){
-                    System.out.println("Which player's do you want to display?");
-                    for(int i = 0; i < othersPlayers.size(); i++){
-                        System.out.println("\t Press " + i+1 + " to display " + othersPlayers.get(i).getUsername() + "'s board");
-                    }
-                    u = input.nextInt();
-                    this.clearConsole();
-                    this.printView(pBoard, hand, username, gameBoard, players, messages);
-                }
-                this.clearConsole();
-                this.printView(pBoard, hand, username, gameBoard, players, messages);
-                System.out.println(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + othersPlayers.get(u-1).getUsername() + "'s playerboard" + TuiColors.getColor(TuiColors.ANSI_RESET));
-                System.out.println();
-                this.printPlayerBoard(othersPlayers.get(u-1).getPlayerBoard());
-            }
-            else if(choice ==  4){
-                System.out.println("Which card do you want to place? [1] [2] [3]");
-                int p = input.nextInt();
-                this.clearConsole();
-                this.printView(pBoard, hand, username, gameBoard, players, messages);
-                while(p != 1 && p != 2 && p != 3){
-                    System.out.println("Which card do you want to place? [1] [2] [3]");
-                    p = input.nextInt();
-                    this.clearConsole();
-                    this.printView(pBoard, hand, username, gameBoard, players, messages);
-                }
-                System.out.println("Which side do you want to place? [f] for front [b] for back");
-                System.out.println();
-                String[][] front = this.createPrintableCard(hand[p-1]);
-                hand[p-1].setCurrentSide();
-                String[][] back = this.createPrintableCard(hand[p-1]);
-                hand[p-1].setCurrentSide();
-                for(int i = 0; i < ROW; i++){
-                    if(i == 0){
-                        System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "front:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
-                    }
-                    else{
-                        System.out.print("       ");
-                    }
-                    for(int j = 0; j < COLUMN; j++){
-                        System.out.print(front[i][j]);
-                    }
-                    System.out.print("      ");
-                    if(i == 0){
-                        System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "back:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
-                    }
-                    else{
-                        System.out.print("      ");
-                    }
-                    for(int j = 0; j < COLUMN; j++){
-                        System.out.print(back[i][j]);
-                    }
-                    System.out.println();
-                }
-                char s = input.next().charAt(0);
-                this.clearConsole();
-                this.printView(pBoard, hand, username, gameBoard, players, messages);
-                while(s != 'f' && s != 'b'){
-                    System.out.println("Which side do you want to place? [f] for front [b] for back");
-                    for(int i = 0; i < ROW; i++){
-                        if(i == 0){
-                            System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "front:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
-                        }
-                        else{
-                            System.out.print("       ");
-                        }
-                        for(int j = 0; j < COLUMN; j++){
-                            System.out.print(front[i][j]);
-                        }
-                        System.out.print("      ");
-                        if(i == 0){
-                            System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "back:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
-                        }
-                        else{
+                        String[][] frontHand = this.createPrintableCard(hand[Integer.parseInt(a) - 1]);
+                        hand[Integer.parseInt(a) - 1].setCurrentSide();
+                        String[][] backHand = this.createPrintableCard(hand[Integer.parseInt(a) - 1]);
+                        hand[Integer.parseInt(a) - 1].setCurrentSide();
+                        for (int i = 0; i < ROW; i++) {
+                            if (i == 0) {
+                                System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "front:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
+                            } else {
+                                System.out.print("       ");
+                            }
+                            for (int j = 0; j < COLUMN; j++) {
+                                System.out.print(frontHand[i][j]);
+                            }
                             System.out.print("      ");
-                        }
-                        for(int j = 0; j < COLUMN; j++){
-                            System.out.print(back[i][j]);
+                            if (i == 0) {
+                                System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "back:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
+                            } else {
+                                System.out.print("      ");
+                            }
+                            for (int j = 0; j < COLUMN; j++) {
+                                System.out.print(backHand[i][j]);
+                            }
+                            System.out.println();
                         }
                         System.out.println();
                     }
-                    s = input.next().charAt(0);
                 }
-                if(s == 'f'){
-                    this.printCard(hand[p-1]);
-                }
-                else if(s == 'b'){
-                    hand[p-1].setCurrentSide();
-                    this.printCard(hand[p-1]);
-                    hand[p-1].setCurrentSide();
-                }
-                System.out.println("Where do you want to place it?");
-                System.out.println("Type row number");
-                coord[0] = input.nextInt();
-                this.clearConsole();
-                this.printView(pBoard, hand, username, gameBoard, players, messages);
-                while(coord[0] > (Integer) PLAYERBOARD_DIM){
-                    System.out.println("Retype row number");
-                    coord[0] = input.nextInt();
+                case "2" -> {
+                    System.out.println("Which card do you want to display?");
+                    System.out.println("Type row number");
+                    String a = input.next();
                     this.clearConsole();
-                    this.printView(pBoard, hand, username, gameBoard, players, messages);
-                }
-                System.out.println("Type column number");
-                coord[1] = input.nextInt();
-                this.clearConsole();
-                this.printView(pBoard, hand, username, gameBoard, players, messages);
-                while(coord[1] > (Integer) PLAYERBOARD_DIM){
-                    System.out.println("Retype column number");
-                    coord[1] = input.nextInt();
-                    this.clearConsole();
-                    this.printView(pBoard, hand, username, gameBoard, players, messages);
-                }
-                for(int i = 0; i < players.size(); i++){
-                    if(players.get(i).getUsername().equals(username)){
-                        Player player = players.get(i);
+                    this.printView(pBoard, hand, username, gameBoard, players, messages, sender);
+                    while (!a.equals("c") && Integer.parseInt(a) > PLAYERBOARD_DIM) {
+                        System.out.println("Retype row number");
+                        a = input.next();
+                        this.clearConsole();
+                        this.printView(pBoard, hand, username, gameBoard, players, messages, sender);
+                    }
+                    if(a.equals("c")){
+                        this.printChat(pBoard, hand, username, gameBoard, players, messages, sender);
+                    }
+                    else{
+                        coord[0] = Integer.parseInt(a);
+                        System.out.println("Type column number");
+                        a = input.next();
+                        this.clearConsole();
+                        this.printView(pBoard, hand, username, gameBoard, players, messages, sender);
+                        while (!a.equals("c") && Integer.parseInt(a) > PLAYERBOARD_DIM) {
+                            System.out.println("Retype column number");
+                            a = input.next();
+                            this.clearConsole();
+                            this.printView(pBoard, hand, username, gameBoard, players, messages, sender);
+                        }
+                        if(a.equals("c")){
+                            this.printChat(pBoard, hand, username, gameBoard, players, messages, sender);
+                        }
+                        else{
+                            coord[1] = Integer.parseInt(a);
+                            this.clearConsole();
+                            this.printView(pBoard, hand, username, gameBoard, players, messages, sender);
+                            this.printCardFromPlayerBoard(pBoard, coord);
+                        }
+
                     }
                 }
-                this.clearConsole();
-                this.printView(pBoard, hand, username, gameBoard, players, messages);
-                System.out.println("QUI IL CONTROLLER DEVE AVER PIAZZATO LA CARTA");
-                System.out.println();
-            }
-            else{
-                this.clearConsole();
+                case "3" -> {
+                    ArrayList<Player> othersPlayers = new ArrayList<>();
+                    for (Player p : players) {
+                        if (!p.getUsername().equals(username)) {
+                            othersPlayers.add(p);
+                        }
+                    }
+                    System.out.println("Which player's do you want to display?");
+                    for (int i = 0; i < othersPlayers.size(); i++) {
+                        System.out.println("\t Press " + String.valueOf(i + 1) + " to display " + othersPlayers.get(i).getUsername() + "'s board");
+                    }
+                    String a = input.next();
+                    this.clearConsole();
+                    this.printView(pBoard, hand, username, gameBoard, players, messages, sender);
+                    while (!a.equals("c") && (Integer.parseInt(a) <= 0 || Integer.parseInt(a) > othersPlayers.size())) {
+                        System.out.println("Which player's do you want to display?");
+                        for (int i = 0; i < othersPlayers.size(); i++) {
+                            System.out.println("\t Press " + i + 1 + " to display " + othersPlayers.get(i).getUsername() + "'s board");
+                        }
+                        a = input.next();
+                        this.clearConsole();
+                        this.printView(pBoard, hand, username, gameBoard, players, messages, sender);
+                    }
+                    if(a.equals("c")){
+                        this.printChat(pBoard, hand, username, gameBoard, players, messages, sender);
+                    }
+                    else{
+                        this.clearConsole();
+                        this.printView(pBoard, hand, username, gameBoard, players, messages, sender);
+                        System.out.println(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + othersPlayers.get(Integer.parseInt(a) - 1).getUsername() + "'s playerboard" + TuiColors.getColor(TuiColors.ANSI_RESET));
+                        System.out.println();
+                        this.printPlayerBoard(othersPlayers.get(Integer.parseInt(a) - 1).getPlayerBoard());
+                    }
+                }
+                case "4" -> {
+                    System.out.println("Which card do you want to place? [1] [2] [3]");
+                    String a = input.next();
+                    this.clearConsole();
+                    this.printView(pBoard, hand, username, gameBoard, players, messages, sender);
+                    while (!a.equals("1") && !a.equals("2") && !a.equals("3") && !a.equals("c")) {
+                        System.out.println("Which card do you want to place? [1] [2] [3]");
+                        a = input.next();
+                        this.clearConsole();
+                        this.printView(pBoard, hand, username, gameBoard, players, messages, sender);
+                    }
+                    if(a.equals("c")){
+                        this.printChat(pBoard, hand, username, gameBoard, players, messages, sender);
+                    }
+                    else{
+                        System.out.println("Which side do you want to place? [f] for front [b] for back");
+                        System.out.println();
+                        String[][] front = this.createPrintableCard(hand[Integer.parseInt(a) - 1]);
+                        hand[Integer.parseInt(a) - 1].setCurrentSide();
+                        String[][] back = this.createPrintableCard(hand[Integer.parseInt(a) - 1]);
+                        hand[Integer.parseInt(a) - 1].setCurrentSide();
+                        for (int i = 0; i < ROW; i++) {
+                            if (i == 0) {
+                                System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "front:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
+                            } else {
+                                System.out.print("       ");
+                            }
+                            for (int j = 0; j < COLUMN; j++) {
+                                System.out.print(front[i][j]);
+                            }
+                            System.out.print("      ");
+                            if (i == 0) {
+                                System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "back:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
+                            } else {
+                                System.out.print("      ");
+                            }
+                            for (int j = 0; j < COLUMN; j++) {
+                                System.out.print(back[i][j]);
+                            }
+                            System.out.println();
+                        }
+                        String b = input.next();
+                        this.clearConsole();
+                        this.printView(pBoard, hand, username, gameBoard, players, messages, sender);
+                        while (!b.equals("f") && !b.equals("b") && !b.equals("c")) {
+                            System.out.println("Which side do you want to place? [f] for front [b] for back");
+                            for (int i = 0; i < ROW; i++) {
+                                if (i == 0) {
+                                    System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "front:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
+                                } else {
+                                    System.out.print("       ");
+                                }
+                                for (int j = 0; j < COLUMN; j++) {
+                                    System.out.print(front[i][j]);
+                                }
+                                System.out.print("      ");
+                                if (i == 0) {
+                                    System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "back:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
+                                } else {
+                                    System.out.print("      ");
+                                }
+                                for (int j = 0; j < COLUMN; j++) {
+                                    System.out.print(back[i][j]);
+                                }
+                                System.out.println();
+                            }
+                            b = input.next();
+                        }
+                        if(b.equals("c")){
+                            this.printChat(pBoard, hand, username, gameBoard, players, messages, sender);
+                        }
+                        else if (b.equals("f")) {
+                            this.printCard(hand[Integer.parseInt(a) - 1]);
+                        }
+                        else {
+                            hand[Integer.parseInt(a) - 1].setCurrentSide();
+                            this.printCard(hand[Integer.parseInt(a) - 1]);
+                            hand[Integer.parseInt(a) - 1].setCurrentSide();
+                        }
+                        System.out.println("Where do you want to place it?");
+                        System.out.println("Type row number");
+                        a = input.next();
+                        this.clearConsole();
+                        this.printView(pBoard, hand, username, gameBoard, players, messages, sender);
+                        while (!a.equals("c") && Integer.parseInt(a) > PLAYERBOARD_DIM) {
+                            System.out.println("Retype row number");
+                            a = input.next();
+                            this.clearConsole();
+                            this.printView(pBoard, hand, username, gameBoard, players, messages, sender);
+                        }
+                        if(a.equals("c")){
+                            this.printChat(pBoard, hand, username, gameBoard, players, messages, sender);
+                        }
+                        else{
+                            coord[0] = Integer.parseInt(a);
+                            System.out.println("Type column number");
+                            a = input.next();
+                            this.clearConsole();
+                            this.printView(pBoard, hand, username, gameBoard, players, messages, sender);
+                            while (!a.equals("c") && Integer.parseInt(a) > PLAYERBOARD_DIM) {
+                                System.out.println("Retype column number");
+                                a = input.next();
+                                this.clearConsole();
+                                this.printView(pBoard, hand, username, gameBoard, players, messages, sender);
+                            }
+                            if(a.equals("c")){
+                                this.printChat(pBoard, hand, username, gameBoard, players, messages, sender);
+                            }
+                            else{
+                                coord[1] = Integer.parseInt(a);
+                                this.clearConsole();
+                                this.printView(pBoard, hand, username, gameBoard, players, messages, sender);
+                                this.printCardFromPlayerBoard(pBoard, coord);
+                            }
+
+                        }
+                        this.clearConsole();
+                        this.printView(pBoard, hand, username, gameBoard, players, messages, sender);
+                        System.out.println("QUI IL CONTROLLER DEVE AVER PIAZZATO LA CARTA");
+                        System.out.println();
+                    }
+
+                }
+                case "c" -> {
+                    this.printChat(pBoard, hand, username, gameBoard, players, messages, sender);
+                }
+                default -> this.clearConsole();
             }
         }
+    }
+
+    public void printChat(PlayerBoard pBoard, Card[] hand, String username, GameBoard gameBoard, ArrayList<Player> players, ArrayList<String> messages, ArrayList<Player> sender){
+        Scanner input = new Scanner(System.in);
+        ArrayList<Player> othersPlayers = new ArrayList<>();
+        for (Player p : players) {
+            if (!p.getUsername().equals(username)) {
+                othersPlayers.add(p);
+            }
+        }
+        System.out.println("To whom do you want to send your message?");
+        for (int i = 0; i < othersPlayers.size(); i++) {
+            System.out.println("\t Press " + String.valueOf(i + 1) + " to send the message to " + othersPlayers.get(i).getUsername());
+        }
+        System.out.println("\t Press " + String.valueOf(othersPlayers.size() + 1) + " to send a global message");
+        int u = input.nextInt();
+        this.clearConsole();
+        this.printView(pBoard, hand, username, gameBoard, players, messages, sender);
+        while (u <= 0 || u > othersPlayers.size() + 1) {
+            System.out.println("To whom do you want to send your message?");
+            for (int i = 0; i < othersPlayers.size(); i++) {
+                System.out.println("\t Press " + String.valueOf(i + 1) + " to send the message to " + othersPlayers.get(i).getUsername());
+            }
+            u = input.nextInt();
+            this.clearConsole();
+            this.printView(pBoard, hand, username, gameBoard, players, messages, sender);
+        }
+        System.out.println("What's the content of your message?");
+        String m = input.next();
+        if (u == othersPlayers.size() + 1) {
+            for (Player p : players) {
+                if (p.getUsername().equals(username)) {
+                    p.sendMessage(m);
+                }
+            }
+        } else {
+            for (Player p : players) {
+                if (p.getUsername().equals(username)) {
+                    p.sendMessage(othersPlayers.get(u - 1), m);
+                }
+            }
+        }
+        this.clearConsole();
+        this.printView(pBoard, hand, username, gameBoard, players, messages, sender);
     }
 
     public void printTitle(){
