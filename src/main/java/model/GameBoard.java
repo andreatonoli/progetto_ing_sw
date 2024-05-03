@@ -61,6 +61,7 @@ public class GameBoard implements Serializable {
                 else{
                     basePoint = jo.getJSONObject(achievementCard).getInt("basePoint");
                     symbols = jo.getJSONObject(achievementCard).getJSONArray("symbols");
+                    items = new ArrayList<>();
                     for (int i=0; i<symbols.length(); i++){
                         items.add(Symbols.valueOf(symbols.getString(i)));
                     }
