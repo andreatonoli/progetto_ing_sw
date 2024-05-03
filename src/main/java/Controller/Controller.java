@@ -126,7 +126,7 @@ public class Controller extends Observable {
         try {
             notify(user,new GenericMessage("placing card..."));
             this.getPlayerByClient(user).placeCard(card,coordinates,corner);
-            notify(user,new GenericMessage("Successfully palced a card"));
+            notify(user,new GenericMessage("Successfully placed a card"));
             turnHandler.changePlayerState(this.getPlayerByClient(user));
             notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState()));
         } catch (NotInTurnException e) {

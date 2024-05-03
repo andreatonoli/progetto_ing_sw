@@ -45,8 +45,8 @@ public class GameBoard implements Serializable {
             this.achievementDeck = new LinkedList<>();
             content = new String(Files.readAllBytes(Paths.get("src/main/input_file/achievementCard.json")));
             jo = new JSONObject(content);
-            items = new ArrayList<>();
             for (String achievementCard : jo.keySet()) {
+                items = new ArrayList<>();
                 if (achievementCard.startsWith("DiagonalAndL")){
                     colorOrSymbol = jo.getJSONObject(achievementCard).getString("color");
                     AchievementDiagonal adCard = new AchievementDiagonal(Color.valueOf(colorOrSymbol));
@@ -136,6 +136,9 @@ public class GameBoard implements Serializable {
                 StarterCard sCard = new StarterCard(arrayCorner, cardNumber, retro);
                 starterDeck.add(sCard);
             }
+            if (starterDeck == null){
+                System.out.println("NON ARRIVA FIN QUI");
+            }
             commonResource = new Card[2];
             commonGold = new Card[2];
             commonAchievement = new Achievement[2];
@@ -165,13 +168,13 @@ public class GameBoard implements Serializable {
         return drawedCard;
     }
     public LinkedList<Achievement> getAchievementDeck() {
-        return achievementDeck;
+        return this.achievementDeck;
     }
     public LinkedList<Card> getGoldDeck() {
-        return goldDeck;
+        return this.goldDeck;
     }
     public LinkedList<Card> getResourceDeck() {
-        return resourceDeck;
+        return this.resourceDeck;
     }
     public LinkedList<Card> getStarterDeck() {
         return this.starterDeck;

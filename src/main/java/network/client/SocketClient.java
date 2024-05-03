@@ -137,7 +137,7 @@ public class SocketClient {
                 }
                 break;
             case SCOREBOARD_UPDATE:
-                this.view.printView(this.player.getBoard(), this.player.getHand(), this.username, this.commonResources, this.commonGold, this.commonAchievement, this.opponents, this.player.getChat());
+                //this.view.printView(this.player.getBoard(), this.player.getHand(), this.username, this.commonResources, this.commonGold, this.commonAchievement, this.opponents, this.player.getChat());
                 break;
             case PLAYER_STATE:
                 PlayerState playerState = ((PlayerStateMessage) message).getState();

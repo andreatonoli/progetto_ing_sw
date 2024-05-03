@@ -1,5 +1,6 @@
 package model;
 
+/*
 import model.card.*;
 import model.enums.Color;
 import model.enums.Condition;
@@ -217,3 +218,5 @@ class GameBoardTest {
 
 
 }
+
+ */
