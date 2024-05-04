@@ -12,7 +12,8 @@ public class TurnHandler extends Observable {
         this.game=game;
         //this.server=server;
     }
-
+    //TODO: se il giocatore resta da solo??
+    //TODO: mettere controllo del client se disconnesso per fargli saltare il turno
     public void changePlayerState(Player player){
         int i = (player.getPlayerState().ordinal() + 1) % 3;
         if (i == 0){

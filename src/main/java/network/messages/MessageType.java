@@ -20,5 +20,6 @@ public enum MessageType {
     STARTER_CARD,
     USERNAME_REQUEST,
     DECLARE_WINNER,
-    PLAYER_STATE
+    PLAYER_STATE,
+    DISCONNECTION
 }

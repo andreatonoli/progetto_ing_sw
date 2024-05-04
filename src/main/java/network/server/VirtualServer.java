@@ -14,4 +14,5 @@ public interface VirtualServer extends Remote {
     void flipCard(Card card) throws RemoteException;
     void placeStarterCard(Card card) throws RemoteException;
     void setAchievement(Achievement achievement) throws RemoteException;
+    void pingConnection() throws RemoteException;
 }

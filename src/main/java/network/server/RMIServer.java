@@ -50,6 +50,11 @@ public class RMIServer implements VirtualServer {
         this.startServer();
     }
 
+    //TODO: devo mandare un riferimento alla connection?
+    //metti in queue
+    public void pingConnection() throws RemoteException{
+        connection.catchPing();
+    }
     @Override
     public void login(RMIClientHandler client, String username) throws RemoteException {
         connection = new RMIConnection(server, client, username);

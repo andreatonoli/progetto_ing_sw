@@ -16,6 +16,9 @@ public class RMIConnection extends Connection {
     private Controller lobby;
     private transient Server server;
     private String username;
+    private Timer catchPing;
+    private Timer ping;
+
     public RMIConnection(Server server, RMIClientHandler client, String username){
         this.client = client;
         this.server = server;
@@ -26,13 +29,26 @@ public class RMIConnection extends Connection {
 
     //TODO ping al client
     private void ping(){
-        Timer t = new Timer();
-        t.schedule(new TimerTask() {
+        ping = new Timer();
+        catchPing = new Timer();
+        ping.schedule(new TimerTask() {
             @Override
             public void run() {
                 pingClient();
+                System.out.println("cacca 1 the origins");
             }
         }, 0, 500);
+
+        catchPing.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                System.out.println("cacca 4 the return");
+                ping.cancel();
+                catchPing.cancel();
+
+                //aggiungere quello che fa quando si scollega
+            }
+        }, 4000, 4000);
     }
     private void pingClient(){
         try {
@@ -40,6 +56,24 @@ public class RMIConnection extends Connection {
         } catch (RemoteException e) {
             System.err.println(e.getMessage() + " " + "in pingClient/RMIConnection");
         }
+    }
+    // se viene ricevuto un riscontro dal client entro 2000 allora riparte il timer
+    // altrimenti il client verrà considerato disconnesso
+    public void catchPing(){
+        catchPing.cancel();
+        catchPing = new Timer();
+        catchPing.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                ping.cancel();
+                catchPing.cancel();
+                System.out.println("cacca 3 the last shit");
+                //TODO: metti on disconnection
+                //aggiungere quello che fa quando si scollega
+                //io chiamerei tipo il controller per mandare una notifyall con il messaggio creato apposta
+                //e per far salvare i dati del player disconnesso(?????)
+            }
+        }, 2000, 2000);
     }
     //TODO che se fa se non responde er pupone?
 

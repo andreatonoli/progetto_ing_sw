@@ -98,10 +98,11 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler {
         }
     }
 
-    //TODO: ANDREAAAAAAAAAAAAAAAAAAAAa
+    //TODO: ANDREAAAAAAAAAAAAAAAAAAAA aggiungi in queue con update
     @Override
     public void pingNetwork() throws RemoteException{
-
+        server.pingConnection();
+        System.out.println("cacca 2 the avenge");
     }
 
     @Override
@@ -176,6 +177,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler {
             case GENERIC_MESSAGE:
                 this.view.showText(message.toString());
                 break;
+                //aggiungi case ping
             default:
                 break;
         }
