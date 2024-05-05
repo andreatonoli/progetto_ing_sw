@@ -68,6 +68,8 @@ public class App
         player2.sendMessage(player, "messaggio6 da p2");
         player2.sendMessage(player, "messaggio7 da p2");
         player2.sendMessage(player, "messaggio8 da p2");
-        t.printViewWithCommands(player.getPlayerBoard(), player.getCardInHand(), player.getUsername(), game.getGameBoard(), game.getPlayers(), player.getChat(), player.getChatSender());
+        t.printScoreBoard(game.getPlayers());
+        t.printGameBoard(game.getGameBoard().getCommonResource(), game.getGameBoard().getCommonGold(), game.getGameBoard().getCommonAchievement());
+        t.printViewWithCommands(player.getPlayerBoard(), player.getCardInHand(), player.getUsername(), game.getGameBoard(), game.getPlayers(), player.getChat());
     }
 }

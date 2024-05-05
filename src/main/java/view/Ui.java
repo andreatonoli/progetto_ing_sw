@@ -17,7 +17,7 @@ public interface Ui{
     void showText(String text);
     int setLobbySize();
     boolean askToFlip();
-    void printView(PlayerBoard playerBoard, Card[] hand, String username, GameBoard gameBoard, ArrayList<Player> players, ArrayList<String> messages, ArrayList<Player> sender);
+    void printView(PlayerBoard playerBoard, Card[] hand, String username, GameBoard gameBoard, ArrayList<Player> players, ArrayList<String> messages);
     void printCardFromPlayerBoard(PlayerBoard playerBoard, int[] coord);
     void printCard(PlayerBoard playerBoard, Card card);
     void printCard(Card card);
