@@ -24,6 +24,11 @@ public class Game extends Observable implements Serializable {
     private Player firstPlayer;
     private Player playerInTurn;
     private Chat chatHandler;
+    /**
+     * number of disconnected players
+     */
+    private int disconnections;
+
 
     /**
      *
@@ -37,6 +42,7 @@ public class Game extends Observable implements Serializable {
         this.players = new ArrayList<>();
         this.firstPlayer = null;
         this.playerInTurn = null;
+        this.disconnections = 0;
         this.chatHandler = new Chat(this);
         this.gameBoard = new GameBoard(this);
     }
@@ -150,6 +156,12 @@ public class Game extends Observable implements Serializable {
         else{
             willPlay++;
         }
+        while (players.get(willPlay).isDisconnected()){
+            willPlay++;
+            if (willPlay == lobbySize){
+                willPlay = 0;
+            }
+        }
         this.playerInTurn = players.get(willPlay);
         playerInTurn.setPlayerState(PlayerState.PLAY_CARD);
         notifyAll(new GenericMessage("it's "+playerInTurn+" turn"));
@@ -171,6 +183,15 @@ public class Game extends Observable implements Serializable {
 
     public ArrayList<Player> getPlayers(){
         return this.players;
+    }
+
+    public Player getPlayerByUsername(String username){
+        for (Player player : players) {
+            if (player.getUsername().equals(username)) {
+                return player;
+            }
+        }
+        return null;
     }
 
     public void addPlayer(Player player){
@@ -197,5 +218,13 @@ public class Game extends Observable implements Serializable {
     public int getLobbySize(){
         return lobbySize;
     }
+
+    public int getDisconnections() {
+        return disconnections;
+    }
+    public void setDisconnections(int disconnectedPlayers) {
+        disconnections = disconnectedPlayers;
+    }
+
 
 }

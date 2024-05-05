@@ -19,6 +19,7 @@ import java.util.*;
 
 public class RMIClient extends UnicastRemoteObject implements RMIClientHandler {
     private Queue<Message> messageQueue;
+    private Queue<Action> actionQueue;
     private boolean processingAction;
     private static final String serverName = "GameServer";
     private String username;
@@ -45,6 +46,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler {
         this.commonGold = new Card[2];
         messageQueue = new LinkedList<>();
         processingAction = false;
+        actionQueue = new LinkedList<>();
         pickQueue();
         try {
             Registry registry = LocateRegistry.getRegistry(host, port);
@@ -97,17 +99,31 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler {
             }
         }
     }
+    private void addToQueue(Action action) {
+        actionQueue.add(action);
+    }
 
     //TODO: ANDREAAAAAAAAAAAAAAAAAAAA aggiungi in queue con update
     @Override
     public void pingNetwork() throws RemoteException{
-        server.pingConnection();
-        System.out.println("cacca 2 the avenge");
+        addToQueue(() -> {
+            try {
+                server.pingConnection();
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     @Override
     public void update(Message message){
-        this.messageQueue.add(message);
+        addToQueue(() -> {
+            try {
+                server.pingConnection();
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     /**

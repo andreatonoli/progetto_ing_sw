@@ -35,18 +35,18 @@ public class RMIConnection extends Connection {
             @Override
             public void run() {
                 pingClient();
-                System.out.println("cacca 1 the origins");
             }
         }, 0, 500);
 
         catchPing.schedule(new TimerTask() {
             @Override
             public void run() {
-                System.out.println("cacca 4 the return");
                 ping.cancel();
                 catchPing.cancel();
-
                 //aggiungere quello che fa quando si scollega
+                lobby.getGame().getPlayerByUsername(username).setDisconnected(true);
+                setConnectionStatus(false);
+                //
             }
         }, 4000, 4000);
     }
@@ -67,8 +67,9 @@ public class RMIConnection extends Connection {
             public void run() {
                 ping.cancel();
                 catchPing.cancel();
-                System.out.println("cacca 3 the last shit");
                 //TODO: metti on disconnection
+                lobby.getGame().getPlayerByUsername(username).setDisconnected(true);
+                setConnectionStatus(false);
                 //aggiungere quello che fa quando si scollega
                 //io chiamerei tipo il controller per mandare una notifyall con il messaggio creato apposta
                 //e per far salvare i dati del player disconnesso(?????)
