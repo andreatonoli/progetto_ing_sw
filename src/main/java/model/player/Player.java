@@ -32,6 +32,7 @@ public class Player implements Serializable {
     private ArrayList<String> chat;
     private Game game;
     private PlayerBoard playerBoard;
+    private boolean disconnected;
     private int objCompleted = 0;
 
     /**
@@ -47,6 +48,24 @@ public class Player implements Serializable {
         this.chat = new ArrayList<>();
         this.game = game;
         this.playerBoard = new PlayerBoard();
+        this.disconnected = false;
+    }
+
+    public boolean isDisconnected() {
+        return disconnected;
+    }
+
+    public void setDisconnected(boolean disconnected) {
+        this.disconnected = disconnected;
+        int disconnections;
+        if (this.disconnected){
+            disconnections = game.getDisconnections()+1;
+            game.setDisconnections(disconnections);
+        }
+        else {
+            disconnections = game.getDisconnections()-1;
+            game.setDisconnections(disconnections);
+        }
     }
 
     /**

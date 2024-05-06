@@ -5,20 +5,27 @@ import model.player.Player;
 import observer.Observable;
 
 public class TurnHandler extends Observable {
+    /**
+     * game reference
+     */
     private Game game;
-    //private transient Server server;
 
-    public TurnHandler(Game game/*, Server server*/){
-        this.game=game;
-        //this.server=server;
+    public TurnHandler(Game game){
+        this.game = game;
     }
-
+    //TODO: se il giocatore resta da solo??
+    //TODO: (risolto in game metodo setplayerinturn) mettere controllo del client se disconnesso per fargli saltare il turno
     public void changePlayerState(Player player){
-        int i = (player.getPlayerState().ordinal() + 1) % 3;
-        if (i == 0){
-            game.setPlayerInTurn();
+        if (game.getLobbySize()-2 >= game.getDisconnections()) {
+            int i = (player.getPlayerState().ordinal() + 1) % 3;
+            if (i == 0) {
+                game.setPlayerInTurn();
+            }
+            player.setPlayerState(PlayerState.values()[i]);
         }
-        player.setPlayerState(PlayerState.values()[i]);
+        else {
+            // mettere il timer per finire la partita e trovare un modo per bloccare il gioco
+        }
     }
 
 }

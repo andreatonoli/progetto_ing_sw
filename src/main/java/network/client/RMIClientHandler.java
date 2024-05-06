@@ -12,4 +12,5 @@ public interface RMIClientHandler extends Remote {
     int setLobbySize() throws RemoteException;
     Ui getView() throws RemoteException;
     void update(Message message) throws RemoteException;
+    void pingNetwork() throws RemoteException;
 }
