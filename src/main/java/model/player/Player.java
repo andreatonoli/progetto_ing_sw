@@ -173,11 +173,11 @@ public class Player implements Serializable {
     //TODO: commentare
     public void displayMessage(Player sender, String message){
         if(chat.size() >= Chat.CHATDIM){
-            chat.set(Chat.CHATDIM - 1, message);
+            chat.set(Chat.CHATDIM - 1, sender.getUsername() + " : " + message);
             Collections.rotate(chat, 1);
         }
         else{
-            chat.addFirst(sender + ":" + message);
+            chat.addFirst(sender.getUsername() + " : " + message);
         }
         //Stampa per test
         //for(int i = 0; i < chat.size(); i++){
