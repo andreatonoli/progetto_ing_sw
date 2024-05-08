@@ -43,7 +43,7 @@ public class GameBoard implements Serializable {
             JSONArray symbols;
             //creation of achievementDeck
             this.achievementDeck = new LinkedList<>();
-            content = new String(Files.readAllBytes(Paths.get("src/main/input_file/achievementCard.json")));
+            content = new String(Files.readAllBytes(Paths.get("src/main/resources/json/achievementCard.json")));
             jo = new JSONObject(content);
             for (String achievementCard : jo.keySet()) {
                 items = new ArrayList<>();
@@ -71,7 +71,7 @@ public class GameBoard implements Serializable {
             }
             //creation of goldDeck
             this.goldDeck = new LinkedList<>();
-            content = new String(Files.readAllBytes(Paths.get("src/main/input_file/goldCard.json")));
+            content = new String(Files.readAllBytes(Paths.get("src/main/resources/json/goldCard.json")));
             jo = new JSONObject(content);
             for (String goldCard : jo.keySet()) {
                 symbols = jo.getJSONObject(goldCard).getJSONArray("corners");
@@ -99,7 +99,7 @@ public class GameBoard implements Serializable {
             }
             //creation of resourceDeck
             this.resourceDeck = new LinkedList<>();
-            content = new String(Files.readAllBytes(Paths.get("src/main/input_file/resourceCard.json")));
+            content = new String(Files.readAllBytes(Paths.get("src/main/resources/json/resourceCard.json")));
             jo = new JSONObject(content);
             for (String resourceCard : jo.keySet()) {
                 symbols = jo.getJSONObject(resourceCard).getJSONArray("corners");
@@ -114,7 +114,7 @@ public class GameBoard implements Serializable {
             }
             //creation of starterDeck
             this.starterDeck = new LinkedList<>();
-            content = new String(Files.readAllBytes(Paths.get("src/main/input_file/starterCard.json")));
+            content = new String(Files.readAllBytes(Paths.get("src/main/resources/json/starterCard.json")));
             jo = new JSONObject(content);
             for (String starterCard : jo.keySet()) {
                 items = new ArrayList<>();
