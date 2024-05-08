@@ -1,26 +1,25 @@
 package model;
 
-import model.*;
+import it.polimi.ingsw.model.Game;
+
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import model.card.CardBack;
-import model.card.Corner;
-import model.card.ResourceCard;
-import model.card.StarterCard;
-import model.enums.Color;
-import model.enums.CornerEnum;
-import model.enums.PlayerState;
-import model.enums.Symbols;
-import model.exceptions.AlreadyUsedPositionException;
-import model.exceptions.CostNotSatisfiedException;
-import model.exceptions.NotInTurnException;
-import model.exceptions.OccupiedCornerException;
-import model.player.Player;
-import network.server.Server;
+import it.polimi.ingsw.model.card.CardBack;
+import it.polimi.ingsw.model.card.Corner;
+import it.polimi.ingsw.model.card.ResourceCard;
+import it.polimi.ingsw.model.card.StarterCard;
+import it.polimi.ingsw.model.enums.Color;
+import it.polimi.ingsw.model.enums.CornerEnum;
+import it.polimi.ingsw.model.enums.PlayerState;
+import it.polimi.ingsw.model.enums.Symbols;
+import it.polimi.ingsw.model.exceptions.AlreadyUsedPositionException;
+import it.polimi.ingsw.model.exceptions.CostNotSatisfiedException;
+import it.polimi.ingsw.model.exceptions.NotInTurnException;
+import it.polimi.ingsw.model.exceptions.OccupiedCornerException;
+import it.polimi.ingsw.model.player.Player;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import java.io.IOException;

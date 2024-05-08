@@ -1,16 +1,16 @@
 package model;
 
-import Controller.*;
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.card.CardBack;
-import model.card.Corner;
-import model.card.StarterCard;
-import model.enums.Color;
-import model.enums.Symbols;
-import model.player.Player;
+import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.card.CardBack;
+import it.polimi.ingsw.model.card.Corner;
+import it.polimi.ingsw.model.card.StarterCard;
+import it.polimi.ingsw.model.enums.Color;
+import it.polimi.ingsw.model.enums.Symbols;
+import it.polimi.ingsw.model.player.Player;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import java.io.IOException;

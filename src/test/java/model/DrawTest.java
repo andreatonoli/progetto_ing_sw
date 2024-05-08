@@ -1,16 +1,18 @@
 package model;
 
 import static org.junit.jupiter.api.Assertions.*;
-import model.*;
-import model.card.Card;
-import model.card.Corner;
-import model.card.ResourceCard;
-import model.enums.PlayerState;
-import model.enums.Symbols;
-import model.exceptions.EmptyException;
-import model.exceptions.FullHandException;
-import model.exceptions.NotInTurnException;
-import model.player.Player;
+
+import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.GameBoard;
+import it.polimi.ingsw.model.card.Card;
+import it.polimi.ingsw.model.card.Corner;
+import it.polimi.ingsw.model.card.ResourceCard;
+import it.polimi.ingsw.model.enums.PlayerState;
+import it.polimi.ingsw.model.enums.Symbols;
+import it.polimi.ingsw.model.exceptions.EmptyException;
+import it.polimi.ingsw.model.exceptions.FullHandException;
+import it.polimi.ingsw.model.exceptions.NotInTurnException;
+import it.polimi.ingsw.model.player.Player;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import java.io.IOException;

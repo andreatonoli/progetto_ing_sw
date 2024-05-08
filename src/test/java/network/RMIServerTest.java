@@ -1,27 +1,10 @@
 package network;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import Controller.Controller;
-import model.Game;
-import model.GameBoard;
-import model.card.*;
-import model.enums.Color;
-import model.enums.CornerEnum;
-import model.enums.PlayerState;
-import model.enums.Symbols;
-import model.exceptions.AlreadyUsedPositionException;
-import model.exceptions.CostNotSatisfiedException;
-import model.exceptions.NotInTurnException;
-import model.exceptions.OccupiedCornerException;
-import model.player.Player;
-import network.server.Action;
+import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.GameBoard;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
-import java.io.IOException;
+
 public class RMIServerTest {
     //TODO: non è un test vero
     @Test

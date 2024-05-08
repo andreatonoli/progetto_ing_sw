@@ -1,23 +1,5 @@
 package model;
 
-import Controller.*;
-
-import static org.junit.jupiter.api.Assertions.*;
-
-import model.card.*;
-import model.enums.Color;
-import model.enums.CornerEnum;
-import model.enums.PlayerState;
-import model.enums.Symbols;
-import model.exceptions.*;
-import model.player.Player;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.DisplayName;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 //public class GameTest {
 //
 //    private final Game game1;

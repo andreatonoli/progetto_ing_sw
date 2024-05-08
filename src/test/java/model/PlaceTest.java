@@ -1,18 +1,19 @@
 package model;
 
-import model.*;
+import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.card.*;
+import it.polimi.ingsw.model.enums.*;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import model.card.*;
-import model.enums.*;
-import model.exceptions.AlreadyUsedPositionException;
-import model.exceptions.CostNotSatisfiedException;
-import model.exceptions.NotInTurnException;
-import model.exceptions.OccupiedCornerException;
-import model.player.Player;
+import it.polimi.ingsw.model.exceptions.AlreadyUsedPositionException;
+import it.polimi.ingsw.model.exceptions.CostNotSatisfiedException;
+import it.polimi.ingsw.model.exceptions.NotInTurnException;
+import it.polimi.ingsw.model.exceptions.OccupiedCornerException;
+import it.polimi.ingsw.model.player.Player;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import java.io.IOException;

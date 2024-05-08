@@ -3,12 +3,13 @@ package model;
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.Arrays;
 
-import model.card.Corner;
-import model.card.GoldCard;
-import model.card.ResourceCard;
-import model.enums.Condition;
-import model.enums.Symbols;
-import model.player.Player;
+import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.card.Corner;
+import it.polimi.ingsw.model.card.GoldCard;
+import it.polimi.ingsw.model.card.ResourceCard;
+import it.polimi.ingsw.model.enums.Condition;
+import it.polimi.ingsw.model.enums.Symbols;
+import it.polimi.ingsw.model.player.Player;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 
