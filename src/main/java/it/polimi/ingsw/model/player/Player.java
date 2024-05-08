@@ -10,7 +10,6 @@ import it.polimi.ingsw.model.enums.CornerState;
 import it.polimi.ingsw.model.enums.PlayerState;
 import it.polimi.ingsw.model.enums.Symbols;
 import it.polimi.ingsw.model.exceptions.*;
-import model.exceptions.*;
 
 import java.io.Serializable;
 import java.util.*;

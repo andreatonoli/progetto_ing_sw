@@ -1,7 +1,6 @@
 package it.polimi.ingsw.network.messages;
 
 import it.polimi.ingsw.network.server.Server;
-import Controller.*;
 
 public class FreeLobbyMessage extends Message{
     /**

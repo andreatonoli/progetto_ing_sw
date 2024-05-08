@@ -4,7 +4,6 @@ import it.polimi.ingsw.model.card.*;
 import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.Condition;
 import it.polimi.ingsw.model.enums.Symbols;
-import model.card.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 

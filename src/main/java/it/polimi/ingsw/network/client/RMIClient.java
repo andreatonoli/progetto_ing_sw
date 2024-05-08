@@ -4,7 +4,6 @@ import it.polimi.ingsw.model.card.Achievement;
 import it.polimi.ingsw.model.enums.PlayerState;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.network.server.VirtualServer;
-import network.messages.*;
 import it.polimi.ingsw.network.server.Action;
 import it.polimi.ingsw.view.Ui;
 import it.polimi.ingsw.model.card.Card;

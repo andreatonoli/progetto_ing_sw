@@ -2,7 +2,6 @@ package it.polimi.ingsw.model.card;
 
 import it.polimi.ingsw.model.enums.*;
 import it.polimi.ingsw.model.player.Player;
-import model.enums.*;
 
 import java.io.Serializable;
 import java.util.List;

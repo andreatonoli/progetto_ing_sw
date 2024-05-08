@@ -1,6 +1,5 @@
 package it.polimi.ingsw.Controller;
 import it.polimi.ingsw.model.Game;
-import model.*;
 import it.polimi.ingsw.model.enums.PlayerState;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.observer.Observable;

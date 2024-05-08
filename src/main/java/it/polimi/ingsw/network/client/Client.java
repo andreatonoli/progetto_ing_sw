@@ -3,7 +3,6 @@ package it.polimi.ingsw.network.client;
 import java.util.Scanner;
 
 import it.polimi.ingsw.view.Tui;
-import view.*;
 
 public class Client{
     public Client(){
