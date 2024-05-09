@@ -40,7 +40,7 @@ public class StarterCard extends Card{
     @Override
     public void calcPoints(Player player) { }
     @Override
-    public int[] getCost(){ return null; }
+    public Integer[] getCost(){ return null; }
     @Override
     public int getPoints(){ return 0; }
     @Override

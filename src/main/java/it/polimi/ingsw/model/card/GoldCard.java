@@ -25,7 +25,7 @@ public class GoldCard extends Card {
     /**
      * represents the cost, in terms of symbols, necessary to place the card
      */
-    int[] cost;
+    Integer[] cost;
 
     /**
      * Builds the front of the gold cards with corners, points and the card's cost
@@ -36,12 +36,12 @@ public class GoldCard extends Card {
      * @param cost represents the cost, in terms of symbols, necessary to place the card
      * @param requiredItem is the item needed for the condition.ITEM
      */
-    public GoldCard(Corner[] corners, int basePoint, Condition condition, int card_number, int[] cost, Symbols requiredItem){
+    public GoldCard(Corner[] corners, int basePoint, Condition condition, int card_number, Integer[] cost, Symbols requiredItem){
         this.currentSide = this;
         this.requiredItem = requiredItem;
         this.front = this;
         this.corners = new Corner[4];
-        this.cost = new int[4];
+        this.cost = new Integer[4];
         System.arraycopy(corners, 0, this.corners, 0, 4);
         this.type = "gold";
         this.basePoint = basePoint;
@@ -120,7 +120,7 @@ public class GoldCard extends Card {
         player.addPoints(point);
     }
     @Override
-    public int[] getCost(){ return this.cost; }
+    public Integer[] getCost(){ return this.cost; }
     @Override
     public int getPoints(){ return this.basePoint; }
     @Override

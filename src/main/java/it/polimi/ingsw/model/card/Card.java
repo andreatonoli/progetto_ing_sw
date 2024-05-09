@@ -64,7 +64,7 @@ public abstract class Card implements Serializable {
      * getter to get the cost array
      * @return the cost, in terms of symbols, necessary to place the card
      */
-    public abstract int[] getCost();
+    public abstract Integer[] getCost();
 
     /**
      * getter to get the points value

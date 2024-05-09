@@ -56,7 +56,7 @@ public class CardBack extends Card{
     @Override
     public void calcPoints(Player player) { }
     @Override
-    public int[] getCost(){ return new int[]{0,0,0,0}; }
+    public Integer[] getCost(){ return new Integer[]{0,0,0,0}; }
     @Override
     public int getPoints(){ return 0; }
     @Override

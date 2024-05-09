@@ -73,7 +73,7 @@ public class ResourceCard extends Card {
     }
 
     @Override
-    public int[] getCost(){ return null; }
+    public Integer[] getCost(){ return null; }
     @Override
     public int getPoints(){ return this.point; }
     @Override

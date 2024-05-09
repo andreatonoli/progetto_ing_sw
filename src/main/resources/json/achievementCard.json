@@ -1,0 +1,60 @@
+{
+  "achievements": [
+    {
+      "type": "DiagonalAndL",
+      "color": "RED"
+    },
+    {
+      "type": "DiagonalAndL",
+      "color": "GREEN"
+    },
+    {
+      "type": "DiagonalAndL",
+      "color": "BLUE"
+    },
+    {
+      "type": "DiagonalAndL",
+      "color": "PURPLE"
+    },
+    {
+      "type": "Resources",
+      "symbol": "FUNGI"
+    },
+    {
+      "type": "Resources",
+      "symbol": "PLANT"
+    },
+    {
+      "type": "Resources",
+      "symbol": "ANIMAL"
+    },
+    {
+      "type": "Resources",
+      "symbol": "INSECT"
+    },
+    {
+      "type": "Item",
+      "basePoint": 3,
+      "symbols": [
+        "QUILL",
+        "INKWELL",
+        "MANUSCRIPT"
+      ]
+    },
+    {
+      "type": "Item",
+      "basePoint": 2,
+      "symbols": ["MANUSCRIPT"]
+    },
+    {
+      "type": "Item",
+      "basePoint": 2,
+      "symbols": ["INKWELL"]
+    },
+    {
+      "type": "Item",
+      "basePoint": 2,
+      "symbols": ["QUILL"]
+    }
+  ]
+}

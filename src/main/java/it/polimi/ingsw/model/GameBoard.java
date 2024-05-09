@@ -1,16 +1,18 @@
 package it.polimi.ingsw.model;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import it.polimi.ingsw.model.card.*;
 import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.Condition;
 import it.polimi.ingsw.model.enums.Symbols;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import it.polimi.ingsw.model.exceptions.JsonFileNotFoundException;
 
-import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Serializable;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 
 public class GameBoard implements Serializable {
@@ -32,38 +34,48 @@ public class GameBoard implements Serializable {
         try {
             Corner[] arrayCorner;
             ArrayList<Symbols> items;
-            int[] cost;
+            Integer[] cost;
             int basePoint;
             int cardNumber;
             Symbols conditionItem;
             String content;
+
+            String path;
+            JsonObject json;
+            InputStream is;
+
             String colorOrSymbol;
-            JSONObject jo;
-            JSONArray objCost;
-            JSONArray symbols;
+            JsonArray objCost;
+            JsonArray symbols;
             //creation of achievementDeck
             this.achievementDeck = new LinkedList<>();
-            content = new String(Files.readAllBytes(Paths.get("src/main/input_file/achievementCard.json")));
-            jo = new JSONObject(content);
-            for (String achievementCard : jo.keySet()) {
-                items = new ArrayList<>();
-                if (achievementCard.startsWith("DiagonalAndL")){
-                    colorOrSymbol = jo.getJSONObject(achievementCard).getString("color");
+            path = "json/achievementCard.json";
+            is = Achievement.class.getClassLoader().getResourceAsStream(path);
+            if (is == null){
+                throw new JsonFileNotFoundException(path);
+            }
+            json = new JsonParser().parse(new InputStreamReader(is)).getAsJsonObject();
+            JsonArray achievements = json.getAsJsonArray("achievements");
+            for (JsonElement achievementCard : achievements) {
+                JsonObject jo = achievementCard.getAsJsonObject();
+                String type = jo.get("type").getAsString();
+                if (type.startsWith("DiagonalAndL")){
+                    colorOrSymbol = jo.get("color").getAsString();
                     AchievementDiagonal adCard = new AchievementDiagonal(Color.valueOf(colorOrSymbol));
                     AchievementL alCard = new AchievementL(Color.valueOf(colorOrSymbol));
                     achievementDeck.add(adCard);
                     achievementDeck.add(alCard);
-                } else if (achievementCard.startsWith("Resources")) {
-                    colorOrSymbol = jo.getJSONObject(achievementCard).getString("symbol");
+                } else if (type.startsWith("Resources")) {
+                    colorOrSymbol = jo.get("symbol").getAsString();
                     AchievementResources arCard = new AchievementResources(Symbols.valueOf(colorOrSymbol));
                     achievementDeck.add(arCard);
                 }
                 else{
-                    basePoint = jo.getJSONObject(achievementCard).getInt("basePoint");
-                    symbols = jo.getJSONObject(achievementCard).getJSONArray("symbols");
+                    basePoint = jo.get("basePoint").getAsInt();
+                    symbols = jo.getAsJsonArray("symbols");
                     items = new ArrayList<>();
-                    for (int i=0; i<symbols.length(); i++){
-                        items.add(Symbols.valueOf(symbols.getString(i)));
+                    for (JsonElement elem : symbols){
+                        items.add(Symbols.valueOf(elem.getAsString()));
                     }
                     AchievementItem aiCard = new AchievementItem(basePoint, items);
                     achievementDeck.add(aiCard);
@@ -71,25 +83,33 @@ public class GameBoard implements Serializable {
             }
             //creation of goldDeck
             this.goldDeck = new LinkedList<>();
-            content = new String(Files.readAllBytes(Paths.get("src/main/input_file/goldCard.json")));
-            jo = new JSONObject(content);
-            for (String goldCard : jo.keySet()) {
-                symbols = jo.getJSONObject(goldCard).getJSONArray("corners");
-                arrayCorner = new Corner[symbols.length()];
-                for (int i=0; i<symbols.length(); i++){
-                    arrayCorner[i] = new Corner(Symbols.valueOf(symbols.getString(i)));
+            path = "json/goldCard.json";
+            is = GoldCard.class.getClassLoader().getResourceAsStream(path);
+            if (is == null){
+                throw new JsonFileNotFoundException(path);
+            }
+            json = new JsonParser().parse(new InputStreamReader(is)).getAsJsonObject();
+            JsonArray goldCards = json.getAsJsonArray("goldcards");
+            for (JsonElement goldCard : goldCards) {
+                JsonObject jo = goldCard.getAsJsonObject();
+                symbols = jo.get("corners").getAsJsonArray();
+                ArrayList<Corner> cornerList = new ArrayList<>();
+                for (JsonElement elem : symbols){
+                    cornerList.add(new Corner(Symbols.valueOf(elem.getAsString())));
                 }
-                basePoint = jo.getJSONObject(goldCard).getInt("basePoint");
-                colorOrSymbol = jo.getJSONObject(goldCard).getString("condition");
-                objCost = jo.getJSONObject(goldCard).getJSONArray("cost");
-                cost = new int[objCost.length()];
-                for (int i=0; i<objCost.length(); i++){
-                    cost[i] = objCost.getInt(i);
+                arrayCorner = cornerList.toArray(new Corner[0]);
+                basePoint = jo.get("basePoint").getAsInt();
+                colorOrSymbol = jo.get("condition").getAsString();
+                objCost = jo.get("cost").getAsJsonArray();
+                ArrayList<Integer> costList = new ArrayList<>();
+                for (JsonElement elem : objCost){
+                    costList.add(elem.getAsInt());
                 }
-                cardNumber = jo.getJSONObject(goldCard).getInt("id");
+                cost = costList.toArray(new Integer[0]);
+                cardNumber = jo.get("id").getAsInt();
                 GoldCard gCard;
                 if (colorOrSymbol.equals("ITEM")){
-                    conditionItem = Symbols.valueOf(jo.getJSONObject(goldCard).getString("symbol"));
+                    conditionItem = Symbols.valueOf(jo.get("symbol").getAsString());
                     gCard = new GoldCard(arrayCorner, basePoint, Condition.valueOf(colorOrSymbol), cardNumber, cost, conditionItem);
                 }
                 else{
@@ -99,51 +119,64 @@ public class GameBoard implements Serializable {
             }
             //creation of resourceDeck
             this.resourceDeck = new LinkedList<>();
-            content = new String(Files.readAllBytes(Paths.get("src/main/input_file/resourceCard.json")));
-            jo = new JSONObject(content);
-            for (String resourceCard : jo.keySet()) {
-                symbols = jo.getJSONObject(resourceCard).getJSONArray("corners");
-                arrayCorner = new Corner[symbols.length()];
-                for (int i=0; i<symbols.length(); i++){
-                    arrayCorner[i] = new Corner(Symbols.valueOf(symbols.getString(i)));
+            path = "json/resourceCard.json";
+            is = ResourceCard.class.getClassLoader().getResourceAsStream(path);
+            if (is == null){
+                throw new JsonFileNotFoundException(path);
+            }
+            json = new JsonParser().parse(new InputStreamReader(is)).getAsJsonObject();
+            JsonArray resourceCards = json.getAsJsonArray("resourcecards");
+            for (JsonElement resourceCard : resourceCards) {
+                JsonObject jo = resourceCard.getAsJsonObject();
+                symbols = jo.get("corners").getAsJsonArray();
+                ArrayList<Corner> cornerList = new ArrayList<>();
+                for (JsonElement elem : symbols){
+                    cornerList.add(new Corner(Symbols.valueOf(elem.getAsString())));
                 }
-                basePoint = jo.getJSONObject(resourceCard).getInt("point");
-                cardNumber = jo.getJSONObject(resourceCard).getInt("id");
+                arrayCorner = cornerList.toArray(new Corner[0]);
+                basePoint = jo.get("point").getAsInt();
+                cardNumber = jo.get("id").getAsInt();
                 ResourceCard rCard = new ResourceCard(arrayCorner, cardNumber, basePoint);
                 resourceDeck.add(rCard);
             }
             //creation of starterDeck
             this.starterDeck = new LinkedList<>();
-            content = new String(Files.readAllBytes(Paths.get("src/main/input_file/starterCard.json")));
-            jo = new JSONObject(content);
-            for (String starterCard : jo.keySet()) {
-                items = new ArrayList<>();
-                symbols = jo.getJSONObject(starterCard).getJSONObject("retro").getJSONArray("symbols");
-                for (int i=0; i<symbols.length(); i++){
-                    items.add(Symbols.valueOf(symbols.getString(i)));
-                }
-                symbols = jo.getJSONObject(starterCard).getJSONObject("retro").getJSONArray("corners");
-                arrayCorner = new Corner[symbols.length()];
-                for (int i=0; i<symbols.length(); i++){
-                    arrayCorner[i] = new Corner(Symbols.valueOf(symbols.getString(i)));
-                }
-                CardBack retro = new CardBack(items, Color.WHITE, arrayCorner);
-                symbols = jo.getJSONObject(starterCard).getJSONArray("corners");
-                arrayCorner = new Corner[symbols.length()];
-                for (int i=0; i<symbols.length(); i++){
-                    arrayCorner[i] = new Corner(Symbols.valueOf(symbols.getString(i)));
-                }
-                cardNumber = jo.getJSONObject(starterCard).getInt("id");
-                StarterCard sCard = new StarterCard(arrayCorner, cardNumber, retro);
-                starterDeck.add(sCard);
+            path = "json/starterCard.json";
+            is = StarterCard.class.getClassLoader().getResourceAsStream(path);
+            if (is == null){
+                throw new JsonFileNotFoundException(path);
             }
-            if (starterDeck == null){
-                System.out.println("NON ARRIVA FIN QUI");
+            json = new JsonParser().parse(new InputStreamReader(is)).getAsJsonObject();
+            JsonArray starterCards = json.getAsJsonArray("startercards");
+            for (JsonElement starterCard : starterCards) {
+                JsonObject jo = starterCard.getAsJsonObject();
+                JsonObject retro = jo.get("retro").getAsJsonObject();
+                items = new ArrayList<>();
+                symbols = retro.getAsJsonArray("symbols");
+                for (JsonElement elem : symbols){
+                    items.add(Symbols.valueOf(elem.getAsString()));
+                }
+                symbols = retro.get("corners").getAsJsonArray();
+                ArrayList<Corner> retroCornerList = new ArrayList<>();
+                for (JsonElement elem : symbols){
+                    retroCornerList.add(new Corner(Symbols.valueOf(elem.getAsString())));
+                }
+                arrayCorner = retroCornerList.toArray(new Corner[0]);
+                CardBack back = new CardBack(items, Color.WHITE, arrayCorner);
+                symbols = jo.get("corners").getAsJsonArray();
+                ArrayList<Corner> cornerList = new ArrayList<>();
+                for (JsonElement elem : symbols){
+                    cornerList.add(new Corner(Symbols.valueOf(elem.getAsString())));
+                }
+                arrayCorner = cornerList.toArray(new Corner[0]);
+                cardNumber = jo.get("id").getAsInt();
+                StarterCard sCard = new StarterCard(arrayCorner, cardNumber, back);
+                starterDeck.add(sCard);
             }
             commonResource = new Card[2];
             commonGold = new Card[2];
             commonAchievement = new Achievement[2];
-        } catch (IOException e) {
+        } catch (JsonFileNotFoundException e) {
             System.out.println(e.getMessage());
         }
     }
@@ -153,7 +186,7 @@ public class GameBoard implements Serializable {
      * @param deck to draw from
      * @return Card drew from the deck
      */
-    protected Card drawCard(LinkedList<Card> deck){
+    public Card drawCard(LinkedList<Card> deck){
         Card drawedCard = deck.getFirst();
         deck.removeFirst();
         return drawedCard;
@@ -163,7 +196,7 @@ public class GameBoard implements Serializable {
      * Receives a shuffled achievementDeck and takes the first card also removing it
      * @return Achievement drew from the deck
      */
-    protected Achievement drawCard(){
+    public Achievement drawCard(){
         Achievement drawedCard = achievementDeck.getFirst();
         achievementDeck.removeFirst();
         return drawedCard;

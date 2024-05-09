@@ -377,7 +377,7 @@ public class Tui implements Ui{
         if(!card.isBack()){
             //aggiungi costo se c'è
             if(card.getCost() != null){
-                int costSum = Arrays.stream(card.getCost()).sum();
+                int costSum = Arrays.stream(card.getCost()).reduce(0, Integer::sum);
                 int bottomCenter = 4 - costSum / 2;
                 for (int i = 0; i < card.getCost().length; i++) {
                     for (int j = 0; j < card.getCost()[i]; j++) {

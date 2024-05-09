@@ -1,0 +1,126 @@
+{
+  "startercards": [
+    {
+      "corners":[
+        "FUNGI",
+        "PLANT",
+        "ANIMAL",
+        "INSECT"
+      ],
+      "id" : 1,
+      "retro": {
+        "symbols": ["INSECT"],
+        "corners": [
+          "EMPTY",
+          "PLANT",
+          "EMPTY",
+          "INSECT"
+        ]
+      }
+    },
+    {
+      "corners":[
+        "PLANT",
+        "ANIMAL",
+        "INSECT",
+        "FUNGI"
+      ],
+      "id" : 2,
+      "retro": {
+        "symbols": ["FUNGI"],
+        "corners": [
+          "ANIMAL",
+          "EMPTY",
+          "FUNGI",
+          "EMPTY"
+        ]
+      }
+    },
+    {
+      "corners":[
+        "INSECT",
+        "ANIMAL",
+        "PLANT",
+        "FUNGI"
+      ],
+      "id" : 3,
+      "retro": {
+        "symbols": [
+          "PLANT",
+          "FUNGI"
+        ],
+        "corners": [
+          "EMPTY",
+          "EMPTY",
+          "EMPTY",
+          "EMPTY"
+        ]
+      }
+    },
+    {
+      "corners":[
+        "PLANT",
+        "INSECT",
+        "FUNGI",
+        "ANIMAL"
+      ],
+      "id" : 4,
+      "retro": {
+        "symbols": [
+          "ANIMAL",
+          "INSECT"
+        ],
+        "corners": [
+          "EMPTY",
+          "EMPTY",
+          "EMPTY",
+          "EMPTY"
+        ]
+      }
+    },
+    {
+      "corners":[
+        "INSECT",
+        "FUNGI",
+        "ANIMAL",
+        "PLANT"
+      ],
+      "id" : 5,
+      "retro": {
+        "symbols": [
+          "ANIMAL",
+          "INSECT",
+          "PLANT"
+        ],
+        "corners": [
+          "EMPTY",
+          "EMPTY",
+          "NOCORNER",
+          "NOCORNER"
+        ]
+      }
+    },
+    {
+      "corners":[
+        "FUNGI",
+        "ANIMAL",
+        "INSECT",
+        "PLANT"
+      ],
+      "id" : 6,
+      "retro": {
+        "symbols": [
+          "PLANT",
+          "ANIMAL",
+          "FUNGI"
+        ],
+        "corners": [
+          "EMPTY",
+          "EMPTY",
+          "NOCORNER",
+          "NOCORNER"
+        ]
+      }
+    }
+  ]
+}
