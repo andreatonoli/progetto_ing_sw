@@ -89,9 +89,9 @@ public class Controller extends Observable {
         try {
             notify(user,new GenericMessage("Drawing a card..."));
             this.getPlayerByClient(user).drawCard(deck);
+            notify(user,new GenericMessage("Successfully drew a card"));
             turnHandler.changePlayerState(this.getPlayerByClient(user));
             notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState()));
-            notify(user,new GenericMessage("Successfully drew a card"));
         } catch (EmptyException | NotInTurnException | FullHandException e) {
             notify(user,new ErrorMessage(e.getMessage()));
         }
@@ -107,6 +107,8 @@ public class Controller extends Observable {
             notify(user,new GenericMessage("Drawing a card..."));
             this.getPlayerByClient(user).drawCardFromBoard(card);
             notify(user,new GenericMessage("Successfully drew a card"));
+            turnHandler.changePlayerState(this.getPlayerByClient(user));
+            notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState()));
         } catch (CardNotFoundException e) {
             notify(user,new ErrorMessage(e.getMessage()));
         } catch (NotInTurnException e) {
