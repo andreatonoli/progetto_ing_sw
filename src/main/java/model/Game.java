@@ -132,6 +132,13 @@ public class Game extends Observable implements Serializable {
         }
     }
 
+    public void endGameByDisconnection(Player lastManStanding){
+        notifyAll(new GenericMessage("game ended due to lack of players"));
+        ArrayList<Player> winners = new ArrayList<>();
+        winners.add(lastManStanding);
+        notifyAll(new WinnerMessage(winners));
+    }
+
     private void setFirstPlayer()
     {
         firstPlayer = players.getFirst();

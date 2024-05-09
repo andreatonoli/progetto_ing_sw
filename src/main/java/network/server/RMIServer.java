@@ -114,6 +114,7 @@ public class RMIServer implements VirtualServer {
             }
         }
     }
+    //TODO: cambia le queue in blockiing queue
 
 
 }
