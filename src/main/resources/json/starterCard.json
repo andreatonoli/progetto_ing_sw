@@ -1,5 +1,6 @@
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
   "startercards": [
     {
       "corners":[
@@ -125,6 +126,8 @@
     }
   ]
 =======
+=======
+>>>>>>> 74a52c0ced27758054285e2dbd8205a552762c08
   "starterCard1" : {
     "corners":[
       "FUNGI",
@@ -247,5 +250,8 @@
       ]
     }
   }
+<<<<<<< HEAD
 >>>>>>> 747bdc3 (modified pom)
+=======
+>>>>>>> 74a52c0ced27758054285e2dbd8205a552762c08
 }

@@ -1,5 +1,6 @@
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
   "resourcecards":[
     {
       "corners": [
@@ -403,6 +404,8 @@
     }
   ]
 =======
+=======
+>>>>>>> 74a52c0ced27758054285e2dbd8205a552762c08
   "ResourceCard1": {
     "corners": [
       "FUNGI",
@@ -803,5 +806,8 @@
     "point": 1,
     "id" : 40
   }
+<<<<<<< HEAD
 >>>>>>> 747bdc3 (modified pom)
+=======
+>>>>>>> 74a52c0ced27758054285e2dbd8205a552762c08
 }

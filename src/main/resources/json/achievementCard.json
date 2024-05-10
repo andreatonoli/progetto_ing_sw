@@ -1,5 +1,6 @@
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
   "achievements": [
     {
       "type": "DiagonalAndL",
@@ -59,6 +60,8 @@
     }
   ]
 =======
+=======
+>>>>>>> 74a52c0ced27758054285e2dbd8205a552762c08
   "DiagonalAndL1": {
     "color": "RED"
   },
@@ -103,5 +106,8 @@
     "basePoint": 2,
     "symbols": ["QUILL"]
   }
+<<<<<<< HEAD
 >>>>>>> 747bdc3 (modified pom)
+=======
+>>>>>>> 74a52c0ced27758054285e2dbd8205a552762c08
 }
