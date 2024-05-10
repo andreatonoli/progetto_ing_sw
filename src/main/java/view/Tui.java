@@ -30,7 +30,7 @@ public class Tui implements Ui{
     //private String topBorderLong = "＿＿＿＿";
     //private String bottomBorderLong = "‾‾‾‾‾‾‾";
     //private String[][] matPlayerBoard = new String[PLAYERBOARD_DIM][PLAYERBOARD_DIM];
-    private String padding = "  ";
+    private String padding = "    ";
     private Scanner scanner;
     private Client client;
     private PrintStream out;
@@ -340,7 +340,12 @@ public class Tui implements Ui{
 
         //aggiungi angoli della carta
         for(CornerEnum corner : CornerEnum.values()){
-            matCard[2*(corner.getY() - 1)/(-2)][8*(corner.getX() + 1)/2] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(card.getCorner(corner).getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+            if(card.getCorner(corner).getSymbol().equals(Symbols.NOCORNER)){
+                matCard[2*(corner.getY() - 1)/(-2)][8*(corner.getX() + 1)/2] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(card.getCorner(corner).getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+            }
+            else{
+                matCard[2*(corner.getY() - 1)/(-2)][8*(corner.getX() + 1)/2] = Color.getBackground(Color.WHITE) + Symbols.getStringBlack(card.getCorner(corner).getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+            }
         }
 
         //aggiungi simboli al centro se ci sono
@@ -487,28 +492,34 @@ public class Tui implements Ui{
     }
 
     public String[][][][] createPrintablePlayerBoard(PlayerBoard playerBoard){
-        String[][][][] matPlayerBoard = new String[2][2][PLAYERBOARD_DIM][PLAYERBOARD_DIM];
+        String[][][][] matPlayerBoard = new String[3][2][PLAYERBOARD_DIM][PLAYERBOARD_DIM];
         int[] coord;
 
         for(int i = 0; i < PLAYERBOARD_DIM; i++){
             for(int j = 0; j < PLAYERBOARD_DIM; j++){
                 if(i == 0){
-                    matPlayerBoard[0][0][i][j] = padding + String.valueOf((j + 1)/10);
-                    matPlayerBoard[0][1][i][j] = String.valueOf((j + 1) - ((j + 1)/10)*10) + padding;
-                    matPlayerBoard[1][0][i][j] = Symbols.getString(Symbols.EMPTY_SPACE) + padding;
-                    matPlayerBoard[1][1][i][j] = Symbols.getString(Symbols.EMPTY_SPACE) + padding;
+                    matPlayerBoard[0][0][i][j] = Symbols.getString(Symbols.EMPTY_SPACE) + padding;
+                    matPlayerBoard[0][1][i][j] = Symbols.getString(Symbols.EMPTY_SPACE) + padding;
+                    matPlayerBoard[1][0][i][j] = padding + String.valueOf((j + 1)/10);
+                    matPlayerBoard[1][1][i][j] = String.valueOf((j + 1) - ((j + 1)/10)*10) + padding;
+                    matPlayerBoard[2][0][i][j] = Symbols.getString(Symbols.EMPTY_SPACE) + padding;
+                    matPlayerBoard[2][1][i][j] = Symbols.getString(Symbols.EMPTY_SPACE) + padding;
                 }
                 else if (j == 0) {
-                    matPlayerBoard[0][0][i][j] = padding + String.valueOf((i + 1)/10);
-                    matPlayerBoard[0][1][i][j] = String.valueOf((i + 1) - ((i + 1)/10)*10) + padding;
-                    matPlayerBoard[1][0][i][j] = Symbols.getString(Symbols.EMPTY_SPACE) + padding;
-                    matPlayerBoard[1][1][i][j] = Symbols.getString(Symbols.EMPTY_SPACE) + padding;
+                    matPlayerBoard[0][0][i][j] = Symbols.getString(Symbols.EMPTY_SPACE) + padding;
+                    matPlayerBoard[0][1][i][j] = Symbols.getString(Symbols.EMPTY_SPACE) + padding;
+                    matPlayerBoard[1][0][i][j] = padding + String.valueOf((i + 1)/10);
+                    matPlayerBoard[1][1][i][j] = String.valueOf((i + 1) - ((i + 1)/10)*10) + padding;
+                    matPlayerBoard[2][0][i][j] = Symbols.getString(Symbols.EMPTY_SPACE) + padding;
+                    matPlayerBoard[2][1][i][j] = Symbols.getString(Symbols.EMPTY_SPACE) + padding;
                 }
                 else{
                     matPlayerBoard[0][0][i][j] = Symbols.getString(Symbols.EMPTY_SPACE) + padding;
                     matPlayerBoard[0][1][i][j] = Symbols.getString(Symbols.EMPTY_SPACE) + padding;
                     matPlayerBoard[1][0][i][j] = Symbols.getString(Symbols.EMPTY_SPACE) + padding;
                     matPlayerBoard[1][1][i][j] = Symbols.getString(Symbols.EMPTY_SPACE) + padding;
+                    matPlayerBoard[2][0][i][j] = Symbols.getString(Symbols.EMPTY_SPACE) + padding;
+                    matPlayerBoard[2][1][i][j] = Symbols.getString(Symbols.EMPTY_SPACE) + padding;
                 }
             }
         }
@@ -524,37 +535,39 @@ public class Tui implements Ui{
                     coordCover[1] = coord[1] + corner.getY();
                     if(playerBoard.getCard(coordCover) != null && playerBoard.getCard(coordCover).getCorner(corner.getOppositePosition()).getState().equals(CornerState.OCCUPIED)){
                         if(corner.equals(CornerEnum.TL) || corner.equals(CornerEnum.BL)){
-                            matPlayerBoard[(corner.getY() - 1)/(-2)][(corner.getX() + 1)/2][PLAYERBOARD_DIM / 2 - coord[1]][PLAYERBOARD_DIM / 2 + coord[0]] = Color.getBackground(playerBoard.getCard(coordCover).getColor()) + Symbols.getStringBlack(playerBoard.getCard(coordCover).getCorner(corner.getOppositePosition()).getSymbol()) + Color.getBackground(card.getColor()) + padding + TuiColors.getColor(TuiColors.ANSI_RESET);
+                            matPlayerBoard[(corner.getY() - 1)/(-1)][(corner.getX() + 1)/2][PLAYERBOARD_DIM / 2 - coord[1]][PLAYERBOARD_DIM / 2 + coord[0]] = Color.getBackground(playerBoard.getCard(coordCover).getColor()) + Symbols.getStringBlack(playerBoard.getCard(coordCover).getCorner(corner.getOppositePosition()).getSymbol()) + Color.getBackground(card.getColor()) + padding + TuiColors.getColor(TuiColors.ANSI_RESET);
                         }
                         else{
-                            matPlayerBoard[(corner.getY() - 1)/(-2)][(corner.getX() + 1)/2][PLAYERBOARD_DIM / 2 - coord[1]][PLAYERBOARD_DIM / 2 + coord[0]] = Color.getBackground(card.getColor()) + padding + Color.getBackground(playerBoard.getCard(coordCover).getColor()) + Symbols.getStringBlack(playerBoard.getCard(coordCover).getCorner(corner.getOppositePosition()).getSymbol()) + Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                            matPlayerBoard[(corner.getY() - 1)/(-1)][(corner.getX() + 1)/2][PLAYERBOARD_DIM / 2 - coord[1]][PLAYERBOARD_DIM / 2 + coord[0]] = Color.getBackground(card.getColor()) + padding + Color.getBackground(playerBoard.getCard(coordCover).getColor()) + Symbols.getStringBlack(playerBoard.getCard(coordCover).getCorner(corner.getOppositePosition()).getSymbol()) + Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_RESET);
                         }
                     }
                     else{
                         if(corner.equals(CornerEnum.TL) || corner.equals(CornerEnum.BL)){
-                            matPlayerBoard[(corner.getY() - 1)/(-2)][(corner.getX() + 1)/2][PLAYERBOARD_DIM / 2 - coord[1]][PLAYERBOARD_DIM / 2 + coord[0]] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(card.getCorner(corner).getSymbol()) + Color.getBackground(card.getColor()) + padding + TuiColors.getColor(TuiColors.ANSI_RESET);
+                            matPlayerBoard[(corner.getY() - 1)/(-1)][(corner.getX() + 1)/2][PLAYERBOARD_DIM / 2 - coord[1]][PLAYERBOARD_DIM / 2 + coord[0]] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(card.getCorner(corner).getSymbol()) + Color.getBackground(card.getColor()) + padding + TuiColors.getColor(TuiColors.ANSI_RESET);
                         }
                         else{
-                            matPlayerBoard[(corner.getY() - 1)/(-2)][(corner.getX() + 1)/2][PLAYERBOARD_DIM / 2 - coord[1]][PLAYERBOARD_DIM / 2 + coord[0]] = Color.getBackground(card.getColor()) + padding + Symbols.getStringBlack(card.getCorner(corner).getSymbol()) + Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                            matPlayerBoard[(corner.getY() - 1)/(-1)][(corner.getX() + 1)/2][PLAYERBOARD_DIM / 2 - coord[1]][PLAYERBOARD_DIM / 2 + coord[0]] = Color.getBackground(card.getColor()) + padding + Symbols.getStringBlack(card.getCorner(corner).getSymbol()) + Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_RESET);
                         }
                     }
                 }
                 else if(card.getCorner(corner).getState() == CornerState.OCCUPIED){
                     if(corner.equals(CornerEnum.TL) || corner.equals(CornerEnum.BL)){
-                        matPlayerBoard[(corner.getY() - 1)/(-2)][(corner.getX() + 1)/2][PLAYERBOARD_DIM / 2 - coord[1]][PLAYERBOARD_DIM / 2 + coord[0]] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.NOCORNER) + Color.getBackground(card.getColor()) + padding + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matPlayerBoard[(corner.getY() - 1)/(-1)][(corner.getX() + 1)/2][PLAYERBOARD_DIM / 2 - coord[1]][PLAYERBOARD_DIM / 2 + coord[0]] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.NOCORNER) + Color.getBackground(card.getColor()) + padding + TuiColors.getColor(TuiColors.ANSI_RESET);
                     }
                     else{
-                        matPlayerBoard[(corner.getY() - 1)/(-2)][(corner.getX() + 1)/2][PLAYERBOARD_DIM / 2 - coord[1]][PLAYERBOARD_DIM / 2 + coord[0]] = Color.getBackground(card.getColor()) + padding + Symbols.getStringBlack(Symbols.NOCORNER) + Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matPlayerBoard[(corner.getY() - 1)/(-1)][(corner.getX() + 1)/2][PLAYERBOARD_DIM / 2 - coord[1]][PLAYERBOARD_DIM / 2 + coord[0]] = Color.getBackground(card.getColor()) + padding + Symbols.getStringBlack(Symbols.NOCORNER) + Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_RESET);
                     }
                 }
                 else{
                     if(corner.equals(CornerEnum.TL) || corner.equals(CornerEnum.BL)){
-                        matPlayerBoard[(corner.getY() - 1)/(-2)][(corner.getX() + 1)/2][PLAYERBOARD_DIM / 2 - coord[1]][PLAYERBOARD_DIM / 2 + coord[0]] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(card.getCorner(corner).getSymbol()) + Color.getBackground(card.getColor()) + padding + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matPlayerBoard[(corner.getY() - 1)/(-1)][(corner.getX() + 1)/2][PLAYERBOARD_DIM / 2 - coord[1]][PLAYERBOARD_DIM / 2 + coord[0]] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(card.getCorner(corner).getSymbol()) + Color.getBackground(card.getColor()) + padding + TuiColors.getColor(TuiColors.ANSI_RESET);
                     }
                     else{
-                        matPlayerBoard[(corner.getY() - 1)/(-2)][(corner.getX() + 1)/2][PLAYERBOARD_DIM / 2 - coord[1]][PLAYERBOARD_DIM / 2 + coord[0]] = Color.getBackground(card.getColor()) + padding + Symbols.getStringBlack(card.getCorner(corner).getSymbol()) + Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matPlayerBoard[(corner.getY() - 1)/(-1)][(corner.getX() + 1)/2][PLAYERBOARD_DIM / 2 - coord[1]][PLAYERBOARD_DIM / 2 + coord[0]] = Color.getBackground(card.getColor()) + padding + Symbols.getStringBlack(card.getCorner(corner).getSymbol()) + Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_RESET);
                     }
                 }
+                matPlayerBoard[1][0][PLAYERBOARD_DIM / 2 - coord[1]][PLAYERBOARD_DIM / 2 + coord[0]] = Color.getBackground(card.getColor()) + padding + " " + TuiColors.getColor(TuiColors.ANSI_RESET);
+                matPlayerBoard[1][1][PLAYERBOARD_DIM / 2 - coord[1]][PLAYERBOARD_DIM / 2 + coord[0]] = Color.getBackground(card.getColor()) + padding + " " + TuiColors.getColor(TuiColors.ANSI_RESET);
             }
         }
         return matPlayerBoard;
@@ -660,9 +673,9 @@ public class Tui implements Ui{
         String[][][][] scoreBoard = this.createPrintableScoreBoard(players);
         String[] chat = this.createPrintableChat(messages);
         String[][][][] playerBoard = this.createPrintablePlayerBoard(pBoard);
-        String[][] hand1 = this.createPrintableCard(pBoard, hand[0]);
-        String[][] hand2 = this.createPrintableCard(pBoard, hand[1]);
-        String[][] hand3 = this.createPrintableCard(pBoard, hand[2]);
+        String[][] hand1 = this.createPrintableCard(hand[0]);
+        String[][] hand2 = this.createPrintableCard(hand[1]);
+        String[][] hand3 = this.createPrintableCard(hand[2]);
 
         this.printTitle();
 
@@ -765,44 +778,59 @@ public class Tui implements Ui{
         System.out.println();
 
         System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "your playerboard" + TuiColors.getColor(TuiColors.ANSI_RESET));
-        System.out.print(" ".repeat(6*(PLAYERBOARD_DIM) - 14 - username.length()));
+        System.out.print(" ".repeat(10*(PLAYERBOARD_DIM) - 14 - username.length()));
         System.out.print("      ");
         System.out.println(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "your hand" + TuiColors.getColor(TuiColors.ANSI_RESET));
         System.out.println();
 
         for(int i = 0; i < PLAYERBOARD_DIM; i++){
-
             for(int j = 0; j < PLAYERBOARD_DIM; j++){
-                System.out.print(playerBoard[0][0][i][j]);
-                System.out.print(playerBoard[0][1][i][j]);
+                if(i != 0 && j != 0 && i < PLAYERBOARD_DIM/2 + 1 && j < PLAYERBOARD_DIM/2){
+                    if(i % 3 == 2){//OK (verde2)
+                        System.out.print(playerBoard[2][0][i-(i/3)][j]);
+                        System.out.print(playerBoard[2][1][i-(i/3)][j]);
+                    }
+                    else if(i % 3 == 1){//OK (viola1)
+                        System.out.print(playerBoard[1][0][i-(i/3)][j]);
+                        System.out.print(playerBoard[1][1][i-(i/3)][j]);
+                    }
+                    else{//OK (blu0)
+                        System.out.print(playerBoard[0][0][i-(i/3)][j]);
+                        System.out.print(playerBoard[0][1][i-(i/3)][j]);
+                    }
+                }
+                else{
+                    System.out.print(playerBoard[0][0][i][j]);
+                    System.out.print(playerBoard[0][1][i][j]);
+                }
             }
             System.out.print("      ");
 
-            //if(2*i == height - 2){
+            //if(3*i == height - 2){
             //    System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "your symbol's count" + TuiColors.getColor(TuiColors.ANSI_RESET));
             //    System.out.print("      ");
             //    System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "legend" + TuiColors.getColor(TuiColors.ANSI_RESET));
             //}
 
             Symbols[] symbols = {Symbols.FUNGI, Symbols.PLANT, Symbols.ANIMAL, Symbols.INSECT, Symbols.MANUSCRIPT, Symbols.INKWELL, Symbols.QUILL, Symbols.EMPTY, Symbols.CORNER, Symbols.CARD};
-            if(2*i >= height && 2*i < height + 10){
-                if(2*i > height + 6){
+            if(3*i >= height && 3*i < height + 10){
+                if(3*i > height + 6){
                     System.out.print(" ".repeat(19));
                     System.out.print("      ");
-                    System.out.print(Symbols.getString(symbols[2*i - height]) + TuiColors.getColor(TuiColors.ANSI_WHITE) + " -> " + Symbols.getLongString(symbols[2*i - height]) + TuiColors.getColor(TuiColors.ANSI_RESET));
+                    System.out.print(Symbols.getString(symbols[3*i - height]) + TuiColors.getColor(TuiColors.ANSI_WHITE) + " -> " + Symbols.getLongString(symbols[3*i - height]) + TuiColors.getColor(TuiColors.ANSI_RESET));
                 }
                 else{
-                    System.out.print(Symbols.getLongString(symbols[2*i - height]) + TuiColors.getColor(TuiColors.ANSI_WHITE) + ": " + pBoard.getSymbolCount(symbols[2*i - height]) + TuiColors.getColor(TuiColors.ANSI_RESET));
-                    int precLine = Symbols.getLongString(symbols[2*i - height]).length() + 2 + String.valueOf(pBoard.getSymbolCount(symbols[2*i - height])).length() - 11;
+                    System.out.print(Symbols.getLongString(symbols[3*i - height]) + TuiColors.getColor(TuiColors.ANSI_WHITE) + ": " + pBoard.getSymbolCount(symbols[3*i - height]) + TuiColors.getColor(TuiColors.ANSI_RESET));
+                    int precLine = Symbols.getLongString(symbols[3*i - height]).length() + 2 + String.valueOf(pBoard.getSymbolCount(symbols[3*i - height])).length() - 11;
                     System.out.print(" ".repeat(19 + 6 - precLine));
-                    System.out.print(Symbols.getString(symbols[2*i - height]) + TuiColors.getColor(TuiColors.ANSI_WHITE) + " -> " + Symbols.getLongString(symbols[2*i - height]) + TuiColors.getColor(TuiColors.ANSI_RESET));
+                    System.out.print(Symbols.getString(symbols[3*i - height]) + TuiColors.getColor(TuiColors.ANSI_WHITE) + " -> " + Symbols.getLongString(symbols[3*i - height]) + TuiColors.getColor(TuiColors.ANSI_RESET));
                 }
             }
 
             if(hand1 != null){
-                if(2*i < hand1.length){
+                if(3*i < hand1.length){
                     for(int j = 0; j < COLUMN; j++){
-                        System.out.print(hand1[2*i][j]);
+                        System.out.print(hand1[3*i][j]);
                     }
                 }
                 else{
@@ -812,9 +840,9 @@ public class Tui implements Ui{
             }
 
             if(hand2 != null){
-                if(2*i < hand2.length){
+                if(3*i < hand2.length){
                     for(int j = 0; j < COLUMN; j++){
-                        System.out.print(hand2[2*i][j]);
+                        System.out.print(hand2[3*i][j]);
                     }
                 }
                 else{
@@ -824,9 +852,9 @@ public class Tui implements Ui{
             }
 
             if(hand3 != null){
-                if(2*i < hand3.length){
+                if(3*i < hand3.length){
                     for(int j = 0; j < COLUMN; j++){
-                        System.out.print(hand3[2*i][j]);
+                        System.out.print(hand3[3*i][j]);
                     }
                 }
                 else{
@@ -837,35 +865,55 @@ public class Tui implements Ui{
             System.out.println();
 
             for(int j = 0; j < PLAYERBOARD_DIM; j++){
-                System.out.print(playerBoard[1][0][i][j]);
-                System.out.print(playerBoard[1][1][i][j]);
+                if(i != 0 && j != 0 && i < PLAYERBOARD_DIM/2 && j < PLAYERBOARD_DIM/2){
+                    if(i % 3 == 1){//OK (verde0)
+                        if(!playerBoard[2][0][i-(i/3)][j].equals(" " + padding)){
+                            System.out.print(playerBoard[2][0][i-(i/3)][j]);
+                            System.out.print(playerBoard[2][1][i-(i/3)][j]);
+                        }
+                        System.out.print(playerBoard[0][0][i-(i/3)+1][j]);
+                        System.out.print(playerBoard[0][1][i-(i/3)+1][j]);
+                    }
+                    else if(i % 3 == 2){
+                        System.out.print(playerBoard[2][0][i-(i/3)+1][j]);
+                        System.out.print(playerBoard[2][1][i-(i/3)+1][j]);
+                    }
+                    else{//OK (blu1)
+                        System.out.print(playerBoard[1][0][i-(i/3)][j]);
+                        System.out.print(playerBoard[1][1][i-(i/3)][j]);
+                    }
+                }
+                else{
+                    System.out.print(playerBoard[1][0][i][j]);
+                    System.out.print(playerBoard[1][1][i][j]);
+                }
             }
             System.out.print("      ");
 
-            if(2*i + 1 == height - 2){
+            if(3*i + 1 == height - 2){
                 System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "your symbol's count" + TuiColors.getColor(TuiColors.ANSI_RESET));
                 System.out.print("      ");
                 System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "legend" + TuiColors.getColor(TuiColors.ANSI_RESET));
             }
 
-            if(2*i + 1 >= height && 2*i + 1 < height + 10){
-                if(2*i + 1 > height + 6){
+            if(3*i + 1 >= height && 3*i + 1 < height + 10){
+                if(3*i + 1 > height + 6){
                     System.out.print(" ".repeat(19));
                     System.out.print("      ");
-                    System.out.print(Symbols.getString(symbols[2*i + 1 - height]) + TuiColors.getColor(TuiColors.ANSI_WHITE) + " -> " + Symbols.getLongString(symbols[2*i + 1 - height]) + TuiColors.getColor(TuiColors.ANSI_RESET));
+                    System.out.print(Symbols.getString(symbols[3*i + 1 - height]) + TuiColors.getColor(TuiColors.ANSI_WHITE) + " -> " + Symbols.getLongString(symbols[3*i + 1 - height]) + TuiColors.getColor(TuiColors.ANSI_RESET));
                 }
                 else{
-                    System.out.print(Symbols.getLongString(symbols[2*i + 1 - height]) + TuiColors.getColor(TuiColors.ANSI_WHITE) + ": " + pBoard.getSymbolCount(symbols[2*i + 1 - height]) + TuiColors.getColor(TuiColors.ANSI_RESET));
-                    int precLine = Symbols.getLongString(symbols[2*i + 1 - height]).length() + 2 + String.valueOf(pBoard.getSymbolCount(symbols[2*i + 1 - height])).length() - 11;
+                    System.out.print(Symbols.getLongString(symbols[3*i + 1 - height]) + TuiColors.getColor(TuiColors.ANSI_WHITE) + ": " + pBoard.getSymbolCount(symbols[3*i + 1 - height]) + TuiColors.getColor(TuiColors.ANSI_RESET));
+                    int precLine = Symbols.getLongString(symbols[3*i + 1 - height]).length() + 2 + String.valueOf(pBoard.getSymbolCount(symbols[3*i + 1 - height])).length() - 11;
                     System.out.print(" ".repeat(19 + 6 - precLine));
-                    System.out.print(Symbols.getString(symbols[2*i + 1 - height]) + TuiColors.getColor(TuiColors.ANSI_WHITE) + " -> " + Symbols.getLongString(symbols[2*i + 1 - height]) + TuiColors.getColor(TuiColors.ANSI_RESET));
+                    System.out.print(Symbols.getString(symbols[3*i + 1 - height]) + TuiColors.getColor(TuiColors.ANSI_WHITE) + " -> " + Symbols.getLongString(symbols[3*i + 1 - height]) + TuiColors.getColor(TuiColors.ANSI_RESET));
                 }
             }
 
             if(hand1 != null){
-                if(2*i + 1 < hand1.length){
+                if(3*i + 1 < hand1.length){
                     for(int j = 0; j < COLUMN; j++){
-                        System.out.print(hand1[2*i + 1][j]);
+                        System.out.print(hand1[3*i + 1][j]);
                     }
                 }
                 else{
@@ -875,9 +923,9 @@ public class Tui implements Ui{
             }
 
             if(hand2 != null){
-                if(2*i + 1 < hand2.length){
+                if(3*i + 1 < hand2.length){
                     for(int j = 0; j < COLUMN; j++){
-                        System.out.print(hand2[2*i + 1][j]);
+                        System.out.print(hand2[3*i + 1][j]);
                     }
                 }
                 else{
@@ -887,9 +935,88 @@ public class Tui implements Ui{
             }
 
             if(hand3 != null){
-                if(2*i + 1 < hand3.length){
+                if(3*i + 1 < hand3.length){
                     for(int j = 0; j < COLUMN; j++){
-                        System.out.print(hand3[2*i + 1][j]);
+                        System.out.print(hand3[3*i + 1][j]);
+                    }
+                }
+                else{
+                    System.out.print(" ".repeat(COLUMN));
+                }
+                System.out.print("      ");
+            }
+            System.out.println();
+
+            for(int j = 0; j < PLAYERBOARD_DIM; j++){
+                if(i != 0 && j != 0 && i < PLAYERBOARD_DIM/2 + 1 && j < PLAYERBOARD_DIM/2){
+                    if(i % 3 == 0){//OK (viola0)
+                        System.out.print(playerBoard[0][0][i-(i/3)+1][j]);
+                        System.out.print(playerBoard[0][1][i-(i/3)+1][j]);
+                    }
+                    else if(i % 3 == 1){//OK (verde1)
+                        System.out.print(playerBoard[1][0][i-(i/3)+1][j]);
+                        System.out.print(playerBoard[1][1][i-(i/3)+1][j]);
+                    }
+                    else{
+                        System.out.print(playerBoard[2][0][i-(i/3)+1][j]);
+                        System.out.print(playerBoard[2][1][i-(i/3)+1][j]);
+                    }
+                }
+                else{
+                    System.out.print(playerBoard[2][0][i][j]);
+                    System.out.print(playerBoard[2][1][i][j]);
+                }
+            }
+            System.out.print("      ");
+
+            //if(3*i + 2 == height - 2){
+            //    System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "your symbol's count" + TuiColors.getColor(TuiColors.ANSI_RESET));
+            //    System.out.print("      ");
+            //    System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "legend" + TuiColors.getColor(TuiColors.ANSI_RESET));
+            //}
+
+            if(3*i + 2 >= height && 3*i + 2 < height + 10){
+                if(3*i + 2 > height + 6){
+                    System.out.print(" ".repeat(19));
+                    System.out.print("      ");
+                    System.out.print(Symbols.getString(symbols[3*i + 2 - height]) + TuiColors.getColor(TuiColors.ANSI_WHITE) + " -> " + Symbols.getLongString(symbols[3*i + 2 - height]) + TuiColors.getColor(TuiColors.ANSI_RESET));
+                }
+                else{
+                    System.out.print(Symbols.getLongString(symbols[3*i + 2 - height]) + TuiColors.getColor(TuiColors.ANSI_WHITE) + ": " + pBoard.getSymbolCount(symbols[3*i + 2 - height]) + TuiColors.getColor(TuiColors.ANSI_RESET));
+                    int precLine = Symbols.getLongString(symbols[3*i + 2 - height]).length() + 2 + String.valueOf(pBoard.getSymbolCount(symbols[3*i + 2 - height])).length() - 11;
+                    System.out.print(" ".repeat(19 + 6 - precLine));
+                    System.out.print(Symbols.getString(symbols[3*i + 2 - height]) + TuiColors.getColor(TuiColors.ANSI_WHITE) + " -> " + Symbols.getLongString(symbols[3*i + 2 - height]) + TuiColors.getColor(TuiColors.ANSI_RESET));
+                }
+            }
+
+            if(hand1 != null){
+                if(3*i + 2 < hand1.length){
+                    for(int j = 0; j < COLUMN; j++){
+                        System.out.print(hand1[3*i + 2][j]);
+                    }
+                }
+                else{
+                    System.out.print(" ".repeat(COLUMN));
+                }
+                System.out.print("      ");
+            }
+
+            if(hand2 != null){
+                if(3*i + 2 < hand2.length){
+                    for(int j = 0; j < COLUMN; j++){
+                        System.out.print(hand2[3*i + 2][j]);
+                    }
+                }
+                else{
+                    System.out.print(" ".repeat(COLUMN));
+                }
+                System.out.print("      ");
+            }
+
+            if(hand3 != null){
+                if(3*i + 2 < hand3.length){
+                    for(int j = 0; j < COLUMN; j++){
+                        System.out.print(hand3[3*i + 2][j]);
                     }
                 }
                 else{

@@ -50,10 +50,14 @@ public class App
         player.placeCard(c1, new int[]{0, 0}, CornerEnum.BL);
         player.setPlayerState(PlayerState.PLAY_CARD);
         player.placeCard(c2, new int[]{0, 0}, CornerEnum.TL);
+        //player.setPlayerState(PlayerState.PLAY_CARD);
+        //player.placeCard(c3, new int[]{0, 0}, CornerEnum.TR);
+        //player.setPlayerState(PlayerState.PLAY_CARD);
+        //player.placeCard(c4, new int[]{1, 1}, CornerEnum.TR);
         player.setPlayerState(PlayerState.PLAY_CARD);
-        player.placeCard(c3, new int[]{0, 0}, CornerEnum.TR);
+        player.placeCard(c4, new int[]{-1, 1}, CornerEnum.TL);
         player.setPlayerState(PlayerState.PLAY_CARD);
-        player.placeCard(c4, new int[]{1, 1}, CornerEnum.TR);
+        player.placeCard(c3, new int[]{-2, 2}, CornerEnum.TL);
         player.removeFromHand(player.getCardInHand()[0]);
         player.addInHand(c1);
         player.removeFromHand(player.getCardInHand()[1]);
