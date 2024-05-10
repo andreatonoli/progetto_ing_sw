@@ -1,6 +1,4 @@
 {
-<<<<<<< HEAD
-<<<<<<< HEAD
   "achievements": [
     {
       "type": "DiagonalAndL",
@@ -59,55 +57,4 @@
       "symbols": ["QUILL"]
     }
   ]
-=======
-=======
->>>>>>> 74a52c0ced27758054285e2dbd8205a552762c08
-  "DiagonalAndL1": {
-    "color": "RED"
-  },
-  "DiagonalAndL2": {
-    "color": "GREEN"
-  },
-  "DiagonalAndL3": {
-    "color": "BLUE"
-  },
-  "DiagonalAndL4": {
-    "color": "PURPLE"
-  },
-  "Resources1": {
-    "symbol": "FUNGI"
-  },
-  "Resources2": {
-    "symbol": "PLANT"
-  },
-  "Resources3": {
-    "symbol": "ANIMAL"
-  },
-  "Resources4": {
-    "symbol": "INSECT"
-  },
-  "Item1": {
-    "basePoint": 3,
-    "symbols": [
-      "QUILL",
-      "INKWELL",
-      "MANUSCRIPT"
-    ]
-  },
-  "Item2": {
-    "basePoint": 2,
-    "symbols": ["MANUSCRIPT"]
-  },
-  "Item3": {
-    "basePoint": 2,
-    "symbols": ["INKWELL"]
-  },
-  "Item4": {
-    "basePoint": 2,
-    "symbols": ["QUILL"]
-  }
-<<<<<<< HEAD
->>>>>>> 747bdc3 (modified pom)
-=======
->>>>>>> 74a52c0ced27758054285e2dbd8205a552762c08
 }
