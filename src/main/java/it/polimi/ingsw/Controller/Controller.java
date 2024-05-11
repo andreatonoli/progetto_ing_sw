@@ -44,6 +44,11 @@ public class Controller extends Observable {
         notifyAll(new GenericMessage("Players: " + this.connectedPlayers.keySet().size() + "/" + this.game.getLobbySize()));
         if (game.isFull()){
             this.startGame();
+            ArrayList<String> players = new ArrayList<>();
+            for (Connection c : connectedPlayers.keySet()){
+                players.add(c.getUsername());
+            }
+            notifyAll(new OpponentsMessage(players));
             return true;
         }
         return false;
@@ -60,8 +65,6 @@ public class Controller extends Observable {
         notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_RESOURCE_UPDATE, game.getGameBoard().getCommonResource()[1]));
         notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_GOLD_UPDATE, game.getGameBoard().getCommonResource()[0]));
         notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_GOLD_UPDATE, game.getGameBoard().getCommonResource()[1]));
-        //Sends the scoreboard to the players
-        notifyAll(new ScoreBoardUpdateMessage());
         //Sends the starter card to each player
         for (Connection u : this.connectedPlayers.keySet()){
             notify(u, new StarterCardMessage(getPlayerByClient(u).getPlayerBoard().getStarterCard()));
@@ -78,20 +81,27 @@ public class Controller extends Observable {
         //Sends the players the private achievements to choose from
         notify(u, new AchievementMessage(MessageType.PRIVATE_ACHIEVEMENT, getPlayerByClient(u).getPersonalObj()));
         //Notifies the player his state (i.e. it's his turn or not)
-        notify(u, new PlayerStateMessage(getPlayerByClient(u).getPlayerState()));
+        notify(u, new PlayerStateMessage(getPlayerByClient(u).getPlayerState(),u.getUsername()));
     }
     /**
      *Picks the top card of the deck and calls addInHand to give it to the player
      * @param user who wants to draw a card
      * @param deck from which the player choose to pick a card
      */
-    public void drawCard(Connection user, LinkedList<Card> deck){
+    public void drawCard(Connection user, String chosenDeck){
+        LinkedList<Card> deck;
+        if (chosenDeck.equalsIgnoreCase("resource")){
+            deck = game.getGameBoard().getResourceDeck();
+        }
+        else{
+            deck = game.getGameBoard().getGoldDeck();
+        }
         try {
-            notify(user,new GenericMessage("Drawing a card..."));
-            this.getPlayerByClient(user).drawCard(deck);
-            notify(user,new GenericMessage("Successfully drew a card"));
+            Card drawedCard = this.getPlayerByClient(user).drawCard(deck);
+            user.sendMessage(new UpdateCardMessage(drawedCard));
+            notifyAll(new UpdateDeckMessage(deck.getFirst().getBack()));
             turnHandler.changePlayerState(this.getPlayerByClient(user));
-            notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState()));
+            notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState(),user.getUsername()));
         } catch (EmptyException | NotInTurnException | FullHandException e) {
             notify(user,new ErrorMessage(e.getMessage()));
         }
@@ -104,11 +114,10 @@ public class Controller extends Observable {
      */
     public void drawCardFromBoard(Connection user, Card card){
         try {
-            notify(user,new GenericMessage("Drawing a card..."));
-            this.getPlayerByClient(user).drawCardFromBoard(card);
-            notify(user,new GenericMessage("Successfully drew a card"));
+            Card drawedCard = this.getPlayerByClient(user).drawCardFromBoard(card);
+            user.sendMessage(new UpdateCardMessage(drawedCard));
             turnHandler.changePlayerState(this.getPlayerByClient(user));
-            notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState()));
+            notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState(),user.getUsername()));
         } catch (CardNotFoundException e) {
             notify(user,new ErrorMessage(e.getMessage()));
         } catch (NotInTurnException e) {
@@ -121,29 +130,18 @@ public class Controller extends Observable {
      * Place card then removes it from the player's hand
      * @param user who asked to place the card
      * @param card to place
-     * @param coordinates of the card which corner will be covered after the placement
-     * @param corner where player wants to place the card
+     * @param coordinates where the player wants to place
      */
-    public void placeCard(Connection user, Card card, int[] coordinates, CornerEnum corner) {
+    public void placeCard(Connection user, Card card, int[] coordinates) {
         try {
-            notify(user,new GenericMessage("placing card..."));
-            this.getPlayerByClient(user).placeCard(card,coordinates,corner);
-            notify(user,new GenericMessage("Successfully placed a card"));
+            this.getPlayerByClient(user).placeCard(card, coordinates);
             turnHandler.changePlayerState(this.getPlayerByClient(user));
-            notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState()));
-        } catch (NotInTurnException e) {
-            if (this.getPlayerByClient(user).getPlayerState().equals(PlayerState.NOT_IN_TURN)){
-                notify(user,new ErrorMessage(e.getMessage()));
-            }
-            else{
-                notify(user,new ErrorMessage(e.getMessage()));
-            }
-        } catch (OccupiedCornerException e) {
-            notify(user,new ErrorMessage(e.getMessage()));
-        } catch (CostNotSatisfiedException e) {
-            notify(user,new ErrorMessage(e.getMessage()));
-        } catch (AlreadyUsedPositionException e) {
-            notify(user,new ErrorMessage(e.getMessage()));        }
+            notifyAll(new PlayerBoardUpdateMessage(this.getPlayerByClient(user).getPlayerBoard(), user.getUsername()));
+            notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState(), user.getUsername()));
+        } catch (NotInTurnException | OccupiedCornerException | CostNotSatisfiedException |
+                 AlreadyUsedPositionException | InvalidCoordinatesException e) {
+            user.sendMessage(new ErrorMessage(e.getMessage()));
+        }
     }
 
 

@@ -14,12 +14,12 @@ public class TurnHandler extends Observable {
     /**
      * game reference
      */
-    private Game game;
+    private final Game game;
 
     public TurnHandler(Game game){
         this.game = game;
     }
-    //TODO: se il giocatore resta da solo?? 1 minuto timer
+
     public void changePlayerState(Player player){
         if (game.getLobbySize()-2 >= game.getDisconnections()) {
             int i = (player.getPlayerState().ordinal() + 1) % 3;

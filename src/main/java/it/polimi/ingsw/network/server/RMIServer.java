@@ -81,6 +81,21 @@ public class RMIServer implements VirtualServer {
     }
 
     @Override
+    public void placeCard(Card card, int[] placingCoordinates) {
+        addToQueue(() -> connection.placeCard(card, placingCoordinates));
+    }
+
+    @Override
+    public void drawCard(String chosenDeck) throws RemoteException {
+        addToQueue(() -> connection.drawCard(chosenDeck));
+    }
+
+    @Override
+    public void drawCardFromBoard(String chosenDeck, int index) throws RemoteException {
+
+    }
+
+    @Override
     public void setAchievement(Achievement achievement) throws RemoteException {
         addToQueue(() -> connection.setAchievement(achievement));
     }

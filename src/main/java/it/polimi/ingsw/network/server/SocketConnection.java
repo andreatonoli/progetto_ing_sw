@@ -103,6 +103,9 @@ public class SocketConnection extends Connection implements Runnable {
             case PLACE_STARTER_CARD:
                 lobby.placeStarterCard(this, ((PlaceStarterRequestMessage) message).getCard());
                 break;
+            case PLACE_CARD:
+                PlaceMessage p = (PlaceMessage) message;
+                lobby.placeCard(this, p.getCard(), p.getCoordinates());
             case SET_ACHIEVEMENT:
                 lobby.chooseObj(this, ((SetPrivateAchievementMessage) message).getAchievement());
                 break;

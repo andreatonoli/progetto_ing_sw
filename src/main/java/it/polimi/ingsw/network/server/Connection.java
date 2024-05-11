@@ -6,7 +6,7 @@ import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.observer.Observer;
 
 import java.util.List;
-
+//TODO: scrivere metodi in comune tra le connection
 public abstract class Connection implements Observer {
     private boolean isConnected;
     public boolean getConnectionStatus(){

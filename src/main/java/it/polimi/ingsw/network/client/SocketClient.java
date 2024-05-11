@@ -96,6 +96,14 @@ public class SocketClient implements ClientInterface {
                 int lobbySize = this.view.setLobbySize();
                 sendMessage(new NumPlayerResponseMessage(this.username, lobbySize));
                 break;
+            case OPPONENTS:
+                ArrayList<String> playersName = ((OpponentsMessage) message).getPlayers();
+                for (String s : playersName){
+                    if(!s.equalsIgnoreCase(username)){
+                        opponents.add(new PlayerBean(s));
+                    }
+                }
+                break;
             case CARD_HAND:
                 //Copied the message body into the player's cards
                 System.arraycopy(((CardInHandMessage) message).getHand(), 0, player.getHand(), 0, 3);
@@ -134,12 +142,24 @@ public class SocketClient implements ClientInterface {
                     sendMessage(new PlaceStarterRequestMessage(this.username, this.starterCard));
                 }
                 break;
-            case SCOREBOARD_UPDATE:
-                //this.view.printView(this.player.getBoard(), this.player.getHand(), this.username, this.commonResources, this.commonGold, this.commonAchievement, this.opponents, this.player.getChat());
+            case SCORE_UPDATE:
+                String name = ((ScoreUpdateMessage) message).getName();
+                int points = ((ScoreUpdateMessage) message).getPoint();
+                if (name.equalsIgnoreCase(username)){
+                    player.addPoints(points);
+                }
+                else {
+                    for (PlayerBean p : opponents){
+                        if (p.getUsername().equalsIgnoreCase(name)){
+                            p.addPoints(points);
+                        }
+                    }
+                }
                 break;
             case PLAYER_STATE:
                 PlayerState playerState = ((PlayerStateMessage) message).getState();
-                //this.view.printPlayerState(playerState);
+                this.player.setState(playerState);
+                this.view.printView(player.getBoard(), player.getHand(), username, commonResources, commonGold, commonAchievement, opponents, player.getChat());
                 break;
             case GENERIC_MESSAGE:
                 this.view.showText(message.toString());
@@ -169,12 +189,17 @@ public class SocketClient implements ClientInterface {
     }
 
     @Override
-    public void placeACard() {
+    public void placeCard(Card card, int[] placingCoordinates) {
+        sendMessage(new PlaceMessage(username, card, placingCoordinates));
+    }
+
+    @Override
+    public void drawCard(String chosenDeck) {
 
     }
 
     @Override
-    public void drawACard() {
+    public void drawCardFromBoard(String ChosenDeck, int index) {
 
     }
 

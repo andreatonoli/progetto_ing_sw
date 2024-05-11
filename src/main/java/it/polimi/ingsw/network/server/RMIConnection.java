@@ -129,7 +129,12 @@ public class RMIConnection extends Connection {
     public void setAchievement(Achievement achievement){
         this.lobby.chooseObj(this, achievement);
     }
-
+    public void placeCard(Card card, int[] placingCoordinates){
+        this.lobby.placeCard(this, card, placingCoordinates);
+    }
+    public void drawCard(String chosenDeck){
+        this.lobby.drawCard(this, chosenDeck);
+    }
     @Override
     public void update(Message message) {
         this.sendMessage(message);
