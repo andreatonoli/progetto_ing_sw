@@ -667,9 +667,21 @@ public class Tui implements Ui{
         String[][][][] scoreBoard = this.createPrintableScoreBoard(players);
         String[] chat = this.createPrintableChat(messages);
         String[][][][] playerBoard = this.createPrintablePlayerBoard(pBoard);
-        String[][] hand1 = this.createPrintableCard(hand[0]);
-        String[][] hand2 = this.createPrintableCard(hand[1]);
-        String[][] hand3 = this.createPrintableCard(hand[2]);
+        String[][] hand1 = null;
+        String[][] hand2 = null;
+        String[][] hand3 = null;
+        if (hand[0] != null){
+            hand1 = createPrintableCard(hand[0]);
+        }
+        if (hand[1] != null){
+            hand1 = createPrintableCard(hand[1]);
+        }
+        if (hand[2] != null){
+            hand1 = createPrintableCard(hand[2]);
+        }
+        //String[][] hand1 = this.createPrintableCard(hand[0]);
+        //String[][] hand2 = this.createPrintableCard(hand[1]);
+        //String[][] hand3 = this.createPrintableCard(hand[2]);
 
         this.printTitle();
 

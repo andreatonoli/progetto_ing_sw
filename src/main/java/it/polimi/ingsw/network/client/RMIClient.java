@@ -42,6 +42,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
         this.view = view;
         //Initialization of player's attributes
         this.player = new PlayerBean(username);
+        this.opponents = new ArrayList<>();
         this.commonAchievement = new Achievement[2];
         this.commonResources = new Card[2];
         this.commonGold = new Card[2];
@@ -236,6 +237,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                     }
                 }
             case GENERIC_MESSAGE:
+                //TODO: messaggi che si accumulano finiscono qui e non so perchè
                 this.view.showText(message.toString());
                 break;
                 //aggiungi case ping

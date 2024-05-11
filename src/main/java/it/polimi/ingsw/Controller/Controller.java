@@ -86,7 +86,7 @@ public class Controller extends Observable {
     /**
      *Picks the top card of the deck and calls addInHand to give it to the player
      * @param user who wants to draw a card
-     * @param deck from which the player choose to pick a card
+     * @param chosenDeck deck from which user wants to draw a card
      */
     public void drawCard(Connection user, String chosenDeck){
         LinkedList<Card> deck;
@@ -156,6 +156,7 @@ public class Controller extends Observable {
     public void placeStarterCard(Connection user, Card starterCard){
         Player player = getPlayerByClient(user);
         player.getPlayerBoard().setStarterCard(starterCard);
+        notifyAll(new PlayerBoardUpdateMessage(player.getPlayerBoard(), user.getUsername()));
         commonCardSetup(user);
     }
 

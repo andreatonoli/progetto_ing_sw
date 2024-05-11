@@ -8,6 +8,8 @@ public class PlayerBoardUpdateMessage extends Message {
     private String name;
     public PlayerBoardUpdateMessage(PlayerBoard pBoard, String name){
         super(MessageType.PLAYERBOARD_UPDATE, Server.serverName);
+        this.pBoard = pBoard;
+        this.name = name;
     }
     public PlayerBoard getpBoard(){
         return pBoard;

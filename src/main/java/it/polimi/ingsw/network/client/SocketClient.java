@@ -33,6 +33,7 @@ public class SocketClient implements ClientInterface {
         this.username = username;
         this.view = view;
         this.player = new PlayerBean(this.username);
+        this.opponents = new ArrayList<>();
         this.commonAchievement = new Achievement[2];
         this.commonResources = new Card[2];
         this.commonGold = new Card[2];
