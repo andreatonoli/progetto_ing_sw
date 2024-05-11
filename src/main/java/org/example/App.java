@@ -1,19 +1,17 @@
 package org.example;
 
-import Controller.Controller;
-import model.*;
-import model.card.CardBack;
-import model.card.Corner;
-import model.card.ResourceCard;
-import model.card.StarterCard;
-import model.enums.Color;
-import model.enums.CornerEnum;
-import model.enums.PlayerState;
-import model.enums.Symbols;
-import model.exceptions.*;
-import model.player.Player;
-import network.server.Server;
-import view.*;
+import it.polimi.ingsw.Controller.Controller;
+import it.polimi.ingsw.model.*;
+import it.polimi.ingsw.model.card.CardBack;
+import it.polimi.ingsw.model.card.Corner;
+import it.polimi.ingsw.model.card.ResourceCard;
+import it.polimi.ingsw.model.card.StarterCard;
+import it.polimi.ingsw.model.enums.*;
+import it.polimi.ingsw.model.exceptions.*;
+import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.network.client.PlayerBean;
+import it.polimi.ingsw.network.server.Server;
+import it.polimi.ingsw.view.*;
 
 import java.io.IOException;
 import java.util.*;
@@ -30,6 +28,10 @@ public class App
         Player player = new Player("p1", game);
         Player player2 = new Player("p2", game);
         Player player3 = new Player("p3", game);
+        PlayerBean pb = new PlayerBean("p1");
+        PlayerBean pb2 = new PlayerBean("p2");
+        PlayerBean pb3 = new PlayerBean("p3");
+        ArrayList<PlayerBean> players = new ArrayList<>(List.of(pb, pb2, pb3));
         game.addPlayer(player);
         game.addPlayer(player2);
         game.addPlayer(player3);
@@ -72,8 +74,11 @@ public class App
         player2.sendMessage(player, "messaggio6 da p2");
         player2.sendMessage(player, "messaggio7 da p2");
         player2.sendMessage(player, "messaggio8 da p2");
-        t.printScoreBoard(game.getPlayers());
+        pb.setState(player.getPlayerState());
+        pb2.setState(player2.getPlayerState());
+        pb3.setState(player3.getPlayerState());
+        t.printScoreBoard(players);
         t.printGameBoard(game.getGameBoard().getCommonResource(), game.getGameBoard().getCommonGold(), game.getGameBoard().getCommonAchievement());
-        t.printViewWithCommands(player.getPlayerBoard(), player.getCardInHand(), player.getUsername(), game.getGameBoard(), game.getPlayers(), player.getChat());
+        t.printViewWithCommands(player.getPlayerBoard(), player.getCardInHand(), player.getUsername(), game.getGameBoard().getCommonResource(), game.getGameBoard().getCommonGold(), game.getGameBoard().getCommonAchievement(), players, player.getChat());
     }
 }

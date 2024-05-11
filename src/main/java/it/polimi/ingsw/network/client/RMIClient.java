@@ -15,7 +15,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
-public class RMIClient extends UnicastRemoteObject implements RMIClientHandler {
+public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, ClientInterface {
     private Queue<Message> messageQueue;
     private Queue<Action> actionQueue;
     private boolean processingAction;
@@ -202,4 +202,28 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler {
         return null;
     }
 
+    @Override
+    public void sendChatMessage(String message) {
+
+    }
+
+    @Override
+    public void sendChatMessage(String receiver, String message) {
+
+    }
+
+    @Override
+    public void placeACard() {
+
+    }
+
+    @Override
+    public void drawACard() {
+
+    }
+
+    @Override
+    public ArrayList<PlayerBean> getPlayers() {
+        return null;
+    }
 }

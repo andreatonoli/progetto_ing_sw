@@ -12,7 +12,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class SocketClient {
+public class SocketClient implements ClientInterface {
     private Socket socket;
     private String username;
     private Ui view;
@@ -156,5 +156,30 @@ public class SocketClient {
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    @Override
+    public void sendChatMessage(String message) {
+
+    }
+
+    @Override
+    public void sendChatMessage(String receiver, String message) {
+
+    }
+
+    @Override
+    public void placeACard() {
+
+    }
+
+    @Override
+    public void drawACard() {
+
+    }
+
+    @Override
+    public ArrayList<PlayerBean> getPlayers() {
+        return null;
     }
 }
