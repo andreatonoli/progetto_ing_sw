@@ -1094,12 +1094,11 @@ public class Tui implements Ui{
 
     public void printViewWithCommands(PlayerBoard pBoard, Card[] hand, String username, Card[] commonResource, Card resourceBack, Card[] commonGold, Card goldBack, Achievement[] commonAchievement, Achievement privateAchievement, ArrayList<PlayerBean> players, ArrayList<String> messages){
 
-        this.printView(pBoard, hand, username, commonResource, resourceBack, commonGold, goldBack, commonAchievement, privateAchievement, players, messages);
-
         Scanner input = new Scanner(System.in);
         int[] coord = new int[2];
         PlayerBean playerInTurn = players.getFirst();
         while(true){
+            this.printView(pBoard, hand, username, commonResource, resourceBack, commonGold, goldBack, commonAchievement, privateAchievement, players, messages);
             for(PlayerBean p : players){
                 if(!p.getState().equals(PlayerState.NOT_IN_TURN)){
                     playerInTurn = p;
@@ -1369,7 +1368,7 @@ public class Tui implements Ui{
                         System.out.println("Do you want to draw from decks or visible cards? [1] for decks [2] for visible cards");
                         String a = input.next();
                         clearConsole();
-                    this.printView(pBoard, hand, username, commonResource, resourceBack, commonGold, goldBack, commonAchievement, privateAchievement, players, messages);
+                        this.printView(pBoard, hand, username, commonResource, resourceBack, commonGold, goldBack, commonAchievement, privateAchievement, players, messages);
                         while (!a.equals("1") && !a.equals("2") && !a.equals("c")) {
                             System.out.println("Do you want to draw from decks or visible cards? [1] for decks [2] for visible cards");
                             a = input.next();
@@ -1380,13 +1379,45 @@ public class Tui implements Ui{
                             this.printChat(pBoard, hand, username, commonResource, resourceBack, commonGold, goldBack, commonAchievement, privateAchievement, players, messages);
                         }
                         else if(a.equals("1")){
+                            String[][] rDeck = this.createPrintableCard(resourceBack);
+                            String[][] gDeck = this.createPrintableCard(goldBack);
+                            System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "resource deck:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
+                            System.out.print("     ");
+                            System.out.println(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "gold deck:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
+                            System.out.println();
+                            for(int i = 0; i < ROW; i++){
+                                for(int j = 0; j < COLUMN; j++){
+                                    System.out.print(rDeck[i][j]);
+                                }
+                                System.out.print(" ".repeat(6 + 14 - COLUMN));
+                                for(int j = 0; j < COLUMN; j++){
+                                    System.out.print(gDeck[i][j]);
+                                }
+                                System.out.println();
+                            }
+                            System.out.println();
                             System.out.println("Do you want to draw from resource deck or gold deck? [r] for resource [g] for gold");
                             a = input.next();
                             while (!a.equals("r") && !a.equals("g") && !a.equals("c")) {
-                                System.out.println("Do you want to draw from decks or visible cards? [1] for decks [2] for visible cards");
-                                a = input.next();
                                 clearConsole();
                                 this.printView(pBoard, hand, username, commonResource, resourceBack, commonGold, goldBack, commonAchievement, privateAchievement, players, messages);
+                                System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "resource deck:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
+                                System.out.print("     ");
+                                System.out.println(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "gold deck:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
+                                System.out.println();
+                                for(int i = 0; i < ROW; i++){
+                                    for(int j = 0; j < COLUMN; j++){
+                                        System.out.print(rDeck[i][j]);
+                                    }
+                                    System.out.print(" ".repeat(6 + 14 - COLUMN));
+                                    for(int j = 0; j < COLUMN; j++){
+                                        System.out.print(gDeck[i][j]);
+                                    }
+                                    System.out.println();
+                                }
+                                System.out.println();
+                                System.out.println("Do you want to draw from resource deck or gold deck? [r] for resource [g] for gold");
+                                a = input.next();
                             }
                             if(a.equals("c")){
                                 this.printChat(pBoard, hand, username, commonResource, resourceBack, commonGold, goldBack, commonAchievement, privateAchievement, players, messages);
@@ -1399,13 +1430,63 @@ public class Tui implements Ui{
                             }
                         }
                         else{
-                            System.out.println("Which card do you wnat to draw? [1] for first resource [2] for second resource [2] for first gold [4] for second resource");
+                            String[][] r1 = this.createPrintableCard(commonResource[0]);
+                            String[][] r2 = this.createPrintableCard(commonResource[1]);
+                            String[][] g1 = this.createPrintableCard(commonGold[0]);
+                            String[][] g2 = this.createPrintableCard(commonGold[1]);
+                            System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "resource cards:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
+                            System.out.print(" ".repeat(6 + 6 + 2*COLUMN - 15));
+                            System.out.println(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "gold cards:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
+                            System.out.println();
+                            for(int i = 0; i < ROW; i++){
+                                for(int j = 0; j < COLUMN; j++){
+                                    System.out.print(r1[i][j]);
+                                }
+                                System.out.print("      ");
+                                for(int j = 0; j < COLUMN; j++){
+                                    System.out.print(r2[i][j]);
+                                }
+                                System.out.print("       ");
+                                for(int j = 0; j < COLUMN; j++){
+                                    System.out.print(g1[i][j]);
+                                }
+                                System.out.print("      ");
+                                for(int j = 0; j < COLUMN; j++){
+                                    System.out.print(g2[i][j]);
+                                }
+                                System.out.println();
+                            }
+                            System.out.println();
+                            System.out.println("Which card do you want to draw? [1] for first resource [2] for second resource [3] for first gold [4] for second resource");
                             a = input.next();
                             while (!a.equals("1") && !a.equals("2") && !a.equals("3") && !a.equals("4") && !a.equals("c")) {
-                                System.out.println("Which card do you wnat to draw? [1] for first resource [2] for second resource [2] for first gold [4] for second resource");
-                                a = input.next();
                                 clearConsole();
                                 this.printView(pBoard, hand, username, commonResource, resourceBack, commonGold, goldBack, commonAchievement, privateAchievement, players, messages);
+                                System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "resource cards:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
+                                System.out.print(" ".repeat(6 + 6 + 2*COLUMN - 15));
+                                System.out.println(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "gold cards:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
+                                System.out.println();
+                                for(int i = 0; i < ROW; i++){
+                                    for(int j = 0; j < COLUMN; j++){
+                                        System.out.print(r1[i][j]);
+                                    }
+                                    System.out.print("      ");
+                                    for(int j = 0; j < COLUMN; j++){
+                                        System.out.print(r2[i][j]);
+                                    }
+                                    System.out.print("       ");
+                                    for(int j = 0; j < COLUMN; j++){
+                                        System.out.print(g1[i][j]);
+                                    }
+                                    System.out.print("      ");
+                                    for(int j = 0; j < COLUMN; j++){
+                                        System.out.print(g2[i][j]);
+                                    }
+                                    System.out.println();
+                                }
+                                System.out.println();
+                                System.out.println("Which card do you want to draw? [1] for first resource [2] for second resource [3] for first gold [4] for second resource");
+                                a = input.next();
                             }
                             if(a.equals("c")){
                                 this.printChat(pBoard, hand, username, commonResource, resourceBack, commonGold, goldBack, commonAchievement, privateAchievement, players, messages);
