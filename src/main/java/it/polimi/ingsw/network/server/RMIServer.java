@@ -1,5 +1,6 @@
 package it.polimi.ingsw.network.server;
 
+import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -24,18 +25,6 @@ public class RMIServer implements VirtualServer {
     private RMIConnection connection;
     private final ServerController controller;
 
-    //da usare tramite updates.put(valore) cosi che aggora tutti i cliet
-   // private void broadcastUpdateThread() throws InterruptedException {
-   //     while(true){
-   //         String update = updates.take(); //da modificare come serve
-   //         synchronized (this.clients){
-   //             for (var c : clients){
-   //                 c.showUpdate(update);
-   //             }
-   //         }
-   //     }
-   // }
-
     public RMIServer(Server server, int port, ServerController controller){
         this.server = server;
         this.port = port;
@@ -46,7 +35,6 @@ public class RMIServer implements VirtualServer {
         this.startServer();
     }
 
-    //metti in queue
     public void pingConnection() throws RemoteException{
         addToQueue(() -> connection.catchPing());
     }
@@ -55,14 +43,14 @@ public class RMIServer implements VirtualServer {
         connection = new RMIConnection(server, client, username);
         server.login(connection, username);
     }
-
+    //TODO: se faccio implementare virtualServer a Connection ogni volta che do uno stub ad una nuova connessione creo una connection diversa e vado a comunicare direttamente con quella
     public void startServer(){
         try {
             VirtualServer stub = (VirtualServer) UnicastRemoteObject.exportObject(this, 0);
-            Registry registry = LocateRegistry.createRegistry(1234);
-            registry.rebind(Server.serverName, stub);
+            Registry registry = LocateRegistry.createRegistry(Server.rmiPort);
+            registry.bind(Server.serverName, stub);
             System.out.println("RMI server bound.");
-        } catch (RemoteException e) {
+        } catch (RemoteException | AlreadyBoundException e) {
             System.out.println("Connection error");
         }
     }

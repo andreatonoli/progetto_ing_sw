@@ -65,23 +65,23 @@ public class Controller extends Observable {
         notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_RESOURCE_UPDATE, game.getGameBoard().getCommonResource()[1]));
         notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_GOLD_UPDATE, game.getGameBoard().getCommonResource()[0]));
         notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_GOLD_UPDATE, game.getGameBoard().getCommonResource()[1]));
+        //Sends the common achievements to the players
+        notifyAll(new AchievementMessage(MessageType.COMMON_ACHIEVEMENT, game.getGameBoard().getCommonAchievement()));
         //Sends the starter card to each player
         for (Connection u : this.connectedPlayers.keySet()){
-            notify(u, new StarterCardMessage(getPlayerByClient(u).getPlayerBoard().getStarterCard()));
+            u.sendMessage(new StarterCardMessage(getPlayerByClient(u).getPlayerBoard().getStarterCard()));
         }
     }
     //TODO: boh, secondo me fa caha
     //TODO: farlo chiamare solo per i client che hanno piazzato la starterCard, quindi vado a fare solo notify e non notify all
     private void commonCardSetup(Connection u){
         //TODO: gestire scelta del colore (farla in modo sequenziale in base all'ordine?)
+        System.out.println("setappato " + u.getUsername());
         //Sends the players their hand
-        notify(u, new CardInHandMessage(getPlayerByClient(u).getCardInHand()));
-        //Sends the common achievements to the players
-        notify(u, new AchievementMessage(MessageType.COMMON_ACHIEVEMENT, game.getGameBoard().getCommonAchievement()));
+        u.sendMessage(new CardInHandMessage(getPlayerByClient(u).getCardInHand()));
         //Sends the players the private achievements to choose from
-        notify(u, new AchievementMessage(MessageType.PRIVATE_ACHIEVEMENT, getPlayerByClient(u).getPersonalObj()));
-        //Notifies the player his state (i.e. it's his turn or not)
-        notify(u, new PlayerStateMessage(getPlayerByClient(u).getPlayerState(),u.getUsername()));
+        u.sendMessage(new AchievementMessage(MessageType.PRIVATE_ACHIEVEMENT, getPlayerByClient(u).getPersonalObj()));
+        System.out.println("setappato2 " + u.getUsername());
     }
     /**
      *Picks the top card of the deck and calls addInHand to give it to the player
@@ -103,7 +103,7 @@ public class Controller extends Observable {
             turnHandler.changePlayerState(this.getPlayerByClient(user));
             notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState(),user.getUsername()));
         } catch (EmptyException | NotInTurnException | FullHandException e) {
-            notify(user,new ErrorMessage(e.getMessage()));
+            user.sendMessage(new ErrorMessage(e.getMessage()));
         }
     }
 
@@ -126,11 +126,11 @@ public class Controller extends Observable {
             turnHandler.changePlayerState(this.getPlayerByClient(user));
             notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState(),user.getUsername()));
         } catch (CardNotFoundException e) {
-            notify(user,new ErrorMessage(e.getMessage()));
+            user.sendMessage(new ErrorMessage(e.getMessage()));
         } catch (NotInTurnException e) {
-            notify(user,new ErrorMessage(e.getMessage()));
+            user.sendMessage(new ErrorMessage(e.getMessage()));
         } catch (FullHandException e) {
-            notify(user,new ErrorMessage(e.getMessage()));
+            user.sendMessage(new ErrorMessage(e.getMessage()));
         }
     }
     /**
@@ -158,12 +158,11 @@ public class Controller extends Observable {
      */
     public void flipCard(Connection user, Card card){
         card.setCurrentSide();
-        notify(user, new StarterCardMessage(card));
+        user.sendMessage(new StarterCardMessage(card));
     }
     public void placeStarterCard(Connection user, Card starterCard){
         Player player = getPlayerByClient(user);
         player.getPlayerBoard().setStarterCard(starterCard);
-        //notifyAll(new PlayerBoardUpdateMessage(player.getPlayerBoard(), user.getUsername()));
         commonCardSetup(user);
     }
 
@@ -176,6 +175,8 @@ public class Controller extends Observable {
         Player player = getPlayerByClient(user);
         player.setChosenObj(achievement);
         notifyAll(new PlayerBoardUpdateMessage(player.getPlayerBoard(), user.getUsername()));
+        //Notifies the player his state (i.e. it's his turn or not)
+        user.sendMessage(new PlayerStateMessage(player.getPlayerState(), user.getUsername()));
     }
     private Player getPlayerByClient(Connection user){
         return this.connectedPlayers.get(user);

@@ -10,16 +10,17 @@ import it.polimi.ingsw.network.server.Action;
 import it.polimi.ingsw.view.Ui;
 import it.polimi.ingsw.model.card.Card;
 
-import java.lang.reflect.Array;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, ClientInterface {
-    private Queue<Message> messageQueue;
+    private BlockingQueue<Message> messageQueue;
     private Queue<Action> actionQueue;
     private boolean processingAction;
     private static final String serverName = "GameServer";
@@ -32,10 +33,6 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
     private final Achievement[] commonAchievement;
     private PlayerBean player;
     private ArrayList<PlayerBean> opponents;
-    //private HashMap<Integer, Card> board1;
-    //private HashMap<Integer, Card> board2;
-    //private HashMap<Integer, Card> board3;
-    //private HashMap<Integer, Card> board4;
 
     public RMIClient(String username, String host, int port, Ui view) throws RemoteException{
         this.username = username;
@@ -46,7 +43,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
         this.commonAchievement = new Achievement[2];
         this.commonResources = new Card[2];
         this.commonGold = new Card[2];
-        messageQueue = new LinkedList<>();
+        messageQueue = new LinkedBlockingQueue<>();
         processingAction = false;
         actionQueue = new LinkedList<>();
         pickQueue();
@@ -141,9 +138,9 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                 //Copied the message body into the player's cards
                 System.arraycopy(((CardInHandMessage) message).getHand(), 0, this.player.getHand(), 0, 3);
                 //TODO: SISTEMARE
-                for (int i=0; i<player.getHand().length; i++){
-                    System.out.println(player.getCard(i));
-                }
+                //for (int i=0; i<player.getHand().length; i++){
+                //    System.out.println(player.getCard(i));
+                //}
                 break;
             case COMMON_ACHIEVEMENT:
                 System.arraycopy(((AchievementMessage) message).getAchievements(), 0, this.commonAchievement, 0, 2);
@@ -216,7 +213,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                 else {
                     //TODO: informare i giocatori che non stanno giocando il turno
                 }
-                this.view.printViewWithCommands(this.player.getBoard(),this.player.getHand(),this.username,this.commonResources,this.commonGold, this.commonAchievement, this.opponents,this.player.getChat());
+                //this.view.printViewWithCommands(this.player.getBoard(),this.player.getHand(),this.username,this.commonResources,this.commonGold, this.commonAchievement, this.opponents,this.player.getChat());
                 break;
             case CARD_UPDATE:
                 Card drawedCard = ((UpdateCardMessage) message).getCard();
@@ -232,7 +229,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                 name = ((PlayerBoardUpdateMessage) message).getName();
                 if (name.equalsIgnoreCase(username)){
                     player.setBoard(playerBoard);
-                    this.view.printViewWithCommands(this.player.getBoard(),this.player.getHand(),this.username,this.commonResources,this.commonGold, this.commonAchievement, this.opponents,this.player.getChat());
+                    this.view.printViewWithCommands(playerBoard,this.player.getHand(),this.username,this.commonResources,this.commonGold, this.commonAchievement, this.opponents,this.player.getChat());
                 }
                 else{
                     for (PlayerBean p : opponents){
