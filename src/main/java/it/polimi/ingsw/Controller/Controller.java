@@ -43,12 +43,12 @@ public class Controller extends Observable {
         game.addPlayer(player);
         notifyAll(new GenericMessage("Players: " + this.connectedPlayers.keySet().size() + "/" + this.game.getLobbySize()));
         if (game.isFull()){
-            this.startGame();
             ArrayList<String> players = new ArrayList<>();
             for (Connection c : connectedPlayers.keySet()){
                 players.add(c.getUsername());
             }
             notifyAll(new OpponentsMessage(players));
+            this.startGame();
             return true;
         }
         return false;
@@ -75,13 +75,11 @@ public class Controller extends Observable {
     //TODO: boh, secondo me fa caha
     //TODO: farlo chiamare solo per i client che hanno piazzato la starterCard, quindi vado a fare solo notify e non notify all
     private void commonCardSetup(Connection u){
-        //TODO: gestire scelta del colore (farla in modo sequenziale in base all'ordine?)
-        System.out.println("setappato " + u.getUsername());
+        //TODO: gestire scelta del colore (farla in modo sequenziale in base all'ordine?
         //Sends the players their hand
         u.sendMessage(new CardInHandMessage(getPlayerByClient(u).getCardInHand()));
         //Sends the players the private achievements to choose from
         u.sendMessage(new AchievementMessage(MessageType.PRIVATE_ACHIEVEMENT, getPlayerByClient(u).getPersonalObj()));
-        System.out.println("setappato2 " + u.getUsername());
     }
     /**
      *Picks the top card of the deck and calls addInHand to give it to the player

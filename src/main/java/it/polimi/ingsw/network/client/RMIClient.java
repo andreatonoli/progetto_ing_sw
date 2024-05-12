@@ -69,13 +69,13 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
         return this.view.setLobbySize();
     }
     public void flipCard(Card card) throws RemoteException{
-        this.server.flipCard(card);
+        this.server.flipCard(card, username);
     }
     public void placeStarterCard(Card card) throws RemoteException{
-        this.server.placeStarterCard(card);
+        this.server.placeStarterCard(card, username);
     }
     public void setPrivateAchievement(Achievement toBeSet) throws RemoteException {
-        this.server.setAchievement(toBeSet);
+        this.server.setAchievement(toBeSet, username);
     }
     private void pickQueue(){
         Timer t = new Timer();
@@ -107,7 +107,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
     public void pingNetwork() throws RemoteException{
         addToQueue(() -> {
             try {
-                server.pingConnection();
+                server.pingConnection(username);
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
             }
@@ -268,7 +268,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
     public void placeCard(Card card, int[] placingCoordinates) {
         if (player.getState().equals(PlayerState.PLAY_CARD)) {
             try {
-                server.placeCard(card, placingCoordinates);
+                server.placeCard(card, placingCoordinates, username);
             } catch (RemoteException e) {
                 System.out.println(e.getMessage() + " in placeCard");
             }
@@ -282,7 +282,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
     public void drawCard(String chosenDeck) {
         if (player.getState().equals(PlayerState.DRAW_CARD)){
             try {
-                server.drawCard(chosenDeck);
+                server.drawCard(chosenDeck, username);
             } catch (RemoteException e) {
                 System.out.println(e.getMessage() + " in drawCard");
             }
@@ -296,7 +296,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
     public void drawCardFromBoard(int index){
         if (player.getState().equals(PlayerState.DRAW_CARD)){
             try {
-                server.drawCardFromBoard(index - 1);
+                server.drawCardFromBoard(index - 1, username);
             } catch (RemoteException e) {
                 System.out.println(e.getMessage() + " in drawCardFromBoard");
             }
