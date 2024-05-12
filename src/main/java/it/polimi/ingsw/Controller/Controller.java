@@ -110,10 +110,17 @@ public class Controller extends Observable {
     /**
      * Permits the player to take one card from the board, then replaces it with the same type card drawed from the decks
      * @param user who wants to take the card
-     * @param card taken by the player
+     * @param index of the card taken by the player (0,1 are from commonResources and 2,3 are from commonGold)
      */
-    public void drawCardFromBoard(Connection user, Card card){
+    public void drawCardFromBoard(Connection user, int index){
         try {
+            Card card;
+            if(index <= 1){
+                card = game.getGameBoard().getCommonResource()[index];
+            }
+            else{
+                card = game.getGameBoard().getCommonGold()[index-2];
+            }
             Card drawedCard = this.getPlayerByClient(user).drawCardFromBoard(card);
             user.sendMessage(new UpdateCardMessage(drawedCard));
             turnHandler.changePlayerState(this.getPlayerByClient(user));
@@ -156,7 +163,7 @@ public class Controller extends Observable {
     public void placeStarterCard(Connection user, Card starterCard){
         Player player = getPlayerByClient(user);
         player.getPlayerBoard().setStarterCard(starterCard);
-        notifyAll(new PlayerBoardUpdateMessage(player.getPlayerBoard(), user.getUsername()));
+        //notifyAll(new PlayerBoardUpdateMessage(player.getPlayerBoard(), user.getUsername()));
         commonCardSetup(user);
     }
 
@@ -166,7 +173,9 @@ public class Controller extends Observable {
      * @param achievement to be set
      */
     public void chooseObj(Connection user, Achievement achievement){
-        getPlayerByClient(user).setChosenObj(achievement);
+        Player player = getPlayerByClient(user);
+        player.setChosenObj(achievement);
+        notifyAll(new PlayerBoardUpdateMessage(player.getPlayerBoard(), user.getUsername()));
     }
     private Player getPlayerByClient(Connection user){
         return this.connectedPlayers.get(user);

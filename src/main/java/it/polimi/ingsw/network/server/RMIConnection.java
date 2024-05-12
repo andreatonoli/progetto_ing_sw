@@ -135,6 +135,9 @@ public class RMIConnection extends Connection {
     public void drawCard(String chosenDeck){
         this.lobby.drawCard(this, chosenDeck);
     }
+    public void drawCardFromBoard(int index){
+        this.lobby.drawCardFromBoard(this, index);
+    }
     @Override
     public void update(Message message) {
         this.sendMessage(message);

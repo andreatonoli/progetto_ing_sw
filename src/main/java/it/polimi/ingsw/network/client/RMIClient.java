@@ -140,6 +140,10 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
             case CARD_HAND:
                 //Copied the message body into the player's cards
                 System.arraycopy(((CardInHandMessage) message).getHand(), 0, this.player.getHand(), 0, 3);
+                //TODO: SISTEMARE
+                for (int i=0; i<player.getHand().length; i++){
+                    System.out.println(player.getCard(i));
+                }
                 break;
             case COMMON_ACHIEVEMENT:
                 System.arraycopy(((AchievementMessage) message).getAchievements(), 0, this.commonAchievement, 0, 2);
@@ -169,6 +173,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                 }
                 break;
             case STARTER_CARD:
+                //TODO: usare printStarterCard e non chiedere più di flippare ogni volta
                 this.starterCard = ((StarterCardMessage) message).getCard();
                 this.view.printCard(starterCard);
                 boolean choice = this.view.askToFlip();
@@ -200,7 +205,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                         }
                     }
                 }
-                this.view.printView(this.player.getBoard(),this.player.getHand(),this.username,this.commonResources,this.commonGold, this.commonAchievement, this.opponents,this.player.getChat());
+                this.view.printViewWithCommands(this.player.getBoard(),this.player.getHand(),this.username,this.commonResources,this.commonGold, this.commonAchievement, this.opponents,this.player.getChat());
                 break;
             case PLAYER_STATE:
                 PlayerState playerState = ((PlayerStateMessage) message).getState();
@@ -211,12 +216,12 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                 else {
                     //TODO: informare i giocatori che non stanno giocando il turno
                 }
-                this.view.printView(this.player.getBoard(),this.player.getHand(),this.username,this.commonResources,this.commonGold, this.commonAchievement, this.opponents,this.player.getChat());
+                this.view.printViewWithCommands(this.player.getBoard(),this.player.getHand(),this.username,this.commonResources,this.commonGold, this.commonAchievement, this.opponents,this.player.getChat());
                 break;
             case CARD_UPDATE:
                 Card drawedCard = ((UpdateCardMessage) message).getCard();
                 player.setCardinHand(drawedCard);
-                this.view.printView(this.player.getBoard(),this.player.getHand(),this.username,this.commonResources,this.commonGold, this.commonAchievement, this.opponents,this.player.getChat());
+                this.view.printViewWithCommands(this.player.getBoard(),this.player.getHand(),this.username,this.commonResources,this.commonGold, this.commonAchievement, this.opponents,this.player.getChat());
                 break;
             case DECK_UPDATE:
                 Card first = ((UpdateDeckMessage) message).getCard();
@@ -227,15 +232,16 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                 name = ((PlayerBoardUpdateMessage) message).getName();
                 if (name.equalsIgnoreCase(username)){
                     player.setBoard(playerBoard);
-                    this.view.printView(this.player.getBoard(),this.player.getHand(),this.username,this.commonResources,this.commonGold, this.commonAchievement, this.opponents,this.player.getChat());
+                    this.view.printViewWithCommands(this.player.getBoard(),this.player.getHand(),this.username,this.commonResources,this.commonGold, this.commonAchievement, this.opponents,this.player.getChat());
                 }
                 else{
                     for (PlayerBean p : opponents){
                         if (p.getUsername().equals(name)){
-                            player.setBoard(((PlayerBoardUpdateMessage) message).getpBoard());
+                            player.setBoard(playerBoard);
                         }
                     }
                 }
+                break;
             case GENERIC_MESSAGE:
                 //TODO: messaggi che si accumulano finiscono qui e non so perchè
                 this.view.showText(message.toString());
@@ -290,10 +296,10 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
     }
 
     @Override
-    public void drawCardFromBoard(String chosenDeck, int index){
+    public void drawCardFromBoard(int index){
         if (player.getState().equals(PlayerState.DRAW_CARD)){
             try {
-                server.drawCardFromBoard(chosenDeck, index);
+                server.drawCardFromBoard(index - 1);
             } catch (RemoteException e) {
                 System.out.println(e.getMessage() + " in drawCardFromBoard");
             }

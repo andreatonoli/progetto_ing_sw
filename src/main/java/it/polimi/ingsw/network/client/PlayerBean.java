@@ -29,6 +29,7 @@ public class PlayerBean {
         this.chat = new ArrayList<>();
         this.username = username;
         this.points = 0;
+        this.state = PlayerState.NOT_IN_TURN;
     }
     public Card[] getHand() {
         return hand;

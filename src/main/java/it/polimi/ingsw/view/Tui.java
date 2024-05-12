@@ -667,21 +667,9 @@ public class Tui implements Ui{
         String[][][][] scoreBoard = this.createPrintableScoreBoard(players);
         String[] chat = this.createPrintableChat(messages);
         String[][][][] playerBoard = this.createPrintablePlayerBoard(pBoard);
-        String[][] hand1 = null;
-        String[][] hand2 = null;
-        String[][] hand3 = null;
-        if (hand[0] != null){
-            hand1 = createPrintableCard(hand[0]);
-        }
-        if (hand[1] != null){
-            hand1 = createPrintableCard(hand[1]);
-        }
-        if (hand[2] != null){
-            hand1 = createPrintableCard(hand[2]);
-        }
-        //String[][] hand1 = this.createPrintableCard(hand[0]);
-        //String[][] hand2 = this.createPrintableCard(hand[1]);
-        //String[][] hand3 = this.createPrintableCard(hand[2]);
+        String[][] hand1 = this.createPrintableCard(hand[0]);
+        String[][] hand2 = this.createPrintableCard(hand[1]);
+        String[][] hand3 = this.createPrintableCard(hand[2]);
 
         this.printTitle();
 
@@ -1079,7 +1067,7 @@ public class Tui implements Ui{
                     System.out.println("Which card do you want to display? [1] [2] [3]");
                     String a = input.next();
                     clearConsole();
-                this.printView(pBoard, hand, username, commonResource, commonGold, commonAchievement, players, messages);
+                    this.printView(pBoard, hand, username, commonResource, commonGold, commonAchievement, players, messages);
                     while (!a.equals("1") && !a.equals("2") && !a.equals("3") && !a.equals("c")) {
                         System.out.println("Which card do you want to display? [1] [2] [3]");
                         a = input.next();
@@ -1122,7 +1110,7 @@ public class Tui implements Ui{
                     System.out.println("Type row number");
                     String a = input.next();
                     clearConsole();
-                this.printView(pBoard, hand, username, commonResource, commonGold, commonAchievement, players, messages);
+                    this.printView(pBoard, hand, username, commonResource, commonGold, commonAchievement, players, messages);
                     while (!a.equals("c") && Integer.parseInt(a) > PLAYERBOARD_DIM) {
                         System.out.println("Retype row number");
                         a = input.next();
@@ -1137,7 +1125,7 @@ public class Tui implements Ui{
                         System.out.println("Type column number");
                         a = input.next();
                         clearConsole();
-                    this.printView(pBoard, hand, username, commonResource, commonGold, commonAchievement, players, messages);
+                        this.printView(pBoard, hand, username, commonResource, commonGold, commonAchievement, players, messages);
                         while (!a.equals("c") && Integer.parseInt(a) > PLAYERBOARD_DIM) {
                             System.out.println("Retype column number");
                             a = input.next();
@@ -1308,7 +1296,7 @@ public class Tui implements Ui{
 
                             }
                             clearConsole();
-                        this.printView(pBoard, hand, username, commonResource, commonGold, commonAchievement, players, messages);
+                            this.printView(pBoard, hand, username, commonResource, commonGold, commonAchievement, players, messages);
                             System.out.println("QUI IL CONTROLLER DEVE AVER PIAZZATO LA CARTA");
                             System.out.println();
                         }
@@ -1317,7 +1305,7 @@ public class Tui implements Ui{
                         System.out.println("Do you want to draw from decks or visible cards? [1] for decks [2] for visible cards");
                         String a = input.next();
                         clearConsole();
-                    this.printView(pBoard, hand, username, commonResource, commonGold, commonAchievement, players, messages);
+                        this.printView(pBoard, hand, username, commonResource, commonGold, commonAchievement, players, messages);
                         while (!a.equals("1") && !a.equals("2") && !a.equals("c")) {
                             System.out.println("Do you want to draw from decks or visible cards? [1] for decks [2] for visible cards");
                             a = input.next();
@@ -1405,7 +1393,7 @@ public class Tui implements Ui{
             System.out.println("\t Press " + String.valueOf(othersPlayers.size() + 1) + " to send a global message");
             u = input.nextInt();
             clearConsole();
-        this.printView(pBoard, hand, username, commonResource, commonGold, commonAchievement, players, messages);
+            this.printView(pBoard, hand, username, commonResource, commonGold, commonAchievement, players, messages);
         }
         System.out.println("What's the content of your message?");
         //consume the newline
@@ -1560,7 +1548,7 @@ public class Tui implements Ui{
                 for(int j = 0; j < PLAYERBOARD_DIM; j++) {
                     //System.out.print("|");
                     for (int s = 0; s < 2; s++) {
-                            System.out.print(mat[t][s][i][j]);
+                        System.out.print(mat[t][s][i][j]);
                     }
                 }
                 //System.out.println("|");

@@ -9,6 +9,6 @@ public interface ClientInterface {
     void sendChatMessage(String receiver, String message);
     void placeCard(Card card, int[] placingCoordinates);
     void drawCard(String chosenDeck);
-    void drawCardFromBoard(String ChosenDeck, int index);
+    void drawCardFromBoard(int index);
     ArrayList<PlayerBean> getPlayers();
 }

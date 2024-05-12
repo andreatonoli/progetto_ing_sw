@@ -91,8 +91,8 @@ public class RMIServer implements VirtualServer {
     }
 
     @Override
-    public void drawCardFromBoard(String chosenDeck, int index) throws RemoteException {
-
+    public void drawCardFromBoard(int index) throws RemoteException {
+        addToQueue(() -> connection.drawCardFromBoard(index));
     }
 
     @Override

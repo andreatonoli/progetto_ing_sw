@@ -15,7 +15,7 @@ public interface VirtualServer extends Remote {
     void placeStarterCard(Card card) throws RemoteException;
     void placeCard(Card card, int[] placingCoordinates) throws RemoteException;
     void drawCard(String chosenDeck) throws RemoteException;
-    void drawCardFromBoard(String chosenDeck, int index) throws RemoteException;
+    void drawCardFromBoard(int index) throws RemoteException;
     void setAchievement(Achievement achievement) throws RemoteException;
     void pingConnection() throws RemoteException;
 }

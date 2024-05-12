@@ -7,6 +7,7 @@ public enum MessageType {
     COMMON_RESOURCE_UPDATE,
     CARD_UPDATE,
     DRAW_DECK,
+    DRAW_BOARD,
     DECK_UPDATE,
     FREE_LOBBY,
     FLIP_CARD,
