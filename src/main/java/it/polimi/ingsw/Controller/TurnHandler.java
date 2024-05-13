@@ -31,13 +31,13 @@ public class TurnHandler extends Observable {
                     try {
                         player.drawCard(game.getGameBoard().getGoldDeck());
                     } catch (NotInTurnException | FullHandException | EmptyException e2) {
-                        i=0;
+                        i=2;
                     }
                 }
-                i=0;
+                i=2;
             }
 
-            if (i == 0) {
+            if (i == 2) {
                 game.setPlayerInTurn();
             }
             player.setPlayerState(PlayerState.values()[i]);

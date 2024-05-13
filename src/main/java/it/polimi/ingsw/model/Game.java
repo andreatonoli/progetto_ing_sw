@@ -19,7 +19,7 @@ public class Game extends Observable implements Serializable {
     private GameBoard gameBoard;
     private GameState gameState;
     private final ArrayList<Player> players;
-    private int willPlay = -1;
+    private int willPlay;
     private boolean gameFull;
     private Player firstPlayer;
     private Player playerInTurn;
@@ -48,7 +48,6 @@ public class Game extends Observable implements Serializable {
     }
 
     public void startGame(){
-        System.out.println("start game");
         this.gameState = GameState.START;
         //Decks are shuffled
         Collections.shuffle(gameBoard.getStarterDeck());
@@ -144,6 +143,7 @@ public class Game extends Observable implements Serializable {
         firstPlayer = players.getFirst();
         firstPlayer.isFirstToPlay(firstPlayer.getUsername());
         firstPlayer.setPlayerState(PlayerState.PLAY_CARD);
+        willPlay = 0;
     }
 
     public Player getFirstPlayer(){
@@ -157,12 +157,12 @@ public class Game extends Observable implements Serializable {
 
     public void setPlayerInTurn()
     {
+        willPlay++;
+
         if (willPlay == lobbySize){
             willPlay = 0;
         }
-        else{
-            willPlay++;
-        }
+
         while (players.get(willPlay).isDisconnected()){
             willPlay++;
             if (willPlay == lobbySize){
