@@ -157,6 +157,7 @@ public class Controller extends Observable {
             notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState(), user.getUsername()));
         } catch (NotInTurnException | OccupiedCornerException | CostNotSatisfiedException |
                  AlreadyUsedPositionException | InvalidCoordinatesException e) {
+            System.err.println(e.getMessage());
             user.sendMessage(new ErrorMessage(e.getMessage()));
         }
     }

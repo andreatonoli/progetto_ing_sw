@@ -195,7 +195,6 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
             case PLAYER_STATE:
                 PlayerState playerState = ((PlayerStateMessage) message).getState();
                 name = ((PlayerStateMessage) message).getName();
-                System.out.println(playerState.toString() + " " + name);
                 if (username.equals(name)) {
                     player.setState(playerState);
                 }

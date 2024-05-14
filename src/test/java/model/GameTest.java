@@ -1,4 +1,4 @@
-/*
+
 package model;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,10 +22,10 @@ public class GameTest {
         this.game1 = new Game(3);
     }
 
-    */
+
 /**
      * Checks if the game class constructor correctly initializes all the variables
-     *//*
+     */
 
     @Test
     @DisplayName("Constructor test")
@@ -37,10 +37,10 @@ public class GameTest {
         assertNotNull(game.getGameBoard());
     }
 
-    */
+
 /**
      * checks if players are correctly added to the lobby
-     *//*
+     */
 
     @Test
     @DisplayName("Add Player")
@@ -63,11 +63,10 @@ public class GameTest {
         assertTrue(game1.isFull());
     }
 
-    */
 /**
      * This test check that a game with three players assigns correctly the common cards
      * and the cards of all the players.
-     *//*
+     */
 
     @Test
     @DisplayName("Test game start")
@@ -170,10 +169,10 @@ public class GameTest {
         assertTrue(game1.getPlayers().contains(game1.getFirstPlayer()));
     }
 
-    */
+
 /**
      * this test checks that a game with less player than its capacity does not start until the lobby is full
-     *//*
+     */
 
     @Test
     @DisplayName("Game does not start unless it's full")
@@ -190,12 +189,12 @@ public class GameTest {
         assertDoesNotThrow(game1::startGame);
     }
 
-    */
+
 /**
      * this test checks that a game with three players that placed some cards
      * to make all types of achievements is ended with the correct number
      * of points for each player
-     *//*
+     */
 
     @Test
     @DisplayName("Test game end")
@@ -237,7 +236,6 @@ public class GameTest {
             player1.placeCard(r2, new int[]{1,1});
             player1.placeCard(r3, new int[]{1,-1});
             player1.placeCard(g11, new int[]{2,-2});
-            //fino a qui funziona
         } catch (OccupiedCornerException | NotInTurnException | CostNotSatisfiedException |
                  AlreadyUsedPositionException | InvalidCoordinatesException ex) {
             System.out.println(ex.getMessage());
@@ -246,9 +244,9 @@ public class GameTest {
         ResourceCard p32 = new ResourceCard(new Corner[]{new Corner(Symbols.NOCORNER), new Corner(Symbols.EMPTY), new Corner(Symbols.INSECT), new Corner(Symbols.INSECT) }, 32, 0);
         ResourceCard p33 = new ResourceCard(new Corner[]{new Corner(Symbols.INSECT), new Corner(Symbols.NOCORNER), new Corner(Symbols.EMPTY), new Corner(Symbols.INSECT) }, 33, 0);
         try {
-            player1.placeCard(p31, new int[]{0,0});
-            player1.placeCard(p33, new int[]{-1,1});
-            player1.placeCard(p32, new int[]{-2,2});
+            player1.placeCard(p31, new int[]{-1,1});
+            player1.placeCard(p33, new int[]{-2,2});
+            player1.placeCard(p32, new int[]{-3,3});
         } catch (OccupiedCornerException | NotInTurnException | CostNotSatisfiedException |
                  AlreadyUsedPositionException | InvalidCoordinatesException ex) {
             System.err.println(ex.getMessage());
@@ -261,15 +259,15 @@ public class GameTest {
         ResourceCard g15 = new ResourceCard(new Corner[]{new Corner(Symbols.NOCORNER), new Corner(Symbols.INSECT), new Corner(Symbols.PLANT), new Corner(Symbols.QUILL) }, 15, 0);
         ResourceCard b26 = new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.MANUSCRIPT), new Corner(Symbols.NOCORNER) }, 26, 0);
         try {
-            player2.placeCard(r6, new int[]{0,0});
-            player2.placeCard(g15, new int[]{1,1});
-            player2.placeCard(b26, new int[]{2,0});
+            player2.placeCard(r6, new int[]{1,1});
+            player2.placeCard(g15, new int[]{2,0});
+            player2.placeCard(b26, new int[]{3,-1});
         } catch (OccupiedCornerException | NotInTurnException | AlreadyUsedPositionException | CostNotSatisfiedException | InvalidCoordinatesException ex) {
             System.out.println(ex.getMessage());
         }
         ResourceCard b21 = new ResourceCard(new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.ANIMAL), new Corner(Symbols.NOCORNER), new Corner(Symbols.EMPTY) }, 21, 0);
         try {
-            player2.placeCard(b21, new int[]{0,0});
+            player2.placeCard(b21, new int[]{-1,1});
         } catch (OccupiedCornerException | NotInTurnException | CostNotSatisfiedException ex) {
             System.out.println(ex.getMessage());
         } catch (AlreadyUsedPositionException | InvalidCoordinatesException e) {
@@ -283,9 +281,9 @@ public class GameTest {
         ResourceCard g13 = new ResourceCard(new Corner[]{new Corner(Symbols.NOCORNER), new Corner(Symbols.PLANT), new Corner(Symbols.PLANT), new Corner(Symbols.EMPTY) }, 13, 0);
         ResourceCard p34 = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.INSECT), new Corner(Symbols.INSECT), new Corner(Symbols.NOCORNER) }, 34, 0);
         try {
-            player3.placeCard(g12, new int[]{0,0});
-            player3.placeCard(g13, new int[]{0,0} );
-            player3.placeCard(p34, new int[]{1,-1});
+            player3.placeCard(g12, new int[]{1,1});
+            player3.placeCard(g13, new int[]{1,-1});
+            player3.placeCard(p34, new int[]{0,-2});
         } catch (OccupiedCornerException | NotInTurnException | CostNotSatisfiedException ex) {
             System.out.println(ex.getMessage());
         } catch (AlreadyUsedPositionException | InvalidCoordinatesException e) {
@@ -295,9 +293,9 @@ public class GameTest {
         ResourceCard g17 = new ResourceCard(new Corner[]{new Corner(Symbols.MANUSCRIPT), new Corner(Symbols.NOCORNER), new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL) }, 17, 0);
         ResourceCard p35 = new ResourceCard(new Corner[]{new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL), new Corner(Symbols.INSECT), new Corner(Symbols.ANIMAL) }, 35, 0);
         try {
-            player3.placeCard(g17, new int[]{0,0});
-            player3.placeCard(b25, new int[]{-1,1});
-            player3.placeCard(p35, new int[]{-2,0});
+            player3.placeCard(g17, new int[]{-1,1});
+            player3.placeCard(b25, new int[]{-2,0});
+            player3.placeCard(p35, new int[]{-1,-1});
         } catch (OccupiedCornerException | NotInTurnException | CostNotSatisfiedException |
                  AlreadyUsedPositionException | InvalidCoordinatesException ex) {
             System.out.println(ex.getMessage());
@@ -309,18 +307,18 @@ public class GameTest {
             throw new RuntimeException(e);
         }
 
-        assertEquals(player1.getPoints(), 5);
-        assertEquals(player2.getPoints(), 5);
-        assertEquals(player3.getPoints(), 6);
+        assertEquals(5, player1.getPoints());
+        assertEquals(5, player2.getPoints());
+        assertEquals(6, player3.getPoints());
     }
 
-    */
+
 /**
      * this test checks that a game with three players that placed some cards
      * to make all types of achievements but without calling startGame(4) method
      * is ended with the GameNotStartedException and with no points added
      * to each player
-     *//*
+     */
 
     @Test
     @DisplayName("Test game end without starting before")
@@ -353,9 +351,9 @@ public class GameTest {
         ResourceCard r3 = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI) }, 3, 0);
         ResourceCard g11 = new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.PLANT) }, 11, 0);
         try {
-            player1.placeCard(r2, new int[]{0,0});
-            player1.placeCard(r3, new int[]{0,0});
-            player1.placeCard(g11, new int[]{1,-1});
+            player1.placeCard(r2, new int[]{1,1});
+            player1.placeCard(r3, new int[]{1,-1});
+            player1.placeCard(g11, new int[]{2,-2});
         } catch (OccupiedCornerException | NotInTurnException | CostNotSatisfiedException |
                  AlreadyUsedPositionException | InvalidCoordinatesException ex) {
             System.out.println(ex.getMessage());
@@ -364,9 +362,9 @@ public class GameTest {
         ResourceCard p32 = new ResourceCard(new Corner[]{new Corner(Symbols.NOCORNER), new Corner(Symbols.EMPTY), new Corner(Symbols.INSECT), new Corner(Symbols.INSECT) }, 32, 0);
         ResourceCard p33 = new ResourceCard(new Corner[]{new Corner(Symbols.INSECT), new Corner(Symbols.NOCORNER), new Corner(Symbols.EMPTY), new Corner(Symbols.INSECT) }, 33, 0);
         try {
-            player1.placeCard(p31, new int[]{0,0} );
-            player1.placeCard(p33, new int[]{-1,1});
-            player1.placeCard(p32, new int[]{-2,2});
+            player1.placeCard(p31, new int[]{-1,1} );
+            player1.placeCard(p33, new int[]{-2,2});
+            player1.placeCard(p32, new int[]{-3,3});
         } catch (OccupiedCornerException | NotInTurnException | CostNotSatisfiedException |
                  AlreadyUsedPositionException | InvalidCoordinatesException ex) {
             System.out.println(ex.getMessage());
@@ -377,16 +375,16 @@ public class GameTest {
         ResourceCard g15 = new ResourceCard(new Corner[]{new Corner(Symbols.NOCORNER), new Corner(Symbols.INSECT), new Corner(Symbols.PLANT), new Corner(Symbols.QUILL) }, 15, 0);
         ResourceCard b26 = new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.MANUSCRIPT), new Corner(Symbols.NOCORNER) }, 26, 0);
         try {
-            player2.placeCard(r6, new int[]{0,0} );
-            player2.placeCard(g15, new int[]{1,1});
-            player2.placeCard(b26, new int[]{2,0});
+            player2.placeCard(r6, new int[]{1,1} );
+            player2.placeCard(g15, new int[]{2,0});
+            player2.placeCard(b26, new int[]{3,-1});
         } catch (OccupiedCornerException | NotInTurnException | CostNotSatisfiedException |
                  AlreadyUsedPositionException | InvalidCoordinatesException ex) {
             System.out.println(ex.getMessage());
         }
         ResourceCard b21 = new ResourceCard(new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.ANIMAL), new Corner(Symbols.NOCORNER), new Corner(Symbols.EMPTY) }, 21, 0);
         try {
-            player1.placeCard(b21, new int[]{0,0});
+            player1.placeCard(b21, new int[]{-1,1});
         } catch (OccupiedCornerException | NotInTurnException | CostNotSatisfiedException |
                  AlreadyUsedPositionException | InvalidCoordinatesException ex) {
             System.out.println(ex.getMessage());
@@ -397,9 +395,9 @@ public class GameTest {
         ResourceCard g13 = new ResourceCard(new Corner[]{new Corner(Symbols.NOCORNER), new Corner(Symbols.PLANT), new Corner(Symbols.PLANT), new Corner(Symbols.EMPTY) }, 13, 0);
         ResourceCard p34 = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.INSECT), new Corner(Symbols.INSECT), new Corner(Symbols.NOCORNER) }, 34, 0);
         try {
-            player3.placeCard(g12, new int[]{0,0} );
-            player3.placeCard(g13, new int[]{0,0} );
-            player3.placeCard(p34, new int[]{1,-1});
+            player3.placeCard(g12, new int[]{1,1} );
+            player3.placeCard(g13, new int[]{1,-1} );
+            player3.placeCard(p34, new int[]{0,-2});
         } catch (OccupiedCornerException | NotInTurnException | CostNotSatisfiedException |
                  AlreadyUsedPositionException | InvalidCoordinatesException ex) {
             System.out.println(ex.getMessage());
@@ -408,9 +406,9 @@ public class GameTest {
         ResourceCard g17 = new ResourceCard(new Corner[]{new Corner(Symbols.MANUSCRIPT), new Corner(Symbols.NOCORNER), new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL) }, 17, 0);
         ResourceCard p35 = new ResourceCard(new Corner[]{new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL), new Corner(Symbols.INSECT), new Corner(Symbols.ANIMAL) }, 35, 0);
         try {
-            player3.placeCard(g17, new int[]{0,0});
-            player3.placeCard(b25, new int[]{-1,1});
-            player3.placeCard(p35, new int[]{-2,0});
+            player3.placeCard(g17, new int[]{-1,1});
+            player3.placeCard(b25, new int[]{-2,0});
+            player3.placeCard(p35, new int[]{-1,-1});
         } catch (OccupiedCornerException | NotInTurnException | CostNotSatisfiedException |
                  AlreadyUsedPositionException | InvalidCoordinatesException ex) {
             System.out.println(ex.getMessage());
@@ -423,4 +421,4 @@ public class GameTest {
         assertEquals(player3.getPoints(), 0);
     }
 }
-*/
+

@@ -30,7 +30,7 @@ public class SocketClient implements ClientInterface {
         this.player = new PlayerBean(this.username);
         this.opponents = new ArrayList<>();
         this.game = new GameBean();
-        this.startClient(address, port);
+        new Thread(() -> { this.startClient(address, port); }).start();
     }
     public void startClient(String address, int port){
         try {
@@ -148,7 +148,8 @@ public class SocketClient implements ClientInterface {
             case CARD_UPDATE:
                 Card drawedCard = ((UpdateCardMessage) message).getCard();
                 player.setCardinHand(drawedCard);
-                this.view.printViewWithCommands(this.player, this.game, this.opponents);                break;
+                this.view.printViewWithCommands(this.player, this.game, this.opponents);
+                break;
             case SCORE_UPDATE:
                 name = ((ScoreUpdateMessage) message).getName();
                 int points = ((ScoreUpdateMessage) message).getPoint();
@@ -162,10 +163,21 @@ public class SocketClient implements ClientInterface {
                         }
                     }
                 }
-                this.view.printViewWithCommands(this.player, this.game, this.opponents);                break;
+                this.view.printViewWithCommands(this.player, this.game, this.opponents);
+                break;
             case PLAYER_STATE:
                 PlayerState playerState = ((PlayerStateMessage) message).getState();
-                this.player.setState(playerState);
+                name = ((PlayerStateMessage) message).getName();
+                if (username.equals(name)) {
+                    player.setState(playerState);
+                }
+                else {
+                    for (PlayerBean p : opponents){
+                        if (p.getUsername().equals(name)){
+                            p.setState(playerState);
+                        }
+                    }
+                }
                 break;
             case PLAYERBOARD_UPDATE:
                 PlayerBoard playerBoard = ((PlayerBoardUpdateMessage) message).getpBoard();

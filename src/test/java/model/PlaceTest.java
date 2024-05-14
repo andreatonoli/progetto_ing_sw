@@ -16,6 +16,7 @@ import it.polimi.ingsw.model.player.Player;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 public class PlaceTest{
+    //TODO da sistemare il place (guardare vecchie versioni di test da git)
     private Game game;
     @Test
     @DisplayName("Place a card")

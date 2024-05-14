@@ -51,7 +51,7 @@ public class Tui implements Ui{
                 client = new SocketClient(username, address, port, this);
             }
         } catch (RemoteException e) {
-            throw new RuntimeException(e);
+            System.err.println(e.getMessage());
         }
     }
 
@@ -903,8 +903,12 @@ public class Tui implements Ui{
             System.out.println();
         }
     }
+    //TODO: stampa giusta ai giocatori non in turno
+    //TODO: Stampare retro carta quando devo piazzarla
+    //TODO: perchè client è null?
     @Override
     public void printViewWithCommands(PlayerBean player, GameBean game, ArrayList<PlayerBean> players){
+        System.out.println(client);
         PlayerBoard pBoard = player.getBoard();
         Card[] hand = player.getHand();
         String username = player.getUsername();
@@ -1156,7 +1160,7 @@ public class Tui implements Ui{
                                this.printChat(player, game, players);
                             }
                             else{
-                                coord[0] = Integer.parseInt(a);
+                                coord[0] = Integer.parseInt(a) - 6;
                                 System.out.println("Type column number");
                                 a = input.next();
                                 clearConsole();
@@ -1171,7 +1175,8 @@ public class Tui implements Ui{
                                    this.printChat(player, game, players);
                                 }
                                 else{
-                                    coord[1] = Integer.parseInt(a);
+                                    //TODO: sistemare cambio coordinate a cartesiane (mannaggia a edo)
+                                    coord[1] = Integer.parseInt(a) - 6;
                                     clearConsole();
                                     this.printView(player, game, players);
                                     this.printCardFromPlayerBoard(pBoard, coord);
