@@ -2,10 +2,7 @@ package org.example;
 
 import it.polimi.ingsw.Controller.Controller;
 import it.polimi.ingsw.model.*;
-import it.polimi.ingsw.model.card.CardBack;
-import it.polimi.ingsw.model.card.Corner;
-import it.polimi.ingsw.model.card.ResourceCard;
-import it.polimi.ingsw.model.card.StarterCard;
+import it.polimi.ingsw.model.card.*;
 import it.polimi.ingsw.model.enums.*;
 import it.polimi.ingsw.model.exceptions.*;
 import it.polimi.ingsw.model.player.Player;
@@ -35,7 +32,7 @@ public class App
         game.addPlayer(player);
         game.addPlayer(player2);
         game.addPlayer(player3);
-        StarterCard s2 = new StarterCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}, 2, new CardBack(new ArrayList<>(List.of(Symbols.FUNGI)), Color.WHITE, new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY)}));
+        StarterCard s2 = new StarterCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}, 2, new CardBack(new ArrayList<>(List.of(Symbols.FUNGI, Symbols.PLANT, Symbols.ANIMAL)), Color.WHITE, new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY)}));
         Tui t = new Tui();
         s2.setCurrentSide();
 
@@ -48,10 +45,12 @@ public class App
         ResourceCard c3 = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 25, 0);
         ResourceCard c4 = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 35, 0);
         ResourceCard c5 = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), new Corner(Symbols.NOCORNER), new Corner(Symbols.MANUSCRIPT)}, 35, 2);
+        Achievement a1 = new AchievementResources(Symbols.FUNGI);
 
         player.placeCard(c1, new int[]{0, 0}, CornerEnum.BL);
         player.setPlayerState(PlayerState.PLAY_CARD);
         player.placeCard(c2, new int[]{0, 0}, CornerEnum.TL);
+        player.setChosenObj(a1);
         //player.setPlayerState(PlayerState.PLAY_CARD);
         //player.placeCard(c3, new int[]{0, 0}, CornerEnum.TR);
         //player.setPlayerState(PlayerState.PLAY_CARD);
@@ -77,8 +76,10 @@ public class App
         pb.setState(player.getPlayerState());
         pb2.setState(player2.getPlayerState());
         pb3.setState(player3.getPlayerState());
-        t.printScoreBoard(players);
-        t.printGameBoard(game.getGameBoard().getCommonResource(), game.getGameBoard().getCommonGold(), game.getGameBoard().getCommonAchievement());
-        t.printViewWithCommands(player.getPlayerBoard(), player.getCardInHand(), player.getUsername(), game.getGameBoard().getCommonResource(), game.getGameBoard().getCommonGold(), game.getGameBoard().getCommonAchievement(), players, player.getChat());
+        game.getGameBoard().getResourceDeck().getFirst().setCurrentSide();
+        game.getGameBoard().getGoldDeck().getFirst().setCurrentSide();
+        t.printViewWithCommands(player.getPlayerBoard(), player.getCardInHand(), player.getUsername(), game.getGameBoard().getCommonResource(), game.getGameBoard().getResourceDeck().getFirst(), game.getGameBoard().getCommonGold(), game.getGameBoard().getGoldDeck().getFirst(), game.getGameBoard().getCommonAchievement(), player.getChosenObj(), players, player.getChat());
+        game.getGameBoard().getResourceDeck().getFirst().setCurrentSide();
+        game.getGameBoard().getGoldDeck().getFirst().setCurrentSide();
     }
 }
