@@ -1,7 +1,7 @@
 package it.polimi.ingsw.network.client;
 
-import it.polimi.ingsw.model.card.Achievement;
 import it.polimi.ingsw.model.card.Card;
+import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.PlayerState;
 import it.polimi.ingsw.model.player.PlayerBoard;
 import it.polimi.ingsw.network.messages.*;
@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 public class SocketClient implements ClientInterface {
@@ -20,24 +21,15 @@ public class SocketClient implements ClientInterface {
     private ObjectInputStream in;
     private ObjectOutputStream out;
     private boolean disconnected = false;
-    private Card starterCard;
-    private Card[] commonGold;
-    private Card[] commonResources;
-    private final Achievement[] commonAchievement;
+    private final GameBean game;
     private PlayerBean player;
     private ArrayList<PlayerBean> opponents;
-    //private HashMap<Integer, Card> board1;
-    //private HashMap<Integer, Card> board2;
-    //private HashMap<Integer, Card> board3;
-    //private HashMap<Integer, Card> board4;
     public SocketClient(String username, String address, int port, Ui view){
         this.username = username;
         this.view = view;
         this.player = new PlayerBean(this.username);
         this.opponents = new ArrayList<>();
-        this.commonAchievement = new Achievement[2];
-        this.commonResources = new Card[2];
-        this.commonGold = new Card[2];
+        this.game = new GameBean();
         this.startClient(address, port);
     }
     public void startClient(String address, int port){
@@ -56,7 +48,6 @@ public class SocketClient implements ClientInterface {
             System.out.println("Connection successfully ended");
         }
     }
-    //TODO: fare lettura parallela dei messaggi
     public void readMessage(){
         Message message;
         try {
@@ -112,39 +103,46 @@ public class SocketClient implements ClientInterface {
                 System.arraycopy(((CardInHandMessage) message).getHand(), 0, player.getHand(), 0, 3);
                 break;
             case COMMON_ACHIEVEMENT:
-                System.arraycopy(((AchievementMessage) message).getAchievements(), 0, this.commonAchievement, 0, 2);
+                System.arraycopy(((AchievementMessage) message).getAchievements(), 0, game.getCommonAchievement(), 0, 2);
                 break;
             case PRIVATE_ACHIEVEMENT:
                 this.player.setAchievement(this.view.chooseAchievement(((AchievementMessage) message).getAchievements()));
                 sendMessage(new SetPrivateAchievementMessage(this.username, this.player.getAchievement()));
                 break;
             case COMMON_GOLD_UPDATE:
-                if(commonGold[0] == null){
-                    commonGold[0] = ((CommonCardUpdateMessage) message).getCard();
+                if(game.getCommonGold()[0] == null){
+                    game.setCommonGold(0,((CommonCardUpdateMessage) message).getCard());
                 }
                 else{
-                    commonGold[1] = ((CommonCardUpdateMessage) message).getCard();
+                    game.setCommonGold(1,((CommonCardUpdateMessage) message).getCard());
                 }
                 break;
             case COMMON_RESOURCE_UPDATE:
-                if(commonResources[0] == null){
-                    commonResources[0] = ((CommonCardUpdateMessage) message).getCard();
+                if(game.getCommonResources()[0] == null){
+                    game.setCommonResources(0,((CommonCardUpdateMessage) message).getCard());
                 }
                 else{
-                    commonResources[1] = ((CommonCardUpdateMessage) message).getCard();
+                    game.setCommonResources(1,((CommonCardUpdateMessage) message).getCard());
+                }
+                break;
+            case DECK_UPDATE:
+                Color color = ((UpdateDeckMessage) message).getColor();
+                boolean isResource = ((UpdateDeckMessage) message).getIsResource();
+                if (isResource){
+                    game.setResourceDeckRetro(color);
+                }
+                else{
+                    game.setGoldDeckRetro(color);
                 }
                 break;
             case STARTER_CARD:
-                //TODO: usare printStarterCard e non chiedere più di flippare ogni volta
-                this.starterCard = ((StarterCardMessage) message).getCard();
-                this.view.printCard(starterCard);
-                boolean choice = this.view.askToFlip();
-                if (choice){
-                    sendMessage(new FlipRequestMessage(this.username, this.starterCard));
+                Card starterCard = ((StarterCardMessage) message).getCard();
+                this.view.printStarterCard(starterCard);
+                boolean choice = this.view.askSide();
+                if (!choice) {
+                    starterCard.setCurrentSide();
                 }
-                else{
-                    sendMessage(new PlaceStarterRequestMessage(this.username, this.starterCard));
-                }
+                player.setStarterCard(starterCard);
                 break;
             case SCORE_UPDATE:
                 name = ((ScoreUpdateMessage) message).getName();
@@ -163,19 +161,19 @@ public class SocketClient implements ClientInterface {
             case PLAYER_STATE:
                 PlayerState playerState = ((PlayerStateMessage) message).getState();
                 this.player.setState(playerState);
-                this.view.printViewWithCommands(player.getBoard(), player.getHand(), username, commonResources, commonGold, commonAchievement, opponents, player.getChat());
+                this.view.printView(this.player.getBoard(), this.player.getHand(), this.username, this.game.getCommonResources(), this.game.getResourceDeckRetro(), this.game.getCommonGold(), this.game.getGoldDeckRetro(), this.game.getCommonAchievement(), this.player.getAchievement(), this.opponents, this.player.getChat());
                 break;
             case PLAYERBOARD_UPDATE:
                 PlayerBoard playerBoard = ((PlayerBoardUpdateMessage) message).getpBoard();
                 name = ((PlayerBoardUpdateMessage) message).getName();
                 if (name.equalsIgnoreCase(username)){
                     player.setBoard(playerBoard);
-                    this.view.printViewWithCommands(playerBoard,this.player.getHand(),this.username,this.commonResources,this.commonGold, this.commonAchievement, this.opponents,this.player.getChat());
+                    this.view.printView(this.player.getBoard(), this.player.getHand(), this.username, this.game.getCommonResources(), this.game.getResourceDeckRetro(), this.game.getCommonGold(), this.game.getGoldDeckRetro(), this.game.getCommonAchievement(), this.player.getAchievement(), this.opponents, this.player.getChat());
                 }
                 else{
                     for (PlayerBean p : opponents){
                         if (p.getUsername().equals(name)){
-                            player.setBoard(playerBoard);
+                            p.setBoard(playerBoard);
                         }
                     }
                 }

@@ -1,7 +1,7 @@
 package it.polimi.ingsw.network.client;
 
 import it.polimi.ingsw.model.card.Achievement;
-import it.polimi.ingsw.model.card.CardBack;
+import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.PlayerState;
 import it.polimi.ingsw.model.player.PlayerBoard;
 import it.polimi.ingsw.network.messages.*;
@@ -25,12 +25,9 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
     private boolean processingAction;
     private static final String serverName = "GameServer";
     private String username;
+    private GameBean game;
     private final Ui view;
     private VirtualServer server;
-    private Card[] commonResources;
-    private Card[] commonGold;
-    private Card starterCard;
-    private final Achievement[] commonAchievement;
     private PlayerBean player;
     private ArrayList<PlayerBean> opponents;
 
@@ -39,10 +36,8 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
         this.view = view;
         //Initialization of player's attributes
         this.player = new PlayerBean(username);
+        this.game = new GameBean();
         this.opponents = new ArrayList<>();
-        this.commonAchievement = new Achievement[2];
-        this.commonResources = new Card[2];
-        this.commonGold = new Card[2];
         messageQueue = new LinkedBlockingQueue<>();
         processingAction = false;
         actionQueue = new LinkedList<>();
@@ -143,7 +138,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                 //}
                 break;
             case COMMON_ACHIEVEMENT:
-                System.arraycopy(((AchievementMessage) message).getAchievements(), 0, this.commonAchievement, 0, 2);
+                System.arraycopy(((AchievementMessage) message).getAchievements(), 0, game.getCommonAchievement(), 0, 2);
                 break;
             case PRIVATE_ACHIEVEMENT:
                 this.player.setAchievement(this.view.chooseAchievement(((AchievementMessage) message).getAchievements()));
@@ -154,40 +149,33 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                 }
                 break;
             case COMMON_GOLD_UPDATE:
-                if(commonGold[0] == null){
-                    commonGold[0] = ((CommonCardUpdateMessage) message).getCard();
+                if(game.getCommonGold()[0] == null){
+                    game.setCommonGold(0,((CommonCardUpdateMessage) message).getCard());
                 }
                 else{
-                    commonGold[1] = ((CommonCardUpdateMessage) message).getCard();
+                    game.setCommonGold(1,((CommonCardUpdateMessage) message).getCard());
                 }
                 break;
             case COMMON_RESOURCE_UPDATE:
-                if(commonResources[0] == null){
-                    commonResources[0] = ((CommonCardUpdateMessage) message).getCard();
+                if(game.getCommonResources()[0] == null){
+                    game.setCommonResources(0,((CommonCardUpdateMessage) message).getCard());
                 }
                 else{
-                    commonResources[1] = ((CommonCardUpdateMessage) message).getCard();
+                    game.setCommonResources(1,((CommonCardUpdateMessage) message).getCard());
                 }
                 break;
             case STARTER_CARD:
-                //TODO: usare printStarterCard e non chiedere più di flippare ogni volta
-                this.starterCard = ((StarterCardMessage) message).getCard();
-                this.view.printCard(starterCard);
-                boolean choice = this.view.askToFlip();
-                if (choice){
-                    try {
-                        this.flipCard(starterCard);
-                    } catch (RemoteException e) {
-                        System.err.println(e.getMessage() + " in RMIClient.update");
-                    }
+                Card starterCard = ((StarterCardMessage) message).getCard();
+                this.view.printStarterCard(starterCard);
+                boolean choice = this.view.askSide();
+                if (!choice) {
+                    starterCard.setCurrentSide();
                 }
-                else{
-                    try{
-                        this.placeStarterCard(starterCard);
-                    }
-                    catch (RemoteException e){
-                        System.err.println(e.getMessage());
-                    }
+                player.setStarterCard(starterCard);
+                try {
+                    this.placeStarterCard(starterCard);
+                } catch (RemoteException e) {
+                    System.out.println(e.getMessage());
                 }
                 break;
             case SCORE_UPDATE:
@@ -202,7 +190,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                         }
                     }
                 }
-                this.view.printViewWithCommands(this.player.getBoard(),this.player.getHand(),this.username,this.commonResources,this.commonGold, this.commonAchievement, this.opponents,this.player.getChat());
+                this.view.printView(this.player.getBoard(), this.player.getHand(), this.username, this.game.getCommonResources(), this.game.getResourceDeckRetro(), this.game.getCommonGold(), this.game.getGoldDeckRetro(), this.game.getCommonAchievement(), this.player.getAchievement(), this.opponents, this.player.getChat());
                 break;
             case PLAYER_STATE:
                 PlayerState playerState = ((PlayerStateMessage) message).getState();
@@ -223,18 +211,25 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
             case CARD_UPDATE:
                 Card drawedCard = ((UpdateCardMessage) message).getCard();
                 player.setCardinHand(drawedCard);
-                this.view.printViewWithCommands(this.player.getBoard(),this.player.getHand(),this.username,this.commonResources,this.commonGold, this.commonAchievement, this.opponents,this.player.getChat());
+                this.view.printView(this.player.getBoard(), this.player.getHand(), this.username, this.game.getCommonResources(), this.game.getResourceDeckRetro(), this.game.getCommonGold(), this.game.getGoldDeckRetro(), this.game.getCommonAchievement(), this.player.getAchievement(), this.opponents, this.player.getChat());
                 break;
             case DECK_UPDATE:
-                Card first = ((UpdateDeckMessage) message).getCard();
-                //TODO: aggiornare in view il deck
+                Color color = ((UpdateDeckMessage) message).getColor();
+                boolean isResource = ((UpdateDeckMessage) message).getIsResource();
+                if (isResource){
+                    game.setResourceDeckRetro(color);
+                }
+                else{
+                    game.setGoldDeckRetro(color);
+                }
+                //this.view.printView(this.player.getBoard(), this.player.getHand(), this.username, this.game.getCommonResources(), this.game.getResourceDeckRetro(), this.game.getCommonGold(), this.game.getGoldDeckRetro(), this.game.getCommonAchievement(), this.player.getAchievement(), this.opponents, this.player.getChat());
                 break;
             case PLAYERBOARD_UPDATE:
                 PlayerBoard playerBoard = ((PlayerBoardUpdateMessage) message).getpBoard();
                 name = ((PlayerBoardUpdateMessage) message).getName();
                 if (name.equalsIgnoreCase(username)){
                     player.setBoard(playerBoard);
-                    this.view.printViewWithCommands(playerBoard,this.player.getHand(),this.username,this.commonResources,this.commonGold, this.commonAchievement, this.opponents,this.player.getChat());
+                    this.view.printView(this.player.getBoard(), this.player.getHand(), this.username, this.game.getCommonResources(), this.game.getResourceDeckRetro(), this.game.getCommonGold(), this.game.getGoldDeckRetro(), this.game.getCommonAchievement(), this.player.getAchievement(), this.opponents, this.player.getChat());
                 }
                 else{
                     for (PlayerBean p : opponents){

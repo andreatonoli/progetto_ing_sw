@@ -67,6 +67,9 @@ public class Controller extends Observable {
         notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_GOLD_UPDATE, game.getGameBoard().getCommonResource()[1]));
         //Sends the common achievements to the players
         notifyAll(new AchievementMessage(MessageType.COMMON_ACHIEVEMENT, game.getGameBoard().getCommonAchievement()));
+        //sends the color of the first card of the deck
+        notifyAll(new UpdateDeckMessage(game.getGameBoard().getResourceDeck().getFirst().getColor(), true));
+        notifyAll(new UpdateDeckMessage(game.getGameBoard().getGoldDeck().getFirst().getColor(), false));
         //Sends the starter card to each player
         for (Connection u : this.connectedPlayers.keySet()){
             u.sendMessage(new StarterCardMessage(getPlayerByClient(u).getPlayerBoard().getStarterCard()));
@@ -91,8 +94,10 @@ public class Controller extends Observable {
      */
     public void drawCard(Connection user, String chosenDeck){
         LinkedList<Card> deck;
+        boolean isResource = false;
         if (chosenDeck.equalsIgnoreCase("resource")){
             deck = game.getGameBoard().getResourceDeck();
+            isResource = true;
         }
         else{
             deck = game.getGameBoard().getGoldDeck();
@@ -100,7 +105,7 @@ public class Controller extends Observable {
         try {
             Card drawedCard = this.getPlayerByClient(user).drawCard(deck);
             user.sendMessage(new UpdateCardMessage(drawedCard));
-            notifyAll(new UpdateDeckMessage(deck.getFirst().getBack()));
+            notifyAll(new UpdateDeckMessage(deck.getFirst().getBack().getColor(), isResource));
             turnHandler.changePlayerState(this.getPlayerByClient(user));
             notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState(),user.getUsername()));
         } catch (EmptyException | NotInTurnException | FullHandException e) {

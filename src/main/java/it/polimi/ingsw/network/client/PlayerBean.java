@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 public class PlayerBean {
     private String username;
+    private Card starterCard;
     private Card[] hand;
     private Achievement achievement;
     private int points;
@@ -96,5 +97,11 @@ public class PlayerBean {
     }
     public void addPoints(int points){
         this.points += points;
+    }
+    public Card getStarterCard(){
+        return starterCard;
+    }
+    public void setStarterCard(Card card){
+        this.starterCard = card;
     }
 }

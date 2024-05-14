@@ -400,12 +400,8 @@ public class Player implements Serializable {
             throw new InvalidCoordinatesException();
         }
         canPlace(corner, coordinates, card);
-        //coordinates of the new card
-        int[] newCoordinates = new int[2];
-        newCoordinates[0] = coordinates[0] + corner.getX();
-        newCoordinates[1] = coordinates[1] + corner.getY();
-        this.playerBoard.setCardPosition(card, newCoordinates);
-        this.playerBoard.coverCorner(card, newCoordinates);
+        this.playerBoard.setCardPosition(card, coordinates);
+        this.playerBoard.coverCorner(card, coordinates);
         card.calcPoints(this);
         removeFromHand(card);
     }
@@ -423,13 +419,14 @@ public class Player implements Serializable {
     public void canPlace(CornerEnum cornerPosition, int[] coordinates, Card cardToBePlaced) throws NotInTurnException, OccupiedCornerException, CostNotSatisfiedException, AlreadyUsedPositionException{
         int[] newCoordinates = new int[2];
         int[] coord = new int[2];
-        System.arraycopy(coordinates, 0, coord, 0, 2);
+        coord[0] = coordinates[0] + cornerPosition.getX();
+        coord[1] = coordinates[1] + cornerPosition.getY();
         //check if the player placing the card is the player in turn
         if (this.playerState.equals(PlayerState.NOT_IN_TURN) || this.playerState.equals(PlayerState.DRAW_CARD)){
             throw new NotInTurnException();
         }
         //check if the corner we are placing the card on is available
-        if (this.playerBoard.getCard(coord).getCornerState(cornerPosition).equals(CornerState.NOT_VISIBLE) || this.playerBoard.getCard(coord).getCornerState(cornerPosition).equals(CornerState.OCCUPIED)){
+        if (this.playerBoard.getCard(coord).getCornerState(cornerPosition.getOppositePosition()).equals(CornerState.NOT_VISIBLE) || this.playerBoard.getCard(coord).getCornerState(cornerPosition.getOppositePosition()).equals(CornerState.OCCUPIED)){
             throw new OccupiedCornerException();
         }
         if(!cardToBePlaced.checkCost(this)){
