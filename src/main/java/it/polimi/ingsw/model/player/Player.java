@@ -275,11 +275,12 @@ public class Player implements Serializable {
      *Picks the top card of the deck and calls addInHand to give it to the player
      * @param deck from which the player choose to pick a card
      */
-    public void drawCard(LinkedList<Card> deck) throws EmptyException, NotInTurnException, FullHandException {
+    public Card drawCard(LinkedList<Card> deck) throws EmptyException, NotInTurnException, FullHandException {
         canDraw(deck);
         Card drawedCard = deck.getFirst();
         this.addInHand(drawedCard);
         deck.removeFirst();
+        return drawedCard;
     }
     
     /**
@@ -308,9 +309,9 @@ public class Player implements Serializable {
      * Permits the player to take one card from the board, then replaces it with the same type card drawed from the decks
      * @param card taken by the player
      */
-    public void drawCardFromBoard(Card card) throws CardNotFoundException, NotInTurnException, FullHandException{
+    public Card drawCardFromBoard(Card card) throws CardNotFoundException, NotInTurnException, FullHandException{
         GameBoard gameBoard = this.game.getGameBoard();
-        Card taken;
+        Card taken = null;
         int takenIndex;
         canDrawFromBoard(card);
         if (card.getType().equalsIgnoreCase("Resource")){
@@ -341,6 +342,7 @@ public class Player implements Serializable {
             this.addInHand(taken);
             gameBoard.replaceGoldCard(takenIndex);
         }
+        return taken;
     }
 
     /**
@@ -378,13 +380,25 @@ public class Player implements Serializable {
      * Place card then removes it from the player's hand
      * @param card to place
      * @param coordinates of the card which corner will be covered after the placement
-     * @param corner where player wants to place the card
      * @throws NotInTurnException player is not in PLACE_CARD state
      * @throws OccupiedCornerException one of the corners CardToBePlaced will cover is already covered or is hidden
      * @throws CostNotSatisfiedException player doesn't own enough resources to place a gold card
      * @throws AlreadyUsedPositionException player tries to place a card in a position already occupied by another card
      */
-    public void placeCard(Card card, int[] coordinates, CornerEnum corner) throws OccupiedCornerException, NotInTurnException, AlreadyUsedPositionException, CostNotSatisfiedException {
+    public void placeCard(Card card, int[] coordinates) throws OccupiedCornerException, NotInTurnException, AlreadyUsedPositionException, CostNotSatisfiedException, InvalidCoordinatesException {
+        CornerEnum corner = null;
+        boolean validCoordinates = false;
+        for (CornerEnum c : CornerEnum.values()){
+            int[] linkingCoordinates = new int[]{coordinates[0] + c.getX(), coordinates[1] + c.getY()};
+            if (playerBoard.getCard(linkingCoordinates) != null){
+                corner = c;
+                validCoordinates = true;
+                break;
+            }
+        }
+        if (!validCoordinates){
+            throw new InvalidCoordinatesException();
+        }
         canPlace(corner, coordinates, card);
         //coordinates of the new card
         int[] newCoordinates = new int[2];
@@ -422,9 +436,9 @@ public class Player implements Serializable {
             throw new CostNotSatisfiedException();
         }
         //check if the card cover other corners and if those corner are available
-        //Calculates the PlacedCard position
-        coord[0] = coord[0]+cornerPosition.getX();
-        coord[1] = coord[1]+cornerPosition.getY();
+        //Calculates the coveredCard position
+        coord[0] = coord[0]-cornerPosition.getX();
+        coord[1] = coord[1]-cornerPosition.getY();
         //Check if that position is available
         if (this.playerBoard.getCard(coord) != null){
             throw new AlreadyUsedPositionException();

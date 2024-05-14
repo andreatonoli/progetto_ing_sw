@@ -43,6 +43,11 @@ public class Controller extends Observable {
         game.addPlayer(player);
         notifyAll(new GenericMessage("Players: " + this.connectedPlayers.keySet().size() + "/" + this.game.getLobbySize()));
         if (game.isFull()){
+            ArrayList<String> players = new ArrayList<>();
+            for (Connection c : connectedPlayers.keySet()){
+                players.add(c.getUsername());
+            }
+            notifyAll(new OpponentsMessage(players));
             this.startGame();
             return true;
         }
@@ -60,88 +65,91 @@ public class Controller extends Observable {
         notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_RESOURCE_UPDATE, game.getGameBoard().getCommonResource()[1]));
         notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_GOLD_UPDATE, game.getGameBoard().getCommonResource()[0]));
         notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_GOLD_UPDATE, game.getGameBoard().getCommonResource()[1]));
-        //Sends the scoreboard to the players
-        notifyAll(new ScoreBoardUpdateMessage());
+        //Sends the common achievements to the players
+        notifyAll(new AchievementMessage(MessageType.COMMON_ACHIEVEMENT, game.getGameBoard().getCommonAchievement()));
         //Sends the starter card to each player
         for (Connection u : this.connectedPlayers.keySet()){
-            notify(u, new StarterCardMessage(getPlayerByClient(u).getPlayerBoard().getStarterCard()));
+            u.sendMessage(new StarterCardMessage(getPlayerByClient(u).getPlayerBoard().getStarterCard()));
         }
     }
     //TODO: boh, secondo me fa caha
     //TODO: farlo chiamare solo per i client che hanno piazzato la starterCard, quindi vado a fare solo notify e non notify all
     private void commonCardSetup(Connection u){
-        //TODO: gestire scelta del colore (farla in modo sequenziale in base all'ordine?)
+        //TODO: gestire scelta del colore (farla in modo sequenziale in base all'ordine?
+        Player p = getPlayerByClient(u);
         //Sends the players their hand
-        notify(u, new CardInHandMessage(getPlayerByClient(u).getCardInHand()));
-        //Sends the common achievements to the players
-        notify(u, new AchievementMessage(MessageType.COMMON_ACHIEVEMENT, game.getGameBoard().getCommonAchievement()));
+        u.sendMessage(new CardInHandMessage(p.getCardInHand()));
         //Sends the players the private achievements to choose from
-        notify(u, new AchievementMessage(MessageType.PRIVATE_ACHIEVEMENT, getPlayerByClient(u).getPersonalObj()));
-        //Notifies the player his state (i.e. it's his turn or not)
-        notify(u, new PlayerStateMessage(getPlayerByClient(u).getPlayerState()));
+        u.sendMessage(new AchievementMessage(MessageType.PRIVATE_ACHIEVEMENT, p.getPersonalObj()));
+        //Send players their state
+        notifyAll(new PlayerStateMessage(p.getPlayerState(), p.getUsername()));
     }
     /**
      *Picks the top card of the deck and calls addInHand to give it to the player
      * @param user who wants to draw a card
-     * @param deck from which the player choose to pick a card
+     * @param chosenDeck deck from which user wants to draw a card
      */
-    public void drawCard(Connection user, LinkedList<Card> deck){
+    public void drawCard(Connection user, String chosenDeck){
+        LinkedList<Card> deck;
+        if (chosenDeck.equalsIgnoreCase("resource")){
+            deck = game.getGameBoard().getResourceDeck();
+        }
+        else{
+            deck = game.getGameBoard().getGoldDeck();
+        }
         try {
-            notify(user,new GenericMessage("Drawing a card..."));
-            this.getPlayerByClient(user).drawCard(deck);
+            Card drawedCard = this.getPlayerByClient(user).drawCard(deck);
+            user.sendMessage(new UpdateCardMessage(drawedCard));
+            notifyAll(new UpdateDeckMessage(deck.getFirst().getBack()));
             turnHandler.changePlayerState(this.getPlayerByClient(user));
-            notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState()));
-            notify(user,new GenericMessage("Successfully drew a card"));
+            notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState(),user.getUsername()));
         } catch (EmptyException | NotInTurnException | FullHandException e) {
-            notify(user,new ErrorMessage(e.getMessage()));
+            user.sendMessage(new ErrorMessage(e.getMessage()));
         }
     }
 
     /**
      * Permits the player to take one card from the board, then replaces it with the same type card drawed from the decks
      * @param user who wants to take the card
-     * @param card taken by the player
+     * @param index of the card taken by the player (0,1 are from commonResources and 2,3 are from commonGold)
      */
-    public void drawCardFromBoard(Connection user, Card card){
+    public void drawCardFromBoard(Connection user, int index){
         try {
-            notify(user,new GenericMessage("Drawing a card..."));
-            this.getPlayerByClient(user).drawCardFromBoard(card);
-            notify(user,new GenericMessage("Successfully drew a card"));
+            Card card;
+            if(index <= 1){
+                card = game.getGameBoard().getCommonResource()[index];
+            }
+            else{
+                card = game.getGameBoard().getCommonGold()[index-2];
+            }
+            Card drawedCard = this.getPlayerByClient(user).drawCardFromBoard(card);
+            user.sendMessage(new UpdateCardMessage(drawedCard));
+            turnHandler.changePlayerState(this.getPlayerByClient(user));
+            notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState(),user.getUsername()));
         } catch (CardNotFoundException e) {
-            notify(user,new ErrorMessage(e.getMessage()));
+            user.sendMessage(new ErrorMessage(e.getMessage()));
         } catch (NotInTurnException e) {
-            notify(user,new ErrorMessage(e.getMessage()));
+            user.sendMessage(new ErrorMessage(e.getMessage()));
         } catch (FullHandException e) {
-            notify(user,new ErrorMessage(e.getMessage()));
+            user.sendMessage(new ErrorMessage(e.getMessage()));
         }
     }
     /**
      * Place card then removes it from the player's hand
      * @param user who asked to place the card
      * @param card to place
-     * @param coordinates of the card which corner will be covered after the placement
-     * @param corner where player wants to place the card
+     * @param coordinates where the player wants to place
      */
-    public void placeCard(Connection user, Card card, int[] coordinates, CornerEnum corner) {
+    public void placeCard(Connection user, Card card, int[] coordinates) {
         try {
-            notify(user,new GenericMessage("placing card..."));
-            this.getPlayerByClient(user).placeCard(card,coordinates,corner);
-            notify(user,new GenericMessage("Successfully placed a card"));
+            this.getPlayerByClient(user).placeCard(card, coordinates);
             turnHandler.changePlayerState(this.getPlayerByClient(user));
-            notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState()));
-        } catch (NotInTurnException e) {
-            if (this.getPlayerByClient(user).getPlayerState().equals(PlayerState.NOT_IN_TURN)){
-                notify(user,new ErrorMessage(e.getMessage()));
-            }
-            else{
-                notify(user,new ErrorMessage(e.getMessage()));
-            }
-        } catch (OccupiedCornerException e) {
-            notify(user,new ErrorMessage(e.getMessage()));
-        } catch (CostNotSatisfiedException e) {
-            notify(user,new ErrorMessage(e.getMessage()));
-        } catch (AlreadyUsedPositionException e) {
-            notify(user,new ErrorMessage(e.getMessage()));        }
+            notifyAll(new PlayerBoardUpdateMessage(this.getPlayerByClient(user).getPlayerBoard(), user.getUsername()));
+            notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState(), user.getUsername()));
+        } catch (NotInTurnException | OccupiedCornerException | CostNotSatisfiedException |
+                 AlreadyUsedPositionException | InvalidCoordinatesException e) {
+            user.sendMessage(new ErrorMessage(e.getMessage()));
+        }
     }
 
 
@@ -151,7 +159,7 @@ public class Controller extends Observable {
      */
     public void flipCard(Connection user, Card card){
         card.setCurrentSide();
-        notify(user, new StarterCardMessage(card));
+        user.sendMessage(new StarterCardMessage(card));
     }
     public void placeStarterCard(Connection user, Card starterCard){
         Player player = getPlayerByClient(user);
@@ -165,7 +173,11 @@ public class Controller extends Observable {
      * @param achievement to be set
      */
     public void chooseObj(Connection user, Achievement achievement){
-        getPlayerByClient(user).setChosenObj(achievement);
+        Player player = getPlayerByClient(user);
+        player.setChosenObj(achievement);
+        notifyAll(new PlayerBoardUpdateMessage(player.getPlayerBoard(), user.getUsername()));
+        //Notifies the player his state (i.e. it's his turn or not)
+        user.sendMessage(new PlayerStateMessage(player.getPlayerState(), user.getUsername()));
     }
     private Player getPlayerByClient(Connection user){
         return this.connectedPlayers.get(user);

@@ -27,6 +27,7 @@ public class RMIConnection extends Connection {
         ping();
     }
 
+
     //TODO ping al client
     private void ping(){
         ping = new Timer();
@@ -119,6 +120,7 @@ public class RMIConnection extends Connection {
     public String getUsername(){
         return this.username;
     }
+
     public void flipCard(Card card){
         this.lobby.flipCard(this, card);
     }
@@ -130,6 +132,15 @@ public class RMIConnection extends Connection {
         this.lobby.chooseObj(this, achievement);
     }
 
+    public void placeCard(Card card, int[] placingCoordinates){
+        this.lobby.placeCard(this, card, placingCoordinates);
+    }
+    public void drawCard(String chosenDeck){
+        this.lobby.drawCard(this, chosenDeck);
+    }
+    public void drawCardFromBoard(int index){
+        this.lobby.drawCardFromBoard(this, index);
+    }
     @Override
     public void update(Message message) {
         this.sendMessage(message);

@@ -1724,7 +1724,7 @@ public class Tui implements Ui{
                 for(int j = 0; j < PLAYERBOARD_DIM; j++) {
                     //System.out.print("|");
                     for (int s = 0; s < 2; s++) {
-                            System.out.print(mat[t][s][i][j]);
+                        System.out.print(mat[t][s][i][j]);
                     }
                 }
                 //System.out.println("|");

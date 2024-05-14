@@ -103,11 +103,25 @@ public class SocketConnection extends Connection implements Runnable {
             case PLACE_STARTER_CARD:
                 lobby.placeStarterCard(this, ((PlaceStarterRequestMessage) message).getCard());
                 break;
+            case PLACE_CARD:
+                PlaceMessage p = (PlaceMessage) message;
+                lobby.placeCard(this, p.getCard(), p.getCoordinates());
+                break;
+            case DRAW_DECK:
+                //TODO: passare deck tramite stringa è la soluzione migliore?
+                String deck = ((DrawMessage) message).getDeck();
+                lobby.drawCard(this, deck);
+                break;
+            case DRAW_BOARD:
+                lobby.drawCardFromBoard(this, ((DrawFromBoardMessage) message).getIndex());
+                break;
             case SET_ACHIEVEMENT:
-                lobby.chooseObj(this, ((SetPrivateAchievementMessage) message).getAchievement());
+                Achievement chosenAchievement = ((SetPrivateAchievementMessage) message).getAchievement();
+                lobby.chooseObj(this, chosenAchievement);
                 break;
             case GENERIC_MESSAGE:
                 System.err.println(message);
+                break;
             default:
                 break;
         }

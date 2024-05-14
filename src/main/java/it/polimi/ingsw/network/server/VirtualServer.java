@@ -11,8 +11,11 @@ import java.rmi.RemoteException;
 public interface VirtualServer extends Remote {
     void login(RMIClientHandler client, String username) throws RemoteException;
     boolean usernameTaken(String username) throws RemoteException;
-    void flipCard(Card card) throws RemoteException;
-    void placeStarterCard(Card card) throws RemoteException;
-    void setAchievement(Achievement achievement) throws RemoteException;
-    void pingConnection() throws RemoteException;
+    void flipCard(Card card, String username) throws RemoteException;
+    void placeStarterCard(Card card, String username) throws RemoteException;
+    void placeCard(Card card, int[] placingCoordinates, String username) throws RemoteException;
+    void drawCard(String chosenDeck, String username) throws RemoteException;
+    void drawCardFromBoard(int index, String username) throws RemoteException;
+    void setAchievement(Achievement achievement, String username) throws RemoteException;
+    void pingConnection(String username) throws RemoteException;
 }

@@ -3,6 +3,7 @@ package it.polimi.ingsw.network.client;
 import it.polimi.ingsw.model.card.Achievement;
 import it.polimi.ingsw.model.card.Card;
 import it.polimi.ingsw.model.enums.PlayerState;
+import it.polimi.ingsw.model.player.PlayerBoard;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.view.Ui;
 
@@ -33,6 +34,7 @@ public class SocketClient implements ClientInterface {
         this.username = username;
         this.view = view;
         this.player = new PlayerBean(this.username);
+        this.opponents = new ArrayList<>();
         this.commonAchievement = new Achievement[2];
         this.commonResources = new Card[2];
         this.commonGold = new Card[2];
@@ -74,6 +76,7 @@ public class SocketClient implements ClientInterface {
         }
     }
     public void update(Message message){
+        String name;
         switch (message.getType()){
             case USERNAME_REQUEST:
                 System.out.println("Username is already taken, please choose another: ");
@@ -95,6 +98,14 @@ public class SocketClient implements ClientInterface {
             case NUM_PLAYER_REQUEST:
                 int lobbySize = this.view.setLobbySize();
                 sendMessage(new NumPlayerResponseMessage(this.username, lobbySize));
+                break;
+            case OPPONENTS:
+                ArrayList<String> playersName = ((OpponentsMessage) message).getPlayers();
+                for (String s : playersName){
+                    if(!s.equalsIgnoreCase(username)){
+                        opponents.add(new PlayerBean(s));
+                    }
+                }
                 break;
             case CARD_HAND:
                 //Copied the message body into the player's cards
@@ -124,6 +135,7 @@ public class SocketClient implements ClientInterface {
                 }
                 break;
             case STARTER_CARD:
+                //TODO: usare printStarterCard e non chiedere più di flippare ogni volta
                 this.starterCard = ((StarterCardMessage) message).getCard();
                 this.view.printCard(starterCard);
                 boolean choice = this.view.askToFlip();
@@ -134,12 +146,39 @@ public class SocketClient implements ClientInterface {
                     sendMessage(new PlaceStarterRequestMessage(this.username, this.starterCard));
                 }
                 break;
-            case SCOREBOARD_UPDATE:
-                //this.view.printView(this.player.getBoard(), this.player.getHand(), this.username, this.commonResources, this.commonGold, this.commonAchievement, this.opponents, this.player.getChat());
+            case SCORE_UPDATE:
+                name = ((ScoreUpdateMessage) message).getName();
+                int points = ((ScoreUpdateMessage) message).getPoint();
+                if (name.equalsIgnoreCase(username)){
+                    player.addPoints(points);
+                }
+                else {
+                    for (PlayerBean p : opponents){
+                        if (p.getUsername().equalsIgnoreCase(name)){
+                            p.addPoints(points);
+                        }
+                    }
+                }
                 break;
             case PLAYER_STATE:
                 PlayerState playerState = ((PlayerStateMessage) message).getState();
-                //this.view.printPlayerState(playerState);
+                this.player.setState(playerState);
+                this.view.printViewWithCommands(player.getBoard(), player.getHand(), username, commonResources, commonGold, commonAchievement, opponents, player.getChat());
+                break;
+            case PLAYERBOARD_UPDATE:
+                PlayerBoard playerBoard = ((PlayerBoardUpdateMessage) message).getpBoard();
+                name = ((PlayerBoardUpdateMessage) message).getName();
+                if (name.equalsIgnoreCase(username)){
+                    player.setBoard(playerBoard);
+                    this.view.printViewWithCommands(playerBoard,this.player.getHand(),this.username,this.commonResources,this.commonGold, this.commonAchievement, this.opponents,this.player.getChat());
+                }
+                else{
+                    for (PlayerBean p : opponents){
+                        if (p.getUsername().equals(name)){
+                            player.setBoard(playerBoard);
+                        }
+                    }
+                }
                 break;
             case GENERIC_MESSAGE:
                 this.view.showText(message.toString());
@@ -169,13 +208,33 @@ public class SocketClient implements ClientInterface {
     }
 
     @Override
-    public void placeACard() {
-
+    public void placeCard(Card card, int[] placingCoordinates) {
+        if (this.player.getState().equals(PlayerState.PLAY_CARD)){
+            sendMessage(new PlaceMessage(username, card, placingCoordinates));
+        }
+        else{
+            //TODO: errore profondo
+        }
     }
 
     @Override
-    public void drawACard() {
+    public void drawCard(String chosenDeck) {
+        if (this.player.getState().equals(PlayerState.DRAW_CARD)) {
+            sendMessage(new DrawMessage(username, chosenDeck));
+        }
+        else {
+            //TODO: errore profondo
+        }
+    }
 
+    @Override
+    public void drawCardFromBoard(int index) {
+        if (this.player.getState().equals(PlayerState.DRAW_CARD)) {
+            sendMessage(new DrawFromBoardMessage(username, index - 1));
+        }
+        else{
+            //TODO: errore profondo
+        }
     }
 
     @Override

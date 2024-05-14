@@ -28,6 +28,8 @@ public class PlayerBean {
         this.hand = new Card[3];
         this.chat = new ArrayList<>();
         this.username = username;
+        this.points = 0;
+        this.state = PlayerState.NOT_IN_TURN;
     }
     public Card[] getHand() {
         return hand;
@@ -72,11 +74,6 @@ public class PlayerBean {
     public void setAchievement(Achievement achievement) {
         this.achievement = achievement;
     }
-
-    public void setPoints(int points) {
-        this.points = points;
-    }
-
     public void setState(PlayerState state) {
         this.state = state;
     }
@@ -96,5 +93,8 @@ public class PlayerBean {
                 break;
             }
         }
+    }
+    public void addPoints(int points){
+        this.points += points;
     }
 }
