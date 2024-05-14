@@ -3,6 +3,7 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.model.card.Achievement;
 import it.polimi.ingsw.model.enums.GameState;
 import it.polimi.ingsw.model.enums.PlayerState;
+import it.polimi.ingsw.model.exceptions.NotEnoughPlayersException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.exceptions.GameNotStartedException;
 import it.polimi.ingsw.network.messages.GenericMessage;
@@ -47,7 +48,10 @@ public class Game extends Observable implements Serializable {
         this.gameBoard = new GameBoard(this);
     }
 
-    public void startGame(){
+    public void startGame() throws  NotEnoughPlayersException{
+        if (!this.gameFull){
+            throw new NotEnoughPlayersException();
+        }
         this.gameState = GameState.START;
         //Decks are shuffled
         Collections.shuffle(gameBoard.getStarterDeck());

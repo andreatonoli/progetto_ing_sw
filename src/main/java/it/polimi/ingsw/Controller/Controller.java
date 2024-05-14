@@ -59,7 +59,11 @@ public class Controller extends Observable {
      * the scoreboard, their starter card, asks the color they want and selects the first player to play.
      */
     private void startGame(){
-        game.startGame();
+        try {
+            game.startGame();
+        } catch (NotEnoughPlayersException e) {
+            System.err.println(e.getMessage());
+        }
         //Sends the common resource and gold cards
         notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_RESOURCE_UPDATE, game.getGameBoard().getCommonResource()[0]));
         notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_RESOURCE_UPDATE, game.getGameBoard().getCommonResource()[1]));

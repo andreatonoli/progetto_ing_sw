@@ -190,7 +190,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                         }
                     }
                 }
-                this.view.printView(this.player.getBoard(), this.player.getHand(), this.username, this.game.getCommonResources(), this.game.getResourceDeckRetro(), this.game.getCommonGold(), this.game.getGoldDeckRetro(), this.game.getCommonAchievement(), this.player.getAchievement(), this.opponents, this.player.getChat());
+                this.view.printViewWithCommands(this.player, this.game, this.opponents);
                 break;
             case PLAYER_STATE:
                 PlayerState playerState = ((PlayerStateMessage) message).getState();
@@ -206,13 +206,12 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                         }
                     }
                 }
-                //this.view.printViewWithCommands(this.player.getBoard(),this.player.getHand(),this.username,this.commonResources,this.commonGold, this.commonAchievement, this.opponents,this.player.getChat());
+                //this.view.printViewWithCommandsWithCommands(this.player.getBoard(),this.player.getHand(),this.username,this.commonResources,this.commonGold, this.commonAchievement, this.opponents,this.player.getChat());
                 break;
             case CARD_UPDATE:
                 Card drawedCard = ((UpdateCardMessage) message).getCard();
                 player.setCardinHand(drawedCard);
-                this.view.printView(this.player.getBoard(), this.player.getHand(), this.username, this.game.getCommonResources(), this.game.getResourceDeckRetro(), this.game.getCommonGold(), this.game.getGoldDeckRetro(), this.game.getCommonAchievement(), this.player.getAchievement(), this.opponents, this.player.getChat());
-                break;
+                this.view.printViewWithCommands(this.player, this.game, this.opponents);                break;
             case DECK_UPDATE:
                 Color color = ((UpdateDeckMessage) message).getColor();
                 boolean isResource = ((UpdateDeckMessage) message).getIsResource();
@@ -222,15 +221,14 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                 else{
                     game.setGoldDeckRetro(color);
                 }
-                //this.view.printView(this.player.getBoard(), this.player.getHand(), this.username, this.game.getCommonResources(), this.game.getResourceDeckRetro(), this.game.getCommonGold(), this.game.getGoldDeckRetro(), this.game.getCommonAchievement(), this.player.getAchievement(), this.opponents, this.player.getChat());
+                //this.view.printViewWithCommands(this.player.getBoard(), this.player.getHand(), this.username, this.game.getCommonResources(), this.game.getResourceDeckRetro(), this.game.getCommonGold(), this.game.getGoldDeckRetro(), this.game.getCommonAchievement(), this.player.getAchievement(), this.opponents, this.player.getChat());
                 break;
             case PLAYERBOARD_UPDATE:
                 PlayerBoard playerBoard = ((PlayerBoardUpdateMessage) message).getpBoard();
                 name = ((PlayerBoardUpdateMessage) message).getName();
                 if (name.equalsIgnoreCase(username)){
                     player.setBoard(playerBoard);
-                    this.view.printView(this.player.getBoard(), this.player.getHand(), this.username, this.game.getCommonResources(), this.game.getResourceDeckRetro(), this.game.getCommonGold(), this.game.getGoldDeckRetro(), this.game.getCommonAchievement(), this.player.getAchievement(), this.opponents, this.player.getChat());
-                }
+                    this.view.printViewWithCommands(this.player, this.game, this.opponents);                }
                 else{
                     for (PlayerBean p : opponents){
                         if (p.getUsername().equals(name)){

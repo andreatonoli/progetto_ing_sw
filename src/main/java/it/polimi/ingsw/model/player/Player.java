@@ -379,7 +379,7 @@ public class Player implements Serializable {
     /**
      * Place card then removes it from the player's hand
      * @param card to place
-     * @param coordinates of the card which corner will be covered after the placement
+     * @param coordinates of the place where the card will be placed
      * @throws NotInTurnException player is not in PLACE_CARD state
      * @throws OccupiedCornerException one of the corners CardToBePlaced will cover is already covered or is hidden
      * @throws CostNotSatisfiedException player doesn't own enough resources to place a gold card

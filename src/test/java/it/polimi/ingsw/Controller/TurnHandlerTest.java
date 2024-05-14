@@ -20,7 +20,11 @@ class TurnHandlerTest {
         Player p2 = new Player("giovanna", game);
         game.addPlayer(p1);
         game.addPlayer(p2);
-        game.startGame();
+        try {
+            game.startGame();
+        } catch (NotEnoughPlayersException e) {
+            System.err.println(e.getMessage());
+        }
 
         assertEquals(PlayerState.PLAY_CARD, game.getFirstPlayer().getPlayerState());
         assertEquals(PlayerState.NOT_IN_TURN, game.getPlayers().get(1).getPlayerState());
