@@ -198,7 +198,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                 else {
                     for (PlayerBean p : opponents){
                         if (p.getUsername().equals(name)){
-                            player.addPoints(((ScoreUpdateMessage) message).getPoint());
+                            p.addPoints(((ScoreUpdateMessage) message).getPoint());
                         }
                     }
                 }
@@ -207,11 +207,16 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
             case PLAYER_STATE:
                 PlayerState playerState = ((PlayerStateMessage) message).getState();
                 name = ((PlayerStateMessage) message).getName();
+                System.out.println(playerState.toString() + " " + name);
                 if (username.equals(name)) {
                     player.setState(playerState);
                 }
                 else {
-                    //TODO: informare i giocatori che non stanno giocando il turno
+                    for (PlayerBean p : opponents){
+                        if (p.getUsername().equals(name)){
+                            p.setState(playerState);
+                        }
+                    }
                 }
                 //this.view.printViewWithCommands(this.player.getBoard(),this.player.getHand(),this.username,this.commonResources,this.commonGold, this.commonAchievement, this.opponents,this.player.getChat());
                 break;
@@ -234,7 +239,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                 else{
                     for (PlayerBean p : opponents){
                         if (p.getUsername().equals(name)){
-                            player.setBoard(playerBoard);
+                            p.setBoard(playerBoard);
                         }
                     }
                 }

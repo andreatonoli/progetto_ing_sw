@@ -76,10 +76,13 @@ public class Controller extends Observable {
     //TODO: farlo chiamare solo per i client che hanno piazzato la starterCard, quindi vado a fare solo notify e non notify all
     private void commonCardSetup(Connection u){
         //TODO: gestire scelta del colore (farla in modo sequenziale in base all'ordine?
+        Player p = getPlayerByClient(u);
         //Sends the players their hand
-        u.sendMessage(new CardInHandMessage(getPlayerByClient(u).getCardInHand()));
+        u.sendMessage(new CardInHandMessage(p.getCardInHand()));
         //Sends the players the private achievements to choose from
-        u.sendMessage(new AchievementMessage(MessageType.PRIVATE_ACHIEVEMENT, getPlayerByClient(u).getPersonalObj()));
+        u.sendMessage(new AchievementMessage(MessageType.PRIVATE_ACHIEVEMENT, p.getPersonalObj()));
+        //Send players their state
+        notifyAll(new PlayerStateMessage(p.getPlayerState(), p.getUsername()));
     }
     /**
      *Picks the top card of the deck and calls addInHand to give it to the player
