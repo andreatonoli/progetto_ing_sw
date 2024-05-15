@@ -34,6 +34,7 @@ public class Controller extends Observable {
         Player player = new Player(user.getUsername(), game);
         this.connectedPlayers.put(user, player);
         this.addObserver(user);
+        this.turnHandler.addObserver(user);
         user.setLobby(this);
         game.addPlayer(player);
         notifyAll(new GenericMessage("Players: " + this.connectedPlayers.keySet().size() + "/" + this.game.getLobbySize()));
@@ -183,9 +184,9 @@ public class Controller extends Observable {
     public void chooseObj(Connection user, Achievement achievement){
         Player player = getPlayerByClient(user);
         player.setChosenObj(achievement);
-        notifyAll(new PlayerBoardUpdateMessage(player.getPlayerBoard(), user.getUsername()));
         //Notifies the player his state (i.e. it's his turn or not)
-        user.sendMessage(new PlayerStateMessage(player.getPlayerState(), user.getUsername()));
+        //user.sendMessage(new PlayerStateMessage(player.getPlayerState(), user.getUsername()));
+        notifyAll(new PlayerBoardUpdateMessage(player.getPlayerBoard(), user.getUsername()));
     }
     private Player getPlayerByClient(Connection user){
         return this.connectedPlayers.get(user);

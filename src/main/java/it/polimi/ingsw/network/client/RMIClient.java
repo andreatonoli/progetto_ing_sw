@@ -113,7 +113,6 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
     public void update(Message message){
         messageQueue.add(message);
     }
-    //TODO: portare al pari con socket
     /**
      * gets messages from the messageQueue and updates the view according to the message type
      * @param message sent from the server
@@ -201,12 +200,12 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                         }
                     }
                 }
-                //this.view.printViewWithCommandsWithCommands(this.player.getBoard(),this.player.getHand(),this.username,this.commonResources,this.commonGold, this.commonAchievement, this.opponents,this.player.getChat());
                 break;
             case CARD_UPDATE:
                 Card drawedCard = ((UpdateCardMessage) message).getCard();
                 player.setCardinHand(drawedCard);
-                this.view.printViewWithCommands(this.player, this.game, this.opponents);                break;
+                this.view.printViewWithCommands(this.player, this.game, this.opponents);
+                break;
             case DECK_UPDATE:
                 Color color = ((UpdateDeckMessage) message).getColor();
                 boolean isResource = ((UpdateDeckMessage) message).getIsResource();
@@ -216,7 +215,6 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                 else{
                     game.setGoldDeckRetro(color);
                 }
-                //this.view.printViewWithCommands(this.player.getBoard(), this.player.getHand(), this.username, this.game.getCommonResources(), this.game.getResourceDeckRetro(), this.game.getCommonGold(), this.game.getGoldDeckRetro(), this.game.getCommonAchievement(), this.player.getAchievement(), this.opponents, this.player.getChat());
                 break;
             case PLAYERBOARD_UPDATE:
                 PlayerBoard playerBoard = ((PlayerBoardUpdateMessage) message).getpBoard();
@@ -233,10 +231,12 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                 }
                 break;
             case GENERIC_MESSAGE:
-                //TODO: messaggi che si accumulano finiscono qui e non so perchè
                 this.view.showText(message.toString());
                 break;
-                //aggiungi case ping
+            case ERROR:
+                this.view.setError(message.toString());
+                this.view.printViewWithCommands(player, game, opponents);
+                break;
             default:
                 break;
         }
@@ -264,6 +264,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                 placingCoordinates[0] = placingCoordinates[0] - 6;
                 placingCoordinates[1] = 6 - placingCoordinates[1];
                 server.placeCard(card, placingCoordinates, username);
+                player.removeCardFromHand(card);
             } catch (RemoteException e) {
                 System.out.println(e.getMessage() + " in placeCard");
             }

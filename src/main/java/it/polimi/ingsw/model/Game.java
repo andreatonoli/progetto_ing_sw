@@ -159,7 +159,7 @@ public class Game extends Observable implements Serializable {
         this.gameState = nextGameState;
     }
 
-    public void setPlayerInTurn()
+    public Player setPlayerInTurn()
     {
         willPlay++;
 
@@ -175,7 +175,7 @@ public class Game extends Observable implements Serializable {
         }
         this.playerInTurn = players.get(willPlay);
         playerInTurn.setPlayerState(PlayerState.PLAY_CARD);
-        notifyAll(new GenericMessage("it's "+playerInTurn+" turn"));
+        return playerInTurn;
     }
 
     public GameState getGameState()

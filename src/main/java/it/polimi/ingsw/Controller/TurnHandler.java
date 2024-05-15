@@ -37,7 +37,8 @@ public class TurnHandler extends Observable {
                 i=2;
             }
             if (i == 2) {
-                game.setPlayerInTurn();
+                Player playerInTurn = game.setPlayerInTurn();
+                notifyAll(new PlayerStateMessage(playerInTurn.getPlayerState(), playerInTurn.getUsername()));
             }
             player.setPlayerState(PlayerState.values()[i]);
         }
