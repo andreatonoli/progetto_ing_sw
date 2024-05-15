@@ -5,7 +5,7 @@ import it.polimi.ingsw.network.server.Server;
 public class ErrorMessage extends Message{
     private final String text;
     public ErrorMessage(String text){
-        super(MessageType.GENERIC_MESSAGE, Server.serverName);
+        super(MessageType.ERROR, Server.serverName);
         this.text = text;
     }
 

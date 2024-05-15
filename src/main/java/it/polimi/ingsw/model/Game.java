@@ -233,8 +233,9 @@ public class Game extends Observable implements Serializable {
     public int getDisconnections() {
         return disconnections;
     }
+    //TODO: fix
     public void setDisconnections(int disconnectedPlayers) {
-        disconnections = disconnectedPlayers;
+        //disconnections = disconnectedPlayers;
     }
 
 

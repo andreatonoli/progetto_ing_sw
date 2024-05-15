@@ -247,7 +247,7 @@ public class Player implements Serializable {
      * @param cardToRemove is the card that will be removed by the player's hand
      */
     public void removeFromHand(Card cardToRemove){
-        for (int i = 0; i < this.cardInHand.length && this.cardInHand[i] != null; i++) {
+        for (int i = 0; i < this.cardInHand.length; i++) {
             if (this.cardInHand[i].equals(cardToRemove)){
                 this.cardInHand[i] = null;
                 break;
@@ -384,6 +384,7 @@ public class Player implements Serializable {
      * @throws OccupiedCornerException one of the corners CardToBePlaced will cover is already covered or is hidden
      * @throws CostNotSatisfiedException player doesn't own enough resources to place a gold card
      * @throws AlreadyUsedPositionException player tries to place a card in a position already occupied by another card
+     * @throws InvalidCoordinatesException player tries to place a card on a spot not linked with any other card
      */
     public void placeCard(Card card, int[] coordinates) throws OccupiedCornerException, NotInTurnException, AlreadyUsedPositionException, CostNotSatisfiedException, InvalidCoordinatesException {
         CornerEnum corner = null;

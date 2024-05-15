@@ -113,7 +113,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
     public void update(Message message){
         messageQueue.add(message);
     }
-
+    //TODO: portare al pari con socket
     /**
      * gets messages from the messageQueue and updates the view according to the message type
      * @param message sent from the server
@@ -132,10 +132,6 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
             case CARD_HAND:
                 //Copied the message body into the player's cards
                 System.arraycopy(((CardInHandMessage) message).getHand(), 0, this.player.getHand(), 0, 3);
-                //TODO: SISTEMARE
-                //for (int i=0; i<player.getHand().length; i++){
-                //    System.out.println(player.getCard(i));
-                //}
                 break;
             case COMMON_ACHIEVEMENT:
                 System.arraycopy(((AchievementMessage) message).getAchievements(), 0, game.getCommonAchievement(), 0, 2);
@@ -181,12 +177,12 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
             case SCORE_UPDATE:
                 name = ((ScoreUpdateMessage) message).getName();
                 if (username.equals(name)) {
-                    player.addPoints(((ScoreUpdateMessage) message).getPoint());
+                    player.setPoints(((ScoreUpdateMessage) message).getPoint());
                 }
                 else {
                     for (PlayerBean p : opponents){
                         if (p.getUsername().equals(name)){
-                            p.addPoints(((ScoreUpdateMessage) message).getPoint());
+                            p.setPoints(((ScoreUpdateMessage) message).getPoint());
                         }
                     }
                 }
@@ -265,6 +261,8 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
     public void placeCard(Card card, int[] placingCoordinates) {
         if (player.getState().equals(PlayerState.PLAY_CARD)) {
             try {
+                placingCoordinates[0] = placingCoordinates[0] - 6;
+                placingCoordinates[1] = 6 - placingCoordinates[1];
                 server.placeCard(card, placingCoordinates, username);
             } catch (RemoteException e) {
                 System.out.println(e.getMessage() + " in placeCard");

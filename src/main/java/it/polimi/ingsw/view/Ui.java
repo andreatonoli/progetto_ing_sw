@@ -25,4 +25,5 @@ public interface Ui{
     void printCard(Card card);
     void printAchievement(Achievement achievement);
     Achievement chooseAchievement(Achievement[] choices);
+    void setError(String error);
 }

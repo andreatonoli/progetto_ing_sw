@@ -36,24 +36,23 @@ public class TurnHandler extends Observable {
                 }
                 i=2;
             }
-
             if (i == 2) {
                 game.setPlayerInTurn();
             }
             player.setPlayerState(PlayerState.values()[i]);
         }
         else {
-            notifyAll(new GenericMessage("only one player connected, the other players have one minute to reconnect."));
-            Timer ping = new Timer();
-            ping.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    game.endGameByDisconnection(player);
-                }
-            }, 60000, 0);
-            while (game.getDisconnections()<2);
-            ping.cancel();
-            this.changePlayerState(player);
+            //notifyAll(new GenericMessage("only one player connected, the other players have one minute to reconnect."));
+            //Timer ping = new Timer();
+            //ping.schedule(new TimerTask() {
+            //    @Override
+            //    public void run() {
+            //        game.endGameByDisconnection(player);
+            //    }
+            //}, 60000, 2000);
+            //while (game.getDisconnections()<2);
+            //ping.cancel();
+            //this.changePlayerState(player);
         }
     }
 

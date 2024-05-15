@@ -3,8 +3,6 @@ package it.polimi.ingsw.Controller;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.card.Achievement;
 import it.polimi.ingsw.model.card.Card;
-import it.polimi.ingsw.model.enums.CornerEnum;
-import it.polimi.ingsw.model.enums.PlayerState;
 import it.polimi.ingsw.model.exceptions.*;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.messages.*;
@@ -13,9 +11,6 @@ import it.polimi.ingsw.observer.Observable;
 
 import java.util.*;
 
-//TODO: replace System.out.println with messages
-//TODO: scelta achievement privato
-//Se ci sono problemi in placeCard piazza una copia del parametro e non il parametro
 public class Controller extends Observable {
     /**
      * Reference to the game (model) controlled by {@code this}
@@ -108,10 +103,10 @@ public class Controller extends Observable {
         }
         try {
             Card drawedCard = this.getPlayerByClient(user).drawCard(deck);
-            user.sendMessage(new UpdateCardMessage(drawedCard));
-            notifyAll(new UpdateDeckMessage(deck.getFirst().getBack().getColor(), isResource));
             turnHandler.changePlayerState(this.getPlayerByClient(user));
+            notifyAll(new UpdateDeckMessage(deck.getFirst().getBack().getColor(), isResource));
             notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState(),user.getUsername()));
+            user.sendMessage(new UpdateCardMessage(drawedCard));
         } catch (EmptyException | NotInTurnException | FullHandException e) {
             user.sendMessage(new ErrorMessage(e.getMessage()));
         }
@@ -134,31 +129,34 @@ public class Controller extends Observable {
             Card drawedCard = this.getPlayerByClient(user).drawCardFromBoard(card);
             user.sendMessage(new UpdateCardMessage(drawedCard));
             turnHandler.changePlayerState(this.getPlayerByClient(user));
-            notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState(),user.getUsername()));
-        } catch (CardNotFoundException e) {
-            user.sendMessage(new ErrorMessage(e.getMessage()));
-        } catch (NotInTurnException e) {
-            user.sendMessage(new ErrorMessage(e.getMessage()));
-        } catch (FullHandException e) {
+            notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState(), user.getUsername()));
+        } catch (CardNotFoundException | NotInTurnException | FullHandException e) {
             user.sendMessage(new ErrorMessage(e.getMessage()));
         }
     }
     /**
-     * Place card then removes it from the player's hand
+     * Place the card on the chosen coordinates
      * @param user who asked to place the card
      * @param card to place
-     * @param coordinates where the player wants to place
+     * @param coordinates where the player wants to place the card
      */
     public void placeCard(Connection user, Card card, int[] coordinates) {
         try {
-            this.getPlayerByClient(user).placeCard(card, coordinates);
-            turnHandler.changePlayerState(this.getPlayerByClient(user));
-            notifyAll(new PlayerBoardUpdateMessage(this.getPlayerByClient(user).getPlayerBoard(), user.getUsername()));
-            notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState(), user.getUsername()));
+            Player p = this.getPlayerByClient(user);
+            //Place card and change player's state
+            p.placeCard(card, coordinates);
+            turnHandler.changePlayerState(p);
+            //notifies all players the changed made by user
+            notifyAll(new ScoreUpdateMessage(p.getPoints(), p.getUsername()));
+            notifyAll(new PlayerStateMessage(p.getPlayerState(), p.getUsername()));
+            notifyAll(new PlayerBoardUpdateMessage(p.getPlayerBoard(), p.getUsername()));
         } catch (NotInTurnException | OccupiedCornerException | CostNotSatisfiedException |
                  AlreadyUsedPositionException | InvalidCoordinatesException e) {
+            //TODO: togliere stampa
             System.err.println(e.getMessage());
+            //If any exception is caught first we send the error message and then we restore the card the player tried to place
             user.sendMessage(new ErrorMessage(e.getMessage()));
+            user.sendMessage(new UpdateCardMessage(card));
         }
     }
 

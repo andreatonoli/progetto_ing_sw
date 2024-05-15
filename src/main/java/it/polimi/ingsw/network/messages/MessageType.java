@@ -9,6 +9,7 @@ public enum MessageType {
     DRAW_DECK,
     DRAW_BOARD,
     DECK_UPDATE,
+    ERROR,
     FREE_LOBBY,
     FLIP_CARD,
     GENERIC_MESSAGE,

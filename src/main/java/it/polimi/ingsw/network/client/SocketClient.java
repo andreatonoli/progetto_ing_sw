@@ -66,6 +66,7 @@ public class SocketClient implements ClientInterface {
             System.err.println(e.getMessage());
         }
     }
+    //TODO: stampare view con comandi al passaggio del turno
     public void update(Message message){
         String name;
         switch (message.getType()){
@@ -154,16 +155,15 @@ public class SocketClient implements ClientInterface {
                 name = ((ScoreUpdateMessage) message).getName();
                 int points = ((ScoreUpdateMessage) message).getPoint();
                 if (name.equalsIgnoreCase(username)){
-                    player.addPoints(points);
+                    player.setPoints(points);
                 }
                 else {
                     for (PlayerBean p : opponents){
                         if (p.getUsername().equalsIgnoreCase(name)){
-                            p.addPoints(points);
+                            p.setPoints(points);
                         }
                     }
                 }
-                this.view.printViewWithCommands(this.player, this.game, this.opponents);
                 break;
             case PLAYER_STATE:
                 PlayerState playerState = ((PlayerStateMessage) message).getState();
@@ -184,7 +184,8 @@ public class SocketClient implements ClientInterface {
                 name = ((PlayerBoardUpdateMessage) message).getName();
                 if (name.equalsIgnoreCase(username)){
                     player.setBoard(playerBoard);
-                    this.view.printViewWithCommands(this.player, this.game, this.opponents);               }
+                    this.view.printViewWithCommands(this.player, this.game, this.opponents);
+                }
                 else{
                     for (PlayerBean p : opponents){
                         if (p.getUsername().equals(name)){
@@ -195,6 +196,11 @@ public class SocketClient implements ClientInterface {
                 break;
             case GENERIC_MESSAGE:
                 this.view.showText(message.toString());
+                break;
+            case ERROR:
+                this.view.setError(message.toString());
+                this.view.printViewWithCommands(player, game, opponents);
+                break;
             default:
                 break;
         }
@@ -223,7 +229,10 @@ public class SocketClient implements ClientInterface {
     @Override
     public void placeCard(Card card, int[] placingCoordinates) {
         if (this.player.getState().equals(PlayerState.PLAY_CARD)){
+            placingCoordinates[0] = placingCoordinates[0] - 6;
+            placingCoordinates[1] = 6 - placingCoordinates[1];
             sendMessage(new PlaceMessage(username, card, placingCoordinates));
+            player.removeCardFromHand(card);
         }
         else{
             //TODO: errore profondo
