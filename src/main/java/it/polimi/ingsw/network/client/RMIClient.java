@@ -21,7 +21,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, ClientInterface {
     private BlockingQueue<Message> messageQueue;
-    private Queue<Action> actionQueue;
     private boolean processingAction;
     private static final String serverName = "GameServer";
     private String username;
@@ -40,7 +39,6 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
         this.opponents = new ArrayList<>();
         messageQueue = new LinkedBlockingQueue<>();
         processingAction = false;
-        actionQueue = new LinkedList<>();
         pickQueue();
         try {
             Registry registry = LocateRegistry.getRegistry(host, port);
@@ -93,20 +91,16 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
             }
         }
     }
-    private void addToQueue(Action action){
-        actionQueue.add(action);
-    }
 
     //TODO: ANDREAAAAAAAAAAAAAAAAAAAA aggiungi in queue con update
     @Override
-    public void pingNetwork() throws RemoteException{
-        addToQueue(() -> {
-            try {
-                server.pingConnection(username);
-            } catch (RemoteException e) {
-                throw new RuntimeException(e);
-            }
-        });
+    public void pingNetwork() throws RemoteException {
+        try {
+            server.pingConnection(username);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     @Override

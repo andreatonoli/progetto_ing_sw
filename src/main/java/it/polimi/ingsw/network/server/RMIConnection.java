@@ -24,11 +24,9 @@ public class RMIConnection extends Connection {
         this.server = server;
         this.username = username;
         this.setConnectionStatus(true);
-        ping();
+        new Thread(this::ping).start();
     }
 
-
-    //TODO ping al client
     private void ping(){
         ping = new Timer();
         catchPing = new Timer();

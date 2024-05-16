@@ -384,7 +384,7 @@ public class GameTest {
         }
         ResourceCard b21 = new ResourceCard(new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.ANIMAL), new Corner(Symbols.NOCORNER), new Corner(Symbols.EMPTY) }, 21, 0);
         try {
-            player1.placeCard(b21, new int[]{-1,1});
+            player2.placeCard(b21, new int[]{-1,1});
         } catch (OccupiedCornerException | NotInTurnException | CostNotSatisfiedException |
                  AlreadyUsedPositionException | InvalidCoordinatesException ex) {
             System.out.println(ex.getMessage());
