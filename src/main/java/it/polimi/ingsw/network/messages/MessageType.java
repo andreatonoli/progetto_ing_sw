@@ -28,5 +28,6 @@ public enum MessageType {
     USERNAME_REQUEST,
     DECLARE_WINNER,
     PLAYER_STATE,
-    DISCONNECTION
+    PING,
+    CATCH_PING
 }

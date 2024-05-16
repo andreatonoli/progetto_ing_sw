@@ -70,6 +70,9 @@ public class SocketClient implements ClientInterface {
     public void update(Message message){
         String name;
         switch (message.getType()){
+            case PING:
+                sendMessage(new CatchPingMessage(this.username));
+                break;
             case USERNAME_REQUEST:
                 System.out.println("Username is already taken, please choose another: ");
                 this.username = this.view.askNickname();

@@ -30,7 +30,7 @@ public class SocketConnection extends Connection implements Runnable {
             this.setConnectionStatus(true);
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
-            //new Thread(this::ping).start();
+            new Thread(this::ping).start();
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
@@ -51,63 +51,51 @@ public class SocketConnection extends Connection implements Runnable {
         }
     }
 
-    //private void ping(){
-    //    ping = new Timer();
-    //    catchPing = new Timer();
-    //    ping.schedule(new TimerTask() {
-    //        @Override
-    //        public void run() {
-    //            pingClient();
-    //        }
-    //    }, 0, 500);
-//
-    //    catchPing.schedule(new TimerTask() {
-    //        @Override
-    //        public void run() {
-    //            ping.cancel();
-    //            catchPing.cancel();
-    //            //aggiungere quello che fa quando si scollega
-    //            lobby.getGame().getPlayerByUsername(username).setDisconnected(true);
-    //            setConnectionStatus(false);
-    //            onDisconnect();
-    //            //
-    //        }
-    //    }, 4000, 4000);
-    //}
-    ////TODO: far pingare client e server come in rmi
-    //private void pingClient(){
-    //    try {
-    //        client.pingNetwork();
-    //    } catch (RemoteException e) {
-    //        System.err.println(e.getMessage() + " " + "in pingClient/SocketConnection");
-    //    }
-    //}
-    //// se viene ricevuto un riscontro dal client entro 2000 allora riparte il timer
-    //// altrimenti il client verrà considerato disconnesso
-    //public void catchPing(){
-    //    catchPing.cancel();
-    //    catchPing = new Timer();
-    //    catchPing.schedule(new TimerTask() {
-    //        @Override
-    //        public void run() {
-    //            ping.cancel();
-    //            catchPing.cancel();
-    //            //TODO: metti on disconnection
-    //            lobby.getGame().getPlayerByUsername(username).setDisconnected(true);
-    //            setConnectionStatus(false);
-    //            //aggiungere quello che fa quando si scollega
-    //            //io chiamerei tipo il controller per mandare una notifyall con il messaggio creato apposta
-    //            //e per far salvare i dati del player disconnesso(?????)
-    //        }
-    //    }, 2000, 2000);
-    //}
-    ////TODO che se fa se non responde er pupone?
+    private void ping(){
+        ping = new Timer();
+        catchPing = new Timer();
+        ping.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                System.out.println(username+" connesso");
+                sendMessage(new PingMessage());
+            }
+        }, 0, 500);
+
+        catchPing.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                ping.cancel();
+                catchPing.cancel();
+                //TODO: controllare
+                onDisconnect();
+                //
+            }
+        }, 4000, 4000);
+    }
+
+    public void catchPing(){
+        catchPing.cancel();
+        catchPing = new Timer();
+        catchPing.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                ping.cancel();
+                catchPing.cancel();
+                //TODO: controllare
+                onDisconnect();
+            }
+        }, 2000, 2000);
+    }
+    //TODO che se fa se non responde er pupone?
 
     public void onDisconnect(){
         try {
+            System.out.println(username+" disconnesso");
             in.close();
             out.close();
             socket.close();
+            lobby.getGame().getPlayerByUsername(username).setDisconnected(true);
             this.setConnectionStatus(false);
         } catch (IOException e) {
             System.err.println(e.getMessage());
@@ -140,6 +128,9 @@ public class SocketConnection extends Connection implements Runnable {
     }
     public void onMessage(Message message){
         switch (message.getType()){
+            case CATCH_PING:
+                catchPing();
+                break;
             case LOGIN_RESPONSE:
                 if (server.usernameTaken(message.getSender())){
                     sendMessage(new UsernameRequestMessage());
