@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -30,7 +29,6 @@ public class SocketConnection extends Connection implements Runnable {
             this.setConnectionStatus(true);
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
-            new Thread(this::ping).start();
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
@@ -51,7 +49,7 @@ public class SocketConnection extends Connection implements Runnable {
         }
     }
 
-    private void ping(){
+    public void ping(){
         ping = new Timer();
         catchPing = new Timer();
         ping.schedule(new TimerTask() {
@@ -74,7 +72,7 @@ public class SocketConnection extends Connection implements Runnable {
         }, 4000, 4000);
     }
 
-    public void catchPing(){
+    public synchronized void catchPing(){
         catchPing.cancel();
         catchPing = new Timer();
         catchPing.schedule(new TimerTask() {

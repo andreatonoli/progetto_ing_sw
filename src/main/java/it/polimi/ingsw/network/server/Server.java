@@ -30,6 +30,7 @@ public class Server {
     public void login(Connection client, String username){
         this.client.put(username, client);
         System.err.println("user " + username + " connected");
+        new Thread(client::ping).start();
         if (this.startingGames.isEmpty()){
             client.createGame();
         }

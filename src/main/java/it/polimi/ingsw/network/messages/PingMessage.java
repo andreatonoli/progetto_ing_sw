@@ -10,7 +10,7 @@ public class PingMessage extends Message{
     @Override
     public String toString(){
         return "PingMessage{" +
-                "sender: " + getSender() +
+                "sender = " + getSender() +
                 '}';
     }
 }

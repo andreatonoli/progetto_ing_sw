@@ -45,7 +45,7 @@ public class RMIServer implements VirtualServer {
     }
 
     public void pingConnection(String username) throws RemoteException{
-        addToQueue(() -> connections.get(username).catchPing());
+        connections.get(username).catchPing();
     }
 
     //TODO: se faccio implementare virtualServer a Connection ogni volta che do uno stub ad una nuova connessione creo una connection diversa e vado a comunicare diremttamente

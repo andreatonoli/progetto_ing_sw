@@ -10,7 +10,7 @@ public class CatchPingMessage extends Message{
     @Override
     public String toString(){
         return "CatchPingMessage{" +
-                "sender: " + getSender() +
+                "sender = " + getSender() +
                 '}';
     }
 }

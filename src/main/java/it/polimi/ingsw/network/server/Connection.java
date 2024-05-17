@@ -21,4 +21,5 @@ public abstract class Connection implements Observer {
     public abstract void createGame();
     public abstract String getUsername();
     public abstract void setAchievement(Achievement achievement);
+    public abstract void ping();
 }

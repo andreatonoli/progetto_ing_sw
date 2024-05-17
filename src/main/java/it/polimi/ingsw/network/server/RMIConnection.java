@@ -24,15 +24,15 @@ public class RMIConnection extends Connection {
         this.server = server;
         this.username = username;
         this.setConnectionStatus(true);
-        new Thread(this::ping).start();
     }
 
-    private void ping(){
+    public void ping(){
         ping = new Timer();
         catchPing = new Timer();
         ping.schedule(new TimerTask() {
             @Override
             public void run() {
+                System.out.println(username+" connesso");
                 pingClient();
             }
         }, 0, 500);
@@ -66,6 +66,7 @@ public class RMIConnection extends Connection {
             public void run() {
                 ping.cancel();
                 catchPing.cancel();
+                System.out.println("finito");
                 //TODO: metti on disconnection
                 lobby.getGame().getPlayerByUsername(username).setDisconnected(true);
                 setConnectionStatus(false);
