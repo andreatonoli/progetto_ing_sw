@@ -18,9 +18,9 @@ public class CodexNaturalisLauncher {
         }
         else{
             System.out.println("Press [0] to start a server\nPress any other number to start a Client");
-            Tui.clearConsole();
             Scanner scan = new Scanner(System.in);
             int choice = scan.nextInt();
+            Tui.clearConsole();
             if (choice == 0){
                 new Server();
             }
