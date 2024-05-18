@@ -1,6 +1,7 @@
 package it.polimi.ingsw.network.server;
 
 import it.polimi.ingsw.model.card.Achievement;
+import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.network.client.RMIClientHandler;
 import it.polimi.ingsw.model.card.Card;
 
@@ -17,5 +18,6 @@ public interface VirtualServer extends Remote {
     void drawCard(String chosenDeck, String username) throws RemoteException;
     void drawCardFromBoard(int index, String username) throws RemoteException;
     void setAchievement(Achievement achievement, String username) throws RemoteException;
+    void setColor(Color color, String username) throws RemoteException;
     void pingConnection(String username) throws RemoteException;
 }

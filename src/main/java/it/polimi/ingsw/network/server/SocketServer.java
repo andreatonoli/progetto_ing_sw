@@ -1,7 +1,5 @@
 package it.polimi.ingsw.network.server;
 
-import it.polimi.ingsw.Controller.ServerController;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -11,11 +9,9 @@ import java.util.concurrent.Executors;
 public class SocketServer {
     private final Server server;
     private final int port;
-    private final ServerController controller;
-    public SocketServer(Server server, int port, ServerController controller){
+    public SocketServer(Server server, int port){
         this.server = server;
         this.port = port;
-        this.controller = controller;
         this.startServer();
     }
     public void startServer(){

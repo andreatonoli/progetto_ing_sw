@@ -20,15 +20,15 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, ClientInterface {
-    private BlockingQueue<Message> messageQueue;
+    private final BlockingQueue<Message> messageQueue;
     private boolean processingAction;
     private static final String serverName = "GameServer";
     private String username;
-    private GameBean game;
+    private final GameBean game;
     private final Ui view;
     private VirtualServer server;
-    private PlayerBean player;
-    private ArrayList<PlayerBean> opponents;
+    private final PlayerBean player;
+    private final ArrayList<PlayerBean> opponents;
 
     public RMIClient(String username, String host, int port, Ui view) throws RemoteException{
         this.username = username;
@@ -69,6 +69,10 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
     }
     public void setPrivateAchievement(Achievement toBeSet) throws RemoteException {
         this.server.setAchievement(toBeSet, username);
+    }
+
+    public void setColor(Color color) throws RemoteException{
+        this.server.setColor(color, username);
     }
     private void pickQueue(){
         Timer t = new Timer();
@@ -111,6 +115,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
      * gets messages from the messageQueue and updates the view according to the message type
      * @param message sent from the server
      */
+    //TODO: aggiungere color
     public void onMessage(Message message) {
         String name;
         switch (message.getType()){
@@ -220,6 +225,30 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                     for (PlayerBean p : opponents){
                         if (p.getUsername().equals(name)){
                             p.setBoard(playerBoard);
+                        }
+                    }
+                }
+                break;
+            case COLOR_REQUEST:
+                Color chosenColor = this.view.chooseColor(((ColorRequestMessage) message).getColors());
+                player.setPionColor(chosenColor);
+                try {
+                    this.setColor(chosenColor);
+                } catch (RemoteException e) {
+                    System.err.println(e.getMessage());
+                }
+                break;
+            case COLOR_RESPONSE:
+                Color setColor = ((ColorResponseMessage) message).getColor();
+                name = message.getSender();
+                if (name.equalsIgnoreCase(username)){
+                    player.setPionColor(setColor);
+                }
+                else{
+                    for (PlayerBean p : opponents){
+                        if (p.getUsername().equalsIgnoreCase(name)){
+                            p.setPionColor(setColor);
+                            break;
                         }
                     }
                 }

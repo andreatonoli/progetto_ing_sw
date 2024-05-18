@@ -13,23 +13,33 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class SocketClient implements ClientInterface {
     private Socket socket;
     private String username;
-    private Ui view;
+    private final Ui view;
     private ObjectInputStream in;
     private ObjectOutputStream out;
     private boolean disconnected = false;
     private final GameBean game;
-    private PlayerBean player;
-    private ArrayList<PlayerBean> opponents;
+    private final PlayerBean player;
+    private final ArrayList<PlayerBean> opponents;
+    private final BlockingQueue<Message> messageQueue;
+    private boolean processingAction;
+    private final Object outputLock = new Object();
     public SocketClient(String username, String address, int port, Ui view){
         this.username = username;
         this.view = view;
         this.player = new PlayerBean(this.username);
         this.opponents = new ArrayList<>();
         this.game = new GameBean();
+        messageQueue = new LinkedBlockingQueue<>();
+        processingAction = false;
+        pickQueue();
         new Thread(() -> { this.startClient(address, port); }).start();
     }
     public void startClient(String address, int port){
@@ -52,7 +62,12 @@ public class SocketClient implements ClientInterface {
         Message message;
         try {
             message = (Message) in.readObject();
-            update(message);
+            if (message.getType().equals(MessageType.PING)){
+                sendMessage(new CatchPingMessage(this.username));
+            }
+            else{
+                messageQueue.add(message);
+            }
         } catch (IOException | ClassNotFoundException e) {
             this.onDisconnect();
             System.err.println(e.getMessage());
@@ -60,19 +75,41 @@ public class SocketClient implements ClientInterface {
     }
     public void sendMessage(Message message){
         try {
-            out.writeObject(message);
-            out.reset();
+            synchronized (outputLock){
+                out.writeObject(message);
+                out.reset();
+            }
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
     }
+
+    private void pickQueue(){
+        Timer t = new Timer();
+        t.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                processQueue();
+            }
+        }, 0, 500);
+    }
+
+    private void processQueue() {
+        if (!messageQueue.isEmpty() && !processingAction) {
+            Message message = messageQueue.poll();
+            processingAction = true;
+            this.update(message);
+            processingAction = false;
+            if (!messageQueue.isEmpty()) {
+                processQueue();
+            }
+        }
+    }
+
     //TODO: stampare view con comandi al passaggio del turno
     public void update(Message message){
         String name;
         switch (message.getType()){
-            case PING:
-                sendMessage(new CatchPingMessage(this.username));
-                break;
             case USERNAME_REQUEST:
                 System.out.println("Username is already taken, please choose another: ");
                 this.username = this.view.askNickname();
@@ -193,6 +230,26 @@ public class SocketClient implements ClientInterface {
                     for (PlayerBean p : opponents){
                         if (p.getUsername().equals(name)){
                             p.setBoard(playerBoard);
+                        }
+                    }
+                }
+                break;
+            case COLOR_REQUEST:
+                Color chosenColor = this.view.chooseColor(((ColorRequestMessage) message).getColors());
+                player.setPionColor(chosenColor);
+                sendMessage(new ColorResponseMessage(username, chosenColor));
+                break;
+            case COLOR_RESPONSE:
+                Color setColor = ((ColorResponseMessage) message).getColor();
+                name = message.getSender();
+                if (name.equalsIgnoreCase(username)){
+                    player.setPionColor(setColor);
+                }
+                else{
+                    for (PlayerBean p : opponents){
+                        if (p.getUsername().equalsIgnoreCase(name)){
+                            p.setPionColor(setColor);
+                            break;
                         }
                     }
                 }

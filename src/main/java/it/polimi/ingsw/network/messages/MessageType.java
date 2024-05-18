@@ -6,6 +6,8 @@ public enum MessageType {
     COMMON_GOLD_UPDATE,
     COMMON_RESOURCE_UPDATE,
     CARD_UPDATE,
+    COLOR_REQUEST,
+    COLOR_RESPONSE,
     DRAW_DECK,
     DRAW_BOARD,
     DECK_UPDATE,
@@ -29,5 +31,5 @@ public enum MessageType {
     DECLARE_WINNER,
     PLAYER_STATE,
     PING,
-    CATCH_PING
+    CATCH_PING,
 }

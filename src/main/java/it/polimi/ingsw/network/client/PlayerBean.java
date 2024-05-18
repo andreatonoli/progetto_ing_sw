@@ -2,6 +2,7 @@ package it.polimi.ingsw.network.client;
 
 import it.polimi.ingsw.model.card.Achievement;
 import it.polimi.ingsw.model.card.Card;
+import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.PlayerState;
 import it.polimi.ingsw.model.player.PlayerBoard;
 
@@ -16,6 +17,7 @@ public class PlayerBean {
     private PlayerState state;
     private ArrayList<String> chat;
     private PlayerBoard board;
+    private Color pionColor;
 
     public String getUsername() {
         return username;
@@ -103,5 +105,13 @@ public class PlayerBean {
     }
     public void setStarterCard(Card card){
         this.starterCard = card;
+    }
+
+    public Color getPionColor() {
+        return pionColor;
+    }
+
+    public void setPionColor(Color pionColor) {
+        this.pionColor = pionColor;
     }
 }

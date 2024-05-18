@@ -516,11 +516,13 @@ public class Tui implements Ui{
 
         //per il momento viene inserito il numero del player poi verrà stampato il colore del token
         for(int i = 0; i < players.size(); i++){
-            if(players.get(i).getPoints() > 29){
-                matScoreBoard[scoreBoardPosition[i][0]][scoreBoardPosition[i][1]][scoreBoardPoints[29][0]][scoreBoardPoints[29][1]] = String.valueOf(i + 1);
-            }
-            else{
-                matScoreBoard[scoreBoardPosition[i][0]][scoreBoardPosition[i][1]][scoreBoardPoints[players.get(i).getPoints()][0]][scoreBoardPoints[players.get(i).getPoints()][1]] = String.valueOf(i + 1);
+            if (players.get(i).getPionColor() != null){
+                if(players.get(i).getPoints() > 29){
+                    matScoreBoard[scoreBoardPosition[i][0]][scoreBoardPosition[i][1]][scoreBoardPoints[29][0]][scoreBoardPoints[29][1]] = Color.getBackground(players.get(i).getPionColor()) + String.valueOf(i + 1) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                }
+                else{
+                    matScoreBoard[scoreBoardPosition[i][0]][scoreBoardPosition[i][1]][scoreBoardPoints[players.get(i).getPoints()][0]][scoreBoardPoints[players.get(i).getPoints()][1]] = Color.getBackground(players.get(i).getPionColor()) + String.valueOf(i + 1) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                }
             }
         }
         return matScoreBoard;
@@ -1609,6 +1611,18 @@ public class Tui implements Ui{
             choice = scanner.nextInt();
         }
         return choices[choice - 1];
+    }
+    public Color chooseColor(List<Color> colors){
+        System.out.println("Choose your color by typing the corresponding number:");
+        for (int i = 0; i < colors.size(); i++){
+            System.out.println("\t" + (1 + i) + ") " + colors.get(i));
+        }
+        int c = scanner.nextInt();
+        while(c > colors.size() || c < 0){
+            System.out.print("Invalid input. Retry: ");
+            c = scanner.nextInt();
+        }
+        return colors.get(c - 1);
     }
     @Override
     public void setError(String error){

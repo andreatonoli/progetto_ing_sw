@@ -3,6 +3,7 @@ package it.polimi.ingsw.network.server;
 import it.polimi.ingsw.Controller.Controller;
 import it.polimi.ingsw.model.card.Achievement;
 import it.polimi.ingsw.model.card.Card;
+import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.client.RMIClientHandler;
 
@@ -12,10 +13,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class RMIConnection extends Connection {
-    private RMIClientHandler client;
+    private final RMIClientHandler client;
     private Controller lobby;
-    private transient Server server;
-    private String username;
+    private final transient Server server;
+    private final String username;
     private Timer catchPing;
     private Timer ping;
 
@@ -32,10 +33,9 @@ public class RMIConnection extends Connection {
         ping.schedule(new TimerTask() {
             @Override
             public void run() {
-                System.out.println(username+" connesso");
                 pingClient();
             }
-        }, 0, 500);
+        }, 0, 5000);
 
         catchPing.schedule(new TimerTask() {
             @Override
@@ -47,7 +47,7 @@ public class RMIConnection extends Connection {
                 setConnectionStatus(false);
                 //
             }
-        }, 4000, 4000);
+        }, 10000, 10000);
     }
     private void pingClient(){
         try {
@@ -66,7 +66,6 @@ public class RMIConnection extends Connection {
             public void run() {
                 ping.cancel();
                 catchPing.cancel();
-                System.out.println("finito");
                 //TODO: metti on disconnection
                 lobby.getGame().getPlayerByUsername(username).setDisconnected(true);
                 setConnectionStatus(false);
@@ -74,7 +73,7 @@ public class RMIConnection extends Connection {
                 //io chiamerei tipo il controller per mandare una notifyall con il messaggio creato apposta
                 //e per far salvare i dati del player disconnesso(?????)
             }
-        }, 2000, 2000);
+        }, 10000, 10000);
     }
     //TODO che se fa se non responde er pupone?
 
@@ -120,25 +119,28 @@ public class RMIConnection extends Connection {
         return this.username;
     }
 
+    //TODO: sostituire invocazioni del controller con aggiunta in coda
     public void flipCard(Card card){
-        this.lobby.flipCard(this, card);
+        this.lobby.addAction(new ActionMessage(this, () -> lobby.flipCard(this, card)));
     }
-
     public void placeStarterCard(Card card) {
-        this.lobby.placeStarterCard(this, card);
+        this.lobby.addAction(new ActionMessage(this, () -> lobby.placeStarterCard(this, card)));
     }
     public void setAchievement(Achievement achievement){
-        this.lobby.chooseObj(this, achievement);
+        this.lobby.addAction(new ActionMessage(this,() -> lobby.chooseObj(this, achievement)));
     }
-
+    public void setColor(Color color){
+        this.lobby.addAction(new ActionMessage(this, () -> this.lobby.setColor(this, color)));
+    }
     public void placeCard(Card card, int[] placingCoordinates){
-        this.lobby.placeCard(this, card, placingCoordinates);
+        this.lobby.addAction(new ActionMessage(this, () -> lobby.placeCard(this, card, placingCoordinates)));
     }
     public void drawCard(String chosenDeck){
-        this.lobby.drawCard(this, chosenDeck);
+        this.lobby.addAction(new ActionMessage(this, () -> lobby.drawCard(this, chosenDeck)));
     }
     public void drawCardFromBoard(int index){
-        this.lobby.drawCardFromBoard(this, index);
+        this.lobby.addAction(new ActionMessage(this, () -> lobby.drawCardFromBoard(this, index)));
+
     }
     @Override
     public void update(Message message) {

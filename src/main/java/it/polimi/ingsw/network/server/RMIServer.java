@@ -6,23 +6,19 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
-import it.polimi.ingsw.Controller.ServerController;
 import it.polimi.ingsw.model.card.Achievement;
 import it.polimi.ingsw.model.card.Card;
+import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.network.client.RMIClientHandler;
 
 public class RMIServer implements VirtualServer {
-
-    //private final Controller controller;
-    private Queue<Action> actionQueue;
+    private final Queue<Action> actionQueue;
     private boolean processingAction;
     private final Server server;
     private final int port;
-    //private RMIConnection connection;
-    private Map<String, RMIConnection> connections;
+    private final Map<String, RMIConnection> connections;
 
-    //TODO: sistemare controller
-    public RMIServer(Server server, int port, ServerController controller){
+    public RMIServer(Server server, int port){
         this.server = server;
         this.port = port;
         connections = Collections.synchronizedMap(new HashMap<>());
@@ -68,6 +64,11 @@ public class RMIServer implements VirtualServer {
     @Override
     public void placeStarterCard(Card card, String username) throws RemoteException {
         addToQueue(() -> connections.get(username).placeStarterCard(card));
+    }
+
+    @Override
+    public void setColor(Color color, String username) throws RemoteException {
+        addToQueue(() -> connections.get(username).setColor(color));
     }
 
     @Override

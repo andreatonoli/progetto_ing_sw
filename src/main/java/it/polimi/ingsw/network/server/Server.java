@@ -24,8 +24,8 @@ public class Server {
         startServer();
     }
     public void startServer(){
-        new RMIServer(this, rmiPort, this.controller);
-        new SocketServer(this, socketPort, this.controller);
+        new RMIServer(this, rmiPort);
+        new SocketServer(this, socketPort);
     }
     public void login(Connection client, String username){
         this.client.put(username, client);

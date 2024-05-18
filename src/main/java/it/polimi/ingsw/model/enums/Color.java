@@ -1,11 +1,6 @@
 package it.polimi.ingsw.model.enums;
 
 public enum Color {
-    //RED(1, "\u001B[41m" + "  " + TuiColors.getColor(TuiColors.ANSI_RESET)),
-    //GREEN(3, "\u001B[42m" + "  " + TuiColors.getColor(TuiColors.ANSI_RESET)),
-    //BLUE(0, "\u001B[44m" + "  " + TuiColors.getColor(TuiColors.ANSI_RESET)),
-    //PURPLE(2, "\u001B[45m" + "  " + TuiColors.getColor(TuiColors.ANSI_RESET)),
-    //WHITE(4, "\u001B[47m" + "  " + TuiColors.getColor(TuiColors.ANSI_RESET));
     RED(1, "\u001B[0;101m"),
     GREEN(3, "\u001B[0;102m"),
     BLUE(0, "\u001B[0;104m"),

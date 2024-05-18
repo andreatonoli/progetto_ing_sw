@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.card.Achievement;
+import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.GameState;
 import it.polimi.ingsw.model.enums.PlayerState;
 import it.polimi.ingsw.model.exceptions.NotEnoughPlayersException;
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class Game extends Observable implements Serializable {
     private int lobbySize;
@@ -29,6 +31,7 @@ public class Game extends Observable implements Serializable {
      * number of disconnected players
      */
     private int disconnections;
+    private List<Color> availableColors;
 
 
     /**
@@ -46,6 +49,11 @@ public class Game extends Observable implements Serializable {
         this.disconnections = 0;
         this.chatHandler = new Chat(this);
         this.gameBoard = new GameBoard(this);
+        this.availableColors = new ArrayList<>(List.of(Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW));
+    }
+
+    public List<Color> getAvailableColors(){
+        return availableColors;
     }
 
     public void startGame() throws  NotEnoughPlayersException{

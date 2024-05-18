@@ -3,30 +3,88 @@ package it.polimi.ingsw.Controller;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.card.Achievement;
 import it.polimi.ingsw.model.card.Card;
+import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.exceptions.*;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.messages.*;
+import it.polimi.ingsw.network.server.Action;
+import it.polimi.ingsw.network.server.ActionMessage;
 import it.polimi.ingsw.network.server.Connection;
 import it.polimi.ingsw.observer.Observable;
 
 import java.util.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class Controller extends Observable {
     /**
      * Reference to the game (model) controlled by {@code this}
      */
     private final Game game;
+    /**
+     * Map to connect the different Connections (client handlers) to their representation on the model (Player)
+     */
     private final Map<Connection, Player> connectedPlayers;
     private final TurnHandler turnHandler;
+    /**
+     * Queue that stores all the actions required by the players to be carried out by the controller
+     */
+    private final BlockingQueue<ActionMessage> actionQueue;
+    private String playerInTurn;
+    private boolean setupFinished = false;
+    private boolean processingAction = false;
+
+    //TODO: FARE SETUP SEQUENZIALE
+    //TODO: mettere controllo lato server per controllare che client non scammi
 
     public Controller(int numPlayers){
         this.game = new Game(numPlayers);
         this.turnHandler = new TurnHandler(game);
         this.connectedPlayers = Collections.synchronizedMap(new HashMap<>());
+        this.actionQueue = new LinkedBlockingQueue<>();
     }
 
     /**
-     * Permits the client {@param user} to join the game
+     * This method adds the tasks required by the player to the queue
+     * @param action requested by the player
+     */
+    public void addAction(ActionMessage action){
+        this.actionQueue.add(action);
+    }
+
+    /**
+     * reads one action from the queue and performs it
+     */
+    public void execAction(){
+        if (!actionQueue.isEmpty() && !processingAction) {
+            ActionMessage nextAction = actionQueue.poll();
+            processingAction = true;
+            if (setupFinished || nextAction.getApplicant().getUsername().equals(playerInTurn)){
+                nextAction.getCommand().execute();
+            }
+            else if(!setupFinished){
+                actionQueue.add(nextAction);
+            }
+            processingAction = false;
+            if (setupFinished && !actionQueue.isEmpty()) {
+                execAction();
+            }
+        }
+    }
+
+    private void pickQueue(){
+        Timer t = new Timer();
+        t.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                execAction();
+            }
+        }, 0, 100);
+    }
+
+
+    /**
+     * Permits the client to join the game
      * @param user of the client who's joining the game
      * @return {@code true} if the game is full, {@code false} otherwise
      */
@@ -39,11 +97,6 @@ public class Controller extends Observable {
         game.addPlayer(player);
         notifyAll(new GenericMessage("Players: " + this.connectedPlayers.keySet().size() + "/" + this.game.getLobbySize()));
         if (game.isFull()){
-            ArrayList<String> players = new ArrayList<>();
-            for (Connection c : connectedPlayers.keySet()){
-                players.add(c.getUsername());
-            }
-            notifyAll(new OpponentsMessage(players));
             this.startGame();
             return true;
         }
@@ -60,6 +113,12 @@ public class Controller extends Observable {
         } catch (NotEnoughPlayersException e) {
             System.err.println(e.getMessage());
         }
+        //send all players their opponents name
+        ArrayList<String> players = new ArrayList<>();
+        for (Connection c : connectedPlayers.keySet()){
+            players.add(c.getUsername());
+        }
+        notifyAll(new OpponentsMessage(players));
         //Sends the common resource and gold cards
         notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_RESOURCE_UPDATE, game.getGameBoard().getCommonResource()[0]));
         notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_RESOURCE_UPDATE, game.getGameBoard().getCommonResource()[1]));
@@ -70,23 +129,26 @@ public class Controller extends Observable {
         //sends the color of the first card of the deck
         notifyAll(new UpdateDeckMessage(game.getGameBoard().getResourceDeck().getFirst().getColor(), true));
         notifyAll(new UpdateDeckMessage(game.getGameBoard().getGoldDeck().getFirst().getColor(), false));
-        //Sends the starter card to each player
+        //Sends each player their private information
         for (Connection u : this.connectedPlayers.keySet()){
+            Player p = getPlayerByClient(u);
+            //Sends the player their starter card
             u.sendMessage(new StarterCardMessage(getPlayerByClient(u).getPlayerBoard().getStarterCard()));
+            //Sends the players their hand
+            u.sendMessage(new CardInHandMessage(p.getCardInHand()));
+            //Sends the players the private achievements to choose from
+            u.sendMessage(new AchievementMessage(MessageType.PRIVATE_ACHIEVEMENT, p.getPersonalObj()));
+            //Send players their state
+            notifyAll(new PlayerStateMessage(p.getPlayerState(), p.getUsername()));
         }
+        playerInTurn = game.getFirstPlayer().getUsername();
+        pickQueue();
     }
-    //TODO: boh, secondo me fa caha
-    //TODO: farlo chiamare solo per i client che hanno piazzato la starterCard, quindi vado a fare solo notify e non notify all
-    private void commonCardSetup(Connection u){
-        //TODO: gestire scelta del colore (farla in modo sequenziale in base all'ordine?
-        Player p = getPlayerByClient(u);
-        //Sends the players their hand
-        u.sendMessage(new CardInHandMessage(p.getCardInHand()));
-        //Sends the players the private achievements to choose from
-        u.sendMessage(new AchievementMessage(MessageType.PRIVATE_ACHIEVEMENT, p.getPersonalObj()));
-        //Send players their state
-        notifyAll(new PlayerStateMessage(p.getPlayerState(), p.getUsername()));
-    }
+
+    //TODO: scrivere funzione per handlare il setup sequenziale dei client
+    //dovrebbe fare in modo di leggere dalla coda i messaggi solo del player che sta setuppando e rimettere in coda tutti gli altri
+    //appena tutti hanno finito il setup la coda deve comportarsi normalmente accettando i messaggi di tutti
+
     /**
      *Picks the top card of the deck and calls addInHand to give it to the player
      * @param user who wants to draw a card
@@ -153,8 +215,6 @@ public class Controller extends Observable {
             notifyAll(new PlayerBoardUpdateMessage(p.getPlayerBoard(), p.getUsername()));
         } catch (NotInTurnException | OccupiedCornerException | CostNotSatisfiedException |
                  AlreadyUsedPositionException | InvalidCoordinatesException e) {
-            //TODO: togliere stampa
-            System.err.println(e.getMessage());
             //If any exception is caught first we send the error message and then we restore the card the player tried to place
             user.sendMessage(new ErrorMessage(e.getMessage()));
             user.sendMessage(new UpdateCardMessage(card));
@@ -173,7 +233,6 @@ public class Controller extends Observable {
     public void placeStarterCard(Connection user, Card starterCard){
         Player player = getPlayerByClient(user);
         player.getPlayerBoard().setStarterCard(starterCard);
-        commonCardSetup(user);
     }
 
     /**
@@ -184,10 +243,23 @@ public class Controller extends Observable {
     public void chooseObj(Connection user, Achievement achievement){
         Player player = getPlayerByClient(user);
         player.setChosenObj(achievement);
-        //Notifies the player his state (i.e. it's his turn or not)
-        //user.sendMessage(new PlayerStateMessage(player.getPlayerState(), user.getUsername()));
+        chooseColor(user);
         notifyAll(new PlayerBoardUpdateMessage(player.getPlayerBoard(), user.getUsername()));
     }
+
+    public void chooseColor(Connection user) {
+            user.sendMessage(new ColorRequestMessage(game.getAvailableColors()));
+    }
+
+    public void setColor(Connection user, Color color){
+        this.game.getAvailableColors().remove(color);
+        notifyAll(new ColorResponseMessage(user.getUsername(), color));
+        playerInTurn = turnHandler.changeSetupPlayer();
+        if (playerInTurn == null){
+            setupFinished = true;
+        }
+    }
+
     private Player getPlayerByClient(Connection user){
         return this.connectedPlayers.get(user);
     }

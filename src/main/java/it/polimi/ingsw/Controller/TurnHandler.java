@@ -15,6 +15,7 @@ public class TurnHandler extends Observable {
      * game reference
      */
     private final Game game;
+    private int i = 0;
 
     public TurnHandler(Game game){
         this.game = game;
@@ -30,31 +31,37 @@ public class TurnHandler extends Observable {
                 } catch (NotInTurnException | FullHandException | EmptyException e1) {
                     try {
                         player.drawCard(game.getGameBoard().getGoldDeck());
-                    } catch (NotInTurnException | FullHandException | EmptyException e2) {
-                        i=2;
-                    }
+                    } catch (NotInTurnException | FullHandException | EmptyException ignored){}
                 }
                 i=2;
             }
             if (i == 2) {
                 Player playerInTurn = game.setPlayerInTurn();
                 notifyAll(new PlayerStateMessage(playerInTurn.getPlayerState(), playerInTurn.getUsername()));
+                notifyAll(new PlayerBoardUpdateMessage(playerInTurn.getPlayerBoard(), playerInTurn.getUsername()));
             }
             player.setPlayerState(PlayerState.values()[i]);
         }
         else {
-            //notifyAll(new GenericMessage("only one player connected, the other players have one minute to reconnect."));
-            //Timer ping = new Timer();
-            //ping.schedule(new TimerTask() {
-            //    @Override
-            //    public void run() {
-            //        game.endGameByDisconnection(player);
-            //    }
-            //}, 60000, 2000);
-            //while (game.getDisconnections()<2);
-            //ping.cancel();
-            //this.changePlayerState(player);
+            notifyAll(new GenericMessage("only one player connected, the other players have one minute to reconnect."));
+            Timer ping = new Timer();
+            ping.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    game.endGameByDisconnection(player);
+                }
+            }, 60000, 2000);
+            while (game.getDisconnections()<2);
+            ping.cancel();
+            this.changePlayerState(player);
         }
     }
 
+    public String changeSetupPlayer(){
+        i++;
+        if (i == game.getLobbySize()){
+            return null;
+        }
+        return game.getPlayers().get(i).getUsername();
+    }
 }

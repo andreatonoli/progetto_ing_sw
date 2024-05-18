@@ -8,6 +8,7 @@ import it.polimi.ingsw.network.client.GameBean;
 import it.polimi.ingsw.network.client.PlayerBean;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface Ui{
     String askNickname();
@@ -25,5 +26,6 @@ public interface Ui{
     void printCard(Card card);
     void printAchievement(Achievement achievement);
     Achievement chooseAchievement(Achievement[] choices);
+    Color chooseColor(List<Color> colors);
     void setError(String error);
 }
