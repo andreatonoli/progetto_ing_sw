@@ -7,7 +7,6 @@ import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.exceptions.*;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.messages.*;
-import it.polimi.ingsw.network.server.Action;
 import it.polimi.ingsw.network.server.ActionMessage;
 import it.polimi.ingsw.network.server.Connection;
 import it.polimi.ingsw.observer.Observable;
@@ -34,7 +33,6 @@ public class Controller extends Observable {
     private boolean setupFinished = false;
     private boolean processingAction = false;
 
-    //TODO: FARE SETUP SEQUENZIALE
     //TODO: mettere controllo lato server per controllare che client non scammi
 
     public Controller(int numPlayers){
@@ -107,7 +105,7 @@ public class Controller extends Observable {
      * Notifies the clients of all the changes done from the model's method startGame. It sends the users their cards,
      * the scoreboard, their starter card, asks the color they want and selects the first player to play.
      */
-    private void startGame(){
+    private void startGame() {
         try {
             game.startGame();
         } catch (NotEnoughPlayersException e) {
@@ -115,7 +113,7 @@ public class Controller extends Observable {
         }
         //send all players their opponents name
         ArrayList<String> players = new ArrayList<>();
-        for (Connection c : connectedPlayers.keySet()){
+        for (Connection c : connectedPlayers.keySet()) {
             players.add(c.getUsername());
         }
         notifyAll(new OpponentsMessage(players));
@@ -130,7 +128,7 @@ public class Controller extends Observable {
         notifyAll(new UpdateDeckMessage(game.getGameBoard().getResourceDeck().getFirst().getColor(), true));
         notifyAll(new UpdateDeckMessage(game.getGameBoard().getGoldDeck().getFirst().getColor(), false));
         //Sends each player their private information
-        for (Connection u : this.connectedPlayers.keySet()){
+        for (Connection u : this.connectedPlayers.keySet()) {
             Player p = getPlayerByClient(u);
             //Sends the player their starter card
             u.sendMessage(new StarterCardMessage(getPlayerByClient(u).getPlayerBoard().getStarterCard()));
@@ -144,10 +142,6 @@ public class Controller extends Observable {
         playerInTurn = game.getFirstPlayer().getUsername();
         pickQueue();
     }
-
-    //TODO: scrivere funzione per handlare il setup sequenziale dei client
-    //dovrebbe fare in modo di leggere dalla coda i messaggi solo del player che sta setuppando e rimettere in coda tutti gli altri
-    //appena tutti hanno finito il setup la coda deve comportarsi normalmente accettando i messaggi di tutti
 
     /**
      *Picks the top card of the deck and calls addInHand to give it to the player
@@ -176,7 +170,7 @@ public class Controller extends Observable {
     }
 
     /**
-     * Permits the player to take one card from the board, then replaces it with the same type card drawed from the decks
+     * Permits the player to take one card from the board, then replaces it with the same type card drew from the decks
      * @param user who wants to take the card
      * @param index of the card taken by the player (0,1 are from commonResources and 2,3 are from commonGold)
      */
@@ -215,7 +209,7 @@ public class Controller extends Observable {
             notifyAll(new PlayerBoardUpdateMessage(p.getPlayerBoard(), p.getUsername()));
         } catch (NotInTurnException | OccupiedCornerException | CostNotSatisfiedException |
                  AlreadyUsedPositionException | InvalidCoordinatesException e) {
-            //If any exception is caught first we send the error message and then we restore the card the player tried to place
+            //If any exception is caught first we send the error message, and then we restore the card the player tried to place
             user.sendMessage(new ErrorMessage(e.getMessage()));
             user.sendMessage(new UpdateCardMessage(card));
         }
@@ -264,7 +258,6 @@ public class Controller extends Observable {
         return this.connectedPlayers.get(user);
     }
 
-    //TODO: eliminare
     public Game getGame(){
         return this.game;
     }

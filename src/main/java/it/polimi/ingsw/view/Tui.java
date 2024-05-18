@@ -241,79 +241,89 @@ public class Tui implements Ui{
     public String[][] createPrintableCard(Card card) {
         String[][] matCard = new String[ROW][COLUMN];
         //creazione matrice vuota e bordi a destra e sinistra
-        for (int i = 0; i < ROW; i++) {
-            for (int j = 0; j < COLUMN; j++) {
-                matCard[i][j] = Color.getBackground(card.getColor()) + Symbols.getString(Symbols.EMPTY_SPACE) + TuiColors.getColor(TuiColors.ANSI_RESET);
-            }
-        }
-        //aggiungi angoli della carta
-        for(CornerEnum corner : CornerEnum.values()){
-            if(card.getCorner(corner).getSymbol().equals(Symbols.NOCORNER)){
-                matCard[2*(corner.getY() - 1)/(-2)][8*(corner.getX() + 1)/2] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(card.getCorner(corner).getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
-            }
-            else{
-                matCard[2*(corner.getY() - 1)/(-2)][8*(corner.getX() + 1)/2] = Color.getBackground(Color.WHITE) + Symbols.getStringBlack(card.getCorner(corner).getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
-            }
-        }
-
-        //aggiungi simboli al centro se ci sono
-        int center = 4;
-        if (card.getSymbols() != null) {
-            if(card.getSymbols().size() <= 2){
-                for (int i = 0; i < card.getSymbols().size(); i++) {
-                    matCard[1][center] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(card.getSymbols().get(i)) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                    center += 1;
+        if (card != null) {
+            for (int i = 0; i < ROW; i++) {
+                for (int j = 0; j < COLUMN; j++) {
+                    matCard[i][j] = Color.getBackground(card.getColor()) + Symbols.getString(Symbols.EMPTY_SPACE) + TuiColors.getColor(TuiColors.ANSI_RESET);
                 }
             }
-            else{
-                center -= 1;
-                for (int i = 0; i < card.getSymbols().size(); i++) {
-                    matCard[1][center] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(card.getSymbols().get(i)) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                    center += 1;
+            //aggiungi angoli della carta
+            for(CornerEnum corner : CornerEnum.values()){
+                if(card.getCorner(corner).getSymbol().equals(Symbols.NOCORNER)){
+                    matCard[2*(corner.getY() - 1)/(-2)][8*(corner.getX() + 1)/2] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(card.getCorner(corner).getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                }
+                else{
+                    matCard[2*(corner.getY() - 1)/(-2)][8*(corner.getX() + 1)/2] = Color.getBackground(Color.WHITE) + Symbols.getStringBlack(card.getCorner(corner).getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
                 }
             }
 
-        }
+            //aggiungi simboli al centro se ci sono
+            int center = 4;
+            if (card.getSymbols() != null) {
+                if(card.getSymbols().size() <= 2){
+                    for (int i = 0; i < card.getSymbols().size(); i++) {
+                        matCard[1][center] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(card.getSymbols().get(i)) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        center += 1;
+                    }
+                }
+                else{
+                    center -= 1;
+                    for (int i = 0; i < card.getSymbols().size(); i++) {
+                        matCard[1][center] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(card.getSymbols().get(i)) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        center += 1;
+                    }
+                }
 
-        if(!card.isBack()){
-            //aggiungi punti se ci sono
-            int topCenter = 4;
-            if (card.getPoints() != 0) {
-                switch (card.getCondition()) {
-                    case NOTHING -> {
-                        if(card.getPoints() != 0){
-                            matCard[0][topCenter] = Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_BLACK) + String.valueOf(card.getPoints()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+            }
+
+            if(!card.isBack()){
+                //aggiungi punti se ci sono
+                int topCenter = 4;
+                if (card.getPoints() != 0) {
+                    switch (card.getCondition()) {
+                        case NOTHING -> {
+                            if(card.getPoints() != 0){
+                                matCard[0][topCenter] = Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_BLACK) + String.valueOf(card.getPoints()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                            }
+                        }
+                        case CORNER -> {
+                            matCard[0][topCenter - 1] = Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_BLACK) + String.valueOf(card.getPoints()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                            matCard[0][topCenter] = Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "|" + TuiColors.getColor(TuiColors.ANSI_RESET);
+                            matCard[0][topCenter + 1] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.CORNER) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        }
+                        case ITEM -> {
+                            matCard[0][topCenter - 1] = Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_BLACK) + String.valueOf(card.getPoints()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                            matCard[0][topCenter] = Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "|" + TuiColors.getColor(TuiColors.ANSI_RESET);
+                            matCard[0][topCenter + 1] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(card.getRequiredItem()) + TuiColors.getColor(TuiColors.ANSI_RESET);
                         }
                     }
-                    case CORNER -> {
-                        matCard[0][topCenter - 1] = Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_BLACK) + String.valueOf(card.getPoints()) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                        matCard[0][topCenter] = Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "|" + TuiColors.getColor(TuiColors.ANSI_RESET);
-                        matCard[0][topCenter + 1] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.CORNER) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                    }
-                    case ITEM -> {
-                        matCard[0][topCenter - 1] = Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_BLACK) + String.valueOf(card.getPoints()) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                        matCard[0][topCenter] = Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "|" + TuiColors.getColor(TuiColors.ANSI_RESET);
-                        matCard[0][topCenter + 1] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(card.getRequiredItem()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                }
+            }
+
+            if(!card.isBack()){
+                //aggiungi costo se c'è
+                if(card.getCost() != null){
+                    int costSum = Arrays.stream(card.getCost()).reduce(0, Integer::sum);
+                    int bottomCenter = 4 - costSum / 2;
+                    for (int i = 0; i < card.getCost().length; i++) {
+                        for (int j = 0; j < card.getCost()[i]; j++) {
+                            switch (i) {
+                                case 0 -> matCard[2][bottomCenter] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.FUNGI) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                                case 1 -> matCard[2][bottomCenter] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.PLANT) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                                case 2 -> matCard[2][bottomCenter] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.ANIMAL) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                                case 3 -> matCard[2][bottomCenter] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.INSECT) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                            }
+                            bottomCenter += 1;
+                        }
                     }
                 }
             }
         }
-
-        if(!card.isBack()){
-            //aggiungi costo se c'è
-            if(card.getCost() != null){
-                int costSum = Arrays.stream(card.getCost()).reduce(0, Integer::sum);
-                int bottomCenter = 4 - costSum / 2;
-                for (int i = 0; i < card.getCost().length; i++) {
-                    for (int j = 0; j < card.getCost()[i]; j++) {
-                        switch (i) {
-                            case 0 -> matCard[2][bottomCenter] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.FUNGI) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                            case 1 -> matCard[2][bottomCenter] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.PLANT) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                            case 2 -> matCard[2][bottomCenter] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.ANIMAL) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                            case 3 -> matCard[2][bottomCenter] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.INSECT) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                        }
-                        bottomCenter += 1;
-                    }
+        else{
+            //if the card is null create a placeholder to maintain view's layout
+            for (int i = 0; i < ROW; i++) {
+                for (int j = 0; j < COLUMN; j++) {
+                    matCard[i][j] = " ";
                 }
             }
         }
@@ -561,23 +571,16 @@ public class Tui implements Ui{
         String[][] gBack = this.createPrintableRetro(goldBack);
         String[][] commonAchievement1 = this.createPrintableAchievement(commonAchievement[0]);
         String[][] commonAchievement2 = this.createPrintableAchievement(commonAchievement[1]);
+        players.add(player);
         String[][][][] scoreBoard = this.createPrintableScoreBoard(players);
+        players.removeLast();
         String[] chat = this.createPrintableChat(messages);
         String[][][][] playerBoard = this.createPrintablePlayerBoard(pBoard);
-        String[][] hand1 = null;
-        String[][] hand2 = null;
-        String[][] hand3 = null;
+        String[][] hand1 = this.createPrintableCard(hand[0]);
+        String[][] hand2 = this.createPrintableCard(hand[1]);
+        String[][] hand3 = this.createPrintableCard(hand[2]);
         String[][] privateAch = this.createPrintableAchievement(privateAchievement);
-        //TODO: se sono null creare carta vuota per mantenere impaginazione
-        if (hand[0] != null) {
-            hand1 = this.createPrintableCard(hand[0]);
-        }
-        if (hand[1] != null) {
-            hand2 = this.createPrintableCard(hand[1]);
-        }
-        if (hand[2] != null) {
-            hand3 = this.createPrintableCard(hand[2]);
-        }
+        
         //this.printTitle();
 
         System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "commonboard" + TuiColors.getColor(TuiColors.ANSI_RESET));
@@ -930,7 +933,7 @@ public class Tui implements Ui{
         int[] coord = new int[2];
         PlayerBean playerInTurn = null;
         this.printView(player, game, players);
-        if (!error.equals("")){
+        if (!error.isEmpty()){
             //TODO: stampa colorata
             System.out.println(TuiColors.getColor(TuiColors.ANSI_RED) + error + TuiColors.getColor(TuiColors.ANSI_RESET));
             error = "";
@@ -950,8 +953,6 @@ public class Tui implements Ui{
                     break;
                 }
             }
-            //TODO: temporaneo, togliere e fare un setup decente
-            if (playerInTurn == null) return;
             System.out.println(playerInTurn.getUsername() + "'s turn. Wait for your turn to play");
         }
         System.out.println();
