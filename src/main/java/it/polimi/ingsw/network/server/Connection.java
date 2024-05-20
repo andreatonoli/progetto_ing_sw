@@ -16,9 +16,11 @@ public abstract class Connection implements Observer {
         this.isConnected = status;
     }
     public abstract void setLobby(Controller controller);
+    public abstract Controller getLobby();
     public abstract void sendMessage(Message message);
     public abstract void joinGame(List<Controller> startingGames);
     public abstract void createGame();
     public abstract String getUsername();
     public abstract void ping();
+    public abstract void reconnect(Connection oldConnection);
 }

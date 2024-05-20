@@ -162,6 +162,12 @@ public class Controller extends Observable {
             Card drawedCard = this.getPlayerByClient(user).drawCard(deck);
             turnHandler.changePlayerState(this.getPlayerByClient(user));
             notifyAll(new UpdateDeckMessage(deck.getFirst().getBack().getColor(), isResource));
+            if (isResource) {
+                game.getGameBoard().setResourceDeckRetro(deck.getFirst().getBack().getColor());
+            }
+            else{
+                game.getGameBoard().setGoldDeckRetro(deck.getFirst().getBack().getColor());
+            }
             notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState(),user.getUsername()));
             user.sendMessage(new UpdateCardMessage(drawedCard));
         } catch (EmptyException | NotInTurnException | FullHandException e) {
@@ -247,6 +253,7 @@ public class Controller extends Observable {
 
     public void setColor(Connection user, Color color){
         this.game.getAvailableColors().remove(color);
+        getPlayerByClient(user).setPionColor(color);
         notifyAll(new ColorResponseMessage(user.getUsername(), color));
         playerInTurn = turnHandler.changeSetupPlayer();
         if (playerInTurn == null){
@@ -256,6 +263,14 @@ public class Controller extends Observable {
 
     private Player getPlayerByClient(Connection user){
         return this.connectedPlayers.get(user);
+    }
+
+    public void reconnectBackup(Connection user, Connection oldConnection){
+        Player player = connectedPlayers.get(oldConnection);
+        connectedPlayers.remove(oldConnection);
+        connectedPlayers.put(user,player);
+        user.sendMessage(new ReconnectionMessage(game.getGameBoard(),player));
+        player.setDisconnected(false);
     }
 
     public Game getGame(){

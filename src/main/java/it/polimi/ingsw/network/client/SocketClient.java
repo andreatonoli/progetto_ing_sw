@@ -25,8 +25,8 @@ public class SocketClient implements ClientInterface {
     private ObjectInputStream in;
     private ObjectOutputStream out;
     private boolean disconnected = false;
-    private final GameBean game;
-    private final PlayerBean player;
+    private GameBean game;
+    private PlayerBean player;
     private final ArrayList<PlayerBean> opponents;
     private final BlockingQueue<Message> messageQueue;
     private boolean processingAction;
@@ -110,6 +110,11 @@ public class SocketClient implements ClientInterface {
     public void update(Message message){
         String name;
         switch (message.getType()){
+            case RECONNECTION:
+                this.player = ((ReconnectionMessage) message).getPlayerBean();
+                this.game = ((ReconnectionMessage) message).getGameBean();
+                //TODO controllare
+                break;
             case USERNAME_REQUEST:
                 System.out.println("Username is already taken, please choose another: ");
                 this.username = this.view.askNickname();

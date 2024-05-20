@@ -24,10 +24,10 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
     private boolean processingAction;
     private static final String serverName = "GameServer";
     private String username;
-    private final GameBean game;
+    private GameBean game;
     private final Ui view;
     private VirtualServer server;
-    private final PlayerBean player;
+    private PlayerBean player;
     private final ArrayList<PlayerBean> opponents;
 
     public RMIClient(String username, String host, int port, Ui view) throws RemoteException{
@@ -96,7 +96,6 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
         }
     }
 
-    //TODO: ANDREAAAAAAAAAAAAAAAAAAAA aggiungi in queue con update
     @Override
     public void pingNetwork() throws RemoteException {
         try {
@@ -119,6 +118,11 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
     public void onMessage(Message message) {
         String name;
         switch (message.getType()){
+            case RECONNECTION:
+                this.player = ((ReconnectionMessage) message).getPlayerBean();
+                this.game = ((ReconnectionMessage) message).getGameBean();
+                //TODO controllare
+                break;
             case OPPONENTS:
                 ArrayList<String> playersName = ((OpponentsMessage) message).getPlayers();
                 for (String s : playersName){

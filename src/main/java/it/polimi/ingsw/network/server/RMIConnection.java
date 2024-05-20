@@ -42,22 +42,19 @@ public class RMIConnection extends Connection {
             public void run() {
                 ping.cancel();
                 catchPing.cancel();
-                //aggiungere quello che fa quando si scollega
-                lobby.getGame().getPlayerByUsername(username).setDisconnected(true);
-                setConnectionStatus(false);
-                //
+                onDisconnect();
             }
-        }, 10000, 10000);
+        }, 8000, 8000);
     }
+
     private void pingClient(){
         try {
             client.pingNetwork();
         } catch (RemoteException e) {
-            System.err.println(e.getMessage() + " " + "in pingClient/RMIConnection");
+            System.err.println(username + " got disconnected");
         }
     }
-    // se viene ricevuto un riscontro dal client entro 2000 allora riparte il timer
-    // altrimenti il client verrà considerato disconnesso
+
     public void catchPing(){
         catchPing.cancel();
         catchPing = new Timer();
@@ -66,20 +63,32 @@ public class RMIConnection extends Connection {
             public void run() {
                 ping.cancel();
                 catchPing.cancel();
-                //TODO: metti on disconnection
-                lobby.getGame().getPlayerByUsername(username).setDisconnected(true);
-                setConnectionStatus(false);
-                //aggiungere quello che fa quando si scollega
-                //io chiamerei tipo il controller per mandare una notifyall con il messaggio creato apposta
-                //e per far salvare i dati del player disconnesso(?????)
+                onDisconnect();
             }
-        }, 10000, 10000);
+        }, 8000, 8000);
     }
     //TODO che se fa se non responde er pupone?
+
+    public void onDisconnect(){
+        lobby.getGame().getPlayerByUsername(username).setDisconnected(true);
+        setConnectionStatus(false);
+        server.addDisconnectedPlayer(username);
+    }
+
+    @Override
+    public void reconnect(Connection oldConnection) {
+        this.lobby = oldConnection.getLobby();
+        this.lobby.reconnectBackup(this, oldConnection);
+    }
 
     @Override
     public void setLobby(Controller controller) {
         this.lobby = controller;
+    }
+
+    @Override
+    public Controller getLobby(){
+        return this.lobby;
     }
 
     @Override

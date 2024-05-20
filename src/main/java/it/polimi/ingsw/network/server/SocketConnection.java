@@ -106,9 +106,8 @@ public class SocketConnection extends Connection implements Runnable {
                 catchPing.cancel();
                 //TODO: controllare
                 onDisconnect();
-                System.out.println("non arriva mai");
             }
-        }, 10000, 10000);
+        }, 8000, 8000);
     }
 
     public synchronized void catchPing(){
@@ -119,25 +118,36 @@ public class SocketConnection extends Connection implements Runnable {
             public void run() {
                 ping.cancel();
                 catchPing.cancel();
-                System.out.println("arriva arriva");
                 //TODO: controllare
                 onDisconnect();
             }
-        }, 10000, 10000);
+        }, 8000, 8000);
     }
     //TODO che se fa se non responde er pupone?
 
     public void onDisconnect(){
         try {
-            System.out.println(username+" disconnesso");
+            System.err.println(username + " got disconnected");
             in.close();
             out.close();
             socket.close();
             lobby.getGame().getPlayerByUsername(username).setDisconnected(true);
             this.setConnectionStatus(false);
+            server.addDisconnectedPlayer(username);
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
+    }
+
+    @Override
+    public void reconnect(Connection oldConnection) {
+        this.lobby = oldConnection.getLobby();
+        this.lobby.reconnectBackup(this, oldConnection);
+    }
+
+    @Override
+    public Controller getLobby(){
+        return this.lobby;
     }
 
     @Override

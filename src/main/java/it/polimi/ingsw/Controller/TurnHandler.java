@@ -49,9 +49,12 @@ public class TurnHandler extends Observable {
                 @Override
                 public void run() {
                     game.endGameByDisconnection(player);
+                    ping.cancel();
                 }
             }, 60000, 2000);
-            while (game.getDisconnections()<2);
+            while (game.getDisconnections()<2){
+                //TODO fermare tutti i thread
+            }
             ping.cancel();
             this.changePlayerState(player);
         }

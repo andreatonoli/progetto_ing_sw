@@ -52,4 +52,7 @@ public class GameBean {
     public void setGoldDeckRetro(Color resourceGoldRetro) {
         this.resourceGoldRetro = resourceGoldRetro;
     }
+    public void setCommonAchievement(int i, Achievement card) {
+        this.commonAchievement[i] = card;
+    }
 }

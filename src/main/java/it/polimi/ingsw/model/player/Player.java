@@ -5,10 +5,7 @@ import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.GameBoard;
 import it.polimi.ingsw.model.card.Achievement;
 import it.polimi.ingsw.model.card.Card;
-import it.polimi.ingsw.model.enums.CornerEnum;
-import it.polimi.ingsw.model.enums.CornerState;
-import it.polimi.ingsw.model.enums.PlayerState;
-import it.polimi.ingsw.model.enums.Symbols;
+import it.polimi.ingsw.model.enums.*;
 import it.polimi.ingsw.model.exceptions.*;
 
 import java.io.Serializable;
@@ -24,6 +21,7 @@ public class Player implements Serializable {
      */
     private boolean firstToEnd;
     private boolean firstToPlay;
+    private Color pionColor;
     private Card[] cardInHand;
     private Achievement[] personalObj;
     private Achievement chosenObj;
@@ -66,6 +64,14 @@ public class Player implements Serializable {
             disconnections = game.getDisconnections()-1;
             game.setDisconnections(disconnections);
         }
+    }
+
+    public Color getPionColor() {
+        return pionColor;
+    }
+
+    public void setPionColor(Color pionColor) {
+        this.pionColor = pionColor;
     }
 
     /**
