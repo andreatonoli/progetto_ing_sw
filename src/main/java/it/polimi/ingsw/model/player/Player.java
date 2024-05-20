@@ -105,9 +105,9 @@ public class Player implements Serializable {
     public Achievement[] getPersonalObj() {
         return personalObj;
     }
-    //TODO: controllare se è giusto il commento
+
     /**
-     * getter to get the chat log
+     * gets the chat log
      * @return the chat log
      */
     public ArrayList<String> getChat() {
@@ -204,10 +204,6 @@ public class Player implements Serializable {
         else{
             chat.addFirst(sender.getUsername() + " : " + message);
         }
-        //Stampa per test
-        //for(int i = 0; i < chat.size(); i++){
-        //    System.out.println(chat.get(i));
-        //}
     }
 
     /**
@@ -254,7 +250,7 @@ public class Player implements Serializable {
      */
     public void removeFromHand(Card cardToRemove){
         for (int i = 0; i < this.cardInHand.length; i++) {
-            if (this.cardInHand[i].equals(cardToRemove)){
+            if (this.cardInHand[i] != null && this.cardInHand[i].equals(cardToRemove)){
                 this.cardInHand[i] = null;
                 break;
             }

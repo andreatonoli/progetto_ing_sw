@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.card.Card;
 import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.exceptions.*;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.network.client.PlayerBean;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.network.server.ActionMessage;
 import it.polimi.ingsw.network.server.Connection;
@@ -161,14 +162,8 @@ public class Controller extends Observable {
         try {
             Card drawedCard = this.getPlayerByClient(user).drawCard(deck);
             turnHandler.changePlayerState(this.getPlayerByClient(user));
+            notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState(), user.getUsername()));
             notifyAll(new UpdateDeckMessage(deck.getFirst().getBack().getColor(), isResource));
-            if (isResource) {
-                game.getGameBoard().setResourceDeckRetro(deck.getFirst().getBack().getColor());
-            }
-            else{
-                game.getGameBoard().setGoldDeckRetro(deck.getFirst().getBack().getColor());
-            }
-            notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState(),user.getUsername()));
             user.sendMessage(new UpdateCardMessage(drawedCard));
         } catch (EmptyException | NotInTurnException | FullHandException e) {
             user.sendMessage(new ErrorMessage(e.getMessage()));
@@ -206,12 +201,15 @@ public class Controller extends Observable {
     public void placeCard(Connection user, Card card, int[] coordinates) {
         try {
             Player p = this.getPlayerByClient(user);
+            if (!Arrays.stream(p.getCardInHand()).toList().contains(card)){
+                //TODO: Errore profondo
+            }
             //Place card and change player's state
             p.placeCard(card, coordinates);
             turnHandler.changePlayerState(p);
             //notifies all players the changed made by user
-            notifyAll(new ScoreUpdateMessage(p.getPoints(), p.getUsername()));
             notifyAll(new PlayerStateMessage(p.getPlayerState(), p.getUsername()));
+            notifyAll(new ScoreUpdateMessage(p.getPoints(), p.getUsername()));
             notifyAll(new PlayerBoardUpdateMessage(p.getPlayerBoard(), p.getUsername()));
         } catch (NotInTurnException | OccupiedCornerException | CostNotSatisfiedException |
                  AlreadyUsedPositionException | InvalidCoordinatesException e) {
@@ -232,6 +230,9 @@ public class Controller extends Observable {
     }
     public void placeStarterCard(Connection user, Card starterCard){
         Player player = getPlayerByClient(user);
+        if (!starterCard.equals(player.getPlayerBoard().getStarterCard())){
+            //TODO: errore profondo
+        }
         player.getPlayerBoard().setStarterCard(starterCard);
     }
 
@@ -242,6 +243,9 @@ public class Controller extends Observable {
      */
     public void chooseObj(Connection user, Achievement achievement){
         Player player = getPlayerByClient(user);
+        if (!achievement.equals(player.getPersonalObj()[0]) && !achievement.equals(player.getPersonalObj()[1])){
+            //TODO: errore profondo
+        }
         player.setChosenObj(achievement);
         chooseColor(user);
         notifyAll(new PlayerBoardUpdateMessage(player.getPlayerBoard(), user.getUsername()));
@@ -261,16 +265,36 @@ public class Controller extends Observable {
         }
     }
 
-    private Player getPlayerByClient(Connection user){
+    public Player getPlayerByClient(Connection user){
         return this.connectedPlayers.get(user);
     }
 
-    public void reconnectBackup(Connection user, Connection oldConnection){
-        Player player = connectedPlayers.get(oldConnection);
-        connectedPlayers.remove(oldConnection);
-        connectedPlayers.put(user,player);
-        user.sendMessage(new ReconnectionMessage(game.getGameBoard(),player));
-        player.setDisconnected(false);
+    /**
+     * Sends back the model state to the player who has reconnected
+     * Precondition: user.username is equal to one, and only one, username //TODO: Verificare che la precondizione sia sempre verificata
+     * @param user who reconnected
+     */
+    public void reconnectBackup(Connection user /*, Connection oldConnection*/){
+        //Player player = connectedPlayers.get(oldConnection);
+        //connectedPlayers.remove(oldConnection);
+        //connectedPlayers.put(user,player);
+        //user.sendMessage(new ReconnectionMessage(game.getGameBoard(),player));
+        //player.setDisconnected(false);
+        String username = user.getUsername();
+        Player reconnectedPlayer = null;
+        List<Player> opponents = new ArrayList<>();
+        for (Connection c : connectedPlayers.keySet()){
+            if (c.getUsername().equalsIgnoreCase(username)){
+                reconnectedPlayer = getPlayerByClient(c);
+                connectedPlayers.remove(c);
+                connectedPlayers.put(user, reconnectedPlayer);
+                reconnectedPlayer.setDisconnected(false);
+            }
+            else {
+                opponents.add(getPlayerByClient(c));
+            }
+        }
+        user.sendMessage(new ReconnectionMessage(game.getGameBoard(), reconnectedPlayer, opponents));
     }
 
     public Game getGame(){

@@ -10,6 +10,9 @@ import it.polimi.ingsw.network.server.Action;
 import it.polimi.ingsw.view.Ui;
 import it.polimi.ingsw.model.card.Card;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -20,6 +23,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, ClientInterface {
+    private InputStream fakeData;
     private final BlockingQueue<Message> messageQueue;
     private boolean processingAction;
     private static final String serverName = "GameServer";
@@ -28,7 +32,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
     private final Ui view;
     private VirtualServer server;
     private PlayerBean player;
-    private final ArrayList<PlayerBean> opponents;
+    private ArrayList<PlayerBean> opponents;
 
     public RMIClient(String username, String host, int port, Ui view) throws RemoteException{
         this.username = username;
@@ -121,7 +125,8 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
             case RECONNECTION:
                 this.player = ((ReconnectionMessage) message).getPlayerBean();
                 this.game = ((ReconnectionMessage) message).getGameBean();
-                //TODO controllare
+                //TODO: Controlla come viene passato il paramentro e cerca di passare una copia
+                this.opponents = ((ReconnectionMessage) message).getOpponents();
                 break;
             case OPPONENTS:
                 ArrayList<String> playersName = ((OpponentsMessage) message).getPlayers();
@@ -224,7 +229,8 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                 name = ((PlayerBoardUpdateMessage) message).getName();
                 if (name.equalsIgnoreCase(username)){
                     player.setBoard(playerBoard);
-                    this.view.printViewWithCommands(this.player, this.game, this.opponents);                }
+                    this.view.printViewWithCommands(this.player, this.game, this.opponents);
+                }
                 else{
                     for (PlayerBean p : opponents){
                         if (p.getUsername().equals(name)){

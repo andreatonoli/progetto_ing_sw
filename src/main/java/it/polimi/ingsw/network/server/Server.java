@@ -63,6 +63,8 @@ public class Server {
         disconnectedPlayers.add(username);
     }
     //TODO finire
+    //TODO: riscrivere meglio
+    //TODO: per ogni nuovo game salvarsi il suo id e usarlo per riconnettersi. se no bisogna cercare l'username per tutti i game iniziati
     public void reconnectPlayer(Connection client, String username){
         Connection oldConnection = this.client.replace(username, client);
         this.disconnectedPlayers.remove(username);

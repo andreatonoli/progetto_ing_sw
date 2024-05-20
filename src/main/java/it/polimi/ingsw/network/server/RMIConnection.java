@@ -78,7 +78,7 @@ public class RMIConnection extends Connection {
     @Override
     public void reconnect(Connection oldConnection) {
         this.lobby = oldConnection.getLobby();
-        this.lobby.reconnectBackup(this, oldConnection);
+        this.lobby.reconnectBackup(this/*, oldConnection*/);
     }
 
     @Override

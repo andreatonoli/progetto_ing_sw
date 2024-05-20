@@ -219,7 +219,6 @@ public class Game extends Observable implements Serializable {
             if (players.size()==this.lobbySize){
                 gameFull = true;
             }
-            notifyAll(new GenericMessage("Players in lobby: " + players.size() + "/" + lobbySize));
         }
     }
 
