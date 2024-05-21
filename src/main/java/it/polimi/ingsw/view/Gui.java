@@ -10,7 +10,6 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,8 +23,10 @@ public class Gui extends Application {
     public void start(Stage stage) throws Exception {
         stage.setTitle("Codex Naturalis");
         Button b1 = new Button("Play!");
-        b1.setFont(new Font(40));
-        b1.setPrefSize(150, 70);
+        b1.setId("my-button");
+        b1.getStylesheets().add(getClass().getResource("/ButtonStyle.css").toString());
+        //b1.setFont(new Font(40));
+        //b1.setPrefSize(150, 70);
         b1.setOnAction(event -> {
             stage.getScene().setRoot(this.lobbySelectionPage(stage));
         });
@@ -40,7 +41,56 @@ public class Gui extends Application {
         stage.show();
     }
 
-    public Pane loginPage(Stage stage) {
+    public Pane lobbySelectionPage(Stage stage) {
+
+        Label l1 = new Label("Lobbies: ");
+        l1.setFont(new Font(30));
+        ArrayList<Integer> lobbies = new ArrayList<>(List.of(0, 1));
+        GridPane gp = new GridPane();
+        gp.setAlignment(Pos.CENTER);
+        gp.add(l1, 0  ,0 );
+        ArrayList<Button> buttonList = new ArrayList<>();
+        for(int i = 0; i < lobbies.size(); i++){
+            buttonList.add(new Button("Join Lobby " + String.valueOf(i + 1)));
+        }
+        for(int i = 0; i < lobbies.size(); i++){
+            Label l2 = new Label("Lobby " + String.valueOf(i + 1));
+            l2.setFont(new Font(30));
+            gp.add(l2, 1, i);
+            Label l3  = new Label("Players: " + "numero di players della lobby " + String.valueOf(i + 1));
+            l3.setFont(new Font(30));
+            gp.add(l3, 2, i);
+            buttonList.get(i).setFont(new Font(20));
+            buttonList.get(i).setPrefSize(150, 30);
+            int finalI = i;
+            buttonList.get(i).setOnAction(event -> {
+                //aggiungere il player alla lobby i-esima
+                stage.getScene().setRoot(this.loginPage(stage, finalI));
+            });
+            gp.add(buttonList.get(i), 3, i);
+        }
+        gp.setHgap(30);
+        gp.setVgap(30);
+
+        Button b2 = new Button("Create a new lobby");
+        b2.setFont(new Font(30));
+        b2.setPrefSize(350, 50);
+        b2.setOnAction(event -> {
+            stage.getScene().setRoot(this.loginPage(stage, lobbies.size()));
+        });
+        HBox h2 = new HBox(b2);
+        h2.setAlignment(Pos.BOTTOM_CENTER);
+        h2.setPadding(new Insets(0,0,100,0));
+
+        BorderPane bp = new BorderPane();
+        bp.setCenter(gp);
+        bp.setBottom(h2);
+        BackgroundImage i = new BackgroundImage(new Image(getClass().getResourceAsStream("/manuscript_wallpaper.jpg")), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(1.0, 1.0, true, true, false, false));
+        bp.setBackground(new Background(i));
+        return bp;
+    }
+
+    public Pane loginPage(Stage stage, int selectedLobby) {
         Label l1 = new Label("Username:  ");
         l1.setFont(new Font(30));
         TextField text = new TextField();
@@ -72,7 +122,7 @@ public class Gui extends Application {
                 String username = text.getText();
                 //color
                 String color = cb.getSelectionModel().getSelectedItem();
-                //stage.getScene().setRoot();
+                stage.getScene().setRoot(this.waitingPage(stage, selectedLobby));
             }
         });
         Button b2 = new Button("Back");
@@ -110,49 +160,34 @@ public class Gui extends Application {
         return bp;
     }
 
-    public Pane lobbySelectionPage(Stage stage) {
-        Button b1 = new Button("Next");
-        b1.setFont(new Font(20));
-        b1.setPrefSize(200,40);
-        b1.setOnAction(event -> {
-            stage.getScene().setRoot(this.loginPage(stage));
+    public Pane waitingPage(Stage stage, int lobby){
+
+        Button b2 = new Button("Back");
+        b2.setFont(new Font(20));
+        b2.setPrefSize(200,40);
+        b2.setOnAction(event -> {
+            stage.getScene().setRoot(this.loginPage(stage, lobby));
         });
-        HBox h1 = new HBox(b1);
+
+        //back button
+        HBox h1 = new HBox(b2);
         h1.setAlignment(Pos.TOP_LEFT);
         h1.setPadding(new Insets(20,0,0,20));
 
-        Label l1 = new Label("Lobbies: ");
-        l1.setFont(new Font(30));
-        ArrayList<Integer> lobbies = new ArrayList<>(List.of(0, 1));
-        GridPane gp = new GridPane();
-        gp.setAlignment(Pos.CENTER);
-        gp.add(l1, 0  ,0 );
-        for(int i = 0; i < lobbies.size(); i++){
-            Label l2 = new Label("Lobby " + String.valueOf(i + 1));
-            l2.setFont(new Font(30));
-            gp.add(l2, 1, i);
-            Label l3  = new Label("Players: " + "numero di players della lobby " + String.valueOf(i + 1));
-            l3.setFont(new Font(30));
-            gp.add(l3, 2, i);
-            Button b = new Button("Join Lobby " + String.valueOf(i + 1));
-            b.setFont(new Font(20));
-            b.setPrefSize(150, 30);
-            gp.add(b, 3, i);
-        }
-        gp.setHgap(30);
-        gp.setVgap(30);
+        Label l1 = new Label("Lobby " + String.valueOf(lobby + 1));
+        l1.setFont(new Font(45));
+        Label l2 = new Label("Players in lobby: " + "numero di player della lobby " + String.valueOf(lobby + 1));
+        l2.setFont(new Font(30));
+        Label l3 = new Label("Waiting for other players...");
+        l3.setFont(new Font(30));
 
-        Button b2 = new Button("Create a new lobby");
-        b2.setFont(new Font(30));
-        b2.setPrefSize(350, 50);
-        HBox h2 = new HBox(b2);
-        h2.setAlignment(Pos.BOTTOM_CENTER);
-        h2.setPadding(new Insets(0,0,100,0));
+        VBox v1 = new VBox(l1, l2, l3);
+        v1.setAlignment(Pos.CENTER);
+        v1.setSpacing(30);
 
         BorderPane bp = new BorderPane();
         bp.setTop(h1);
-        bp.setCenter(gp);
-        bp.setBottom(h2);
+        bp.setCenter(v1);
         BackgroundImage i = new BackgroundImage(new Image(getClass().getResourceAsStream("/manuscript_wallpaper.jpg")), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(1.0, 1.0, true, true, false, false));
         bp.setBackground(new Background(i));
         return bp;
