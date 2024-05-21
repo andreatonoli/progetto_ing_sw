@@ -98,49 +98,44 @@ public class Game extends Observable implements Serializable {
     }
 
     public void endGame() throws GameNotStartedException {
-        try{
-            if(!this.gameState.equals(GameState.IN_GAME)){
-                throw new GameNotStartedException();
+        if(!this.gameState.equals(GameState.IN_GAME)){
+            throw new GameNotStartedException();
+        }
+        this.gameState = GameState.END;
+        notifyAll(new GenericMessage("game ended, counting objective points..."));
+        int endPoints;
+        for (Player p: players){
+            endPoints = p.getPoints();
+            p.getChosenObj().calcPoints(p);
+            if (p.getPoints()>endPoints){
+                p.addObjCompleted();
+                endPoints=p.getPoints();
             }
-            this.gameState = GameState.END;
-            notifyAll(new GenericMessage("game is ended, counting objective points..."));
-            int endPoints;
-            for (Player p: players){
-                endPoints = p.getPoints();
-                p.getChosenObj().calcPoints(p);
+            for (Achievement a : gameBoard.getCommonAchievement()){
+                a.calcPoints(p);
                 if (p.getPoints()>endPoints){
                     p.addObjCompleted();
-                    endPoints=p.getPoints();
-                }
-                for (Achievement a : gameBoard.getCommonAchievement()){
-                    a.calcPoints(p);
-                    if (p.getPoints()>endPoints){
-                        p.addObjCompleted();
-                    }
                 }
             }
-            /** the winner is chosen by the number of points */
-            int max = 0;
-            ArrayList<Player> winners = new ArrayList<>();
-            for (Player p: players){
-                if (p.getPoints() == max && p.getObjCompleted()>winners.getFirst().getObjCompleted()) {
-                    winners = new ArrayList<>();
-                    winners.add(p);
-                }
-                else if (p.getPoints() == max && p.getObjCompleted()==winners.getFirst().getObjCompleted()){
-                    winners.add(p);
-                }
-                else if (p.getPoints() > max){
-                    winners = new ArrayList<>();
-                    winners.add(p);
-                    max = p.getPoints();
-                }
+        }
+        /** the winner is chosen by the number of points */
+        int max = 0;
+        ArrayList<Player> winners = new ArrayList<>();
+        for (Player p: players){
+            if (p.getPoints() == max && p.getObjCompleted()>winners.getFirst().getObjCompleted()) {
+                winners = new ArrayList<>();
+                winners.add(p);
             }
-            notifyAll(new WinnerMessage(winners));
+            else if (p.getPoints() == max && p.getObjCompleted()==winners.getFirst().getObjCompleted()){
+                winners.add(p);
+            }
+            else if (p.getPoints() > max){
+                winners = new ArrayList<>();
+                winners.add(p);
+                max = p.getPoints();
+            }
         }
-        catch(GameNotStartedException e){
-            System.err.println("Game not started");
-        }
+        notifyAll(new WinnerMessage(winners));
     }
 
     public void endGameByDisconnection(Player lastManStanding){
@@ -153,7 +148,7 @@ public class Game extends Observable implements Serializable {
     private void setFirstPlayer()
     {
         firstPlayer = players.getFirst();
-        firstPlayer.isFirstToPlay(firstPlayer.getUsername());
+        firstPlayer.setFirstToPlay();
         firstPlayer.setPlayerState(PlayerState.PLAY_CARD);
         willPlay = 0;
     }

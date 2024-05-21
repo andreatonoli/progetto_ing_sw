@@ -32,6 +32,7 @@ public class Controller extends Observable {
     private final BlockingQueue<ActionMessage> actionQueue;
     private String playerInTurn;
     private boolean setupFinished = false;
+    private boolean endingCycle = false;
     private boolean processingAction = false;
 
     //TODO: mettere controllo lato server per controllare che client non scammi
@@ -161,6 +162,11 @@ public class Controller extends Observable {
         }
         try {
             Card drawedCard = this.getPlayerByClient(user).drawCard(deck);
+            if (game.getGameBoard().decksAreEmpty() && !endingCycle){
+                endingCycle = true;
+                turnHandler.startEnd();
+                notifyAll(new GenericMessage("both decks are empty, at the end of the current round will start the last one"));
+            }
             turnHandler.changePlayerState(this.getPlayerByClient(user));
             notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState(), user.getUsername()));
             notifyAll(new UpdateDeckMessage(deck.getFirst().getBack().getColor(), isResource));
@@ -206,6 +212,11 @@ public class Controller extends Observable {
             }
             //Place card and change player's state
             p.placeCard(card, coordinates);
+            if (p.isFirstToEnd() && !endingCycle){
+                endingCycle = true;
+                turnHandler.startEnd();
+                notifyAll(new GenericMessage(p.getUsername() + " reached 20 points, at the end of the current round will start the last one"));
+            }
             turnHandler.changePlayerState(p);
             //notifies all players the changed made by user
             notifyAll(new PlayerStateMessage(p.getPlayerState(), p.getUsername()));

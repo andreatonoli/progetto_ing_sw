@@ -122,6 +122,9 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
     public void onMessage(Message message) {
         String name;
         switch (message.getType()){
+            case DECLARE_WINNER:
+                ((WinnerMessage) message).getWinners();
+                //TODO creare metodo nella tui
             case RECONNECTION:
                 this.player = ((ReconnectionMessage) message).getPlayerBean();
                 this.game = ((ReconnectionMessage) message).getGameBean();

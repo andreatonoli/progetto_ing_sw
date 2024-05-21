@@ -110,6 +110,10 @@ public class SocketClient implements ClientInterface {
     public void update(Message message){
         String name;
         switch (message.getType()){
+            case DECLARE_WINNER:
+                ((WinnerMessage) message).getWinners();
+                //TODO creare metodo nella tui
+                break;
             case RECONNECTION:
                 this.player = ((ReconnectionMessage) message).getPlayerBean();
                 this.game = ((ReconnectionMessage) message).getGameBean();

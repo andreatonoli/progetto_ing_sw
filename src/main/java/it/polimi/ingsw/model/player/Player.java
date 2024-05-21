@@ -47,6 +47,7 @@ public class Player implements Serializable {
         this.game = game;
         this.playerBoard = new PlayerBoard();
         this.disconnected = false;
+        this.firstToEnd = false;
     }
 
     public boolean isDisconnected() {
@@ -147,10 +148,10 @@ public class Player implements Serializable {
 
     /**
      * adder to add points to the score
+     *
      * @param pointsToAdd are the points that will be added
-     * @return the updated player score
      */
-    public int addPoints(int pointsToAdd){
+    public void addPoints(int pointsToAdd){
         this.points = this.points + pointsToAdd;
         if (this.points >= 20){
             firstToEnd = true;
@@ -158,15 +159,21 @@ public class Player implements Serializable {
         if (this.points > 29){
             this.points = 29;
         }
-        return this.points;
+    }
+
+    public boolean isFirstToEnd(){
+        return firstToEnd;
     }
 
     /**
      * set the boolean value used to know who is the starting player
-     * @param username is the username of the first player
      */
-    public void isFirstToPlay(String username){
-        firstToPlay = this.username.equals(username);
+    public void setFirstToPlay(){
+        firstToPlay = true;
+    }
+
+    public boolean isFirstToPlay(){
+        return firstToPlay;
     }
 
     /**

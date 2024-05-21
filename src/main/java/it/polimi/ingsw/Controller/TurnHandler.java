@@ -15,16 +15,25 @@ public class TurnHandler extends Observable {
      * game reference
      */
     private final Game game;
-    private int i = 0;
+    private int j = 0;
+    private boolean endingCycle = false;
+    private int endCountDown;
 
     public TurnHandler(Game game){
         this.game = game;
     }
 
+    public void startEnd(){
+        endingCycle = true;
+        endCountDown = 1;
+    }
+
     public void changePlayerState(Player player){
         if (game.getLobbySize()-2 >= game.getDisconnections()) {
             int i = (player.getPlayerState().ordinal() + 1) % 3;
-
+            if (endingCycle && endCountDown==0 && PlayerState.values()[i].equals(PlayerState.DRAW_CARD)){
+                i++;
+            }
             if (player.isDisconnected() && PlayerState.values()[i].equals(PlayerState.DRAW_CARD)) {
                 try {
                     player.drawCard(game.getGameBoard().getResourceDeck());
@@ -37,6 +46,19 @@ public class TurnHandler extends Observable {
             }
             if (i == 2) {
                 Player playerInTurn = game.setPlayerInTurn();
+                if (endingCycle && playerInTurn.isFirstToPlay()){
+                    if (endCountDown > 0){
+                        endCountDown--;
+                    }
+                    else{
+                        playerInTurn.setPlayerState(PlayerState.NOT_IN_TURN);
+                        try {
+                            game.endGame();
+                        } catch (GameNotStartedException e) {
+                            System.out.println(e.getMessage());
+                        }
+                    }
+                }
                 notifyAll(new PlayerStateMessage(playerInTurn.getPlayerState(), playerInTurn.getUsername()));
                 notifyAll(new PlayerBoardUpdateMessage(playerInTurn.getPlayerBoard(), playerInTurn.getUsername()));
             }
@@ -61,10 +83,10 @@ public class TurnHandler extends Observable {
     }
 
     public String changeSetupPlayer(){
-        i++;
-        if (i == game.getLobbySize()){
+        j++;
+        if (j == game.getLobbySize()){
             return null;
         }
-        return game.getPlayers().get(i).getUsername();
+        return game.getPlayers().get(j).getUsername();
     }
 }

@@ -21,6 +21,7 @@ public class GameBoard implements Serializable {
     private LinkedList<Card> goldDeck;
     private LinkedList<Card> resourceDeck;
     private LinkedList <Card> starterDeck;
+    private int endedDecks;
     private Card[] commonResource;
     private Card[] commonGold;
     private Achievement[] commonAchievement;
@@ -33,6 +34,7 @@ public class GameBoard implements Serializable {
      */
     public GameBoard(Game game) {
         this.game = game;
+        this.endedDecks = 0;
         try {
             Corner[] arrayCorner;
             ArrayList<Symbols> items;
@@ -191,7 +193,20 @@ public class GameBoard implements Serializable {
     public Card drawCard(LinkedList<Card> deck){
         Card drawedCard = deck.getFirst();
         deck.removeFirst();
+        if (deck.equals(goldDeck) || deck.equals(resourceDeck)){
+            if (deck.isEmpty()){
+                endedDecks++;
+            }
+        }
         return drawedCard;
+    }
+
+    /**
+     * used to check if resource deck and gold deck are empty
+     * @return true if the decks are both empty
+     */
+    public boolean decksAreEmpty(){
+        return endedDecks >= 2;
     }
 
     /**
