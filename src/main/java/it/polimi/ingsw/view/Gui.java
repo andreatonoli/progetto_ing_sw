@@ -27,7 +27,7 @@ public class Gui extends Application {
         b1.setFont(new Font(40));
         b1.setPrefSize(150, 70);
         b1.setOnAction(event -> {
-            stage.getScene().setRoot(this.loginPage(stage));
+            stage.getScene().setRoot(this.lobbySelectionPage(stage));
         });
         HBox h1 = new HBox(b1);
         h1.setAlignment(Pos.CENTER);
@@ -72,34 +72,46 @@ public class Gui extends Application {
                 String username = text.getText();
                 //color
                 String color = cb.getSelectionModel().getSelectedItem();
-                stage.getScene().setRoot(this.lobbySelectionPage(stage));
+                //stage.getScene().setRoot();
             }
         });
+        Button b2 = new Button("Back");
+        b2.setFont(new Font(20));
+        b2.setPrefSize(200,40);
+        b2.setOnAction(event -> {
+            stage.getScene().setRoot(this.lobbySelectionPage(stage));
+        });
+
+        //back button
+        HBox h1 = new HBox(b2);
+        h1.setAlignment(Pos.TOP_LEFT);
+        h1.setPadding(new Insets(20,0,0,20));
 
         //username and color
-        HBox h1 = new HBox(l1,text);
-        h1.setAlignment(Pos.CENTER);
-        HBox h2 = new HBox(l2,cb);
+        HBox h2 = new HBox(l1,text);
         h2.setAlignment(Pos.CENTER);
-        VBox v1 = new VBox(h1 ,h2);
+        HBox h3 = new HBox(l2,cb);
+        h3.setAlignment(Pos.CENTER);
+        VBox v1 = new VBox(h2 ,h3);
         v1.setAlignment(Pos.CENTER);
         v1.setSpacing(30);
 
         //next button
-        HBox h3 = new HBox(b1);
-        h3.setAlignment(Pos.BOTTOM_RIGHT);
-        h3.setPadding(new Insets(0,20,20,0));
+        HBox h4 = new HBox(b1);
+        h4.setAlignment(Pos.BOTTOM_RIGHT);
+        h4.setPadding(new Insets(0,20,20,0));
 
         BorderPane bp = new BorderPane();
+        bp.setTop(h1);
         bp.setCenter(v1);
-        bp.setBottom(h3);
+        bp.setBottom(h4);
         BackgroundImage i = new BackgroundImage(new Image(getClass().getResourceAsStream("/manuscript_wallpaper.jpg")), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(1.0, 1.0, true, true, false, false));
         bp.setBackground(new Background(i));
         return bp;
     }
 
     public Pane lobbySelectionPage(Stage stage) {
-        Button b1 = new Button("Back");
+        Button b1 = new Button("Next");
         b1.setFont(new Font(20));
         b1.setPrefSize(200,40);
         b1.setOnAction(event -> {
