@@ -16,7 +16,6 @@ import it.polimi.ingsw.model.player.Player;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 public class PlaceTest{
-    //TODO da sistemare il place (guardare vecchie versioni di test da git)
     private Game game;
     @Test
     @DisplayName("Place a card")
@@ -29,7 +28,7 @@ public class PlaceTest{
         player.getPlayerBoard().setStarterCard(s);
         assertEquals(1, player.getPlayerBoard().getSymbolCount(Symbols.ANIMAL));
         assertEquals(1, player.getPlayerBoard().getSymbolCount(Symbols.FUNGI));
-        assertDoesNotThrow(()-> player.placeCard(a, new int[] {0,0}));
+        assertDoesNotThrow(()-> player.placeCard(a, new int[] {1,1}));
         assertTrue(player.getPlayerBoard().getCardPosition().containsValue(a));
         assertEquals(a, player.getPlayerBoard().getCard(new int[]{1,1}));
         assertEquals(2, player.getPlayerBoard().getPositionCardKeys().size()); //true if both the card were successfully added to the player board
@@ -49,7 +48,7 @@ public class PlaceTest{
         player.getPlayerBoard().setStarterCard(s);
         int Bfungi = player.getPlayerBoard().getSymbolCount(Symbols.FUNGI);
         int Banimal = player.getPlayerBoard().getSymbolCount(Symbols.ANIMAL);
-        assertThrows(NotInTurnException.class, ()-> player.placeCard(a, new int[]{0,0}));
+        assertThrows(NotInTurnException.class, ()-> player.placeCard(a, new int[]{1,1}));
         //true only if nothing had changed (so the card wasn't placed)
         assertFalse(player.getPlayerBoard().getCardPosition().containsValue(a));
         assertEquals(1, player.getPlayerBoard().getPositionCardKeys().size());
@@ -57,7 +56,7 @@ public class PlaceTest{
         assertEquals(Banimal, player.getPlayerBoard().getSymbolCount(Symbols.ANIMAL));
         assertEquals(0, player.getPoints());
         player.setPlayerState(PlayerState.DRAW_CARD);
-        assertThrows(NotInTurnException.class, ()-> player.placeCard(a, new int[]{0,0}));
+        assertThrows(NotInTurnException.class, ()-> player.placeCard(a, new int[]{1,1}));
         //true only if nothing had changed (so the card wasn't placed)
         assertFalse(player.getPlayerBoard().getCardPosition().containsValue(a));
         assertEquals(1, player.getPlayerBoard().getPositionCardKeys().size());
@@ -76,8 +75,8 @@ public class PlaceTest{
         GoldCard b = new GoldCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 3, Condition.NOTHING, 17, new Integer[]{1, 0, 0, 0}, null);
         player.setPlayerState(PlayerState.PLAY_CARD);
         player.getPlayerBoard().setStarterCard(s);
-        assertDoesNotThrow(()-> player.placeCard(a, new int[]{0,0}));
-        //Check if the placement was correctly done
+        assertDoesNotThrow(()-> player.placeCard(a, new int[]{1,1}));
+        //Check if card was correctly placed
         assertEquals(a, player.getPlayerBoard().getCard(new int[]{1,1}));
         assertEquals(2, player.getPlayerBoard().getPositionCardKeys().size());
         assertEquals(0, player.getPoints());
@@ -87,7 +86,7 @@ public class PlaceTest{
         int Binsect = player.getPlayerBoard().getSymbolCount(Symbols.INSECT);
         int Bpoint = player.getPoints();
         //a's BR corner is hidden, so we cannot place the b card on that spot
-        assertThrows(OccupiedCornerException.class, ()-> player.placeCard(b, new int[]{1,1}));
+        assertThrows(OccupiedCornerException.class, ()-> player.placeCard(b, new int[]{2,0}));
         //Check if the card was not placed => nothing changed
         assertFalse(player.getPlayerBoard().getCardPosition().containsValue(b));
         assertNull(player.getPlayerBoard().getCard(new int[]{2,0}));

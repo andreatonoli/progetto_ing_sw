@@ -12,7 +12,11 @@ import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Scanner;
 import java.util.*;
-
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.atomic.AtomicReference;
+//TODO: rendere unico lo stream di output
+//TODO: separare il metodo clear aggiungendo flush e mettendo la string nella enum di ColorCli
 public class Tui implements Ui{
     private ClientInterface client;
     private static final int ROW = 3;
@@ -20,14 +24,29 @@ public class Tui implements Ui{
     private static final int PLAYERBOARD_DIM = 11;
     private static final int SCOREBOARD_ROW = 9;
     private static final int SCOREBOARD_COLUMN = 5;
-    private String padding = "    ";
     private String error = "";
     private final Scanner scanner;
     private final PrintStream out;
+    private Thread inputThread;
 
     public Tui(){
         scanner = new Scanner(System.in);
         out = System.out;
+    }
+
+    public String readLine(){
+        FutureTask<String> futureTask = new FutureTask<>(new InputReader());
+        inputThread = new Thread(futureTask);
+        inputThread.start();
+        String userInput = null;
+        try{
+            userInput = futureTask.get();
+        } catch (ExecutionException | InterruptedException e) {
+            System.out.println(e.getMessage());
+            futureTask.cancel(true);
+            Thread.currentThread().interrupt();
+        }
+        return userInput;
     }
 
     /**
@@ -419,6 +438,7 @@ public class Tui implements Ui{
         String[][][][] matPlayerBoard = new String[3][2][PLAYERBOARD_DIM][PLAYERBOARD_DIM];
         int[] coord;
 
+        String padding = "    ";
         for(int i = 0; i < PLAYERBOARD_DIM; i++){
             for(int j = 0; j < PLAYERBOARD_DIM; j++){
                 if(i == 0){
@@ -968,11 +988,11 @@ public class Tui implements Ui{
             System.out.println("Press [4] to draw a card");
         }
         System.out.println("Press [c] anytime to send a message");
-        String choice = input.nextLine();
-        clearConsole();
-        this.printView(player, game, players);
+        String choice = readLine();
+        //clearConsole();
+        //this.printView(player, game, players);
         switch (choice) {
-            case "1" -> {
+            case "1"-> {
                 System.out.println("Which card do you want to display? [1] [2] [3]");
                 String a = input.next();
                 clearConsole();
@@ -1563,7 +1583,7 @@ public class Tui implements Ui{
         //catch (final Exception e){
         //    System.out.println("error");
         //}
-        System.out.println("\033[H\033[2J");
+        System.out.println(TuiColors.getColor(TuiColors.ANSI_CLEAR));
         System.out.flush();
     }
 

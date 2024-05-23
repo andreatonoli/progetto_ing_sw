@@ -431,6 +431,10 @@ public class Player implements Serializable {
         int[] coord = new int[2];
         coord[0] = coordinates[0] + cornerPosition.getX();
         coord[1] = coordinates[1] + cornerPosition.getY();
+        //Check if that position is available
+        if (this.playerBoard.getCard(coordinates) != null){
+            throw new AlreadyUsedPositionException();
+        }
         //check if the player placing the card is the player in turn
         if (this.playerState.equals(PlayerState.NOT_IN_TURN) || this.playerState.equals(PlayerState.DRAW_CARD)){
             throw new NotInTurnException();
@@ -446,10 +450,6 @@ public class Player implements Serializable {
         //Calculates the coveredCard position
         coord[0] = coord[0]-cornerPosition.getX();
         coord[1] = coord[1]-cornerPosition.getY();
-        //Check if that position is available
-        if (this.playerBoard.getCard(coord) != null){
-            throw new AlreadyUsedPositionException();
-        }
         //for each corner of the placed card checks if the corner below is visible
         for (CornerEnum c: CornerEnum.values()){
             if(!cardToBePlaced.getCornerSymbol(c).equals(Symbols.NOCORNER)){

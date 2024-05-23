@@ -8,7 +8,7 @@
   <packaging>jar</packaging>
 
   <name>untitled</name>
-  <url>http://maven.apache.org</url>
+  <url>https://maven.apache.org</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -16,7 +16,7 @@
     <maven.compiler.target>21</maven.compiler.target>
   </properties>
   <!-- Controlla esercitazione GUI per usare resources -->
-
+  <!-- TODO: CREA UN JAR PER SERVER E UNO PER CLIENT-->
   <dependencies>
     <dependency>
       <groupId>org.openjfx</groupId>
@@ -64,21 +64,51 @@
 
   <build>
     <plugins>
+      <!-- Plugin per creare i file JAR -->
       <plugin>
-        <!-- Build an executable JAR -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <version>3.3.0</version>
-        <configuration>
-          <archive>
-            <manifest>
-              <addClasspath>true</addClasspath>
-              <classpathPrefix>lib/</classpathPrefix>
-              <mainClass>it.polimi.ingsw.CodexNaturalisLauncher</mainClass>
-            </manifest>
-          </archive>
-        </configuration>
+        <executions>
+          <!-- Creazione del JAR per ClientLauncher -->
+          <execution>
+            <id>CodexClient-jar</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <configuration>
+              <classifier>client</classifier>
+              <archive>
+                <manifest>
+                  <addClasspath>true</addClasspath>
+                  <classpathPrefix>lib/</classpathPrefix>
+                  <mainClass>it.polimi.ingsw.ClientLauncher</mainClass>
+                </manifest>
+              </archive>
+            </configuration>
+          </execution>
+          <!-- Creazione del JAR per ServerLauncher -->
+          <execution>
+            <id>CodexServer-jar</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <configuration>
+              <classifier>server</classifier>
+              <archive>
+                <manifest>
+                  <addClasspath>true</addClasspath>
+                  <classpathPrefix>lib/</classpathPrefix>
+                  <mainClass>it.polimi.ingsw.ServerLauncher</mainClass>
+                </manifest>
+              </archive>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
+      <!-- Plugin per copiare le dipendenze -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
@@ -96,12 +126,13 @@
           </execution>
         </executions>
       </plugin>
+      <!-- Plugin JavaFX -->
       <plugin>
         <groupId>org.openjfx</groupId>
         <artifactId>javafx-maven-plugin</artifactId>
         <version>0.0.8</version>
         <configuration>
-          <mainClass>it.polimi.ingsw.CodexNaturalisLauncher</mainClass>
+          <mainClass>it.polimi.ingsw.ClientLauncher</mainClass>
         </configuration>
       </plugin>
     </plugins>
