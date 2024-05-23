@@ -146,12 +146,7 @@ public class SocketConnection extends Connection implements Runnable {
     }
 
     @Override
-    public void sendPublicMessage(String message) {
-
-    }
-
-    @Override
-    public void sendPrivateMessage(String message, Connection receiver) {
+    public void sendChatMessage(String message, Connection receiver) {
 
     }
 

@@ -65,9 +65,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
     public int setLobbySize() throws RemoteException{
         return this.view.setLobbySize();
     }
-    public void flipCard(Card card) throws RemoteException{
-        this.server.flipCard(card, username);
-    }
+
     public void placeStarterCard(Card card) throws RemoteException{
         this.server.placeStarterCard(card, username);
     }
@@ -290,7 +288,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
     @Override
     public void sendChatMessage(String message) {
         try {
-            server.sendPublicMessage(message, username);
+            server.sendChatMessage(message, username, null);
         } catch (RemoteException e) {
             System.out.println(e.getMessage() + " sendChatMessage");
         }
@@ -298,7 +296,11 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
 
     @Override
     public void sendChatMessage(String receiver, String message) {
-        //TODO
+        try {
+            server.sendChatMessage(message, username, receiver);
+        } catch (RemoteException e) {
+            System.out.println(e.getMessage() + " sendChatMessage");
+        }
     }
 
     @Override

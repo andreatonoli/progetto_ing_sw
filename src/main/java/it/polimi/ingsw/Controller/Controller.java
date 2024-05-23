@@ -278,13 +278,14 @@ public class Controller extends Observable {
         }
     }
 
-    public void sendPublicMessage(Connection user, String message){
-        getPlayerByClient(user).sendMessage(message);
-        notifyAll(new ChatMessage(getPlayerByClient(user).getChat()));
-    }
-
-    public void sendPrivateMessage(){
-        //TODO
+    public void sendChatMessage(Connection sender, Connection receiver, String message){
+        if (receiver == null){
+            getPlayerByClient(sender).sendMessage(message);
+            notifyAll(new ChatMessage(getPlayerByClient(sender).getChat()));
+        }
+        else{
+            getPlayerByClient(sender).sendMessage(getPlayerByClient(receiver), message);
+        }
     }
 
     public Player getPlayerByClient(Connection user){

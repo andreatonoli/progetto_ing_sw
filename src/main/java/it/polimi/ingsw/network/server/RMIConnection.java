@@ -79,7 +79,7 @@ public class RMIConnection extends Connection {
     @Override
     public void reconnect(Connection oldConnection) {
         this.lobby = oldConnection.getLobby();
-        this.lobby.reconnectBackup(this/*, oldConnection*/);
+        this.lobby.addAction(new ActionMessage(this, () -> lobby.reconnectBackup(this/*, oldConnection*/)));
     }
 
     @Override
@@ -150,12 +150,8 @@ public class RMIConnection extends Connection {
 
     }
     @Override
-    public void sendPublicMessage(String message) {
-        this.lobby.addAction(new ActionMessage(this, () -> lobby.sendPublicMessage(this, message)));
-    }
-    @Override
-    public void sendPrivateMessage(String message, Connection receiver) {
-        //TODO
+    public void sendChatMessage(String message, Connection receiver) {
+        this.lobby.addAction(new ActionMessage(this, () -> lobby.sendChatMessage(this, receiver, message)));
     }
     @Override
     public void update(Message message) {
