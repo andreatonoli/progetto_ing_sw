@@ -1,17 +1,25 @@
 package it.polimi.ingsw.view;
 
+import it.polimi.ingsw.model.card.Card;
+import it.polimi.ingsw.model.card.CardBack;
+import it.polimi.ingsw.model.card.Corner;
+import it.polimi.ingsw.model.card.StarterCard;
+import it.polimi.ingsw.model.enums.Color;
+import it.polimi.ingsw.model.enums.Symbols;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Gui extends Application {
 
@@ -21,14 +29,17 @@ public class Gui extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        StarterCard s = new StarterCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}, 1, new CardBack(new ArrayList<>(List.of(Symbols.FUNGI, Symbols.PLANT, Symbols.ANIMAL)), Color.WHITE, new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY)}));
+
         stage.setTitle("Codex Naturalis");
         Button b1 = new Button("Play!");
-        b1.setId("my-button");
-        b1.getStylesheets().add(getClass().getResource("/ButtonStyle.css").toString());
-        //b1.setFont(new Font(40));
-        //b1.setPrefSize(150, 70);
+        //b1.setId("my-button");
+        //b1.getStylesheets().add(getClass().getResource("/ButtonStyle.css").toString());
+        b1.setFont(new Font(40));
+        b1.setPrefSize(150, 70);
         b1.setOnAction(event -> {
-            stage.getScene().setRoot(this.lobbySelectionPage(stage));
+            //stage.getScene().setRoot(this.lobbySelectionPage(stage));
+            stage.getScene().setRoot(this.starterFlip(stage, s, true));
         });
         HBox h1 = new HBox(b1);
         h1.setAlignment(Pos.CENTER);
@@ -189,6 +200,56 @@ public class Gui extends Application {
         bp.setTop(h1);
         bp.setCenter(v1);
         BackgroundImage i = new BackgroundImage(new Image(getClass().getResourceAsStream("/manuscript_wallpaper.jpg")), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(1.0, 1.0, true, true, false, false));
+        bp.setBackground(new Background(i));
+        return bp;
+    }
+
+    public Pane starterFlip(Stage stage, Card starter, boolean side){
+
+        BorderPane bp = new BorderPane();
+
+        Label l1 = new Label("Your starter card:");
+        l1.setFont(new Font(45));
+        Label l2 = new Label("Click the card to flip");
+        l2.setFont(new Font(35));
+        VBox v1 = new VBox(l1, l2);
+        v1.setAlignment(Pos.TOP_CENTER);
+        v1.setPadding(new Insets(100,0,0,0));
+
+        int number = starter.getCardNumber() + 80;
+        Image front = new Image(getClass().getResourceAsStream("/cards/fronts/0" + String.valueOf(number) + ".png"));
+        ImageView frontView = new ImageView(front);
+        frontView.setFitHeight(42*6);
+        frontView.setFitWidth(63*6);
+        Image back = new Image(getClass().getResourceAsStream("/cards/backs/0" + String.valueOf(number) + ".png"));
+        ImageView backView = new ImageView(back);
+        backView.setFitHeight(42*6);
+        backView.setFitWidth(63*6);
+        Button b1 = new Button();
+        b1.setPrefSize((63*6), (42*6));
+        b1.setStyle(
+                "-fx-background-color: transparent;" +
+                "-fx-border-color: transparent"
+        );
+        b1.setOnAction(event -> {
+            if(side){
+                stage.getScene().setRoot(this.starterFlip(stage, starter, false));
+            }
+            else{
+                stage.getScene().setRoot(this.starterFlip(stage, starter, true));
+            }
+        });
+
+
+        bp.setTop(v1);
+        if(side){
+            b1.setGraphic(frontView);
+        }
+        else{
+            b1.setGraphic(backView);
+        }
+        bp.setCenter(b1);
+        BackgroundImage i = new BackgroundImage(new Image(getClass().getResourceAsStream("/wood_background.jpg")), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(1.0, 1.0, true, true, false, false));
         bp.setBackground(new Background(i));
         return bp;
     }
