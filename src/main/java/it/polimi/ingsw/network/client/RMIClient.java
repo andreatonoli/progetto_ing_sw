@@ -122,9 +122,14 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
     public void onMessage(Message message) {
         String name;
         switch (message.getType()){
+            case CHAT:
+                player.setChat(((ChatMessage) message).getChat());
+                this.view.printViewWithCommands(this.player, this.game, this.opponents);
+                break;
             case DECLARE_WINNER:
                 ((WinnerMessage) message).getWinners();
                 //TODO creare metodo nella tui
+                break;
             case RECONNECTION:
                 this.player = ((ReconnectionMessage) message).getPlayerBean();
                 this.game = ((ReconnectionMessage) message).getGameBean();
@@ -285,12 +290,16 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
 
     @Override
     public void sendChatMessage(String message) {
-
+        try {
+            server.sendPublicMessage(message, username);
+        } catch (RemoteException e) {
+            System.out.println(e.getMessage() + " sendChatMessage");
+        }
     }
 
     @Override
     public void sendChatMessage(String receiver, String message) {
-
+        //TODO
     }
 
     @Override

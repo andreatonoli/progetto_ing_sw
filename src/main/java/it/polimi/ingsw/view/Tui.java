@@ -1351,7 +1351,7 @@ public class Tui implements Ui{
         Scanner input = new Scanner(System.in);
         int u;
         do{
-            System.out.println("To whom do you want to send your message?");
+            System.out.println("Who do you want to send your message to?");
             for (int i = 0; i < players.size(); i++) {
                 System.out.println("\t Press " + (i + 1) + " to send the message to " + players.get(i).getUsername());
             }

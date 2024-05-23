@@ -32,5 +32,6 @@ public enum MessageType {
     PLAYER_STATE,
     PING,
     CATCH_PING,
+    CHAT,
     RECONNECTION
 }

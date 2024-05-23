@@ -57,6 +57,17 @@ public class RMIServer implements VirtualServer {
     }
 
     @Override
+    public void sendPublicMessage(String message, String username) throws RemoteException {
+        addToQueue(() -> connections.get(username).sendPublicMessage(message));
+    }
+
+    @Override
+    public void sendPrivateMessage(String message, String sender, String receiver) throws RemoteException {
+        //TODO
+    }
+
+
+    @Override
     public void flipCard(Card card, String username) throws RemoteException {
         addToQueue(() -> connections.get(username).flipCard(card));
     }

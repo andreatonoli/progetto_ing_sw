@@ -75,6 +75,7 @@ public class RMIConnection extends Connection {
         server.addDisconnectedPlayer(username);
     }
 
+    //TODO è da mettere in coda??
     @Override
     public void reconnect(Connection oldConnection) {
         this.lobby = oldConnection.getLobby();
@@ -150,6 +151,14 @@ public class RMIConnection extends Connection {
     public void drawCardFromBoard(int index){
         this.lobby.addAction(new ActionMessage(this, () -> lobby.drawCardFromBoard(this, index)));
 
+    }
+    @Override
+    public void sendPublicMessage(String message) {
+        this.lobby.addAction(new ActionMessage(this, () -> lobby.sendPublicMessage(this, message)));
+    }
+    @Override
+    public void sendPrivateMessage(String message, Connection receiver) {
+        //TODO
     }
     @Override
     public void update(Message message) {
