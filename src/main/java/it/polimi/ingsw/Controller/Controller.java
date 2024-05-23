@@ -6,7 +6,6 @@ import it.polimi.ingsw.model.card.Card;
 import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.exceptions.*;
 import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.network.client.PlayerBean;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.network.server.ActionMessage;
 import it.polimi.ingsw.network.server.Connection;
@@ -187,13 +186,17 @@ public class Controller extends Observable {
             if(index <= 1){
                 card = game.getGameBoard().getCommonResource()[index];
             }
-            else{
+            else if(index <=3){
                 card = game.getGameBoard().getCommonGold()[index-2];
             }
+            else{
+                //TODO: errore profondo
+                return;
+            }
             Card drawedCard = this.getPlayerByClient(user).drawCardFromBoard(card);
-            user.sendMessage(new UpdateCardMessage(drawedCard));
             turnHandler.changePlayerState(this.getPlayerByClient(user));
             notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState(), user.getUsername()));
+            user.sendMessage(new UpdateCardMessage(drawedCard));
         } catch (CardNotFoundException | NotInTurnException | FullHandException e) {
             user.sendMessage(new ErrorMessage(e.getMessage()));
         }
@@ -207,8 +210,16 @@ public class Controller extends Observable {
     public void placeCard(Connection user, Card card, int[] coordinates) {
         try {
             Player p = this.getPlayerByClient(user);
-            if (!Arrays.stream(p.getCardInHand()).toList().contains(card)){
-                //TODO: Errore profondo
+            boolean present = false;
+            //TODO: cercare algoritmo migliore
+            for (Card c : p.getCardInHand()){
+                if (c.equals(card)){
+                    present = true;
+                }
+            }
+            if (!present){
+                //TODO: errore profondo
+                return;
             }
             //Place card and change player's state
             p.placeCard(card, coordinates);
@@ -225,20 +236,11 @@ public class Controller extends Observable {
         } catch (NotInTurnException | OccupiedCornerException | CostNotSatisfiedException |
                  AlreadyUsedPositionException | InvalidCoordinatesException e) {
             //If any exception is caught first we send the error message, and then we restore the card the player tried to place
-            user.sendMessage(new ErrorMessage(e.getMessage()));
             user.sendMessage(new UpdateCardMessage(card));
+            user.sendMessage(new ErrorMessage(e.getMessage()));
         }
     }
 
-
-    /**
-     * Changes the side shown to the player
-     * @param card to be flipped
-     */
-    public void flipCard(Connection user, Card card){
-        card.setCurrentSide();
-        user.sendMessage(new StarterCardMessage(card));
-    }
     public void placeStarterCard(Connection user, Card starterCard){
         Player player = getPlayerByClient(user);
         if (!starterCard.equals(player.getPlayerBoard().getStarterCard())){

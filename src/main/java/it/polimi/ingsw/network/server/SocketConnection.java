@@ -146,6 +146,16 @@ public class SocketConnection extends Connection implements Runnable {
     }
 
     @Override
+    public void sendPublicMessage(String message) {
+
+    }
+
+    @Override
+    public void sendPrivateMessage(String message, Connection receiver) {
+
+    }
+
+    @Override
     public Controller getLobby(){
         return this.lobby;
     }
@@ -193,9 +203,6 @@ public class SocketConnection extends Connection implements Runnable {
                 break;
             case LOBBY_INDEX:
                 server.joinLobby(message.getSender(), ((LobbyIndexMessage) message).getChoice());
-                break;
-            case FLIP_CARD:
-                lobby.addAction(new ActionMessage(this, () -> lobby.flipCard(this, ((FlipRequestMessage) message).getCard())));
                 break;
             case PLACE_STARTER_CARD:
                 lobby.addAction(new ActionMessage(this, () -> lobby.placeStarterCard(this, ((PlaceStarterRequestMessage) message).getCard())));

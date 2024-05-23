@@ -27,26 +27,26 @@ public class Tui implements Ui{
     private String error = "";
     private final Scanner scanner;
     private final PrintStream out;
-    private Thread inputThread;
+    private final Object lock = new Object();
+    private final boolean running = true;
+    private Thread inputThread = new Thread(() -> {
+        Scanner input = new Scanner(System.in);
+        while (running) {
+            String choice = input.nextLine();
+            synchronized (lock) {
+                handleInput(choice);
+            }
+        }
+        //input.close();
+    });
+    //TODO: TROVA UN MODO MIGLIORE PER FAVORE
+    private PlayerBean player;
+    private GameBean game;
+    private ArrayList<PlayerBean> players;
 
     public Tui(){
         scanner = new Scanner(System.in);
         out = System.out;
-    }
-
-    public String readLine(){
-        FutureTask<String> futureTask = new FutureTask<>(new InputReader());
-        inputThread = new Thread(futureTask);
-        inputThread.start();
-        String userInput = null;
-        try{
-            userInput = futureTask.get();
-        } catch (ExecutionException | InterruptedException e) {
-            System.out.println(e.getMessage());
-            futureTask.cancel(true);
-            Thread.currentThread().interrupt();
-        }
-        return userInput;
     }
 
     /**
@@ -940,57 +940,66 @@ public class Tui implements Ui{
             System.out.println();
         }
     }
-    //TODO: stampa giusta ai giocatori non in turno
+
     //TODO: Stampare retro carta quando devo piazzarla
-    //TODO: capire perchè non aggiorna subito la board
+    //TODO: aggiungere comando per uscire dal gioco
+    //TODO: trova un modo migliore per condividere il model tra print e handle
     @Override
     public void printViewWithCommands(PlayerBean player, GameBean game, ArrayList<PlayerBean> players) {
+        synchronized (lock){
+            //model update
+            this.player = player;
+            this.game = game;
+            this.players = players;
+            PlayerBean playerInTurn = null;
+            String username = player.getUsername();
+            this.printView(player, game, players);
+            if (!error.isEmpty()){
+                System.out.println(TuiColors.getColor(TuiColors.ANSI_RED) + error + TuiColors.getColor(TuiColors.ANSI_RESET));
+                error = "";
+            }
+            if (player.getState().equals(PlayerState.PLAY_CARD)){
+                playerInTurn = player;
+                System.out.println("Play a card");
+            }
+            else if(player.getState().equals(PlayerState.DRAW_CARD)){
+                playerInTurn = player;
+                System.out.println("Draw a card");
+            }
+            else{
+                for(PlayerBean p : players){
+                    if(!p.getState().equals(PlayerState.NOT_IN_TURN)){
+                        playerInTurn = p;
+                        break;
+                    }
+                }
+                System.out.println(playerInTurn.getUsername() + "'s turn. Wait for your turn to play");
+            }
+            System.out.println();
+            System.out.println("Press [1] to view a card from your hand");
+            System.out.println("Press [2] to view a card from your board");
+            System.out.println("Press [3] to view another player's board");
+            if(playerInTurn.getUsername().equals(username) && playerInTurn.getState().equals(PlayerState.PLAY_CARD)){
+                System.out.println("Press [4] to place a card");
+            }
+            else if(playerInTurn.getUsername().equals(username) && playerInTurn.getState().equals(PlayerState.DRAW_CARD)){
+                System.out.println("Press [4] to draw a card");
+            }
+            System.out.println("Press [c] anytime to send a message");
+            //clearConsole();
+            //this.printView(player, game, players);
+        }
+    }
+    //TODO: Refactor di questa funzione
+    public void handleInput(String choice){
         PlayerBoard pBoard = player.getBoard();
         Card[] hand = player.getHand();
-        String username = player.getUsername();
         Card[] commonResource = game.getCommonResources();
         Color resourceBack = game.getResourceDeckRetro();
         Card[] commonGold = game.getCommonGold();
         Color goldBack = game.getGoldDeckRetro();
         Scanner input = new Scanner(System.in);
         int[] coord = new int[2];
-        PlayerBean playerInTurn = null;
-        this.printView(player, game, players);
-        if (!error.isEmpty()){
-            System.out.println(TuiColors.getColor(TuiColors.ANSI_RED) + error + TuiColors.getColor(TuiColors.ANSI_RESET));
-            error = "";
-        }
-        if (player.getState().equals(PlayerState.PLAY_CARD)){
-            playerInTurn = player;
-            System.out.println("Play a card");
-        }
-        else if(player.getState().equals(PlayerState.DRAW_CARD)){
-            playerInTurn = player;
-            System.out.println("Draw a card");
-        }
-        else{
-            for(PlayerBean p : players){
-                if(!p.getState().equals(PlayerState.NOT_IN_TURN)){
-                    playerInTurn = p;
-                    break;
-                }
-            }
-            System.out.println(playerInTurn.getUsername() + "'s turn. Wait for your turn to play");
-        }
-        System.out.println();
-        System.out.println("Press [1] to view a card from your hand");
-        System.out.println("Press [2] to view a card from your board");
-        System.out.println("Press [3] to view another player's board");
-        if(playerInTurn.getUsername().equals(username) && playerInTurn.getState().equals(PlayerState.PLAY_CARD)){
-            System.out.println("Press [4] to place a card");
-        }
-        else if(playerInTurn.getUsername().equals(username) && playerInTurn.getState().equals(PlayerState.DRAW_CARD)){
-            System.out.println("Press [4] to draw a card");
-        }
-        System.out.println("Press [c] anytime to send a message");
-        String choice = readLine();
-        //clearConsole();
-        //this.printView(player, game, players);
         switch (choice) {
             case "1"-> {
                 System.out.println("Which card do you want to display? [1] [2] [3]");
@@ -1097,7 +1106,7 @@ public class Tui implements Ui{
                 }
             }
             case "4" -> {
-                if (playerInTurn.getState().equals(PlayerState.PLAY_CARD)) {
+                if (player.getState().equals(PlayerState.PLAY_CARD)) {
                     System.out.println("Which card do you want to place? [1] [2] [3]");
                     String a = input.next();
                     clearConsole();
@@ -1171,15 +1180,13 @@ public class Tui implements Ui{
                             this.printCard(hand[Integer.parseInt(a) - 1]);
                         } else {
                             cardToPlace.setCurrentSide();
-                            hand[Integer.parseInt(a) - 1].setCurrentSide();
-                            this.printCard(hand[Integer.parseInt(a) - 1]);
+                            //hand[Integer.parseInt(a) - 1].setCurrentSide();
+                            this.printCard(cardToPlace);
                             //hand[Integer.parseInt(a) - 1].setCurrentSide();
                         }
                         System.out.println("Where do you want to place it?");
                         System.out.println("Type row number");
                         a = input.next();
-                        clearConsole();
-                        this.printView(player, game, players);
                         while (!a.equals("c") && Integer.parseInt(a) > PLAYERBOARD_DIM) {
                             System.out.println("Retype row number");
                             a = input.next();
@@ -1192,8 +1199,6 @@ public class Tui implements Ui{
                             coord[0] = Integer.parseInt(a);
                             System.out.println("Type column number");
                             a = input.next();
-                            clearConsole();
-                            this.printView(player, game, players);
                             while (!a.equals("c") && Integer.parseInt(a) > PLAYERBOARD_DIM) {
                                 System.out.println("Retype column number");
                                 a = input.next();
@@ -1202,28 +1207,22 @@ public class Tui implements Ui{
                             }
                             if (a.equals("c")) {
                                 this.printChat(player, game, players);
-                            } else {
-                                coord[1] = Integer.parseInt(a);
-                                clearConsole();
-                                this.printView(player, game, players);
-                                this.printCardFromPlayerBoard(pBoard, coord);
                             }
                         }
                         clearConsole();
-                        this.printView(player, game, players);
                         client.placeCard(cardToPlace, coord);
-                        System.out.println();
+                        System.out.flush();
                     }
                 } else {
                     System.out.println("Do you want to draw from decks or visible cards? [1] for decks [2] for visible cards");
                     String a = input.next();
-                    clearConsole();
-                    this.printView(player, game, players);
+//                    clearConsole();
+//                    this.printView(player, game, players);
                     while (!a.equals("1") && !a.equals("2") && !a.equals("c")) {
                         System.out.println("Do you want to draw from decks or visible cards? [1] for decks [2] for visible cards");
                         a = input.next();
-                        clearConsole();
-                        this.printView(player, game, players);
+//                        clearConsole();
+//                        this.printView(player, game, players);
                     }
                     if (a.equals("c")) {
                         this.printChat(player, game, players);
@@ -1303,7 +1302,7 @@ public class Tui implements Ui{
                             System.out.println();
                         }
                         System.out.println();
-                        System.out.println("Which card do you want to draw? [1] for first resource [2] for second resource [3] for first gold [4] for second resource");
+                        System.out.println("Which card do you want to draw? [1] for first resource [2] for second resource [3] for first gold [4] for second gold");
                         a = input.next();
                         while (!a.equals("1") && !a.equals("2") && !a.equals("3") && !a.equals("4") && !a.equals("c")) {
                             clearConsole();
@@ -1611,6 +1610,7 @@ public class Tui implements Ui{
             System.out.print("Invalid input. Retry: ");
             c = scanner.nextInt();
         }
+        inputThread.start();
         return colors.get(c - 1);
     }
     @Override

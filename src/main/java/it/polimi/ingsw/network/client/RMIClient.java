@@ -118,18 +118,9 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
      * gets messages from the messageQueue and updates the view according to the message type
      * @param message sent from the server
      */
-    //TODO: aggiungere color
     public void onMessage(Message message) {
         String name;
         switch (message.getType()){
-            case CHAT:
-                player.setChat(((ChatMessage) message).getChat());
-                this.view.printViewWithCommands(this.player, this.game, this.opponents);
-                break;
-            case DECLARE_WINNER:
-                ((WinnerMessage) message).getWinners();
-                //TODO creare metodo nella tui
-                break;
             case RECONNECTION:
                 this.player = ((ReconnectionMessage) message).getPlayerBean();
                 this.game = ((ReconnectionMessage) message).getGameBean();
@@ -142,21 +133,6 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                     if(!s.equalsIgnoreCase(username)){
                         opponents.add(new PlayerBean(s));
                     }
-                }
-                break;
-            case CARD_HAND:
-                //Copied the message body into the player's cards
-                System.arraycopy(((CardInHandMessage) message).getHand(), 0, this.player.getHand(), 0, 3);
-                break;
-            case COMMON_ACHIEVEMENT:
-                System.arraycopy(((AchievementMessage) message).getAchievements(), 0, game.getCommonAchievement(), 0, 2);
-                break;
-            case PRIVATE_ACHIEVEMENT:
-                this.player.setAchievement(this.view.chooseAchievement(((AchievementMessage) message).getAchievements()));
-                try {
-                    this.setPrivateAchievement(player.getAchievement());
-                } catch (RemoteException e) {
-                    System.err.println(e.getMessage() + " in RMIClient.update");
                 }
                 break;
             case COMMON_GOLD_UPDATE:
@@ -175,6 +151,19 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                     game.setCommonResources(1,((CommonCardUpdateMessage) message).getCard());
                 }
                 break;
+            case COMMON_ACHIEVEMENT:
+                System.arraycopy(((AchievementMessage) message).getAchievements(), 0, game.getCommonAchievement(), 0, 2);
+                break;
+            case DECK_UPDATE:
+                Color color = ((UpdateDeckMessage) message).getColor();
+                boolean isResource = ((UpdateDeckMessage) message).getIsResource();
+                if (isResource){
+                    game.setResourceDeckRetro(color);
+                }
+                else{
+                    game.setGoldDeckRetro(color);
+                }
+                break;
             case STARTER_CARD:
                 Card starterCard = ((StarterCardMessage) message).getCard();
                 this.view.printStarterCard(starterCard);
@@ -189,19 +178,17 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                     System.out.println(e.getMessage());
                 }
                 break;
-            case SCORE_UPDATE:
-                name = ((ScoreUpdateMessage) message).getName();
-                if (username.equals(name)) {
-                    player.setPoints(((ScoreUpdateMessage) message).getPoint());
+            case CARD_HAND:
+                //Copied the message body into the player's cards
+                System.arraycopy(((CardInHandMessage) message).getHand(), 0, this.player.getHand(), 0, 3);
+                break;
+            case PRIVATE_ACHIEVEMENT:
+                this.player.setAchievement(this.view.chooseAchievement(((AchievementMessage) message).getAchievements()));
+                try {
+                    this.setPrivateAchievement(player.getAchievement());
+                } catch (RemoteException e) {
+                    System.err.println(e.getMessage() + " in RMIClient.update");
                 }
-                else {
-                    for (PlayerBean p : opponents){
-                        if (p.getUsername().equals(name)){
-                            p.setPoints(((ScoreUpdateMessage) message).getPoint());
-                        }
-                    }
-                }
-                this.view.printViewWithCommands(this.player, this.game, this.opponents);
                 break;
             case PLAYER_STATE:
                 PlayerState playerState = ((PlayerStateMessage) message).getState();
@@ -213,36 +200,6 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                     for (PlayerBean p : opponents){
                         if (p.getUsername().equals(name)){
                             p.setState(playerState);
-                        }
-                    }
-                }
-                break;
-            case CARD_UPDATE:
-                Card drawedCard = ((UpdateCardMessage) message).getCard();
-                player.setCardinHand(drawedCard);
-                this.view.printViewWithCommands(this.player, this.game, this.opponents);
-                break;
-            case DECK_UPDATE:
-                Color color = ((UpdateDeckMessage) message).getColor();
-                boolean isResource = ((UpdateDeckMessage) message).getIsResource();
-                if (isResource){
-                    game.setResourceDeckRetro(color);
-                }
-                else{
-                    game.setGoldDeckRetro(color);
-                }
-                break;
-            case PLAYERBOARD_UPDATE:
-                PlayerBoard playerBoard = ((PlayerBoardUpdateMessage) message).getpBoard();
-                name = ((PlayerBoardUpdateMessage) message).getName();
-                if (name.equalsIgnoreCase(username)){
-                    player.setBoard(playerBoard);
-                    this.view.printViewWithCommands(this.player, this.game, this.opponents);
-                }
-                else{
-                    for (PlayerBean p : opponents){
-                        if (p.getUsername().equals(name)){
-                            p.setBoard(playerBoard);
                         }
                     }
                 }
@@ -270,6 +227,48 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                         }
                     }
                 }
+                break;
+            case PLAYERBOARD_UPDATE:
+                PlayerBoard playerBoard = ((PlayerBoardUpdateMessage) message).getpBoard();
+                name = ((PlayerBoardUpdateMessage) message).getName();
+                if (name.equalsIgnoreCase(username)){
+                    player.setBoard(playerBoard);
+                    this.view.printViewWithCommands(this.player, this.game, this.opponents);
+                }
+                else{
+                    for (PlayerBean p : opponents){
+                        if (p.getUsername().equals(name)){
+                            p.setBoard(playerBoard);
+                        }
+                    }
+                }
+                break;
+            case CARD_UPDATE:
+                Card drawedCard = ((UpdateCardMessage) message).getCard();
+                player.setCardinHand(drawedCard);
+                this.view.printViewWithCommands(this.player, this.game, this.opponents);
+                break;
+            case SCORE_UPDATE:
+                name = ((ScoreUpdateMessage) message).getName();
+                if (username.equals(name)) {
+                    player.setPoints(((ScoreUpdateMessage) message).getPoint());
+                }
+                else {
+                    for (PlayerBean p : opponents){
+                        if (p.getUsername().equals(name)){
+                            p.setPoints(((ScoreUpdateMessage) message).getPoint());
+                        }
+                    }
+                }
+                //this.view.printViewWithCommands(this.player, this.game, this.opponents);
+                break;
+            case CHAT:
+                player.setChat(((ChatMessage) message).getChat());
+                this.view.printViewWithCommands(this.player, this.game, this.opponents);
+                break;
+            case DECLARE_WINNER:
+                ArrayList<String> winners = ((WinnerMessage) message).getWinners();
+                //TODO creare metodo nella tui
                 break;
             case GENERIC_MESSAGE:
                 this.view.showText(message.toString());

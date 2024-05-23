@@ -130,9 +130,6 @@ public class RMIConnection extends Connection {
     }
 
     //TODO: sostituire invocazioni del controller con aggiunta in coda
-    public void flipCard(Card card){
-        this.lobby.addAction(new ActionMessage(this, () -> lobby.flipCard(this, card)));
-    }
     public void placeStarterCard(Card card) {
         this.lobby.addAction(new ActionMessage(this, () -> lobby.placeStarterCard(this, card)));
     }

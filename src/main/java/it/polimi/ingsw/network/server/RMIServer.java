@@ -66,12 +66,6 @@ public class RMIServer implements VirtualServer {
         //TODO
     }
 
-
-    @Override
-    public void flipCard(Card card, String username) throws RemoteException {
-        addToQueue(() -> connections.get(username).flipCard(card));
-    }
-
     @Override
     public void placeStarterCard(Card card, String username) throws RemoteException {
         addToQueue(() -> connections.get(username).placeStarterCard(card));

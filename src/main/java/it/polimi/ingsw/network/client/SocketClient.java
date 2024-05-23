@@ -110,10 +110,6 @@ public class SocketClient implements ClientInterface {
     public void update(Message message){
         String name;
         switch (message.getType()){
-            case DECLARE_WINNER:
-                ((WinnerMessage) message).getWinners();
-                //TODO creare metodo nella tui
-                break;
             case RECONNECTION:
                 this.player = ((ReconnectionMessage) message).getPlayerBean();
                 this.game = ((ReconnectionMessage) message).getGameBean();
@@ -126,20 +122,20 @@ public class SocketClient implements ClientInterface {
                 sendMessage(new LoginResponseMessage(this.username));
                 player.setUsername(this.username);
                 break;
+            case NUM_PLAYER_REQUEST:
+                int lobbySize = this.view.setLobbySize();
+                sendMessage(new NumPlayerResponseMessage(this.username, lobbySize));
+                break;
             case FREE_LOBBY:
                 int freeLobbySize = ((FreeLobbyMessage) message).getLobbyNumber();
                 int response = this.view.selectGame(freeLobbySize);
                 if (response == freeLobbySize){
-                    int lobbySize = this.view.setLobbySize();
-                    sendMessage(new NumPlayerResponseMessage(this.username, lobbySize));
+                    int numOfPlayers = this.view.setLobbySize();
+                    sendMessage(new NumPlayerResponseMessage(this.username, numOfPlayers));
                 }
                 else {
                     sendMessage(new LobbyIndexMessage(this.username, response));
                 }
-                break;
-            case NUM_PLAYER_REQUEST:
-                int lobbySize = this.view.setLobbySize();
-                sendMessage(new NumPlayerResponseMessage(this.username, lobbySize));
                 break;
             case OPPONENTS:
                 ArrayList<String> playersName = ((OpponentsMessage) message).getPlayers();
@@ -148,17 +144,6 @@ public class SocketClient implements ClientInterface {
                         opponents.add(new PlayerBean(s));
                     }
                 }
-                break;
-            case CARD_HAND:
-                //Copied the message body into the player's cards
-                System.arraycopy(((CardInHandMessage) message).getHand(), 0, player.getHand(), 0, 3);
-                break;
-            case COMMON_ACHIEVEMENT:
-                System.arraycopy(((AchievementMessage) message).getAchievements(), 0, game.getCommonAchievement(), 0, 2);
-                break;
-            case PRIVATE_ACHIEVEMENT:
-                this.player.setAchievement(this.view.chooseAchievement(((AchievementMessage) message).getAchievements()));
-                sendMessage(new SetPrivateAchievementMessage(this.username, this.player.getAchievement()));
                 break;
             case COMMON_GOLD_UPDATE:
                 if(game.getCommonGold()[0] == null){
@@ -175,6 +160,9 @@ public class SocketClient implements ClientInterface {
                 else{
                     game.setCommonResources(1,((CommonCardUpdateMessage) message).getCard());
                 }
+                break;
+            case COMMON_ACHIEVEMENT:
+                System.arraycopy(((AchievementMessage) message).getAchievements(), 0, game.getCommonAchievement(), 0, 2);
                 break;
             case DECK_UPDATE:
                 Color color = ((UpdateDeckMessage) message).getColor();
@@ -196,24 +184,13 @@ public class SocketClient implements ClientInterface {
                 player.setStarterCard(starterCard);
                 sendMessage(new PlaceStarterRequestMessage(username, starterCard));
                 break;
-            case CARD_UPDATE:
-                Card drawedCard = ((UpdateCardMessage) message).getCard();
-                player.setCardinHand(drawedCard);
-                this.view.printViewWithCommands(this.player, this.game, this.opponents);
+            case CARD_HAND:
+                //Copied the message body into the player's cards
+                System.arraycopy(((CardInHandMessage) message).getHand(), 0, player.getHand(), 0, 3);
                 break;
-            case SCORE_UPDATE:
-                name = ((ScoreUpdateMessage) message).getName();
-                int points = ((ScoreUpdateMessage) message).getPoint();
-                if (name.equalsIgnoreCase(username)){
-                    player.setPoints(points);
-                }
-                else {
-                    for (PlayerBean p : opponents){
-                        if (p.getUsername().equalsIgnoreCase(name)){
-                            p.setPoints(points);
-                        }
-                    }
-                }
+            case PRIVATE_ACHIEVEMENT:
+                this.player.setAchievement(this.view.chooseAchievement(((AchievementMessage) message).getAchievements()));
+                sendMessage(new SetPrivateAchievementMessage(this.username, this.player.getAchievement()));
                 break;
             case PLAYER_STATE:
                 PlayerState playerState = ((PlayerStateMessage) message).getState();
@@ -225,21 +202,6 @@ public class SocketClient implements ClientInterface {
                     for (PlayerBean p : opponents){
                         if (p.getUsername().equals(name)){
                             p.setState(playerState);
-                        }
-                    }
-                }
-                break;
-            case PLAYERBOARD_UPDATE:
-                PlayerBoard playerBoard = ((PlayerBoardUpdateMessage) message).getpBoard();
-                name = ((PlayerBoardUpdateMessage) message).getName();
-                if (name.equalsIgnoreCase(username)){
-                    player.setBoard(playerBoard);
-                    this.view.printViewWithCommands(this.player, this.game, this.opponents);
-                }
-                else{
-                    for (PlayerBean p : opponents){
-                        if (p.getUsername().equals(name)){
-                            p.setBoard(playerBoard);
                         }
                     }
                 }
@@ -263,6 +225,48 @@ public class SocketClient implements ClientInterface {
                         }
                     }
                 }
+                break;
+            case PLAYERBOARD_UPDATE:
+                PlayerBoard playerBoard = ((PlayerBoardUpdateMessage) message).getpBoard();
+                name = ((PlayerBoardUpdateMessage) message).getName();
+                if (name.equalsIgnoreCase(username)){
+                    player.setBoard(playerBoard);
+                    this.view.printViewWithCommands(this.player, this.game, this.opponents);
+                }
+                else{
+                    for (PlayerBean p : opponents){
+                        if (p.getUsername().equals(name)){
+                            p.setBoard(playerBoard);
+                        }
+                    }
+                }
+                break;
+            case CARD_UPDATE:
+                Card drawedCard = ((UpdateCardMessage) message).getCard();
+                player.setCardinHand(drawedCard);
+                this.view.printViewWithCommands(this.player, this.game, this.opponents);
+                break;
+            case SCORE_UPDATE:
+                name = ((ScoreUpdateMessage) message).getName();
+                int points = ((ScoreUpdateMessage) message).getPoint();
+                if (name.equalsIgnoreCase(username)){
+                    player.setPoints(points);
+                }
+                else {
+                    for (PlayerBean p : opponents){
+                        if (p.getUsername().equalsIgnoreCase(name)){
+                            p.setPoints(points);
+                        }
+                    }
+                }
+                break;
+            case CHAT:
+                player.setChat(((ChatMessage) message).getChat());
+                this.view.printViewWithCommands(this.player, this.game, this.opponents);
+                break;
+            case DECLARE_WINNER:
+                ArrayList<String> winners =((WinnerMessage) message).getWinners();
+                //TODO creare metodo nella tui
                 break;
             case GENERIC_MESSAGE:
                 this.view.showText(message.toString());
