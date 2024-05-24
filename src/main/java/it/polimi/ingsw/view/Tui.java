@@ -1364,20 +1364,20 @@ public class Tui implements Ui{
         input.nextLine();
         String m = input.nextLine();
         if (u == players.size() + 1) {
-            for (PlayerBean p : players) {
-                if (p.getUsername().equals(username)) {
-                    //client.sendChatMessage(m);
+            //for (PlayerBean p : players) {
+            //    if (p.getUsername().equals(username)) {
+                    client.sendChatMessage(m);
                     System.out.println("messaggio globale");
-                }
-            }
+            //    }
+            //}
         }
         else {
-            for (PlayerBean p : players) {
-                if (p.getUsername().equals(username)) {
-                    //client.sendChatMessage(players.get(u - 1).getUsername(), m);
+            //for (PlayerBean p : players) {
+            //    if (p.getUsername().equals(username)) {
+                    client.sendChatMessage(players.get(u - 1).getUsername(), m);
                     System.out.println("messaggio privato");
-                }
-            }
+            //    }
+            //}
         }
         clearConsole();
         this.printView(player, game, players);

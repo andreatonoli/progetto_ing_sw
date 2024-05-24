@@ -20,4 +20,5 @@ public interface VirtualServer extends Remote {
     void setColor(Color color, String username) throws RemoteException;
     void pingConnection(String username) throws RemoteException;
     void sendChatMessage(String message, String sender, String receiver) throws RemoteException;
+    void sendChatMessage(String message, String sender) throws RemoteException;
 }

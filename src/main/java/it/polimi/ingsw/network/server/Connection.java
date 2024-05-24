@@ -25,5 +25,6 @@ public abstract class Connection implements Observer {
     public abstract void ping();
     public abstract void reconnect(Connection oldConnection);
     public abstract void sendChatMessage(String message, Connection receiver);
+    public abstract void sendChatMessage(String message);
 
 }

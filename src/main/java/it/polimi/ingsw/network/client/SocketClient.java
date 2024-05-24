@@ -265,7 +265,7 @@ public class SocketClient implements ClientInterface {
                 this.view.printViewWithCommands(this.player, this.game, this.opponents);
                 break;
             case DECLARE_WINNER:
-                ArrayList<String> winners =((WinnerMessage) message).getWinners();
+                ArrayList<String> winners = ((WinnerMessage) message).getWinners();
                 //TODO creare metodo nella tui
                 break;
             case GENERIC_MESSAGE:
@@ -292,12 +292,12 @@ public class SocketClient implements ClientInterface {
 
     @Override
     public void sendChatMessage(String message) {
-
+        sendMessage(new AddToChatMessage(username, message));
     }
 
     @Override
     public void sendChatMessage(String receiver, String message) {
-
+        sendMessage(new AddToChatMessage(username, receiver, message));
     }
 
     @Override

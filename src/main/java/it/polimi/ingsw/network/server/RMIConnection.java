@@ -154,6 +154,10 @@ public class RMIConnection extends Connection {
         this.lobby.addAction(new ActionMessage(this, () -> lobby.sendChatMessage(this, receiver, message)));
     }
     @Override
+    public void sendChatMessage(String message) {
+        this.lobby.addAction(new ActionMessage(this, () -> lobby.sendChatMessage(this, message)));
+    }
+    @Override
     public void update(Message message) {
         this.sendMessage(message);
     }

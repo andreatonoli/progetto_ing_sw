@@ -279,13 +279,13 @@ public class Controller extends Observable {
     }
 
     public void sendChatMessage(Connection sender, Connection receiver, String message){
-        if (receiver == null){
-            getPlayerByClient(sender).sendMessage(message);
-            notifyAll(new ChatMessage(getPlayerByClient(sender).getChat()));
-        }
-        else{
-            getPlayerByClient(sender).sendMessage(getPlayerByClient(receiver), message);
-        }
+        getPlayerByClient(sender).sendChatMessage(getPlayerByClient(receiver), message);
+        sender.sendMessage(new ChatMessage(getPlayerByClient(sender).getChat()));
+        receiver.sendMessage(new ChatMessage(getPlayerByClient(receiver).getChat()));
+    }
+    public void sendChatMessage(Connection sender, String message){
+        getPlayerByClient(sender).sendChatMessage(message);
+        notifyAll(new ChatMessage(getPlayerByClient(sender).getChat()));
     }
 
     public Player getPlayerByClient(Connection user){

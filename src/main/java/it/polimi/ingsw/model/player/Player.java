@@ -181,7 +181,7 @@ public class Player implements Serializable {
      * @param receiver is the player that is receiving the message
      * @param message is the core of the message
      */
-    public void sendMessage(Player receiver, String message){
+    public void sendChatMessage(Player receiver, String message){
         try{
             this.game.getChat().forwardMessage(this, receiver, false, message);
         }
@@ -194,7 +194,7 @@ public class Player implements Serializable {
      * used when a player need to send a message to all the other players
      * @param message is the core of the message
      */
-    public void sendMessage(String message){
+    public void sendChatMessage(String message){
         try{
             this.game.getChat().forwardMessage(this, null, true, message);
         }
@@ -205,11 +205,11 @@ public class Player implements Serializable {
     //TODO: commentare
     public void displayMessage(Player sender, String message){
         if(chat.size() >= Chat.CHATDIM){
-            chat.set(Chat.CHATDIM - 1, sender.getUsername() + " : " + message);
+            chat.set(Chat.CHATDIM - 1, sender.getUsername() + ": " + message);
             Collections.rotate(chat, 1);
         }
         else{
-            chat.addFirst(sender.getUsername() + " : " + message);
+            chat.addFirst(sender.getUsername() + ": " + message);
         }
     }
 

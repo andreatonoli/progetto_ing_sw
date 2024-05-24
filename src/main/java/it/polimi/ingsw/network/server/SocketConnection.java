@@ -147,7 +147,12 @@ public class SocketConnection extends Connection implements Runnable {
 
     @Override
     public void sendChatMessage(String message, Connection receiver) {
+        lobby.addAction(new ActionMessage(this, () -> lobby.sendChatMessage(this, receiver, message)));
+    }
 
+    @Override
+    public void sendChatMessage(String message) {
+        lobby.addAction(new ActionMessage(this, () -> lobby.sendChatMessage(this, message)));
     }
 
     @Override
@@ -184,6 +189,15 @@ public class SocketConnection extends Connection implements Runnable {
 
     public void onMessage(Message message){
         switch (message.getType()){
+            case ADD_TO_CHAT:
+                String receiver = ((AddToChatMessage) message).getReceiver();
+                if (receiver == null) {
+                    sendChatMessage(((AddToChatMessage) message).getMessage());
+                }
+                else{
+                    sendChatMessage(((AddToChatMessage) message).getMessage(), server.getClientFromName(receiver));
+                }
+                break;
             case LOGIN_RESPONSE:
                 if (server.usernameTaken(message.getSender())){
                     sendMessage(new UsernameRequestMessage());

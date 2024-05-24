@@ -288,7 +288,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
     @Override
     public void sendChatMessage(String message) {
         try {
-            server.sendChatMessage(message, username, null);
+            server.sendChatMessage(message, username);
         } catch (RemoteException e) {
             System.out.println(e.getMessage() + " sendChatMessage");
         }

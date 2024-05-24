@@ -58,12 +58,11 @@ public class RMIServer implements VirtualServer {
 
     @Override
     public void sendChatMessage(String message, String sender, String receiver) throws RemoteException {
-        if (receiver == null) {
-            addToQueue(() -> connections.get(sender).sendChatMessage(message, null));
-        }
-        else{
-            addToQueue(() -> connections.get(sender).sendChatMessage(message, connections.get(receiver)));
-        }
+        addToQueue(() -> connections.get(sender).sendChatMessage(message, connections.get(receiver)));
+    }
+    @Override
+    public void sendChatMessage(String message, String sender) throws RemoteException {
+        addToQueue(() -> connections.get(sender).sendChatMessage(message));
     }
 
     @Override
