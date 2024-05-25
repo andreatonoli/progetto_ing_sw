@@ -15,10 +15,12 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Gui extends Application {
@@ -29,14 +31,17 @@ public class Gui extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+
+
         StarterCard s = new StarterCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}, 1, new CardBack(new ArrayList<>(List.of(Symbols.FUNGI, Symbols.PLANT, Symbols.ANIMAL)), Color.WHITE, new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY)}));
 
         stage.setTitle("Codex Naturalis");
         Button b1 = new Button("Play!");
-        //b1.setId("my-button");
         //b1.getStylesheets().add(getClass().getResource("/ButtonStyle.css").toString());
-        b1.setFont(new Font(40));
-        b1.setPrefSize(150, 70);
+        b1.setId("play-button");
+        //b1.getStyleClass().add("play-button");
+        //b1.setFont(new Font(40));
+        //b1.setPrefSize(150, 70);
         b1.setOnAction(event -> {
             //stage.getScene().setRoot(this.lobbySelectionPage(stage));
             stage.getScene().setRoot(this.starterFlip(stage, s, true));
@@ -48,7 +53,9 @@ public class Gui extends Application {
         BorderPane bp = new BorderPane();
         bp.setCenter(h1);
         bp.setBackground(new Background(i));
-        stage.setScene(new Scene(bp, 1280, 720));
+        Scene scene = new Scene(bp, 1280, 720);
+        scene.getStylesheets().add(getClass().getResource("/ButtonStyle.css").toString());
+        stage.setScene(scene);
         stage.show();
     }
 
@@ -102,10 +109,14 @@ public class Gui extends Application {
     }
 
     public Pane loginPage(Stage stage, int selectedLobby) {
-        Label l1 = new Label("Username:  ");
-        l1.setFont(new Font(30));
+
+        Text t1 = new Text("Username :  ");
+        t1.setFont(new Font(45));
+        t1.setFill(javafx.scene.paint.Color.WHITE);
+        t1.setStrokeWidth(1.5);
+        t1.setStroke(javafx.scene.paint.Color.BLACK);
         TextField text = new TextField();
-        text.setPrefSize(200,40);
+        text.setPrefSize(200,50);
         Label l2 = new Label("Color:  ");
         l2.setFont(new Font(30));
         ChoiceBox<String> cb = new ChoiceBox<>();
@@ -149,7 +160,7 @@ public class Gui extends Application {
         h1.setPadding(new Insets(20,0,0,20));
 
         //username and color
-        HBox h2 = new HBox(l1,text);
+        HBox h2 = new HBox(t1,text);
         h2.setAlignment(Pos.CENTER);
         HBox h3 = new HBox(l2,cb);
         h3.setAlignment(Pos.CENTER);
@@ -166,7 +177,7 @@ public class Gui extends Application {
         bp.setTop(h1);
         bp.setCenter(v1);
         bp.setBottom(h4);
-        BackgroundImage i = new BackgroundImage(new Image(getClass().getResourceAsStream("/manuscript_wallpaper.jpg")), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(1.0, 1.0, true, true, false, false));
+        BackgroundImage i = new BackgroundImage(new Image(getClass().getResourceAsStream("/forest_background.jpeg")), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(1.0, 1.0, true, true, false, false));
         bp.setBackground(new Background(i));
         return bp;
     }
@@ -240,6 +251,31 @@ public class Gui extends Application {
             }
         });
 
+        Button b2 = new Button("Place starter card");
+        b2.setFont(new Font(20));
+        b2.setPrefSize(200,40);
+        b2.setOnAction(event -> {
+            Alert a = new Alert(Alert.AlertType.CONFIRMATION);
+            ButtonType yes = new ButtonType("Confirm");
+            ButtonType no = new ButtonType("Cancel");
+            a.setTitle("Placing starter card");
+            a.setHeaderText("Do you want to place the card on this side?");
+            a.getButtonTypes().clear();
+            a.getButtonTypes().addAll(no, yes);
+            Optional<ButtonType> result = a.showAndWait();
+            if(result.isEmpty()){
+                stage.getScene().setRoot(this.starterFlip(stage, starter,true));
+            }
+            else if(result.get().getText().equals("Confirm")){
+                stage.getScene().setRoot(this.loginPage(stage, 3));
+            }
+            else if(result.get().getText().equals("Cancel")){
+                stage.getScene().setRoot(this.starterFlip(stage, starter,true));
+            }
+        });
+        HBox h1 = new HBox(b2);
+        h1.setAlignment(Pos.BOTTOM_RIGHT);
+        h1.setPadding(new Insets(0,20,20,0));
 
         bp.setTop(v1);
         if(side){
@@ -249,6 +285,7 @@ public class Gui extends Application {
             b1.setGraphic(backView);
         }
         bp.setCenter(b1);
+        bp.setBottom(h1);
         BackgroundImage i = new BackgroundImage(new Image(getClass().getResourceAsStream("/wood_background.jpg")), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(1.0, 1.0, true, true, false, false));
         bp.setBackground(new Background(i));
         return bp;
