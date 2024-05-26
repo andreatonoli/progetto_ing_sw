@@ -70,4 +70,12 @@ public class Server {
         this.disconnectedPlayers.remove(username);
         client.reconnect(oldConnection);
     }
+
+    public void removePlayers(String username){
+        this.disconnectedPlayers.remove(username);
+        this.client.remove(username);
+    }
+    public void removeGame(Controller game){
+        this.activeGames.remove(game);
+    }
 }

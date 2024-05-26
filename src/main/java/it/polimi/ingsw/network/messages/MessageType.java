@@ -35,5 +35,6 @@ public enum MessageType {
     CATCH_PING,
     CHAT,
     ADD_TO_CHAT,
-    RECONNECTION
+    RECONNECTION,
+    REMOVE_FROM_SERVER
 }

@@ -34,6 +34,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
     private VirtualServer server;
     private PlayerBean player;
     private ArrayList<PlayerBean> opponents;
+    private int playersRemaining;
 
     public RMIClient(String username, String host, int port, Ui view) throws RemoteException{
         this.username = username;
@@ -135,6 +136,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                 break;
             case OPPONENTS:
                 ArrayList<String> playersName = ((OpponentsMessage) message).getPlayers();
+                playersRemaining = playersName.size()+1;
                 for (String s : playersName){
                     if(!s.equalsIgnoreCase(username)){
                         opponents.add(new PlayerBean(s));
@@ -267,7 +269,11 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
             case DECLARE_WINNER:
                 ArrayList<String> winners = ((WinnerMessage) message).getWinners();
                 this.view.declareWinners(winners);
-                //TODO cancellaare riferimenti dal server
+                try {
+                    server.removeFromServer(username);
+                } catch (RemoteException e) {
+                    System.out.println(e.getMessage() + " in removeFromServer");
+                }
                 break;
             case GENERIC_MESSAGE:
                 this.view.setMessage(message.toString(), false);
@@ -280,6 +286,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                 break;
         }
     }
+
     @Override
     public Ui getView(){
     //    return view;

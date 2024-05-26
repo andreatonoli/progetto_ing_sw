@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -189,6 +190,14 @@ public class SocketConnection extends Connection implements Runnable {
 
     public void onMessage(Message message){
         switch (message.getType()){
+            case REMOVE_FROM_SERVER:
+                int playersToDelete = lobby.getGame().getLobbySize()-1;
+                lobby.getGame().setLobbySize(playersToDelete);
+                server.removePlayers(username);
+                if (playersToDelete == 0){
+                    server.removeGame(lobby);
+                }
+                break;
             case ADD_TO_CHAT:
                 String receiver = ((AddToChatMessage) message).getReceiver();
                 if (receiver == null) {

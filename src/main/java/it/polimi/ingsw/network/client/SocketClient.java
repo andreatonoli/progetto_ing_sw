@@ -14,6 +14,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.BlockingQueue;
@@ -267,8 +268,9 @@ public class SocketClient implements ClientInterface {
             case DECLARE_WINNER:
                 ArrayList<String> winners = ((WinnerMessage) message).getWinners();
                 this.view.declareWinners(winners);
+                sendMessage(new RemoveFromServerMessage(username));
                 //TODO cancellare riferimenti dal server
-                //this.onDisconnect();
+                this.onDisconnect();
                 break;
             case GENERIC_MESSAGE:
                 this.view.setMessage(message.toString(), false);

@@ -214,6 +214,10 @@ public class Game extends Observable implements Serializable {
         }
     }
 
+    public void setLobbySize(int lobbySize) {
+        this.lobbySize = lobbySize;
+    }
+
     public boolean isFull(){
         return gameFull;
     }
