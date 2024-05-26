@@ -25,7 +25,7 @@ public class Player implements Serializable {
     private Card[] cardInHand;
     private Achievement[] personalObj;
     private Achievement chosenObj;
-    private int points = 19;
+    private int points = 0;
     private PlayerState playerState;
     private final ArrayList<String> chat;
     private Game game;
