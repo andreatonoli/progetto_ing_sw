@@ -1,11 +1,10 @@
 package it.polimi.ingsw.view;
 
-import it.polimi.ingsw.model.card.Card;
-import it.polimi.ingsw.model.card.CardBack;
-import it.polimi.ingsw.model.card.Corner;
-import it.polimi.ingsw.model.card.StarterCard;
+import it.polimi.ingsw.model.card.*;
 import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.Symbols;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -17,7 +16,9 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,19 +33,15 @@ public class Gui extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-
-        StarterCard s = new StarterCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}, 1, new CardBack(new ArrayList<>(List.of(Symbols.FUNGI, Symbols.PLANT, Symbols.ANIMAL)), Color.WHITE, new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY)}));
-
         stage.setTitle("Codex Naturalis");
         Button b1 = new Button("Play!");
         //b1.getStylesheets().add(getClass().getResource("/ButtonStyle.css").toString());
-        b1.setId("play-button");
+        //b1.setId("play-button");
         //b1.getStyleClass().add("play-button");
-        //b1.setFont(new Font(40));
-        //b1.setPrefSize(150, 70);
+        b1.setFont(new Font(40));
+        b1.setPrefSize(150, 70);
         b1.setOnAction(event -> {
-            //stage.getScene().setRoot(this.lobbySelectionPage(stage));
-            stage.getScene().setRoot(this.starterFlip(stage, s, true));
+            stage.getScene().setRoot(this.lobbySelectionPage(stage));
         });
         HBox h1 = new HBox(b1);
         h1.setAlignment(Pos.CENTER);
@@ -61,38 +58,51 @@ public class Gui extends Application {
 
     public Pane lobbySelectionPage(Stage stage) {
 
-        Label l1 = new Label("Lobbies: ");
-        l1.setFont(new Font(30));
+        Text t1 = new Text("Lobbies:");
+        t1.setFont(new Font(65));
+        t1.setFill(javafx.scene.paint.Color.DARKGREEN);
+        t1.setStrokeWidth(1.8);
+        t1.setStroke(javafx.scene.paint.Color.BLACK);
+        HBox h1 = new HBox(t1);
+        h1.setAlignment(Pos.CENTER);
+        h1.setPadding(new Insets(100, 0, 0, 0));
+
         ArrayList<Integer> lobbies = new ArrayList<>(List.of(0, 1));
         GridPane gp = new GridPane();
         gp.setAlignment(Pos.CENTER);
-        gp.add(l1, 0  ,0 );
         ArrayList<Button> buttonList = new ArrayList<>();
         for(int i = 0; i < lobbies.size(); i++){
-            buttonList.add(new Button("Join Lobby " + String.valueOf(i + 1)));
+            buttonList.add(new Button("Join lobby " + String.valueOf(i + 1)));
         }
         for(int i = 0; i < lobbies.size(); i++){
-            Label l2 = new Label("Lobby " + String.valueOf(i + 1));
-            l2.setFont(new Font(30));
-            gp.add(l2, 1, i);
-            Label l3  = new Label("Players: " + "numero di players della lobby " + String.valueOf(i + 1));
-            l3.setFont(new Font(30));
-            gp.add(l3, 2, i);
-            buttonList.get(i).setFont(new Font(20));
-            buttonList.get(i).setPrefSize(150, 30);
+            Text t2 = new Text("Lobby " + String.valueOf(i + 1));
+            t2.setFont(new Font(55));
+            t2.setFill(javafx.scene.paint.Color.WHITE);
+            t2.setStrokeWidth(1.7);
+            t2.setStroke(javafx.scene.paint.Color.BLACK);
+            gp.add(t2, 0, i);
+            //qua vanno messi il numero di player di ogni lobby
+            Text t3 = new Text("Players: 2/4");
+            t3.setFont(new Font(55));
+            t3.setFill(javafx.scene.paint.Color.WHITE);
+            t3.setStrokeWidth(1.7);
+            t3.setStroke(javafx.scene.paint.Color.BLACK);
+            gp.add(t3, 1, i);
+            buttonList.get(i).setFont(new Font(30));
+            buttonList.get(i).setPrefSize(230, 30);
             int finalI = i;
             buttonList.get(i).setOnAction(event -> {
                 //aggiungere il player alla lobby i-esima
                 stage.getScene().setRoot(this.loginPage(stage, finalI));
             });
-            gp.add(buttonList.get(i), 3, i);
+            gp.add(buttonList.get(i), 2, i);
         }
         gp.setHgap(30);
         gp.setVgap(30);
 
         Button b2 = new Button("Create a new lobby");
-        b2.setFont(new Font(30));
-        b2.setPrefSize(350, 50);
+        b2.setFont(new Font(35));
+        b2.setPrefSize(380, 50);
         b2.setOnAction(event -> {
             stage.getScene().setRoot(this.loginPage(stage, lobbies.size()));
         });
@@ -101,32 +111,38 @@ public class Gui extends Application {
         h2.setPadding(new Insets(0,0,100,0));
 
         BorderPane bp = new BorderPane();
+        bp.setTop(h1);
         bp.setCenter(gp);
         bp.setBottom(h2);
-        BackgroundImage i = new BackgroundImage(new Image(getClass().getResourceAsStream("/manuscript_wallpaper.jpg")), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(1.0, 1.0, true, true, false, false));
+        BackgroundImage i = new BackgroundImage(new Image(getClass().getResourceAsStream("/forest_background.jpeg")), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(1.0, 1.0, true, true, false, false));
         bp.setBackground(new Background(i));
         return bp;
     }
 
     public Pane loginPage(Stage stage, int selectedLobby) {
 
-        Text t1 = new Text("Username :  ");
-        t1.setFont(new Font(45));
+        Text t1 = new Text("Username:  ");
+        t1.setFont(new Font(60));
         t1.setFill(javafx.scene.paint.Color.WHITE);
-        t1.setStrokeWidth(1.5);
+        t1.setStrokeWidth(1.8);
         t1.setStroke(javafx.scene.paint.Color.BLACK);
+        Text t2 = new Text("Color:  ");
+        t2.setFont(new Font(60));
+        t2.setFill(javafx.scene.paint.Color.WHITE);
+        t2.setStrokeWidth(1.8);
+        t2.setStroke(javafx.scene.paint.Color.BLACK);
         TextField text = new TextField();
-        text.setPrefSize(200,50);
-        Label l2 = new Label("Color:  ");
-        l2.setFont(new Font(30));
+        text.setPrefSize(350, 75);
+        text.setFont(new Font(30));
         ChoiceBox<String> cb = new ChoiceBox<>();
         //aggiungere solo i colori che non sono già stati scelti
         cb.getItems().add("red");
         cb.getItems().add("green");
         cb.getItems().add("blue");
         cb.getItems().add("yellow");
+        cb.setStyle("-fx-font-size: 30");
         cb.getSelectionModel().selectFirst();
-        cb.setPrefSize(200,40);
+        cb.setPrefSize(250,75);
         Button b1 = new Button("Next");
         b1.setFont(new Font(20));
         b1.setPrefSize(200,40);
@@ -162,7 +178,7 @@ public class Gui extends Application {
         //username and color
         HBox h2 = new HBox(t1,text);
         h2.setAlignment(Pos.CENTER);
-        HBox h3 = new HBox(l2,cb);
+        HBox h3 = new HBox(t2,cb);
         h3.setAlignment(Pos.CENTER);
         VBox v1 = new VBox(h2 ,h3);
         v1.setAlignment(Pos.CENTER);
@@ -196,22 +212,39 @@ public class Gui extends Application {
         h1.setAlignment(Pos.TOP_LEFT);
         h1.setPadding(new Insets(20,0,0,20));
 
-        Label l1 = new Label("Lobby " + String.valueOf(lobby + 1));
-        l1.setFont(new Font(45));
-        Label l2 = new Label("Players in lobby: " + "numero di player della lobby " + String.valueOf(lobby + 1));
-        l2.setFont(new Font(30));
-        Label l3 = new Label("Waiting for other players...");
-        l3.setFont(new Font(30));
+        Text t1 = new Text("Lobby " + String.valueOf(lobby + 1));
+        t1.setFont(new Font(60));
+        t1.setFill(javafx.scene.paint.Color.WHITE);
+        t1.setStrokeWidth(1.8);
+        t1.setStroke(javafx.scene.paint.Color.BLACK);
+        Text t2 = new Text("Players in lobby: " + "numero di player della lobby " + String.valueOf(lobby + 1));
+        t2.setFont(new Font(30));
+        t2.setFill(javafx.scene.paint.Color.WHITE);
+        t2.setStrokeWidth(1.5);
+        t2.setStroke(javafx.scene.paint.Color.BLACK);
+        Text t3 = new Text("Waiting for other players...");
+        t3.setFont(new Font(30));
+        t3.setFill(javafx.scene.paint.Color.WHITE);
+        t3.setStrokeWidth(1.5);
+        t3.setStroke(javafx.scene.paint.Color.BLACK);
 
-        VBox v1 = new VBox(l1, l2, l3);
+        VBox v1 = new VBox(t1, t2, t3);
         v1.setAlignment(Pos.CENTER);
         v1.setSpacing(30);
 
         BorderPane bp = new BorderPane();
         bp.setTop(h1);
         bp.setCenter(v1);
-        BackgroundImage i = new BackgroundImage(new Image(getClass().getResourceAsStream("/manuscript_wallpaper.jpg")), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(1.0, 1.0, true, true, false, false));
+        BackgroundImage i = new BackgroundImage(new Image(getClass().getResourceAsStream("/forest_background.jpeg")), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(1.0, 1.0, true, true, false, false));
         bp.setBackground(new Background(i));
+
+        Timeline t = new Timeline(new KeyFrame(Duration.seconds(5), event2 -> {
+            StarterCard s = new StarterCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}, 1, new CardBack(new ArrayList<>(List.of(Symbols.FUNGI, Symbols.PLANT, Symbols.ANIMAL)), Color.WHITE, new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY)}));
+            stage.getScene().setRoot(this.starterFlip(stage, s, true));
+        }));
+        t.setCycleCount(1);
+        t.play();
+
         return bp;
     }
 
@@ -219,11 +252,17 @@ public class Gui extends Application {
 
         BorderPane bp = new BorderPane();
 
-        Label l1 = new Label("Your starter card:");
-        l1.setFont(new Font(45));
-        Label l2 = new Label("Click the card to flip");
-        l2.setFont(new Font(35));
-        VBox v1 = new VBox(l1, l2);
+        Text t1 = new Text("Your starter card:");
+        t1.setFont(new Font(65));
+        t1.setFill(javafx.scene.paint.Color.WHITE);
+        t1.setStrokeWidth(1.8);
+        t1.setStroke(javafx.scene.paint.Color.BLACK);
+        Text t2 = new Text("Click the card to flip");
+        t2.setFont(new Font(50));
+        t2.setFill(javafx.scene.paint.Color.ORANGE);
+        t2.setStrokeWidth(1.8);
+        t2.setStroke(javafx.scene.paint.Color.BLACK);
+        VBox v1 = new VBox(t1, t2);
         v1.setAlignment(Pos.TOP_CENTER);
         v1.setPadding(new Insets(100,0,0,0));
 
@@ -267,7 +306,7 @@ public class Gui extends Application {
                 stage.getScene().setRoot(this.starterFlip(stage, starter,true));
             }
             else if(result.get().getText().equals("Confirm")){
-                stage.getScene().setRoot(this.loginPage(stage, 3));
+                stage.getScene().setRoot(this.achievementChoice(stage));
             }
             else if(result.get().getText().equals("Cancel")){
                 stage.getScene().setRoot(this.starterFlip(stage, starter,true));
@@ -290,5 +329,98 @@ public class Gui extends Application {
         bp.setBackground(new Background(i));
         return bp;
     }
+
+    public Pane achievementChoice(Stage stage){
+
+        BorderPane bp = new BorderPane();
+
+        Text t1 = new Text("Choose your achievement:");
+        t1.setFont(new Font(65));
+        t1.setFill(javafx.scene.paint.Color.WHITE);
+        t1.setStrokeWidth(1.8);
+        t1.setStroke(javafx.scene.paint.Color.BLACK);
+        Text t2 = new Text("Click the card to choose");
+        t2.setFont(new Font(50));
+        t2.setFill(javafx.scene.paint.Color.ORANGE);
+        t2.setStrokeWidth(1.8);
+        t2.setStroke(javafx.scene.paint.Color.BLACK);
+        VBox v1 = new VBox(t1, t2);
+        v1.setAlignment(Pos.TOP_CENTER);
+        v1.setPadding(new Insets(100,0,0,0));
+
+        //int number1 = achievements[0].getCardNumber();
+        //int number2 = achievements[1].getCardNumber();
+        Image front1 = new Image(getClass().getResourceAsStream("/cards/fronts/" + "095" + ".png"));
+        ImageView frontView1 = new ImageView(front1);
+        frontView1.setFitHeight(42*6);
+        frontView1.setFitWidth(63*6);
+        Button b1 = new Button();
+        b1.setPrefSize((63*6), (42*6));
+        b1.setGraphic(frontView1);
+        b1.setStyle(
+                "-fx-background-color: transparent;" +
+                "-fx-border-color: transparent"
+        );
+        b1.setOnAction(event -> {
+            Alert a = new Alert(Alert.AlertType.CONFIRMATION);
+            ButtonType yes = new ButtonType("Confirm");
+            ButtonType no = new ButtonType("Cancel");
+            a.setTitle("Choosing achievement card");
+            a.setHeaderText("Do you want to choose this achievement?");
+            a.getButtonTypes().clear();
+            a.getButtonTypes().addAll(no, yes);
+            Optional<ButtonType> result = a.showAndWait();
+            if(result.isEmpty()){
+                stage.getScene().setRoot(this.achievementChoice(stage));
+            }
+            else if(result.get().getText().equals("Confirm")){
+                stage.getScene().setRoot(this.loginPage(stage, 3));
+            }
+            else if(result.get().getText().equals("Cancel")){
+                stage.getScene().setRoot(this.achievementChoice(stage));
+            }
+        });
+
+        Image front2 = new Image(getClass().getResourceAsStream("/cards/fronts/" + "100" + ".png"));
+        ImageView frontView2 = new ImageView(front2);
+        frontView2.setFitHeight(42*6);
+        frontView2.setFitWidth(63*6);
+        Button b2 = new Button("Place starter card");
+        b2.setPrefSize((63*6), (42*6));
+        b2.setGraphic(frontView2);
+        b2.setStyle(
+                "-fx-background-color: transparent;" +
+                        "-fx-border-color: transparent"
+        );
+        b2.setOnAction(event -> {
+            Alert a = new Alert(Alert.AlertType.CONFIRMATION);
+            ButtonType yes = new ButtonType("Confirm");
+            ButtonType no = new ButtonType("Cancel");
+            a.setTitle("Choosing achievement card");
+            a.setHeaderText("Do you want to choose this achievement?");
+            a.getButtonTypes().clear();
+            a.getButtonTypes().addAll(no, yes);
+            Optional<ButtonType> result = a.showAndWait();
+            if(result.isEmpty()){
+                stage.getScene().setRoot(this.achievementChoice(stage));
+            }
+            else if(result.get().getText().equals("Confirm")){
+                stage.getScene().setRoot(this.loginPage(stage, 3));
+            }
+            else if(result.get().getText().equals("Cancel")){
+                stage.getScene().setRoot(this.achievementChoice(stage));
+            }
+        });
+        HBox h1 = new HBox(b1, b2);
+        h1.setAlignment(Pos.CENTER);
+        h1.setSpacing(50);
+
+        bp.setTop(v1);
+        bp.setCenter(h1);
+        BackgroundImage i = new BackgroundImage(new Image(getClass().getResourceAsStream("/wood_background.jpg")), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(1.0, 1.0, true, true, false, false));
+        bp.setBackground(new Background(i));
+        return bp;
+    }
+
 
 }
