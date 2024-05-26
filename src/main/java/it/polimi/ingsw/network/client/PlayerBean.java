@@ -37,7 +37,6 @@ public class PlayerBean {
     public Card[] getHand() {
         return hand;
     }
-    //TODO: forse meglio farlo con carte e equals
     public Card getCard(int i){
         return hand[i];
     }

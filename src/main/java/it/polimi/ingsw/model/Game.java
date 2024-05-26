@@ -60,7 +60,6 @@ public class Game extends Observable implements Serializable {
         if (!this.gameFull){
             throw new NotEnoughPlayersException();
         }
-        this.gameState = GameState.START;
         //Decks are shuffled
         Collections.shuffle(gameBoard.getStarterDeck());
         Collections.shuffle(gameBoard.getAchievementDeck());
@@ -94,15 +93,13 @@ public class Game extends Observable implements Serializable {
         //the first player is chosen in a random way
         Collections.shuffle(players);
         setFirstPlayer();
-        this.gameState = GameState.IN_GAME;
     }
 
-    public void endGame() throws GameNotStartedException {
+    public ArrayList<Player> endGame() throws GameNotStartedException {
         if(!this.gameState.equals(GameState.IN_GAME)){
             throw new GameNotStartedException();
         }
         this.gameState = GameState.END;
-        notifyAll(new GenericMessage("game ended, counting objective points..."));
         int endPoints;
         for (Player p: players){
             endPoints = p.getPoints();
@@ -118,7 +115,7 @@ public class Game extends Observable implements Serializable {
                 }
             }
         }
-        /** the winner is chosen by the number of points */
+        //the winner is chosen by the number of points
         int max = 0;
         ArrayList<Player> winners = new ArrayList<>();
         for (Player p: players){
@@ -135,14 +132,14 @@ public class Game extends Observable implements Serializable {
                 max = p.getPoints();
             }
         }
-        notifyAll(new WinnerMessage(winners));
+        return winners;
     }
 
-    public void endGameByDisconnection(Player lastManStanding){
+    public Player endGameByDisconnection(Player lastManStanding){
         notifyAll(new GenericMessage("game ended due to lack of players"));
-        ArrayList<Player> winners = new ArrayList<>();
-        winners.add(lastManStanding);
-        notifyAll(new WinnerMessage(winners));
+        this.gameState = GameState.END;
+        Player winner = lastManStanding;
+        return winner;
     }
 
     private void setFirstPlayer()

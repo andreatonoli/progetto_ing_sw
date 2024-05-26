@@ -15,7 +15,6 @@ public interface Ui{
     String askServerAddress();
     int askServerPort(String connectionType);
     int selectGame(int freeLobbies);
-    void showText(String text);
     int setLobbySize();
     boolean askSide();
     void printView(PlayerBean player, GameBean game, ArrayList<PlayerBean> players);
@@ -27,5 +26,6 @@ public interface Ui{
     void printAchievement(Achievement achievement);
     Achievement chooseAchievement(Achievement[] choices);
     Color chooseColor(List<Color> colors);
-    void setError(String error);
+    void setMessage(String message, boolean isError);
+    void declareWinners(ArrayList<String> winners);
 }

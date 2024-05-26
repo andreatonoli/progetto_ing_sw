@@ -53,14 +53,14 @@ public class FlipTest {
     public void FlipPlaceTest() {
         Game game = new Game(4);
         Player player = new Player("pippo", game);
-        //a is a green card => has a permanent plant symbol on its back
+        //a is a green card, so it has a permanent plant symbol on its back
         ResourceCard a = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), new Corner(Symbols.PLANT), new Corner(Symbols.NOCORNER)}, 19, 1);
         StarterCard s = new StarterCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}, 2, new CardBack(new ArrayList<>(List.of(Symbols.FUNGI)), Color.WHITE, new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY)}));
         player.setPlayerState(PlayerState.PLAY_CARD);
         player.getPlayerBoard().setStarterCard(s);
         player.addInHand(a);
         a.setCurrentSide();
-        assertDoesNotThrow(()->{player.placeCard(a, new int[]{0,0});});
+        assertDoesNotThrow(()-> player.placeCard(a, new int[]{-1,-1}));
         assertEquals(2, player.getPlayerBoard().getPositionCardKeys().size());
         //Back points = 0 (always)
         assertEquals(0, player.getPoints());
@@ -113,7 +113,7 @@ public class FlipTest {
         assertNotNull(player.getPlayerBoard().getCard(new int[]{0,0}).getSymbols());
         assertEquals(Symbols.FUNGI, player.getPlayerBoard().getCard(new int[]{0,0}).getSymbols().getFirst());
         //BR corner of s retro isn't available
-        assertThrows(OccupiedCornerException.class, ()->{player.placeCard(a, new int[]{0,0});});
+        assertThrows(OccupiedCornerException.class, ()-> player.placeCard(a, new int[]{1,-1}));
         //Check if the card was not placed
         assertEquals(1, player.getPlayerBoard().getCardPosition().size());
         assertEquals(1, player.getPlayerBoard().getSymbolCount(Symbols.FUNGI));

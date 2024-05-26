@@ -4,11 +4,11 @@ import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.server.Server;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 
 public class WinnerMessage extends Message{
     ArrayList<String> winners = new ArrayList<>();
-    public WinnerMessage(ArrayList<Player> winners){
+    public WinnerMessage(List<Player> winners){
         super(MessageType.DECLARE_WINNER, Server.serverName);
         for (Player winner : winners) {
             this.winners.add(winner.getUsername());

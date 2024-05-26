@@ -28,7 +28,7 @@ public class Tui implements Ui{
     private final Scanner scanner;
     private final PrintStream out;
     private final Object lock = new Object();
-    private final boolean running = true;
+    private boolean running = true;
     private Thread inputThread = new Thread(() -> {
         Scanner input = new Scanner(System.in);
         while (running) {
@@ -37,12 +37,13 @@ public class Tui implements Ui{
                 handleInput(choice);
             }
         }
-        //input.close();
+        input.close();
     });
     //TODO: TROVA UN MODO MIGLIORE PER FAVORE
     private PlayerBean player;
     private GameBean game;
     private ArrayList<PlayerBean> players;
+    private String message;
 
     public Tui(){
         scanner = new Scanner(System.in);
@@ -165,11 +166,6 @@ public class Tui implements Ui{
             choice = scanner.nextLine();
         }
         return choice.equalsIgnoreCase("f");
-    }
-
-    @Override
-    public void showText(String text){
-        System.out.println(text);
     }
 
     public String[][] createPrintableCard(PlayerBoard playerBoard, Card card) {
@@ -958,34 +954,46 @@ public class Tui implements Ui{
                 System.out.println(TuiColors.getColor(TuiColors.ANSI_RED) + error + TuiColors.getColor(TuiColors.ANSI_RESET));
                 error = "";
             }
-            if (player.getState().equals(PlayerState.PLAY_CARD)){
-                playerInTurn = player;
-                System.out.println("Play a card");
+            if(!message.isEmpty()){
+                System.out.println(message);
+                message = "";
             }
-            else if(player.getState().equals(PlayerState.DRAW_CARD)){
-                playerInTurn = player;
-                System.out.println("Draw a card");
+            if (game.getState().equals(GameState.START)){
+                System.out.println("Waiting for all players to end their setup");
+            } else if(game.getState().equals(GameState.END)){
+                System.out.println("\nGG to everyone");
+                this.running = false;
             }
             else{
-                for(PlayerBean p : players){
-                    if(!p.getState().equals(PlayerState.NOT_IN_TURN)){
-                        playerInTurn = p;
-                        break;
-                    }
+                if (player.getState().equals(PlayerState.PLAY_CARD)){
+                    playerInTurn = player;
+                    System.out.println("Play a card");
                 }
-                System.out.println(playerInTurn.getUsername() + "'s turn. Wait for your turn to play");
+                else if(player.getState().equals(PlayerState.DRAW_CARD)){
+                    playerInTurn = player;
+                    System.out.println("Draw a card");
+                }
+                else{
+                    for(PlayerBean p : players){
+                        if(!p.getState().equals(PlayerState.NOT_IN_TURN)){
+                            playerInTurn = p;
+                            break;
+                        }
+                    }
+                    System.out.println(playerInTurn.getUsername() + "'s turn. Wait for your turn to play");
+                }
+                System.out.println();
+                System.out.println("Press [1] to view a card from your hand");
+                System.out.println("Press [2] to view a card from your board");
+                System.out.println("Press [3] to view another player's board");
+                if(playerInTurn.getUsername().equals(username) && playerInTurn.getState().equals(PlayerState.PLAY_CARD)){
+                    System.out.println("Press [4] to place a card");
+                }
+                else if(playerInTurn.getUsername().equals(username) && playerInTurn.getState().equals(PlayerState.DRAW_CARD)){
+                    System.out.println("Press [4] to draw a card");
+                }
+                System.out.println("Press [c] anytime to send a message");
             }
-            System.out.println();
-            System.out.println("Press [1] to view a card from your hand");
-            System.out.println("Press [2] to view a card from your board");
-            System.out.println("Press [3] to view another player's board");
-            if(playerInTurn.getUsername().equals(username) && playerInTurn.getState().equals(PlayerState.PLAY_CARD)){
-                System.out.println("Press [4] to place a card");
-            }
-            else if(playerInTurn.getUsername().equals(username) && playerInTurn.getState().equals(PlayerState.DRAW_CARD)){
-                System.out.println("Press [4] to draw a card");
-            }
-            System.out.println("Press [c] anytime to send a message");
             //clearConsole();
             //this.printView(player, game, players);
         }
@@ -1199,14 +1207,22 @@ public class Tui implements Ui{
                             coord[0] = Integer.parseInt(a);
                             System.out.println("Type column number");
                             a = input.next();
+                            clearConsole();
+                            this.printView(player, game, players);
                             while (!a.equals("c") && Integer.parseInt(a) > PLAYERBOARD_DIM) {
                                 System.out.println("Retype column number");
                                 a = input.next();
                                 clearConsole();
                                 this.printView(player, game, players);
                             }
-                            if (a.equals("c")) {
-                                this.printChat(player, game, players);
+                            if(a.equals("c")){
+                                this.printView(player, game, players);
+                            }
+                            else{
+                                coord[1] = Integer.parseInt(a);
+                                clearConsole();
+                                this.printView(player, game, players);
+                                this.printCardFromPlayerBoard(pBoard, coord);
                             }
                         }
                         clearConsole();
@@ -1364,20 +1380,10 @@ public class Tui implements Ui{
         input.nextLine();
         String m = input.nextLine();
         if (u == players.size() + 1) {
-            //for (PlayerBean p : players) {
-            //    if (p.getUsername().equals(username)) {
-                    client.sendChatMessage(m);
-                    System.out.println("messaggio globale");
-            //    }
-            //}
+            client.sendChatMessage(m);
         }
         else {
-            //for (PlayerBean p : players) {
-            //    if (p.getUsername().equals(username)) {
-                    client.sendChatMessage(players.get(u - 1).getUsername(), m);
-                    System.out.println("messaggio privato");
-            //    }
-            //}
+            client.sendChatMessage(players.get(u - 1).getUsername(), m);
         }
         clearConsole();
         this.printView(player, game, players);
@@ -1614,7 +1620,25 @@ public class Tui implements Ui{
         return colors.get(c - 1);
     }
     @Override
-    public void setError(String error){
-        this.error = error;
+    public void setMessage(String message, boolean isError){
+        if(isError){
+            this.error = message;
+        }
+        else{
+            this.message = message;
+        }
+    }
+
+    @Override //TODO: occhio al warning
+    public void declareWinners(ArrayList<String> winners){
+        if (winners.size() == 1){
+           message = "The winner is: " + winners.getFirst();
+        }
+        else{
+            message = "The winners are: \n";
+            for (String s : winners){
+                message += "\t" + s + "\n";
+            }
+        }
     }
 }

@@ -8,7 +8,6 @@ import java.util.List;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.card.*;
 import it.polimi.ingsw.model.enums.Color;
-import it.polimi.ingsw.model.enums.CornerEnum;
 import it.polimi.ingsw.model.enums.PlayerState;
 import it.polimi.ingsw.model.enums.Symbols;
 import it.polimi.ingsw.model.exceptions.*;
@@ -41,7 +40,7 @@ public class AchievementTest {
         Card c = new ResourceCard(new Corner[]{new Corner(Symbols.INSECT), new Corner(Symbols.PLANT), new Corner(Symbols.NOCORNER), new Corner(Symbols.INKWELL) }, 37, 0);
         Player p = new Player("pippo", game);
         int offset = 5; //Added some points to the player to see if calcPoints adds 0 points
-        //Added some cards to the playerboard. None of them is red
+        //Added some cards to the player board. None of them is red
         p.getPlayerBoard().setCardPosition(c, new int[]{0,0});
         p.getPlayerBoard().setCardPosition(c, new int[]{-1,1});
         p.getPlayerBoard().setCardPosition(c, new int[]{1,-1});
@@ -84,11 +83,11 @@ public class AchievementTest {
         //Place some cards
         p.getPlayerBoard().setStarterCard(s);
         try {
-            p.placeCard(b, new int[]{0,0});
-            p.placeCard(c, new int[]{0,0});
-            p.placeCard(d, new int[]{0,0});
-            p.placeCard(e, new int[]{0,0});
-            p.placeCard(f, new int[]{-1,1});
+            p.placeCard(b, new int[]{-1,1});
+            p.placeCard(c, new int[]{1,1});
+            p.placeCard(d, new int[]{-1,-1});
+            p.placeCard(e, new int[]{1,-1});
+            p.placeCard(f, new int[]{-2,0});
         } catch (OccupiedCornerException | NotInTurnException | CostNotSatisfiedException |
                  AlreadyUsedPositionException | InvalidCoordinatesException ex) {
             System.out.println(ex.getMessage());
@@ -142,11 +141,11 @@ public class AchievementTest {
         p.setPlayerState(PlayerState.PLAY_CARD);
         //place the cards
         try {
-            p.placeCard(e, new int[]{0,0});
-            p.placeCard(f, new int[]{0,0});
-            p.placeCard(g, new int[]{0,0});
-            p.placeCard(h, new int[]{0,0});
-            p.placeCard(i, new int[]{1,1});
+            p.placeCard(e, new int[]{-1,1});
+            p.placeCard(f, new int[]{1,1});
+            p.placeCard(g, new int[]{-1,-1});
+            p.placeCard(h, new int[]{1,-1});
+            p.placeCard(i, new int[]{0,2});
         } catch (OccupiedCornerException | NotInTurnException | CostNotSatisfiedException |
                  AlreadyUsedPositionException | InvalidCoordinatesException ex) {
             System.out.println(ex.getMessage());
@@ -197,17 +196,17 @@ public class AchievementTest {
         p.setPlayerState(PlayerState.PLAY_CARD);
         p.getPlayerBoard().setStarterCard(s);
         try {
-            p.placeCard(r1, new int[]{0, 0});
-            p.placeCard(r2, new int[]{0, 0});
-            p.placeCard(g1, new int[]{1, -1});
-            p.placeCard(b1, new int[]{1, -1});
-            p.placeCard(place1, new int[]{2, -2});
-            p.placeCard(place2, new int[]{0, -2});
-            p.placeCard(b2, new int[]{-1, -3});
-            p.placeCard(g2, new int[]{3, -3});
-            p.placeCard(p1, new int[]{0, -4});
-            p.placeCard(place3, new int[]{1, -5});
-            p.placeCard(p2, new int[]{0, -6});
+            p.placeCard(r1, new int[]{1, 1});
+            p.placeCard(r2, new int[]{1, -1});
+            p.placeCard(g1, new int[]{2, -2});
+            p.placeCard(b1, new int[]{0, -2});
+            p.placeCard(place1, new int[]{3, -3});
+            p.placeCard(place2, new int[]{-1, -3});
+            p.placeCard(b2, new int[]{0, -4});
+            p.placeCard(g2, new int[]{2, -4});
+            p.placeCard(p1, new int[]{1, -5});
+            p.placeCard(place3, new int[]{0, -6});
+            p.placeCard(p2, new int[]{1, -7});
         } catch (OccupiedCornerException | NotInTurnException | CostNotSatisfiedException |
                  AlreadyUsedPositionException | InvalidCoordinatesException ex) {
             System.out.println(ex.getMessage());
@@ -246,17 +245,17 @@ public class AchievementTest {
         p.getPlayerBoard().setStarterCard(s);
         //Placing the cards
         try {
-            p.placeCard(r1, new int[]{0, 0});
-            p.placeCard(r2, new int[]{0, 0});
-            p.placeCard(g1, new int[]{1, -1});
-            p.placeCard(g2, new int[]{2, -2});
-            p.placeCard(g3, new int[]{3, -3});
-            p.placeCard(b1, new int[]{1, -1});
-            p.placeCard(p3, new int[]{2, -2});
-            p.placeCard(b2, new int[]{3, -3});
-            p.placeCard(p1, new int[]{0, 0});
-            p.placeCard(b3, new int[]{4, -4});
-            p.placeCard(p2, new int[]{2, -2});
+            p.placeCard(r1, new int[]{1, 1});
+            p.placeCard(r2, new int[]{1, -1});
+            p.placeCard(g1, new int[]{2, -2});
+            p.placeCard(g2, new int[]{3, -3}); //
+            p.placeCard(g3, new int[]{4, -4});
+            p.placeCard(b1, new int[]{0, -2});
+            p.placeCard(p3, new int[]{-1, -3});
+            p.placeCard(b2, new int[]{-1, 1});
+            p.placeCard(p1, new int[]{-1, -1});
+            p.placeCard(b3, new int[]{-2, 2});
+            p.placeCard(p2, new int[]{2, 2});
         } catch (OccupiedCornerException | NotInTurnException | CostNotSatisfiedException |
                  AlreadyUsedPositionException | InvalidCoordinatesException ex) {
             System.out.println(ex.getMessage());

@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.card.Achievement;
 import it.polimi.ingsw.model.card.Card;
 import it.polimi.ingsw.model.enums.Color;
+import it.polimi.ingsw.model.enums.GameState;
 import it.polimi.ingsw.model.exceptions.*;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.messages.*;
@@ -96,6 +97,8 @@ public class Controller extends Observable {
         game.addPlayer(player);
         notifyAll(new GenericMessage("Players: " + this.connectedPlayers.keySet().size() + "/" + this.game.getLobbySize()));
         if (game.isFull()){
+            game.setGameState(GameState.START);
+            notifyAll(new GameStateMessage(game.getGameState()));
             this.startGame();
             return true;
         }
@@ -119,10 +122,10 @@ public class Controller extends Observable {
         }
         notifyAll(new OpponentsMessage(players));
         //Sends the common resource and gold cards
-        notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_RESOURCE_UPDATE, game.getGameBoard().getCommonResource()[0]));
-        notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_RESOURCE_UPDATE, game.getGameBoard().getCommonResource()[1]));
-        notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_GOLD_UPDATE, game.getGameBoard().getCommonResource()[0]));
-        notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_GOLD_UPDATE, game.getGameBoard().getCommonResource()[1]));
+        notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_RESOURCE_UPDATE, game.getGameBoard().getCommonResource()[0], 0));
+        notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_RESOURCE_UPDATE, game.getGameBoard().getCommonResource()[1], 1));
+        notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_GOLD_UPDATE, game.getGameBoard().getCommonGold()[0], 0));
+        notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_GOLD_UPDATE, game.getGameBoard().getCommonGold()[1], 1));
         //Sends the common achievements to the players
         notifyAll(new AchievementMessage(MessageType.COMMON_ACHIEVEMENT, game.getGameBoard().getCommonAchievement()));
         //sends the color of the first card of the deck
@@ -163,8 +166,7 @@ public class Controller extends Observable {
             Card drawedCard = this.getPlayerByClient(user).drawCard(deck);
             if (game.getGameBoard().decksAreEmpty() && !endingCycle){
                 endingCycle = true;
-                turnHandler.startEnd();
-                notifyAll(new GenericMessage("both decks are empty, at the end of the current round will start the last one"));
+                turnHandler.startEnd(this.getPlayerByClient(user));
             }
             turnHandler.changePlayerState(this.getPlayerByClient(user));
             notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState(), user.getUsername()));
@@ -183,17 +185,26 @@ public class Controller extends Observable {
     public void drawCardFromBoard(Connection user, int index){
         try {
             Card card;
+            boolean isGold;
             if(index <= 1){
                 card = game.getGameBoard().getCommonResource()[index];
+                isGold = false;
             }
             else if(index <=3){
                 card = game.getGameBoard().getCommonGold()[index-2];
+                isGold = true;
             }
             else{
                 //TODO: errore profondo
                 return;
             }
             Card drawedCard = this.getPlayerByClient(user).drawCardFromBoard(card);
+            if (isGold){
+                notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_GOLD_UPDATE, game.getGameBoard().getCommonGold()[index-2], index-2));
+            }
+            else{
+                notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_RESOURCE_UPDATE, game.getGameBoard().getCommonResource()[index], index));
+            }
             turnHandler.changePlayerState(this.getPlayerByClient(user));
             notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState(), user.getUsername()));
             user.sendMessage(new UpdateCardMessage(drawedCard));
@@ -225,8 +236,7 @@ public class Controller extends Observable {
             p.placeCard(card, coordinates);
             if (p.isFirstToEnd() && !endingCycle){
                 endingCycle = true;
-                turnHandler.startEnd();
-                notifyAll(new GenericMessage(p.getUsername() + " reached 20 points, at the end of the current round will start the last one"));
+                turnHandler.startEnd(this.getPlayerByClient(user));
             }
             turnHandler.changePlayerState(p);
             //notifies all players the changed made by user
@@ -275,6 +285,8 @@ public class Controller extends Observable {
         playerInTurn = turnHandler.changeSetupPlayer();
         if (playerInTurn == null){
             setupFinished = true;
+            game.setGameState(GameState.IN_GAME);
+            notifyAll(new GameStateMessage(game.getGameState()));
         }
     }
 

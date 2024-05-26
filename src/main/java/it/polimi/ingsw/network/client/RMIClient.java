@@ -2,6 +2,7 @@ package it.polimi.ingsw.network.client;
 
 import it.polimi.ingsw.model.card.Achievement;
 import it.polimi.ingsw.model.enums.Color;
+import it.polimi.ingsw.model.enums.GameState;
 import it.polimi.ingsw.model.enums.PlayerState;
 import it.polimi.ingsw.model.player.PlayerBoard;
 import it.polimi.ingsw.network.messages.*;
@@ -125,6 +126,13 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                 //TODO: Controlla come viene passato il paramentro e cerca di passare una copia
                 this.opponents = ((ReconnectionMessage) message).getOpponents();
                 break;
+            case GAME_STATE:
+                GameState state = ((GameStateMessage) message).getState();
+                game.setState(state);
+                if (state.ordinal() >= 2){
+                    this.view.printViewWithCommands(player, game, opponents);
+                }
+                break;
             case OPPONENTS:
                 ArrayList<String> playersName = ((OpponentsMessage) message).getPlayers();
                 for (String s : playersName){
@@ -134,20 +142,12 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                 }
                 break;
             case COMMON_GOLD_UPDATE:
-                if(game.getCommonGold()[0] == null){
-                    game.setCommonGold(0,((CommonCardUpdateMessage) message).getCard());
-                }
-                else{
-                    game.setCommonGold(1,((CommonCardUpdateMessage) message).getCard());
-                }
+                int index = ((CommonCardUpdateMessage) message).getIndex();
+                game.setCommonGold(index, ((CommonCardUpdateMessage) message).getCard());
                 break;
             case COMMON_RESOURCE_UPDATE:
-                if(game.getCommonResources()[0] == null){
-                    game.setCommonResources(0,((CommonCardUpdateMessage) message).getCard());
-                }
-                else{
-                    game.setCommonResources(1,((CommonCardUpdateMessage) message).getCard());
-                }
+                int index1 = ((CommonCardUpdateMessage) message).getIndex();
+                game.setCommonResources(index1, ((CommonCardUpdateMessage) message).getCard());
                 break;
             case COMMON_ACHIEVEMENT:
                 System.arraycopy(((AchievementMessage) message).getAchievements(), 0, game.getCommonAchievement(), 0, 2);
@@ -266,13 +266,14 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                 break;
             case DECLARE_WINNER:
                 ArrayList<String> winners = ((WinnerMessage) message).getWinners();
-                //TODO creare metodo nella tui
+                this.view.declareWinners(winners);
+                //TODO cancellaare riferimenti dal server
                 break;
             case GENERIC_MESSAGE:
-                this.view.showText(message.toString());
+                this.view.setMessage(message.toString(), false);
                 break;
             case ERROR:
-                this.view.setError(message.toString());
+                this.view.setMessage(message.toString(), true);
                 this.view.printViewWithCommands(player, game, opponents);
                 break;
             default:
@@ -306,7 +307,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
     @Override
     public void placeCard(Card card, int[] placingCoordinates) {
         if (player.getState().equals(PlayerState.PLAY_CARD)) {
-            try {
+            try { //TODO: imparare a leggere una griglia per capire se così traspongo giuste le coordinate
                 placingCoordinates[0] = placingCoordinates[0] - 6;
                 placingCoordinates[1] = 6 - placingCoordinates[1];
                 server.placeCard(card, placingCoordinates, username);

@@ -234,7 +234,6 @@ public class SocketConnection extends Connection implements Runnable {
                 break;
             case COLOR_RESPONSE:
                 Color chosenColor = ((ColorResponseMessage) message).getColor();
-                System.err.println(chosenColor);
                 lobby.addAction(new ActionMessage(this, () -> lobby.setColor(this, chosenColor)));
                 break;
             case GENERIC_MESSAGE:

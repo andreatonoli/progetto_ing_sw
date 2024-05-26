@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.polimi.ingsw.model.exceptions.CostNotSatisfiedException;
+import it.polimi.ingsw.model.exceptions.InvalidCoordinatesException;
 import it.polimi.ingsw.model.exceptions.NotInTurnException;
 import it.polimi.ingsw.model.exceptions.OccupiedCornerException;
 import it.polimi.ingsw.model.player.Player;
@@ -110,8 +111,8 @@ public class PlaceTest{
         player.setPlayerState(PlayerState.PLAY_CARD);
         player.getPlayerBoard().setStarterCard(s);
         assertDoesNotThrow(()->{
-            player.placeCard(a, new int[]{0,0});
-            player.placeCard(b, new int[]{0,0});
+            player.placeCard(a, new int[]{1,1});
+            player.placeCard(b, new int[]{1,-1});
         });
         //check the correct placement of the 2 cards
         assertEquals(a, player.getPlayerBoard().getCard(new int[]{1,1}));
@@ -125,7 +126,7 @@ public class PlaceTest{
         int Bsize = player.getPlayerBoard().getPositionCardKeys().size();
         int Bpoint = player.getPoints();
         //a's BR corner is hidden, so we cannot place the b card on that spot
-        assertThrows(OccupiedCornerException.class, ()-> player.placeCard(d, new int[]{1,-1}));
+        assertThrows(OccupiedCornerException.class, ()-> player.placeCard(d, new int[]{2, 0}));
         //Check if the card was not placed => nothing changed
         assertNull(player.getPlayerBoard().getCard(new int[]{2,0}));
         assertFalse(player.getPlayerBoard().getCardPosition().containsValue(d));
@@ -147,7 +148,7 @@ public class PlaceTest{
         GoldCard b = new GoldCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 3, Condition.NOTHING, 17, new Integer[]{0, plantCost, 0, 0}, null);
         player.setPlayerState(PlayerState.PLAY_CARD);
         player.getPlayerBoard().setStarterCard(s);
-        assertThrows(CostNotSatisfiedException.class, ()-> player.placeCard(b, new int[]{0,0}));
+        assertThrows(CostNotSatisfiedException.class, ()-> player.placeCard(b, new int[]{1,1}));
         //Check if the card was not placed
         assertEquals(1, player.getPlayerBoard().getCardPosition().size());
         assertEquals(1, player.getPlayerBoard().getSymbolCount(Symbols.FUNGI));
@@ -156,5 +157,16 @@ public class PlaceTest{
         assertEquals(1, player.getPlayerBoard().getSymbolCount(Symbols.INSECT));
         assertEquals(0, player.getPoints());
         assertTrue(player.getPlayerBoard().getSymbolCount(Symbols.PLANT) < plantCost);
+    }
+
+    @Test
+    @DisplayName("Place on invalid coordinates")
+    public void invalidPlacement(){
+        game = new Game(4);
+        Player player = new Player("pippo", game);
+        StarterCard s = new StarterCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}, 2, new CardBack(new ArrayList<>(List.of(Symbols.FUNGI)), Color.WHITE, new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY)}));
+        GoldCard b = new GoldCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 3, Condition.NOTHING, 17, new Integer[]{0, 3, 0, 0}, null);
+        player.getPlayerBoard().setStarterCard(s);
+        assertThrows(InvalidCoordinatesException.class, () -> player.placeCard(b, new int[]{40,40}));
     }
 }

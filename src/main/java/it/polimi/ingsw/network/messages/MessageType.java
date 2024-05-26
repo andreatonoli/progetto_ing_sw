@@ -14,6 +14,7 @@ public enum MessageType {
     ERROR,
     FREE_LOBBY,
     FLIP_CARD,
+    GAME_STATE,
     GENERIC_MESSAGE,
     LOBBY_INDEX,
     LOGIN_RESPONSE,

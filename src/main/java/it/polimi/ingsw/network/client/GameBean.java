@@ -3,8 +3,10 @@ package it.polimi.ingsw.network.client;
 import it.polimi.ingsw.model.card.Achievement;
 import it.polimi.ingsw.model.card.Card;
 import it.polimi.ingsw.model.enums.Color;
+import it.polimi.ingsw.model.enums.GameState;
 
 public class GameBean {
+    private GameState state;
     private Card[] commonResources;
     private Card[] commonGold;
     private final Achievement[] commonAchievement;
@@ -54,5 +56,13 @@ public class GameBean {
     }
     public void setCommonAchievement(int i, Achievement card) {
         this.commonAchievement[i] = card;
+    }
+
+    public GameState getState(){
+        return state;
+    }
+
+    public void setState(GameState state){
+        this.state = state;
     }
 }

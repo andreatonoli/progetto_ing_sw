@@ -8,8 +8,8 @@ public enum Color {
     WHITE(4, "\u001B[48;5;252m"),
     YELLOW(5, "\u001B[43m"),
     ORANGE(6, "\u001B[48;5;208m");
-    Integer associatedIndex;
-    String background;
+    final Integer associatedIndex;
+    final String background;
 
     Color(Integer associatedIndex, String background){
         this.associatedIndex = associatedIndex;

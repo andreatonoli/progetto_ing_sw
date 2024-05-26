@@ -114,7 +114,6 @@ public class GameTest {
             assertNotNull(p.getPlayerBoard().getStarterCard());
             assertInstanceOf(StarterCard.class, p.getPlayerBoard().getStarterCard());
             assertFalse(game1.getGameBoard().getStarterDeck().contains(p.getPlayerBoard().getStarterCard()));
-            //TODO: controlla che sia il modo migliore
             //two players cannot have the same starterCard
             playersWithoutP = new ArrayList<>(game1.getPlayers());
             playersWithoutP.remove(p);
