@@ -3,6 +3,7 @@ package it.polimi.ingsw.network.server;
 import it.polimi.ingsw.Controller.Controller;
 import it.polimi.ingsw.model.card.Achievement;
 import it.polimi.ingsw.model.enums.Color;
+import it.polimi.ingsw.model.enums.GameState;
 import it.polimi.ingsw.network.messages.*;
 
 import java.io.IOException;
@@ -25,6 +26,7 @@ public class SocketConnection extends Connection implements Runnable {
     private String username;
     private Timer catchPing;
     private Timer ping;
+    private boolean firstTime = true;
     private BlockingQueue<Message> messageQueue;
     private boolean processingAction;
     private final Object outputLock = new Object();
@@ -96,35 +98,47 @@ public class SocketConnection extends Connection implements Runnable {
         ping.schedule(new TimerTask() {
             @Override
             public void run() {
-                sendMessage(new PingMessage());
+                if (!lobby.getGame().getGameState().equals(GameState.END)) {
+                    sendMessage(new PingMessage());
+                }
+                else {
+                    cancelPing();
+                }
             }
         }, 0, 5000);
-
-        catchPing.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                ping.cancel();
-                catchPing.cancel();
-                //TODO: controllare
-                onDisconnect();
-            }
-        }, 8000, 8000);
+        if (firstTime) {
+            firstTime = false;
+            catchPing.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    cancelPing();
+                    onDisconnect();
+                }
+            }, 8000, 8000);
+        }
     }
 
     public synchronized void catchPing(){
-        catchPing.cancel();
-        catchPing = new Timer();
-        catchPing.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                ping.cancel();
-                catchPing.cancel();
-                //TODO: controllare
-                onDisconnect();
-            }
-        }, 8000, 8000);
+        if (!lobby.getGame().getGameState().equals(GameState.END)) {
+            catchPing.cancel();
+            catchPing = new Timer();
+            catchPing.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    cancelPing();
+                    onDisconnect();
+                }
+            }, 8000, 8000);
+        }
+        else {
+            cancelPing();
+        }
     }
-    //TODO che se fa se non responde er pupone?
+
+    public void cancelPing(){
+        ping.cancel();
+        catchPing.cancel();
+    }
 
     public void onDisconnect(){
         try {
@@ -196,6 +210,13 @@ public class SocketConnection extends Connection implements Runnable {
                 server.removePlayers(username);
                 if (playersToDelete == 0){
                     server.removeGame(lobby);
+                }
+                try {
+                    in.close();
+                    out.close();
+                    socket.close();
+                } catch (IOException e) {
+                    System.err.println(e.getMessage());
                 }
                 break;
             case ADD_TO_CHAT:

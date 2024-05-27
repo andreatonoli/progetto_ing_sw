@@ -4,6 +4,7 @@ import it.polimi.ingsw.Controller.Controller;
 import it.polimi.ingsw.model.card.Achievement;
 import it.polimi.ingsw.model.card.Card;
 import it.polimi.ingsw.model.enums.Color;
+import it.polimi.ingsw.model.enums.GameState;
 import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.client.RMIClientHandler;
 
@@ -19,6 +20,7 @@ public class RMIConnection extends Connection {
     private final String username;
     private Timer catchPing;
     private Timer ping;
+    private boolean firstTime = true;
 
     public RMIConnection(Server server, RMIClientHandler client, String username){
         this.client = client;
@@ -33,18 +35,24 @@ public class RMIConnection extends Connection {
         ping.schedule(new TimerTask() {
             @Override
             public void run() {
-                pingClient();
+                if (!lobby.getGame().getGameState().equals(GameState.END)){
+                    pingClient();
+                }
+                else {
+                    cancelPing();
+                }
             }
         }, 0, 5000);
-
-        catchPing.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                ping.cancel();
-                catchPing.cancel();
-                onDisconnect();
-            }
-        }, 8000, 8000);
+        if (firstTime) {
+            firstTime = false;
+            catchPing.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    cancelPing();
+                    onDisconnect();
+                }
+            }, 8000, 8000);
+        }
     }
 
     private void pingClient(){
@@ -56,18 +64,26 @@ public class RMIConnection extends Connection {
     }
 
     public void catchPing(){
-        catchPing.cancel();
-        catchPing = new Timer();
-        catchPing.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                ping.cancel();
-                catchPing.cancel();
-                onDisconnect();
-            }
-        }, 8000, 8000);
+        if (!lobby.getGame().getGameState().equals(GameState.END)){
+            catchPing.cancel();
+            catchPing = new Timer();
+            catchPing.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    cancelPing();
+                    onDisconnect();
+                }
+            }, 8000, 8000);
+        }
+        else{
+            cancelPing();
+        }
     }
-    //TODO che se fa se non responde er pupone?
+
+    public void cancelPing(){
+        ping.cancel();
+        catchPing.cancel();
+    }
 
     public void onDisconnect(){
         lobby.getGame().getPlayerByUsername(username).setDisconnected(true);

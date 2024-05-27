@@ -28,17 +28,18 @@ public class RMIServer implements VirtualServer {
         this.startServer();
     }
 
+    //TODO controllare le messe in coda
     public void removeFromServer(String username) throws RemoteException {
         int playersToDelete = connections.get(username).getLobby().getGame().getLobbySize()-1;
-        connections.get(username).getLobby().getGame().setLobbySize(playersToDelete);
+        addToQueue(() -> connections.get(username).getLobby().getGame().setLobbySize(playersToDelete));
         if (playersToDelete != 0) {
-            connections.remove(username);
-            server.removePlayers(username);
+            addToQueue(() -> connections.remove(username));
+            addToQueue(() -> server.removePlayers(username));
         }
         else {
             server.removeGame(connections.get(username).getLobby());
-            connections.remove(username);
-            server.removePlayers(username);
+            addToQueue(() -> connections.remove(username));
+            addToQueue(() -> server.removePlayers(username));
         }
     }
 

@@ -269,7 +269,6 @@ public class SocketClient implements ClientInterface {
                 ArrayList<String> winners = ((WinnerMessage) message).getWinners();
                 this.view.declareWinners(winners);
                 sendMessage(new RemoveFromServerMessage(username));
-                //TODO cancellare riferimenti dal server
                 this.onDisconnect();
                 break;
             case GENERIC_MESSAGE:
