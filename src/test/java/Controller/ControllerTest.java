@@ -34,15 +34,14 @@ public class ControllerTest {
         // Assigning the player linked to p1
         Player pp1 = c.getPlayerByClient(p1);
         // Give p1's achievement
-        Achievement a = new AchievementDiagonal(Color.PURPLE);
-        Achievement b = new AchievementDiagonal(Color.RED);
+        Achievement a = new AchievementDiagonal(Color.PURPLE, 1);
+        Achievement b = new AchievementDiagonal(Color.RED, 2);
         // Setting those achievements as pp1's personal objectives
         pp1.getPersonalObj()[0] = a;
         pp1.getPersonalObj()[1] = b;
         // p1 chooses a
         c.chooseObj(p1, a);
         assertEquals(a, pp1.getChosenObj());
-        //TODO: provare a capire come funziona verify
     }
 }
 //StarterCard s = new StarterCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}, 2, new CardBack(new ArrayList<>(List.of(Symbols.FUNGI)), Color.WHITE, new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY)}));

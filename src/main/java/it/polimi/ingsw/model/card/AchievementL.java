@@ -9,6 +9,11 @@ import java.util.ArrayList;
 import java.util.Set;
 
 public class AchievementL implements Achievement{
+
+    /**
+     * Unique number to identify the card
+     */
+    private final int id;
     /**
      * points given upon completion of the achievement
      */
@@ -22,9 +27,10 @@ public class AchievementL implements Achievement{
      * They've all the same base points (3)
      * @param color color of 2/3 of the cards
      */
-    public AchievementL(Color color){
+    public AchievementL(Color color, int id){
         this.basePoint = 3;
         this.color = color;
+        this.id = id;
     }
     /**
      * This method calculates the points made by a player with the L achievement. It exploits an ArrayList to mark
@@ -88,6 +94,10 @@ public class AchievementL implements Achievement{
         player.addPoints(point);
     }
 
+    @Override
+    public int getId(){
+        return this.id;
+    }
     @Override
     public int getPoints(){ return this.basePoint; }
     @Override

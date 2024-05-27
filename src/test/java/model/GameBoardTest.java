@@ -170,11 +170,11 @@ class GameBoardTest {
     public void achievementCardTest(){
         Game game = new Game(2);
         GameBoard board = game.getGameBoard();
-        Achievement firstCard_L = new AchievementL(Color.RED);
-        Achievement firstCard_D = new AchievementL(Color.RED);
-        Achievement midCard = new AchievementResources(Symbols.ANIMAL);
-        Achievement midCard_I = new AchievementItem(3, new ArrayList<>(List.of(Symbols.QUILL, Symbols.INKWELL, Symbols.MANUSCRIPT)));
-        Achievement lastCard =  new AchievementItem(2, new ArrayList<>(List.of(Symbols.QUILL)));
+        Achievement firstCard_L = new AchievementL(Color.RED, 1);
+        Achievement firstCard_D = new AchievementL(Color.RED, 1);
+        Achievement midCard = new AchievementResources(Symbols.ANIMAL, 6);
+        Achievement midCard_I = new AchievementItem(3, new ArrayList<>(List.of(Symbols.QUILL, Symbols.INKWELL, Symbols.MANUSCRIPT)), 10);
+        Achievement lastCard =  new AchievementItem(2, new ArrayList<>(List.of(Symbols.QUILL)), 11);
         LinkedList<Achievement> achievementDeck = board.getAchievementDeck();
 
         //achievements L and D

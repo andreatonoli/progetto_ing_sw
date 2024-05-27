@@ -7,6 +7,11 @@ import it.polimi.ingsw.model.enums.Symbols;
 import java.util.ArrayList;
 
 public class AchievementResources implements Achievement{
+
+    /**
+     * Unique number to identify the card
+     */
+    private final int id;
     /**
      * points given upon completion of the achievement
      */
@@ -19,9 +24,10 @@ public class AchievementResources implements Achievement{
      * Builds card which achievement is "Collect 3 symbols of the same type"
      * @param symbol symbol to collect
      */
-    public AchievementResources(Symbols symbol){
+    public AchievementResources(Symbols symbol, int id){
         this.basePoint = 2;
         this.symbol = symbol;
+        this.id = id;
     }
 
     /**
@@ -35,6 +41,10 @@ public class AchievementResources implements Achievement{
         player.addPoints(point);
     }
 
+    @Override
+    public int getId(){
+        return this.id;
+    }
     @Override
     public int getPoints(){ return this.basePoint; }
     @Override

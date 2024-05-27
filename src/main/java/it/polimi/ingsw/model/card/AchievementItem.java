@@ -7,6 +7,11 @@ import it.polimi.ingsw.model.enums.Symbols;
 import java.util.ArrayList;
 
 public class AchievementItem implements Achievement{
+
+    /**
+     * Unique number to identify the card
+     */
+    private final int id;
     /**
      * points given upon completion of the achievement
      */
@@ -21,9 +26,10 @@ public class AchievementItem implements Achievement{
      * @param basePoint are the points that the player will get each time it completes the achievement
      * @param symbols are the needed symbols to get to complete the achievement
      */
-    public AchievementItem(int basePoint, ArrayList<Symbols> symbols){
+    public AchievementItem(int basePoint, ArrayList<Symbols> symbols, int id){
         this.basePoint = basePoint;
         this.symbol = symbols;
+        this.id = id;
     }
 
     /**
@@ -52,6 +58,10 @@ public class AchievementItem implements Achievement{
         player.addPoints(point);
     }
 
+    @Override
+    public int getId(){
+        return this.id;
+    }
     @Override
     public int getPoints(){ return this.basePoint; }
     @Override

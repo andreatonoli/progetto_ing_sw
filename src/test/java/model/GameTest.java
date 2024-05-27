@@ -11,6 +11,7 @@ import it.polimi.ingsw.model.player.Player;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,8 +82,6 @@ public class GameTest {
         assertEquals(GameState.WAIT_PLAYERS, game1.getGameState());
         //start the game
         assertDoesNotThrow(game1::startGame);
-        //checks that game is IN_GAME state
-        assertEquals(GameState.IN_GAME, game1.getGameState());
         //common achievement are drew and placed on the game board
         assertNotNull(game1.getGameBoard().getCommonAchievement());
         assertEquals(game1.getGameBoard().getCommonAchievement().length, 2);
@@ -166,6 +165,14 @@ public class GameTest {
 
         assertNotNull(game1.getFirstPlayer());
         assertTrue(game1.getPlayers().contains(game1.getFirstPlayer()));
+        //Checking that there's only one player that is the first to play
+        assertTrue(game1.getFirstPlayer().isFirstToPlay());
+        ArrayList<Player> otherPlayers = new ArrayList<>(game1.getPlayers());
+        otherPlayers.remove(game1.getFirstPlayer());
+        for (Player p : otherPlayers){
+            assertFalse(p.isFirstToPlay());
+        }
+
     }
 
 
@@ -205,16 +212,18 @@ public class GameTest {
         game1.addPlayer(player2);
         game1.addPlayer(player3);
         assertDoesNotThrow(game1::startGame);
+        //Manually setting game's state to IN_GAME (mocking turn_handler's task)
+        game1.setGameState(GameState.IN_GAME);
         //3 points
-        AchievementL a1 = new AchievementL(Color.RED);
+        AchievementL a1 = new AchievementL(Color.RED, 1);
         //3 points
-        AchievementItem a2 = new AchievementItem(3, new ArrayList<>(List.of(Symbols.QUILL, Symbols.INKWELL, Symbols.MANUSCRIPT)));
+        AchievementItem a2 = new AchievementItem(3, new ArrayList<>(List.of(Symbols.QUILL, Symbols.INKWELL, Symbols.MANUSCRIPT)), 14);
         //2 points
-        AchievementDiagonal a3 = new AchievementDiagonal(Color.PURPLE);
+        AchievementDiagonal a3 = new AchievementDiagonal(Color.PURPLE, 5);
         //2 points
-        AchievementResources a4 = new AchievementResources(Symbols.ANIMAL);
+        AchievementResources a4 = new AchievementResources(Symbols.ANIMAL, 8);
         //3 points
-        AchievementL a5 = new AchievementL(Color.GREEN);
+        AchievementL a5 = new AchievementL(Color.GREEN, 2);
         //set the common achievements
         game1.getGameBoard().setCommonAchievement(a1, 0);
         game1.getGameBoard().setCommonAchievement(a2, 1);
@@ -306,9 +315,15 @@ public class GameTest {
             throw new RuntimeException(e);
         }
 
+        //Player1 made 5 points by completing 2 objectives
         assertEquals(5, player1.getPoints());
+        assertEquals(2, player1.getObjCompleted());
+        //Player2 made 5 points by completing 2 objectives
         assertEquals(5, player2.getPoints());
+        assertEquals(2, player2.getObjCompleted());
+        //Player3 made 6 points by completing 2 objectives
         assertEquals(6, player3.getPoints());
+        assertEquals(2, player3.getObjCompleted());
     }
 
 
@@ -331,9 +346,9 @@ public class GameTest {
         //trying to finish the game without starting it. Players aren't given any points
         assertThrows(GameNotStartedException.class, game1::endGame);
 
-        assertEquals(player1.getPoints(), 0);
-        assertEquals(player2.getPoints(), 0);
-        assertEquals(player3.getPoints(), 0);
+        assertEquals(0, player1.getPoints());
+        assertEquals(0, player2.getPoints());
+        assertEquals(0, player3.getPoints());
     }
 }
 

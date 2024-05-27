@@ -42,7 +42,6 @@ public class GameBoard implements Serializable {
             int basePoint;
             int cardNumber;
             Symbols conditionItem;
-            String content;
 
             String path;
             JsonObject json;
@@ -63,15 +62,16 @@ public class GameBoard implements Serializable {
             for (JsonElement achievementCard : achievements) {
                 JsonObject jo = achievementCard.getAsJsonObject();
                 String type = jo.get("type").getAsString();
+                int id = jo.get("id").getAsInt();
                 if (type.startsWith("DiagonalAndL")){
                     colorOrSymbol = jo.get("color").getAsString();
-                    AchievementDiagonal adCard = new AchievementDiagonal(Color.valueOf(colorOrSymbol));
-                    AchievementL alCard = new AchievementL(Color.valueOf(colorOrSymbol));
+                    AchievementDiagonal adCard = new AchievementDiagonal(Color.valueOf(colorOrSymbol), id);
+                    AchievementL alCard = new AchievementL(Color.valueOf(colorOrSymbol), (id + 4));
                     achievementDeck.add(adCard);
                     achievementDeck.add(alCard);
                 } else if (type.startsWith("Resources")) {
                     colorOrSymbol = jo.get("symbol").getAsString();
-                    AchievementResources arCard = new AchievementResources(Symbols.valueOf(colorOrSymbol));
+                    AchievementResources arCard = new AchievementResources(Symbols.valueOf(colorOrSymbol), id);
                     achievementDeck.add(arCard);
                 }
                 else{
@@ -81,7 +81,7 @@ public class GameBoard implements Serializable {
                     for (JsonElement elem : symbols){
                         items.add(Symbols.valueOf(elem.getAsString()));
                     }
-                    AchievementItem aiCard = new AchievementItem(basePoint, items);
+                    AchievementItem aiCard = new AchievementItem(basePoint, items, id);
                     achievementDeck.add(aiCard);
                 }
             }

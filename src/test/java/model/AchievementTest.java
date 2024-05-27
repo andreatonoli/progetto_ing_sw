@@ -20,7 +20,7 @@ public class AchievementTest {
     @DisplayName("Diagonal Achievement")
     public void diagonalTest() {
         Game game = new Game(4);
-        Achievement a = new AchievementDiagonal(Color.PURPLE);
+        Achievement a = new AchievementDiagonal(Color.PURPLE, 4);
         Card c = new ResourceCard(new Corner[]{new Corner(Symbols.INSECT), new Corner(Symbols.PLANT), new Corner(Symbols.NOCORNER), new Corner(Symbols.INKWELL) }, 37, 0);
         Player p = new Player("pippo", game);
         //Creating a purple diagonal
@@ -36,7 +36,7 @@ public class AchievementTest {
     @DisplayName("Diagonal Achievement - No Pattern found")
     public void noDiagonalTest() {
         Game game = new Game(4);
-        Achievement a = new AchievementDiagonal(Color.RED);
+        Achievement a = new AchievementDiagonal(Color.RED, 1);
         Card c = new ResourceCard(new Corner[]{new Corner(Symbols.INSECT), new Corner(Symbols.PLANT), new Corner(Symbols.NOCORNER), new Corner(Symbols.INKWELL) }, 37, 0);
         Player p = new Player("pippo", game);
         int offset = 5; //Added some points to the player to see if calcPoints adds 0 points
@@ -53,7 +53,7 @@ public class AchievementTest {
     @DisplayName("Diagonal Achievement - No Card Reuse")
     public void noReuseTest() {
         Game game = new Game(4);
-        Achievement a = new AchievementDiagonal(Color.PURPLE);
+        Achievement a = new AchievementDiagonal(Color.PURPLE, 4);
         Card c = new ResourceCard(new Corner[]{new Corner(Symbols.INSECT), new Corner(Symbols.PLANT), new Corner(Symbols.NOCORNER), new Corner(Symbols.INKWELL) }, 37, 0);
         Player p = new Player("pippo", game);
         //Creating a six-card purple diagonal
@@ -72,7 +72,7 @@ public class AchievementTest {
     public void itemTest() {
         Game game = new Game(4);
         Player p = new Player("pippo", game);
-        Achievement a = new AchievementItem(3, new ArrayList<>(List.of(Symbols.QUILL, Symbols.INKWELL, Symbols.MANUSCRIPT)));
+        Achievement a = new AchievementItem(3, new ArrayList<>(List.of(Symbols.QUILL, Symbols.INKWELL, Symbols.MANUSCRIPT)), 15);
         Card b = new ResourceCard(new Corner[]{new Corner(Symbols.QUILL), new Corner(Symbols.INKWELL), new Corner(Symbols.MANUSCRIPT), new Corner(Symbols.EMPTY) }, 14, 0);
         Card c = new ResourceCard(new Corner[]{new Corner(Symbols.QUILL), new Corner(Symbols.MANUSCRIPT), new Corner(Symbols.PLANT), new Corner(Symbols.QUILL) }, 15, 0);
         Card d = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.INKWELL), new Corner(Symbols.INKWELL), new Corner(Symbols.NOCORNER) }, 16, 0);
@@ -105,10 +105,10 @@ public class AchievementTest {
     public void noItemTest() {
         Game game = new Game(4);
         Player p = new Player("pippo", game);
-        Achievement a = new AchievementItem(3, new ArrayList<>(List.of(Symbols.INKWELL, Symbols.QUILL, Symbols.MANUSCRIPT)));
-        Achievement b = new AchievementItem(2, new ArrayList<>(List.of(Symbols.INKWELL)));
-        Achievement c = new AchievementItem(2, new ArrayList<>(List.of(Symbols.QUILL)));
-        Achievement d = new AchievementItem(2, new ArrayList<>(List.of(Symbols.MANUSCRIPT)));
+        Achievement a = new AchievementItem(3, new ArrayList<>(List.of(Symbols.INKWELL, Symbols.QUILL, Symbols.MANUSCRIPT)), 15);
+        Achievement b = new AchievementItem(2, new ArrayList<>(List.of(Symbols.INKWELL)), 14);
+        Achievement c = new AchievementItem(2, new ArrayList<>(List.of(Symbols.QUILL)), 13);
+        Achievement d = new AchievementItem(2, new ArrayList<>(List.of(Symbols.MANUSCRIPT)), 12);
         int offset = 5; //Adding some points to player
         p.addPoints(offset);
         //Not enough items to add points to player => his points will be equal to offset
@@ -125,10 +125,10 @@ public class AchievementTest {
     public void resourcesTest() {
         Game game = new Game(4);
         Player p = new Player("pippo", game);
-        Achievement a = new AchievementResources(Symbols.FUNGI);
-        Achievement b = new AchievementResources(Symbols.PLANT);
-        Achievement c = new AchievementResources(Symbols.ANIMAL);
-        Achievement d = new AchievementResources(Symbols.INSECT);
+        Achievement a = new AchievementResources(Symbols.FUNGI, 8);
+        Achievement b = new AchievementResources(Symbols.PLANT, 9);
+        Achievement c = new AchievementResources(Symbols.ANIMAL, 10);
+        Achievement d = new AchievementResources(Symbols.INSECT, 11);
         //Define a bunch of cards to populate the board
         Card e = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.INKWELL), new Corner(Symbols.INSECT), new Corner(Symbols.EMPTY) }, 14, 0);
         Card f = new ResourceCard(new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.PLANT), new Corner(Symbols.PLANT), new Corner(Symbols.QUILL) }, 15, 0);
@@ -172,10 +172,10 @@ public class AchievementTest {
     public void lTest() {
         Game game = new Game(4);
         Player p = new Player("pippo", game);
-        Achievement a = new AchievementL(Color.RED);
-        Achievement b = new AchievementL(Color.BLUE);
-        Achievement c = new AchievementL(Color.GREEN);
-        Achievement d = new AchievementL(Color.PURPLE);
+        Achievement a = new AchievementL(Color.RED, 1);
+        Achievement b = new AchievementL(Color.BLUE, 2);
+        Achievement c = new AchievementL(Color.GREEN, 3);
+        Achievement d = new AchievementL(Color.PURPLE, 4);
         //Define 2 red cards
         Card r1 = new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.FUNGI), new Corner(Symbols.ANIMAL), new Corner(Symbols.PLANT) }, 7, 0);
         Card r2 = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), new Corner(Symbols.ANIMAL), new Corner(Symbols.PLANT) }, 8, 0);
@@ -224,10 +224,10 @@ public class AchievementTest {
     public void mixedAchievementTest() {
         Game game = new Game(4);
         Player p = new Player("pippo", game);
-        Achievement a = new AchievementL(Color.RED);
-        Achievement b = new AchievementDiagonal(Color.GREEN);
-        Achievement c = new AchievementItem(2, new ArrayList<>(List.of(Symbols.QUILL)));
-        Achievement d = new AchievementResources(Symbols.INSECT);
+        Achievement a = new AchievementL(Color.RED, 1);
+        Achievement b = new AchievementDiagonal(Color.GREEN, 5);
+        Achievement c = new AchievementItem(2, new ArrayList<>(List.of(Symbols.QUILL)), 9);
+        Achievement d = new AchievementResources(Symbols.INSECT, 6);
         //Define a bunch of cards to fill the board
         Card r1 = new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.INSECT), new Corner(Symbols.ANIMAL), new Corner(Symbols.PLANT) }, 7, 0);
         Card r2 = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), new Corner(Symbols.QUILL), new Corner(Symbols.PLANT) }, 8, 0);

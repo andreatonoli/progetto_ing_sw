@@ -22,8 +22,8 @@ public class Player implements Serializable {
     private boolean firstToEnd;
     private boolean firstToPlay;
     private Color pionColor;
-    private Card[] cardInHand;
-    private Achievement[] personalObj;
+    private final Card[] cardInHand;
+    private final Achievement[] personalObj;
     private Achievement chosenObj;
     private int points = 0;
     private PlayerState playerState;
@@ -56,14 +56,11 @@ public class Player implements Serializable {
 
     public void setDisconnected(boolean disconnected) {
         this.disconnected = disconnected;
-        int disconnections;
         if (this.disconnected){
-            disconnections = game.getDisconnections()+1;
-            game.setDisconnections(disconnections);
+            game.addDisconnections(1);
         }
         else {
-            disconnections = game.getDisconnections()-1;
-            game.setDisconnections(disconnections);
+            game.addDisconnections(-1);
         }
     }
 
@@ -214,23 +211,6 @@ public class Player implements Serializable {
     }
 
     /**
-     * setter to set the game parameter
-     * @param game is the game the player is in
-     */
-    //temporaneo
-    public void setGame(Game game){
-        this.game = game;
-    }
-
-    /**
-     * getter to get the game parameter
-     * @return the game the player is in
-     */
-    public Game getGame(){
-        return this.game;
-    }
-
-    /**
      * getter to get the playerBoard parameter
      * @return the player board of this player
      */
@@ -367,7 +347,6 @@ public class Player implements Serializable {
             throw new NotInTurnException();
         }
         if (card.getType().equalsIgnoreCase("Resource")){
-            //TODO: ottimizza
             if (!card.equals(gBoard.getCommonResource()[0]) && !card.equals(gBoard.getCommonResource()[1])){
                 throw new CardNotFoundException();
             }
@@ -440,7 +419,7 @@ public class Player implements Serializable {
             throw new NotInTurnException();
         }
         //check if the corner we are placing the card on is available
-        if (this.playerBoard.getCard(coord).getCornerState(cornerPosition.getOppositePosition()).equals(CornerState.NOT_VISIBLE) || this.playerBoard.getCard(coord).getCornerState(cornerPosition.getOppositePosition()).equals(CornerState.OCCUPIED)){
+        if (this.playerBoard.getCard(coord).getCornerState(Objects.requireNonNull(cornerPosition.getOppositePosition())).equals(CornerState.NOT_VISIBLE) || this.playerBoard.getCard(coord).getCornerState(cornerPosition.getOppositePosition()).equals(CornerState.OCCUPIED)){
             throw new OccupiedCornerException();
         }
         if(!cardToBePlaced.checkCost(this)){
@@ -456,7 +435,7 @@ public class Player implements Serializable {
                 newCoordinates[0] = coord[0]+c.getX();
                 newCoordinates[1] = coord[1]+c.getY();
                 if (this.playerBoard.getCard(newCoordinates) != null){
-                    if (this.playerBoard.getCard(newCoordinates).getCornerState(c.getOppositePosition()).equals(CornerState.NOT_VISIBLE) || this.playerBoard.getCard(newCoordinates).getCornerState(c.getOppositePosition()).equals(CornerState.OCCUPIED)){
+                    if (this.playerBoard.getCard(newCoordinates).getCornerState(Objects.requireNonNull(c.getOppositePosition())).equals(CornerState.NOT_VISIBLE) || this.playerBoard.getCard(newCoordinates).getCornerState(c.getOppositePosition()).equals(CornerState.OCCUPIED)){
                         throw new OccupiedCornerException();
                     }
                 }

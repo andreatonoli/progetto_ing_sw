@@ -8,10 +8,8 @@ import it.polimi.ingsw.model.exceptions.NotEnoughPlayersException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.exceptions.GameNotStartedException;
 import it.polimi.ingsw.network.messages.GenericMessage;
-import it.polimi.ingsw.network.messages.WinnerMessage;
 import it.polimi.ingsw.observer.Observable;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,24 +17,23 @@ import java.util.List;
 
 public class Game extends Observable implements Serializable {
     private int lobbySize;
-    private GameBoard gameBoard;
+    private final GameBoard gameBoard;
     private GameState gameState;
     private final ArrayList<Player> players;
     private int willPlay;
     private boolean gameFull;
     private Player firstPlayer;
     private Player playerInTurn;
-    private Chat chatHandler;
+    private final Chat chatHandler;
     /**
      * number of disconnected players
      */
-    private int disconnections;
-    private List<Color> availableColors;
+    private final int disconnections;
+    private final List<Color> availableColors;
 
 
     /**
      *
-     * @throws IOException
      */
 
     public Game(int lobbySize) {
@@ -56,7 +53,7 @@ public class Game extends Observable implements Serializable {
         return availableColors;
     }
 
-    public void startGame() throws  NotEnoughPlayersException{
+    public void startGame() throws NotEnoughPlayersException{
         if (!this.gameFull){
             throw new NotEnoughPlayersException();
         }
@@ -112,6 +109,7 @@ public class Game extends Observable implements Serializable {
                 a.calcPoints(p);
                 if (p.getPoints()>endPoints){
                     p.addObjCompleted();
+                    endPoints = p.getPoints();
                 }
             }
         }
@@ -138,8 +136,7 @@ public class Game extends Observable implements Serializable {
     public Player endGameByDisconnection(Player lastManStanding){
         notifyAll(new GenericMessage("game ended due to lack of players"));
         this.gameState = GameState.END;
-        Player winner = lastManStanding;
-        return winner;
+        return lastManStanding;
     }
 
     private void setFirstPlayer()
@@ -178,18 +175,12 @@ public class Game extends Observable implements Serializable {
         return playerInTurn;
     }
 
+    /**
+     * @return returns the state in which the game is played
+     */
     public GameState getGameState()
     {
-        /** returns the state in which the game is played */
         return gameState;
-    }
-
-    public Player getPlayerInTurn()
-    {
-        /**
-         returns player that is playing the game at that moment
-         */
-        return playerInTurn;
     }
 
     public ArrayList<Player> getPlayers(){
@@ -237,8 +228,8 @@ public class Game extends Observable implements Serializable {
         return disconnections;
     }
     //TODO: fix
-    public void setDisconnections(int disconnectedPlayers) {
-        //disconnections = disconnectedPlayers;
+    public void addDisconnections(int disconnectedPlayers) {
+        //disconnections += disconnectedPlayers;
     }
 
 
