@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.card.*;
 import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.Symbols;
 import javafx.animation.KeyFrame;
+import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -18,11 +19,9 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Gui extends Application {
 
@@ -35,11 +34,17 @@ public class Gui extends Application {
 
         stage.setTitle("Codex Naturalis");
         Button b1 = new Button("Play!");
-        //b1.getStylesheets().add(getClass().getResource("/ButtonStyle.css").toString());
-        //b1.setId("play-button");
-        //b1.getStyleClass().add("play-button");
         b1.setFont(new Font(40));
         b1.setPrefSize(150, 70);
+        //b1.setStyle(
+        //        "-fx-border-radius: 4;" +
+        //        "-fx-background-color: gold;" +
+        //        "-fx-border-width: 3;" +
+        //        "-fx-border-color: black;" +
+        //        "-fx-background-radius: 4;" +
+        //);
+        b1.setOnMouseEntered(event -> b1.setStyle("-fx-background-color: gold"));
+        b1.setOnMouseExited(event -> b1.setStyle(""));
         b1.setOnAction(event -> {
             stage.getScene().setRoot(this.lobbySelectionPage(stage));
         });
@@ -51,7 +56,6 @@ public class Gui extends Application {
         bp.setCenter(h1);
         bp.setBackground(new Background(i));
         Scene scene = new Scene(bp, 1280, 720);
-        scene.getStylesheets().add(getClass().getResource("/ButtonStyle.css").toString());
         stage.setScene(scene);
         stage.show();
     }
@@ -275,6 +279,12 @@ public class Gui extends Application {
         ImageView backView = new ImageView(back);
         backView.setFitHeight(42*6);
         backView.setFitWidth(63*6);
+        ImageView miniFrontView = new ImageView(front);
+        miniFrontView.setFitHeight(42*3);
+        miniFrontView.setFitWidth(63*3);
+        ImageView miniBackView = new ImageView(back);
+        miniBackView.setFitHeight(42*3);
+        miniBackView.setFitWidth(63*3);
         Button b1 = new Button();
         b1.setPrefSize((63*6), (42*6));
         b1.setStyle(
@@ -299,6 +309,12 @@ public class Gui extends Application {
             ButtonType no = new ButtonType("Cancel");
             a.setTitle("Placing starter card");
             a.setHeaderText("Do you want to place the card on this side?");
+            if(side){
+                a.setGraphic(miniFrontView);
+            }
+            else{
+                a.setGraphic(miniBackView);
+            }
             a.getButtonTypes().clear();
             a.getButtonTypes().addAll(no, yes);
             Optional<ButtonType> result = a.showAndWait();
@@ -309,7 +325,7 @@ public class Gui extends Application {
                 stage.getScene().setRoot(this.achievementChoice(stage));
             }
             else if(result.get().getText().equals("Cancel")){
-                stage.getScene().setRoot(this.starterFlip(stage, starter,true));
+                stage.getScene().setRoot(this.starterFlip(stage, starter, side));
             }
         });
         HBox h1 = new HBox(b2);
@@ -354,6 +370,9 @@ public class Gui extends Application {
         ImageView frontView1 = new ImageView(front1);
         frontView1.setFitHeight(42*6);
         frontView1.setFitWidth(63*6);
+        ImageView miniFrontView1 = new ImageView(front1);
+        miniFrontView1.setFitHeight(42*3);
+        miniFrontView1.setFitWidth(63*3);
         Button b1 = new Button();
         b1.setPrefSize((63*6), (42*6));
         b1.setGraphic(frontView1);
@@ -367,6 +386,7 @@ public class Gui extends Application {
             ButtonType no = new ButtonType("Cancel");
             a.setTitle("Choosing achievement card");
             a.setHeaderText("Do you want to choose this achievement?");
+            a.setGraphic(miniFrontView1);
             a.getButtonTypes().clear();
             a.getButtonTypes().addAll(no, yes);
             Optional<ButtonType> result = a.showAndWait();
@@ -385,6 +405,9 @@ public class Gui extends Application {
         ImageView frontView2 = new ImageView(front2);
         frontView2.setFitHeight(42*6);
         frontView2.setFitWidth(63*6);
+        ImageView miniFrontView2 = new ImageView(front2);
+        miniFrontView2.setFitHeight(42*3);
+        miniFrontView2.setFitWidth(63*3);
         Button b2 = new Button("Place starter card");
         b2.setPrefSize((63*6), (42*6));
         b2.setGraphic(frontView2);
@@ -398,6 +421,7 @@ public class Gui extends Application {
             ButtonType no = new ButtonType("Cancel");
             a.setTitle("Choosing achievement card");
             a.setHeaderText("Do you want to choose this achievement?");
+            a.setGraphic(miniFrontView2);
             a.getButtonTypes().clear();
             a.getButtonTypes().addAll(no, yes);
             Optional<ButtonType> result = a.showAndWait();
@@ -419,6 +443,27 @@ public class Gui extends Application {
         bp.setCenter(h1);
         BackgroundImage i = new BackgroundImage(new Image(getClass().getResourceAsStream("/wood_background.jpg")), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(1.0, 1.0, true, true, false, false));
         bp.setBackground(new Background(i));
+        return bp;
+    }
+
+    public Pane colorSelectionPage(Stage stage){
+        int[] freeColors = {1, 1, 1, 1};
+        Button[] buttons = new Button[4];
+        for(int i = 0; i < buttons.length; i++){
+            buttons[i].setStyle("-fx-shape: circle");
+            buttons[i].setPrefSize(40, 40);
+        }
+
+        ArrayList<Button> buttonList = new ArrayList<>();
+        for(int i = 0; i < freeColors.length; i++){
+            if(freeColors[i] == 1){
+                buttonList.add(buttons[i]);
+            }
+        }
+
+        HBox h1 = new HBox();
+
+        BorderPane bp = new BorderPane();
         return bp;
     }
 
