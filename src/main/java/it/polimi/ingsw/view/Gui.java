@@ -25,6 +25,10 @@ import java.util.Optional;
 
 public class Gui extends Application {
 
+    Stage s = new Stage();
+    //red, blue, green, yellow
+    int[] freeColors = {1, 1, 1, 1};
+
     public static void main(String[] args){
         launch(args);
     }
@@ -32,7 +36,7 @@ public class Gui extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-        stage.setTitle("Codex Naturalis");
+        s.setTitle("Codex Naturalis");
         Button b1 = new Button("Play!");
         b1.setFont(new Font(40));
         b1.setPrefSize(150, 70);
@@ -46,7 +50,8 @@ public class Gui extends Application {
         b1.setOnMouseEntered(event -> b1.setStyle("-fx-background-color: gold"));
         b1.setOnMouseExited(event -> b1.setStyle(""));
         b1.setOnAction(event -> {
-            stage.getScene().setRoot(this.lobbySelectionPage(stage));
+            //s.getScene().setRoot(this.lobbySelectionPage());
+            s.getScene().setRoot(this.gamePage());
         });
         HBox h1 = new HBox(b1);
         h1.setAlignment(Pos.CENTER);
@@ -56,11 +61,11 @@ public class Gui extends Application {
         bp.setCenter(h1);
         bp.setBackground(new Background(i));
         Scene scene = new Scene(bp, 1280, 720);
-        stage.setScene(scene);
-        stage.show();
+        s.setScene(scene);
+        s.show();
     }
 
-    public Pane lobbySelectionPage(Stage stage) {
+    public Pane lobbySelectionPage() {
 
         Text t1 = new Text("Lobbies:");
         t1.setFont(new Font(65));
@@ -97,7 +102,7 @@ public class Gui extends Application {
             int finalI = i;
             buttonList.get(i).setOnAction(event -> {
                 //aggiungere il player alla lobby i-esima
-                stage.getScene().setRoot(this.loginPage(stage, finalI));
+                s.getScene().setRoot(this.loginPage(finalI));
             });
             gp.add(buttonList.get(i), 2, i);
         }
@@ -108,7 +113,7 @@ public class Gui extends Application {
         b2.setFont(new Font(35));
         b2.setPrefSize(380, 50);
         b2.setOnAction(event -> {
-            stage.getScene().setRoot(this.loginPage(stage, lobbies.size()));
+            s.getScene().setRoot(this.loginPage(lobbies.size()));
         });
         HBox h2 = new HBox(b2);
         h2.setAlignment(Pos.BOTTOM_CENTER);
@@ -123,30 +128,16 @@ public class Gui extends Application {
         return bp;
     }
 
-    public Pane loginPage(Stage stage, int selectedLobby) {
+    public Pane loginPage(int selectedLobby) {
 
         Text t1 = new Text("Username:  ");
         t1.setFont(new Font(60));
         t1.setFill(javafx.scene.paint.Color.WHITE);
         t1.setStrokeWidth(1.8);
         t1.setStroke(javafx.scene.paint.Color.BLACK);
-        Text t2 = new Text("Color:  ");
-        t2.setFont(new Font(60));
-        t2.setFill(javafx.scene.paint.Color.WHITE);
-        t2.setStrokeWidth(1.8);
-        t2.setStroke(javafx.scene.paint.Color.BLACK);
         TextField text = new TextField();
         text.setPrefSize(350, 75);
         text.setFont(new Font(30));
-        ChoiceBox<String> cb = new ChoiceBox<>();
-        //aggiungere solo i colori che non sono già stati scelti
-        cb.getItems().add("red");
-        cb.getItems().add("green");
-        cb.getItems().add("blue");
-        cb.getItems().add("yellow");
-        cb.setStyle("-fx-font-size: 30");
-        cb.getSelectionModel().selectFirst();
-        cb.setPrefSize(250,75);
         Button b1 = new Button("Next");
         b1.setFont(new Font(20));
         b1.setPrefSize(200,40);
@@ -162,16 +153,14 @@ public class Gui extends Application {
             else{
                 //username
                 String username = text.getText();
-                //color
-                String color = cb.getSelectionModel().getSelectedItem();
-                stage.getScene().setRoot(this.waitingPage(stage, selectedLobby));
+                s.getScene().setRoot(this.waitingPage(selectedLobby));
             }
         });
         Button b2 = new Button("Back");
         b2.setFont(new Font(20));
         b2.setPrefSize(200,40);
         b2.setOnAction(event -> {
-            stage.getScene().setRoot(this.lobbySelectionPage(stage));
+            s.getScene().setRoot(this.lobbySelectionPage());
         });
 
         //back button
@@ -182,9 +171,7 @@ public class Gui extends Application {
         //username and color
         HBox h2 = new HBox(t1,text);
         h2.setAlignment(Pos.CENTER);
-        HBox h3 = new HBox(t2,cb);
-        h3.setAlignment(Pos.CENTER);
-        VBox v1 = new VBox(h2 ,h3);
+        VBox v1 = new VBox(h2);
         v1.setAlignment(Pos.CENTER);
         v1.setSpacing(30);
 
@@ -202,13 +189,13 @@ public class Gui extends Application {
         return bp;
     }
 
-    public Pane waitingPage(Stage stage, int lobby){
+    public Pane waitingPage(int lobby){
 
         Button b2 = new Button("Back");
         b2.setFont(new Font(20));
         b2.setPrefSize(200,40);
         b2.setOnAction(event -> {
-            stage.getScene().setRoot(this.loginPage(stage, lobby));
+            s.getScene().setRoot(this.loginPage(lobby));
         });
 
         //back button
@@ -243,8 +230,8 @@ public class Gui extends Application {
         bp.setBackground(new Background(i));
 
         Timeline t = new Timeline(new KeyFrame(Duration.seconds(5), event2 -> {
-            StarterCard s = new StarterCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}, 1, new CardBack(new ArrayList<>(List.of(Symbols.FUNGI, Symbols.PLANT, Symbols.ANIMAL)), Color.WHITE, new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY)}));
-            stage.getScene().setRoot(this.starterFlip(stage, s, true));
+            StarterCard s1 = new StarterCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}, 1, new CardBack(new ArrayList<>(List.of(Symbols.FUNGI, Symbols.PLANT, Symbols.ANIMAL)), Color.WHITE, new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY)}));
+            s.getScene().setRoot(this.starterFlip(s1, true));
         }));
         t.setCycleCount(1);
         t.play();
@@ -252,7 +239,7 @@ public class Gui extends Application {
         return bp;
     }
 
-    public Pane starterFlip(Stage stage, Card starter, boolean side){
+    public Pane starterFlip(Card starter, boolean side){
 
         BorderPane bp = new BorderPane();
 
@@ -293,10 +280,10 @@ public class Gui extends Application {
         );
         b1.setOnAction(event -> {
             if(side){
-                stage.getScene().setRoot(this.starterFlip(stage, starter, false));
+                s.getScene().setRoot(this.starterFlip(starter, false));
             }
             else{
-                stage.getScene().setRoot(this.starterFlip(stage, starter, true));
+                s.getScene().setRoot(this.starterFlip(starter, true));
             }
         });
 
@@ -319,13 +306,13 @@ public class Gui extends Application {
             a.getButtonTypes().addAll(no, yes);
             Optional<ButtonType> result = a.showAndWait();
             if(result.isEmpty()){
-                stage.getScene().setRoot(this.starterFlip(stage, starter,true));
+                s.getScene().setRoot(this.starterFlip(starter, true));
             }
             else if(result.get().getText().equals("Confirm")){
-                stage.getScene().setRoot(this.achievementChoice(stage));
+                s.getScene().setRoot(this.achievementChoice());
             }
             else if(result.get().getText().equals("Cancel")){
-                stage.getScene().setRoot(this.starterFlip(stage, starter, side));
+                s.getScene().setRoot(this.starterFlip(starter, side));
             }
         });
         HBox h1 = new HBox(b2);
@@ -346,7 +333,7 @@ public class Gui extends Application {
         return bp;
     }
 
-    public Pane achievementChoice(Stage stage){
+    public Pane achievementChoice(){
 
         BorderPane bp = new BorderPane();
 
@@ -391,13 +378,13 @@ public class Gui extends Application {
             a.getButtonTypes().addAll(no, yes);
             Optional<ButtonType> result = a.showAndWait();
             if(result.isEmpty()){
-                stage.getScene().setRoot(this.achievementChoice(stage));
+                s.getScene().setRoot(this.achievementChoice());
             }
             else if(result.get().getText().equals("Confirm")){
-                stage.getScene().setRoot(this.loginPage(stage, 3));
+                s.getScene().setRoot(this.loginPage(3));
             }
             else if(result.get().getText().equals("Cancel")){
-                stage.getScene().setRoot(this.achievementChoice(stage));
+                s.getScene().setRoot(this.achievementChoice());
             }
         });
 
@@ -426,13 +413,13 @@ public class Gui extends Application {
             a.getButtonTypes().addAll(no, yes);
             Optional<ButtonType> result = a.showAndWait();
             if(result.isEmpty()){
-                stage.getScene().setRoot(this.achievementChoice(stage));
+                s.getScene().setRoot(this.achievementChoice());
             }
             else if(result.get().getText().equals("Confirm")){
-                stage.getScene().setRoot(this.loginPage(stage, 3));
+                s.getScene().setRoot(this.colorSelectionPage(freeColors));
             }
             else if(result.get().getText().equals("Cancel")){
-                stage.getScene().setRoot(this.achievementChoice(stage));
+                s.getScene().setRoot(this.achievementChoice());
             }
         });
         HBox h1 = new HBox(b1, b2);
@@ -446,26 +433,181 @@ public class Gui extends Application {
         return bp;
     }
 
-    public Pane colorSelectionPage(Stage stage){
-        int[] freeColors = {1, 1, 1, 1};
-        Button[] buttons = new Button[4];
-        for(int i = 0; i < buttons.length; i++){
-            buttons[i].setStyle("-fx-shape: circle");
-            buttons[i].setPrefSize(40, 40);
-        }
+    public Pane colorSelectionPage(int[] freeColors){
 
-        ArrayList<Button> buttonList = new ArrayList<>();
+        Text t1 = new Text("Choose your color:");
+        t1.setFont(new Font(65));
+        t1.setFill(javafx.scene.paint.Color.WHITE);
+        t1.setStrokeWidth(1.8);
+        t1.setStroke(javafx.scene.paint.Color.BLACK);
+        Text t2 = new Text("Click to choose the color");
+        t2.setFont(new Font(50));
+        t2.setFill(javafx.scene.paint.Color.ORANGE);
+        t2.setStrokeWidth(1.8);
+        t2.setStroke(javafx.scene.paint.Color.BLACK);
+        VBox v1 = new VBox(t1, t2);
+        v1.setAlignment(Pos.TOP_CENTER);
+        v1.setPadding(new Insets(100,0,0,0));
+
+        Button[] buttons = new Button[]{new Button(), new Button(), new Button(), new Button()};
+        for(int i = 0; i < buttons.length; i++){
+            buttons[i].setStyle("-fx-background-radius: 5em;" +
+                                "-fx-background-color: transparent;" +
+                                "-fx-border-color: transparent"
+            );
+            buttons[i].setPrefSize(150, 150);
+        }
+        Image red = new Image(getClass().getResourceAsStream("/red.png"));
+        ImageView redView = new ImageView(red);
+        redView.setFitHeight(150);
+        redView.setFitWidth(150);
+        ImageView miniRedView = new ImageView(red);
+        miniRedView.setFitHeight(50);
+        miniRedView.setFitWidth(50);
+        buttons[0].setGraphic(redView);
+
+        Image blue = new Image(getClass().getResourceAsStream("/blue.png"));
+        ImageView blueView = new ImageView(blue);
+        blueView.setFitHeight(150);
+        blueView.setFitWidth(150);
+        ImageView miniBlueView = new ImageView(blue);
+        miniBlueView.setFitHeight(50);
+        miniBlueView.setFitWidth(50);
+        buttons[1].setGraphic(blueView);
+
+        Image green = new Image(getClass().getResourceAsStream("/green.png"));
+        ImageView greenView = new ImageView(green);
+        greenView.setFitHeight(150);
+        greenView.setFitWidth(150);
+        ImageView miniGreenView = new ImageView(green);
+        miniGreenView.setFitHeight(50);
+        miniGreenView.setFitWidth(50);
+        buttons[2].setGraphic(greenView);
+
+        Image yellow = new Image(getClass().getResourceAsStream("/yellow.png"));
+        ImageView yellowView = new ImageView(yellow);
+        yellowView.setFitHeight(150);
+        yellowView.setFitWidth(150);
+        ImageView miniYellowView = new ImageView(yellow);
+        miniYellowView.setFitHeight(50);
+        miniYellowView.setFitWidth(50);
+        buttons[3].setGraphic(yellowView);
+
+        ImageView[] miniViews = new ImageView[]{miniRedView, miniBlueView, miniGreenView, miniYellowView};
+
+        HBox h1 = new HBox();
+        h1.setAlignment(Pos.CENTER);
+        h1.setSpacing(50);
+
         for(int i = 0; i < freeColors.length; i++){
             if(freeColors[i] == 1){
-                buttonList.add(buttons[i]);
+                h1.getChildren().add(buttons[i]);
+                int finalI = i;
+                buttons[i].setOnAction(event -> {
+                    Alert a = new Alert(Alert.AlertType.CONFIRMATION);
+                    ButtonType yes = new ButtonType("Confirm");
+                    ButtonType no = new ButtonType("Cancel");
+                    a.setTitle("Choosing color");
+                    a.setHeaderText("Do you want to choose this color?");
+                    a.setGraphic(miniViews[finalI]);
+                    a.getButtonTypes().clear();
+                    a.getButtonTypes().addAll(no, yes);
+                    Optional<ButtonType> result = a.showAndWait();
+                    if(result.isEmpty()){
+                        s.getScene().setRoot(this.colorSelectionPage(freeColors));
+                    }
+                    else if(result.get().getText().equals("Confirm")){
+                        s.getScene().setRoot(this.lobbySelectionPage());
+                        //rimuovi il colore scelto dalla lista dei colori disponibili
+                        freeColors[finalI] = 0;
+                    }
+                    else if(result.get().getText().equals("Cancel")){
+                        s.getScene().setRoot(this.colorSelectionPage(freeColors));
+                    }
+                });
             }
         }
 
-        HBox h1 = new HBox();
-
         BorderPane bp = new BorderPane();
+        bp.setTop(v1);
+        bp.setCenter(h1);
+        BackgroundImage i = new BackgroundImage(new Image(getClass().getResourceAsStream("/wood_background.jpg")), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(1.0, 1.0, true, true, false, false));
+        bp.setBackground(new Background(i));
         return bp;
     }
+
+    public Pane gamePage(){
+        ScrollPane sp = new ScrollPane();
+        StackPane stp = new StackPane();
+        ImageView i = new ImageView(new Image(getClass().getResourceAsStream("/wood_background.jpg")));
+        sp.setContent(i);
+
+        BorderPane bp = new BorderPane();
+        bp.setCenter(sp);
+        return bp;
+    }
+
+    //public String askNickname(){
+    //    Text t1 = new Text("Username:  ");
+    //    t1.setFont(new Font(60));
+    //    t1.setFill(javafx.scene.paint.Color.WHITE);
+    //    t1.setStrokeWidth(1.8);
+    //    t1.setStroke(javafx.scene.paint.Color.BLACK);
+    //    TextField text = new TextField();
+    //    text.setPrefSize(350, 75);
+    //    text.setFont(new Font(30));
+    //    Button b1 = new Button("Next");
+    //    b1.setFont(new Font(20));
+    //    b1.setPrefSize(200,40);
+    //    Button b2 = new Button("Back");
+    //    b2.setFont(new Font(20));
+    //    b2.setPrefSize(200,40);
+    //    b2.setOnAction(event -> {
+    //        s.getScene().setRoot(this.lobbySelectionPage());
+    //    });
+//
+    //    //back button
+    //    HBox h1 = new HBox(b2);
+    //    h1.setAlignment(Pos.TOP_LEFT);
+    //    h1.setPadding(new Insets(20,0,0,20));
+//
+    //    //username and color
+    //    HBox h2 = new HBox(t1,text);
+    //    h2.setAlignment(Pos.CENTER);
+    //    VBox v1 = new VBox(h2);
+    //    v1.setAlignment(Pos.CENTER);
+    //    v1.setSpacing(30);
+//
+    //    //next button
+    //    HBox h4 = new HBox(b1);
+    //    h4.setAlignment(Pos.BOTTOM_RIGHT);
+    //    h4.setPadding(new Insets(0,20,20,0));
+//
+    //    BorderPane bp = new BorderPane();
+    //    bp.setTop(h1);
+    //    bp.setCenter(v1);
+    //    bp.setBottom(h4);
+    //    BackgroundImage i = new BackgroundImage(new Image(getClass().getResourceAsStream("/forest_background.jpeg")), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(1.0, 1.0, true, true, false, false));
+    //    bp.setBackground(new Background(i));
+    //    s.getScene().setRoot(bp);
+    //    b1.setOnAction(event -> {
+    //        //controllo per username già scelti
+    //        if(text.getText().isEmpty() || text.getText().equals("hydro")){
+    //            Alert a = new Alert(Alert.AlertType.INFORMATION);
+    //            a.setTitle("Username error");
+    //            a.setHeaderText("Please write a valid username");
+    //            a.setContentText("Your username is either empty or already taken.\nPlease choose another username");
+    //            a.show();
+    //        }
+    //        else{
+    //            //username
+    //            String username = text.getText();
+    //            return username;
+    //        }
+    //    });
+    //}
+
+
 
 
 }
