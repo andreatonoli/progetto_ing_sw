@@ -1,6 +1,6 @@
 package it.polimi.ingsw.network.server;
 
-import it.polimi.ingsw.Controller.Controller;
+import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.card.Achievement;
 import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.GameState;
@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -98,7 +97,7 @@ public class SocketConnection extends Connection implements Runnable {
         ping.schedule(new TimerTask() {
             @Override
             public void run() {
-                if (lobby == null || !lobby.getGame().getGameState().equals(GameState.END)) {
+                if (!lobby.getGame().getGameState().equals(GameState.END)) {
                     sendMessage(new PingMessage());
                 }
                 else {
@@ -119,7 +118,7 @@ public class SocketConnection extends Connection implements Runnable {
     }
 
     public synchronized void catchPing(){
-        if (lobby == null || !lobby.getGame().getGameState().equals(GameState.END)) {
+        if (!lobby.getGame().getGameState().equals(GameState.END)) {
             catchPing.cancel();
             catchPing = new Timer();
             catchPing.schedule(new TimerTask() {

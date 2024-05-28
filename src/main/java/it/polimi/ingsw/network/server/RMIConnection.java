@@ -1,6 +1,6 @@
 package it.polimi.ingsw.network.server;
 
-import it.polimi.ingsw.Controller.Controller;
+import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.card.Achievement;
 import it.polimi.ingsw.model.card.Card;
 import it.polimi.ingsw.model.enums.Color;
@@ -35,7 +35,7 @@ public class RMIConnection extends Connection {
         ping.schedule(new TimerTask() {
             @Override
             public void run() {
-                if (lobby == null || !lobby.getGame().getGameState().equals(GameState.END)){
+                if (!lobby.getGame().getGameState().equals(GameState.END)){
                     pingClient();
                 }
                 else {
@@ -64,7 +64,7 @@ public class RMIConnection extends Connection {
     }
 
     public void catchPing(){
-        if (lobby == null || !lobby.getGame().getGameState().equals(GameState.END)){
+        if (!lobby.getGame().getGameState().equals(GameState.END)){
             catchPing.cancel();
             catchPing = new Timer();
             catchPing.schedule(new TimerTask() {

@@ -1,4 +1,4 @@
-package it.polimi.ingsw.Controller;
+package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.enums.GameState;
@@ -8,7 +8,6 @@ import it.polimi.ingsw.observer.Observable;
 import it.polimi.ingsw.model.exceptions.*;
 import it.polimi.ingsw.network.messages.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
