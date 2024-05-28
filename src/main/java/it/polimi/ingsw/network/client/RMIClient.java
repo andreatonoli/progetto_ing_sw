@@ -166,8 +166,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                 break;
             case STARTER_CARD:
                 Card starterCard = ((StarterCardMessage) message).getCard();
-                this.view.printStarterCard(starterCard);
-                boolean choice = this.view.askSide();
+                boolean choice = this.view.askSide(starterCard);
                 if (!choice) {
                     starterCard.setCurrentSide();
                 }

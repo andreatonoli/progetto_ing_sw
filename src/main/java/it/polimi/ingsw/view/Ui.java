@@ -16,14 +16,8 @@ public interface Ui{
     int askServerPort(String connectionType);
     int selectGame(int freeLobbies);
     int setLobbySize();
-    boolean askSide();
-    void printView(PlayerBean player, GameBean game, ArrayList<PlayerBean> players);
+    boolean askSide(Card starterCard);
     void printViewWithCommands(PlayerBean player, GameBean game, ArrayList<PlayerBean> players);
-    void printCardFromPlayerBoard(PlayerBoard playerBoard, int[] coord);
-    void printStarterCard(Card card);
-    void printCard(PlayerBoard playerBoard, Card card);
-    void printCard(Card card);
-    void printAchievement(Achievement achievement);
     Achievement chooseAchievement(Achievement[] choices);
     Color chooseColor(List<Color> colors);
     void setMessage(String message, boolean isError);

@@ -29,21 +29,26 @@ public class Tui implements Ui{
     private final PrintStream out;
     private final Object lock = new Object();
     private boolean running = true;
-    private Thread inputThread = new Thread(() -> {
-        Scanner input = new Scanner(System.in);
-        while (running) {
-            String choice = input.nextLine();
-            synchronized (lock) {
-                handleInput(choice);
-            }
-        }
-        input.close();
-    });
     //TODO: TROVA UN MODO MIGLIORE PER FAVORE
     private PlayerBean player;
     private GameBean game;
     private ArrayList<PlayerBean> players;
     private String message;
+    private final Thread inputThread = new Thread(() -> {
+        Scanner input = new Scanner(System.in);
+        while (running) {
+            String choice = input.nextLine();
+            synchronized (lock) {
+                if (choice.equals("q")){
+                    printViewWithCommands(player, game, players);
+                }
+                else{
+                    handleInput(choice);
+                }
+            }
+        }
+        input.close();
+    });
 
     public Tui(){
         scanner = new Scanner(System.in);
@@ -157,7 +162,8 @@ public class Tui implements Ui{
     }
 
     @Override
-    public boolean askSide(){
+    public boolean askSide(Card starterCard){
+        this.printStarterCard(starterCard);
         scanner.skip("\n");
         System.out.println("Which side you want to play?\nPress [f] for front and [b] for back");
         String choice = scanner.next();
@@ -166,6 +172,35 @@ public class Tui implements Ui{
             choice = scanner.nextLine();
         }
         return choice.equalsIgnoreCase("f");
+    }
+
+    private void printStarterCard(Card card) {
+        if(card == null){
+            System.out.println("Starter card not existing");
+        }
+        else{
+            String[][] starterFront = this.createPrintableCard(card);
+            card.setCurrentSide();
+            String[][] starterBack = this.createPrintableCard(card);
+            card.setCurrentSide();
+
+            System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "front:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
+            System.out.print(" ".repeat(COLUMN + 6 - 7));
+            System.out.println(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "back:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
+            System.out.println();
+            for (int i = 0; i < ROW; i++) {
+                for (int j = 0; j < COLUMN; j++) {
+                    System.out.print(starterFront[i][j]);
+                }
+                System.out.print("      ");
+                for (int j = 0; j < COLUMN; j++) {
+                    System.out.print(starterBack[i][j]);
+                }
+                System.out.println();
+            }
+            System.out.println();
+
+        }
     }
 
     public String[][] createPrintableCard(PlayerBoard playerBoard, Card card) {
@@ -569,7 +604,7 @@ public class Tui implements Ui{
 
         return matChat;
     }
-    @Override
+
     public void printView(PlayerBean player, GameBean game, ArrayList<PlayerBean> players){
         PlayerBoard pBoard = player.getBoard();
         Card[] hand = player.getHand();
@@ -598,8 +633,6 @@ public class Tui implements Ui{
         String[][] hand2 = this.createPrintableCard(hand[1]);
         String[][] hand3 = this.createPrintableCard(hand[2]);
         String[][] privateAch = this.createPrintableAchievement(privateAchievement);
-        
-        //this.printTitle();
 
         System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "commonboard" + TuiColors.getColor(TuiColors.ANSI_RESET));
         System.out.print(" ".repeat((3*COLUMN) + 6 + 6 - 11));
@@ -964,18 +997,16 @@ public class Tui implements Ui{
                 System.out.println("\nGG to everyone");
                 this.running = false;
             }
-            else{
-                if (player.getState().equals(PlayerState.PLAY_CARD)){
+            else {
+                if (player.getState().equals(PlayerState.PLAY_CARD)) {
                     playerInTurn = player;
                     System.out.println("Play a card");
-                }
-                else if(player.getState().equals(PlayerState.DRAW_CARD)){
+                } else if (player.getState().equals(PlayerState.DRAW_CARD)) {
                     playerInTurn = player;
                     System.out.println("Draw a card");
-                }
-                else{
-                    for(PlayerBean p : players){
-                        if(!p.getState().equals(PlayerState.NOT_IN_TURN)){
+                } else {
+                    for (PlayerBean p : players) {
+                        if (!p.getState().equals(PlayerState.NOT_IN_TURN)) {
                             playerInTurn = p;
                             break;
                         }
@@ -986,16 +1017,13 @@ public class Tui implements Ui{
                 System.out.println("Press [1] to view a card from your hand");
                 System.out.println("Press [2] to view a card from your board");
                 System.out.println("Press [3] to view another player's board");
-                if(playerInTurn.getUsername().equals(username) && playerInTurn.getState().equals(PlayerState.PLAY_CARD)){
+                if (playerInTurn.getUsername().equals(username) && playerInTurn.getState().equals(PlayerState.PLAY_CARD)) {
                     System.out.println("Press [4] to place a card");
-                }
-                else if(playerInTurn.getUsername().equals(username) && playerInTurn.getState().equals(PlayerState.DRAW_CARD)){
+                } else if (playerInTurn.getUsername().equals(username) && playerInTurn.getState().equals(PlayerState.DRAW_CARD)) {
                     System.out.println("Press [4] to draw a card");
                 }
                 System.out.println("Press [c] anytime to send a message");
             }
-            //clearConsole();
-            //this.printView(player, game, players);
         }
     }
     //TODO: Refactor di questa funzione
@@ -1232,13 +1260,9 @@ public class Tui implements Ui{
                 } else {
                     System.out.println("Do you want to draw from decks or visible cards? [1] for decks [2] for visible cards");
                     String a = input.next();
-//                    clearConsole();
-//                    this.printView(player, game, players);
                     while (!a.equals("1") && !a.equals("2") && !a.equals("c")) {
                         System.out.println("Do you want to draw from decks or visible cards? [1] for decks [2] for visible cards");
                         a = input.next();
-//                        clearConsole();
-//                        this.printView(player, game, players);
                     }
                     if (a.equals("c")) {
                         this.printChat(player, game, players);
@@ -1362,7 +1386,6 @@ public class Tui implements Ui{
         }
     }
     public void printChat(PlayerBean player, GameBean game, ArrayList<PlayerBean> players){
-        String username = player.getUsername();
         Scanner input = new Scanner(System.in);
         int u;
         do{
@@ -1391,7 +1414,8 @@ public class Tui implements Ui{
 
     public void printTitle(){
         System.out.print("\n");
-        System.out.print(TuiColors.getColor(TuiColors.ANSI_YELLOW) + " ██████╗ ██████╗ ██████╗ ███████╗██╗  ██╗    ███╗   ██╗ █████╗ ████████╗██╗   ██╗██████╗  █████╗ ██╗     ██╗███████╗\n" +
+        System.out.print(TuiColors.getColor(TuiColors.ANSI_YELLOW) +
+                " ██████╗ ██████╗ ██████╗ ███████╗██╗  ██╗    ███╗   ██╗ █████╗ ████████╗██╗   ██╗██████╗  █████╗ ██╗     ██╗███████╗\n" +
                 "██╔════╝██╔═══██╗██╔══██╗██╔════╝╚██╗██╔╝    ████╗  ██║██╔══██╗╚══██╔══╝██║   ██║██╔══██╗██╔══██╗██║     ██║██╔════╝\n" +
                 "██║     ██║   ██║██║  ██║█████╗   ╚███╔╝     ██╔██╗ ██║███████║   ██║   ██║   ██║██████╔╝███████║██║     ██║███████╗\n" +
                 "██║     ██║   ██║██║  ██║██╔══╝   ██╔██╗     ██║╚██╗██║██╔══██║   ██║   ██║   ██║██╔══██╗██╔══██║██║     ██║╚════██║\n" +
@@ -1400,7 +1424,7 @@ public class Tui implements Ui{
                 "                                                                                                                    \n"
                 + TuiColors.getColor(TuiColors.ANSI_RESET));
     }
-    @Override
+
     public void printCardFromPlayerBoard(PlayerBoard playerBoard, int[] coord){
         int[] c = new int[2];
         c[0] = coord[1] - (PLAYERBOARD_DIM / 2) - 1;
@@ -1408,38 +1432,6 @@ public class Tui implements Ui{
         this.printCard(playerBoard, playerBoard.getCard(c));
     }
 
-    @Override
-    public void printStarterCard(Card card){
-        if(card == null){
-            System.out.println("Starter card not existing");
-        }
-        else{
-            String[][] starterFront = this.createPrintableCard(card);
-            card.setCurrentSide();
-            String[][] starterBack = this.createPrintableCard(card);
-            card.setCurrentSide();
-
-            System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "front:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
-            System.out.print(" ".repeat(COLUMN + 6 - 7));
-            System.out.println(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "back:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
-            System.out.println();
-            for (int i = 0; i < ROW; i++) {
-                for (int j = 0; j < COLUMN; j++) {
-                    System.out.print(starterFront[i][j]);
-                }
-                System.out.print("      ");
-                for (int j = 0; j < COLUMN; j++) {
-                    System.out.print(starterBack[i][j]);
-                }
-                System.out.println();
-            }
-            System.out.println();
-
-        }
-
-    }
-
-    @Override
     public void printCard(PlayerBoard playerBoard, Card card){
         if(card == null){
             System.out.println("Card not existing at this coordinates");
@@ -1458,7 +1450,6 @@ public class Tui implements Ui{
 
     }
 
-    @Override
     public void printCard(Card card){
         if(card == null){
             System.out.println("Card not existing");
@@ -1476,7 +1467,6 @@ public class Tui implements Ui{
 
     }
 
-    @Override
     public void printAchievement(Achievement achievement){
         String[][] mat = this.createPrintableAchievement(achievement);
 
@@ -1510,70 +1500,8 @@ public class Tui implements Ui{
         }
     }
 
-    public void printScoreBoard(ArrayList<PlayerBean> players){
-        String[][][][] scoreBoard = this.createPrintableScoreBoard(players);
 
-        System.out.print("‾".repeat(26));
-        System.out.println();
-        for(int i = 0; i < SCOREBOARD_ROW; i++){
-            for(int t = 0; t < 3; t ++){
-                System.out.print("|");
-                for(int j = 0; j < SCOREBOARD_COLUMN; j++){
-                    for(int s = 0; s < 3; s++){
-                        System.out.print(scoreBoard[s][t][i][j]);
-                    }
-                    System.out.print("|");
-                }
-                System.out.println();
-            }
-            System.out.print("‾".repeat(26));
-            System.out.println();
-        }
-    }
 
-    public void printGameBoard(Card[] resources, Card[] golds, Achievement[] achievements){
-        String[][] r1 = this.createPrintableCard(resources[0]);
-        String[][] r2 = this.createPrintableCard(resources[1]);
-        String[][] g1 = this.createPrintableCard(golds[0]);
-        String[][] g2 = this.createPrintableCard(golds[1]);
-        String[][] a1 = this.createPrintableAchievement(achievements[0]);
-        String[][] a2 = this.createPrintableAchievement(achievements[1]);
-
-        for(int i = 0; i < ROW; i++){
-            for(int j = 0; j < COLUMN; j++){
-                System.out.print(r1[i][j]);
-            }
-            System.out.print("      ");
-            for(int j = 0; j < COLUMN; j++){
-                System.out.print(r2[i][j]);
-            }
-            System.out.println();
-        }
-        System.out.println();
-        for(int i = 0; i < ROW; i++){
-            for(int j = 0; j < COLUMN; j++){
-                System.out.print(g1[i][j]);
-            }
-            System.out.print("      ");
-            for(int j = 0; j < COLUMN; j++){
-                System.out.print(g2[i][j]);
-            }
-            System.out.println();
-        }
-        System.out.println();
-        for(int i = 0; i < ROW; i++){
-            for(int j = 0; j < COLUMN; j++){
-                System.out.print(a1[i][j]);
-            }
-            System.out.print("      ");
-            for(int j = 0; j < COLUMN; j++){
-                System.out.print(a2[i][j]);
-            }
-            System.out.println();
-        }
-        System.out.println();
-
-    }
     //TODO: controlla se nell'eseguibile funziona
     public static void clearConsole(){
         //try{
@@ -1591,7 +1519,6 @@ public class Tui implements Ui{
         System.out.println(TuiColors.getColor(TuiColors.ANSI_CLEAR));
         System.out.flush();
     }
-
     @Override
     public Achievement chooseAchievement(Achievement[] choices) {
         System.out.println("I)");
@@ -1606,6 +1533,7 @@ public class Tui implements Ui{
         }
         return choices[choice - 1];
     }
+
     public Color chooseColor(List<Color> colors){
         System.out.println("Choose your color by typing the corresponding number:");
         for (int i = 0; i < colors.size(); i++){

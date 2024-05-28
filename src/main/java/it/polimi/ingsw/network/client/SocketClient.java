@@ -177,8 +177,7 @@ public class SocketClient implements ClientInterface {
                 break;
             case STARTER_CARD:
                 Card starterCard = ((StarterCardMessage) message).getCard();
-                this.view.printStarterCard(starterCard);
-                boolean choice = this.view.askSide();
+                boolean choice = this.view.askSide(starterCard);
                 if (!choice) {
                     starterCard.setCurrentSide();
                 }
@@ -282,7 +281,6 @@ public class SocketClient implements ClientInterface {
                 break;
         }
     }
-
     public void onDisconnect(){
         try {
             this.disconnected = true;
