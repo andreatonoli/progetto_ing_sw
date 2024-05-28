@@ -1,7 +1,8 @@
 package it.polimi.ingsw.network.client;
 
 import it.polimi.ingsw.model.card.Achievement;
-import it.polimi.ingsw.model.card.CardBack;
+import it.polimi.ingsw.model.enums.Color;
+import it.polimi.ingsw.model.enums.GameState;
 import it.polimi.ingsw.model.enums.PlayerState;
 import it.polimi.ingsw.model.player.PlayerBoard;
 import it.polimi.ingsw.network.messages.*;
@@ -10,6 +11,9 @@ import it.polimi.ingsw.network.server.Action;
 import it.polimi.ingsw.view.Ui;
 import it.polimi.ingsw.model.card.Card;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -20,32 +24,27 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, ClientInterface {
-    private BlockingQueue<Message> messageQueue;
-    private Queue<Action> actionQueue;
+    private InputStream fakeData;
+    private final BlockingQueue<Message> messageQueue;
     private boolean processingAction;
     private static final String serverName = "GameServer";
     private String username;
+    private GameBean game;
     private final Ui view;
     private VirtualServer server;
-    private Card[] commonResources;
-    private Card[] commonGold;
-    private Card starterCard;
-    private final Achievement[] commonAchievement;
     private PlayerBean player;
     private ArrayList<PlayerBean> opponents;
+    private int playersRemaining;
 
     public RMIClient(String username, String host, int port, Ui view) throws RemoteException{
         this.username = username;
         this.view = view;
         //Initialization of player's attributes
         this.player = new PlayerBean(username);
+        this.game = new GameBean();
         this.opponents = new ArrayList<>();
-        this.commonAchievement = new Achievement[2];
-        this.commonResources = new Card[2];
-        this.commonGold = new Card[2];
         messageQueue = new LinkedBlockingQueue<>();
         processingAction = false;
-        actionQueue = new LinkedList<>();
         pickQueue();
         try {
             Registry registry = LocateRegistry.getRegistry(host, port);
@@ -68,14 +67,16 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
     public int setLobbySize() throws RemoteException{
         return this.view.setLobbySize();
     }
-    public void flipCard(Card card) throws RemoteException{
-        this.server.flipCard(card, username);
-    }
+
     public void placeStarterCard(Card card) throws RemoteException{
         this.server.placeStarterCard(card, username);
     }
     public void setPrivateAchievement(Achievement toBeSet) throws RemoteException {
         this.server.setAchievement(toBeSet, username);
+    }
+
+    public void setColor(Color color) throws RemoteException{
+        this.server.setColor(color, username);
     }
     private void pickQueue(){
         Timer t = new Timer();
@@ -98,27 +99,21 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
             }
         }
     }
-    private void addToQueue(Action action){
-        actionQueue.add(action);
-    }
 
-    //TODO: ANDREAAAAAAAAAAAAAAAAAAAA aggiungi in queue con update
     @Override
-    public void pingNetwork() throws RemoteException{
-        addToQueue(() -> {
-            try {
-                server.pingConnection(username);
-            } catch (RemoteException e) {
-                throw new RuntimeException(e);
-            }
-        });
+    public void pingNetwork() throws RemoteException {
+        try {
+            server.pingConnection(username);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     @Override
     public void update(Message message){
         messageQueue.add(message);
     }
-
     /**
      * gets messages from the messageQueue and updates the view according to the message type
      * @param message sent from the server
@@ -126,24 +121,66 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
     public void onMessage(Message message) {
         String name;
         switch (message.getType()){
+            case RECONNECTION:
+                this.player = ((ReconnectionMessage) message).getPlayerBean();
+                this.game = ((ReconnectionMessage) message).getGameBean();
+                //TODO: Controlla come viene passato il paramentro e cerca di passare una copia
+                this.opponents = ((ReconnectionMessage) message).getOpponents();
+                break;
+            case GAME_STATE:
+                GameState state = ((GameStateMessage) message).getState();
+                game.setState(state);
+                if (state.ordinal() >= 2){
+                    this.view.printViewWithCommands(player, game, opponents);
+                }
+                break;
             case OPPONENTS:
                 ArrayList<String> playersName = ((OpponentsMessage) message).getPlayers();
+                playersRemaining = playersName.size()+1;
                 for (String s : playersName){
                     if(!s.equalsIgnoreCase(username)){
                         opponents.add(new PlayerBean(s));
                     }
                 }
                 break;
+            case COMMON_GOLD_UPDATE:
+                int index = ((CommonCardUpdateMessage) message).getIndex();
+                game.setCommonGold(index, ((CommonCardUpdateMessage) message).getCard());
+                break;
+            case COMMON_RESOURCE_UPDATE:
+                int index1 = ((CommonCardUpdateMessage) message).getIndex();
+                game.setCommonResources(index1, ((CommonCardUpdateMessage) message).getCard());
+                break;
+            case COMMON_ACHIEVEMENT:
+                System.arraycopy(((AchievementMessage) message).getAchievements(), 0, game.getCommonAchievement(), 0, 2);
+                break;
+            case DECK_UPDATE:
+                Color color = ((UpdateDeckMessage) message).getColor();
+                boolean isResource = ((UpdateDeckMessage) message).getIsResource();
+                if (isResource){
+                    game.setResourceDeckRetro(color);
+                }
+                else{
+                    game.setGoldDeckRetro(color);
+                }
+                break;
+            case STARTER_CARD:
+                Card starterCard = ((StarterCardMessage) message).getCard();
+                this.view.printStarterCard(starterCard);
+                boolean choice = this.view.askSide();
+                if (!choice) {
+                    starterCard.setCurrentSide();
+                }
+                player.setStarterCard(starterCard);
+                try {
+                    this.placeStarterCard(starterCard);
+                } catch (RemoteException e) {
+                    System.out.println(e.getMessage());
+                }
+                break;
             case CARD_HAND:
                 //Copied the message body into the player's cards
                 System.arraycopy(((CardInHandMessage) message).getHand(), 0, this.player.getHand(), 0, 3);
-                //TODO: SISTEMARE
-                //for (int i=0; i<player.getHand().length; i++){
-                //    System.out.println(player.getCard(i));
-                //}
-                break;
-            case COMMON_ACHIEVEMENT:
-                System.arraycopy(((AchievementMessage) message).getAchievements(), 0, this.commonAchievement, 0, 2);
                 break;
             case PRIVATE_ACHIEVEMENT:
                 this.player.setAchievement(this.view.chooseAchievement(((AchievementMessage) message).getAchievements()));
@@ -153,61 +190,9 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                     System.err.println(e.getMessage() + " in RMIClient.update");
                 }
                 break;
-            case COMMON_GOLD_UPDATE:
-                if(commonGold[0] == null){
-                    commonGold[0] = ((CommonCardUpdateMessage) message).getCard();
-                }
-                else{
-                    commonGold[1] = ((CommonCardUpdateMessage) message).getCard();
-                }
-                break;
-            case COMMON_RESOURCE_UPDATE:
-                if(commonResources[0] == null){
-                    commonResources[0] = ((CommonCardUpdateMessage) message).getCard();
-                }
-                else{
-                    commonResources[1] = ((CommonCardUpdateMessage) message).getCard();
-                }
-                break;
-            case STARTER_CARD:
-                //TODO: usare printStarterCard e non chiedere più di flippare ogni volta
-                this.starterCard = ((StarterCardMessage) message).getCard();
-                this.view.printCard(starterCard);
-                boolean choice = this.view.askToFlip();
-                if (choice){
-                    try {
-                        this.flipCard(starterCard);
-                    } catch (RemoteException e) {
-                        System.err.println(e.getMessage() + " in RMIClient.update");
-                    }
-                }
-                else{
-                    try{
-                        this.placeStarterCard(starterCard);
-                    }
-                    catch (RemoteException e){
-                        System.err.println(e.getMessage());
-                    }
-                }
-                break;
-            case SCORE_UPDATE:
-                name = ((ScoreUpdateMessage) message).getName();
-                if (username.equals(name)) {
-                    player.addPoints(((ScoreUpdateMessage) message).getPoint());
-                }
-                else {
-                    for (PlayerBean p : opponents){
-                        if (p.getUsername().equals(name)){
-                            p.addPoints(((ScoreUpdateMessage) message).getPoint());
-                        }
-                    }
-                }
-                //this.view.printViewWithCommands(this.player.getBoard(),this.player.getHand(),this.username,this.commonResources,this.commonGold, this.commonAchievement, this.opponents,this.player.getChat());
-                break;
             case PLAYER_STATE:
                 PlayerState playerState = ((PlayerStateMessage) message).getState();
                 name = ((PlayerStateMessage) message).getName();
-                System.out.println(playerState.toString() + " " + name);
                 if (username.equals(name)) {
                     player.setState(playerState);
                 }
@@ -218,23 +203,37 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                         }
                     }
                 }
-                //this.view.printViewWithCommands(this.player.getBoard(),this.player.getHand(),this.username,this.commonResources,this.commonGold, this.commonAchievement, this.opponents,this.player.getChat());
                 break;
-            case CARD_UPDATE:
-                Card drawedCard = ((UpdateCardMessage) message).getCard();
-                player.setCardinHand(drawedCard);
-                //this.view.printViewWithCommands(this.player.getBoard(),this.player.getHand(),this.username,this.commonResources,this.commonGold, this.commonAchievement, this.opponents,this.player.getChat());
+            case COLOR_REQUEST:
+                Color chosenColor = this.view.chooseColor(((ColorRequestMessage) message).getColors());
+                player.setPionColor(chosenColor);
+                try {
+                    this.setColor(chosenColor);
+                } catch (RemoteException e) {
+                    System.err.println(e.getMessage());
+                }
                 break;
-            case DECK_UPDATE:
-                Card first = ((UpdateDeckMessage) message).getCard();
-                //TODO: aggiornare in view il deck
+            case COLOR_RESPONSE:
+                Color setColor = ((ColorResponseMessage) message).getColor();
+                name = message.getSender();
+                if (name.equalsIgnoreCase(username)){
+                    player.setPionColor(setColor);
+                }
+                else{
+                    for (PlayerBean p : opponents){
+                        if (p.getUsername().equalsIgnoreCase(name)){
+                            p.setPionColor(setColor);
+                            break;
+                        }
+                    }
+                }
                 break;
             case PLAYERBOARD_UPDATE:
                 PlayerBoard playerBoard = ((PlayerBoardUpdateMessage) message).getpBoard();
                 name = ((PlayerBoardUpdateMessage) message).getName();
                 if (name.equalsIgnoreCase(username)){
                     player.setBoard(playerBoard);
-                    //this.view.printViewWithCommands(playerBoard,this.player.getHand(),this.username,this.commonResources,this.commonGold, this.commonAchievement, this.opponents,this.player.getChat());
+                    this.view.printViewWithCommands(this.player, this.game, this.opponents);
                 }
                 else{
                     for (PlayerBean p : opponents){
@@ -244,15 +243,51 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                     }
                 }
                 break;
-            case GENERIC_MESSAGE:
-                //TODO: messaggi che si accumulano finiscono qui e non so perchè
-                this.view.showText(message.toString());
+            case CARD_UPDATE:
+                Card drawedCard = ((UpdateCardMessage) message).getCard();
+                player.setCardinHand(drawedCard);
+                this.view.printViewWithCommands(this.player, this.game, this.opponents);
                 break;
-                //aggiungi case ping
+            case SCORE_UPDATE:
+                name = ((ScoreUpdateMessage) message).getName();
+                if (username.equals(name)) {
+                    player.setPoints(((ScoreUpdateMessage) message).getPoint());
+                }
+                else {
+                    for (PlayerBean p : opponents){
+                        if (p.getUsername().equals(name)){
+                            p.setPoints(((ScoreUpdateMessage) message).getPoint());
+                        }
+                    }
+                }
+                //this.view.printViewWithCommands(this.player, this.game, this.opponents);
+                break;
+            case CHAT:
+                player.setChat(((ChatMessage) message).getChat());
+                this.view.printViewWithCommands(this.player, this.game, this.opponents);
+                break;
+            case DECLARE_WINNER:
+                ArrayList<String> winners = ((WinnerMessage) message).getWinners();
+                this.view.declareWinners(winners);
+                try {
+                    server.removeFromServer(username);
+                } catch (RemoteException e) {
+                    System.out.println(e.getMessage() + " in removeFromServer");
+                }
+                break;
+            case GENERIC_MESSAGE:
+                this.view.setMessage(message.toString(), false);
+                break;
+            case ERROR:
+                this.view.setMessage(message.toString(), true);
+                this.view.printViewWithCommands(player, game, opponents);
+                break;
             default:
                 break;
         }
     }
+
+
     @Override
     public Ui getView(){
     //    return view;
@@ -261,19 +296,30 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
 
     @Override
     public void sendChatMessage(String message) {
-
+        try {
+            server.sendChatMessage(message, username);
+        } catch (RemoteException e) {
+            System.out.println(e.getMessage() + " sendChatMessage");
+        }
     }
 
     @Override
     public void sendChatMessage(String receiver, String message) {
-
+        try {
+            server.sendChatMessage(message, username, receiver);
+        } catch (RemoteException e) {
+            System.out.println(e.getMessage() + " sendChatMessage");
+        }
     }
 
     @Override
     public void placeCard(Card card, int[] placingCoordinates) {
         if (player.getState().equals(PlayerState.PLAY_CARD)) {
-            try {
+            try { //TODO: imparare a leggere una griglia per capire se così traspongo giuste le coordinate
+                placingCoordinates[0] = placingCoordinates[0] - 6;
+                placingCoordinates[1] = 6 - placingCoordinates[1];
                 server.placeCard(card, placingCoordinates, username);
+                player.removeCardFromHand(card);
             } catch (RemoteException e) {
                 System.out.println(e.getMessage() + " in placeCard");
             }

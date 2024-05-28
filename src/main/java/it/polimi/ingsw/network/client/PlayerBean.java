@@ -2,6 +2,7 @@ package it.polimi.ingsw.network.client;
 
 import it.polimi.ingsw.model.card.Achievement;
 import it.polimi.ingsw.model.card.Card;
+import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.PlayerState;
 import it.polimi.ingsw.model.player.PlayerBoard;
 
@@ -9,12 +10,14 @@ import java.util.ArrayList;
 
 public class PlayerBean {
     private String username;
+    private Card starterCard;
     private Card[] hand;
     private Achievement achievement;
     private int points;
     private PlayerState state;
     private ArrayList<String> chat;
     private PlayerBoard board;
+    private Color pionColor;
 
     public String getUsername() {
         return username;
@@ -29,12 +32,11 @@ public class PlayerBean {
         this.chat = new ArrayList<>();
         this.username = username;
         this.points = 0;
-        this.state = PlayerState.NOT_IN_TURN;
+        this.state = PlayerState.DRAW_CARD;
     }
     public Card[] getHand() {
         return hand;
     }
-    //TODO: forse meglio farlo con carte e equals
     public Card getCard(int i){
         return hand[i];
     }
@@ -94,7 +96,21 @@ public class PlayerBean {
             }
         }
     }
-    public void addPoints(int points){
-        this.points += points;
+    public void setPoints(int points){
+        this.points = points;
+    }
+    public Card getStarterCard(){
+        return starterCard;
+    }
+    public void setStarterCard(Card card){
+        this.starterCard = card;
+    }
+
+    public Color getPionColor() {
+        return pionColor;
+    }
+
+    public void setPionColor(Color pionColor) {
+        this.pionColor = pionColor;
     }
 }

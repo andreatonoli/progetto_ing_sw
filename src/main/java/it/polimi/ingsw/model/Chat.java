@@ -13,11 +13,8 @@ public class Chat implements Serializable {
     /** game's id */
     private Game game;
 
-    /** every player has his own chat and there is also a global chat*/
-    private Player player;
-
     /** players' list */
-    private ArrayList<Player> players;
+    private final ArrayList<Player> players;
 
     public Chat(Game game) {
         this.game = game;

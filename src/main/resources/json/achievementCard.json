@@ -2,35 +2,43 @@
   "achievements": [
     {
       "type": "DiagonalAndL",
-      "color": "RED"
+      "color": "RED",
+      "id": "1"
     },
     {
       "type": "DiagonalAndL",
-      "color": "GREEN"
+      "color": "GREEN",
+      "id": "2"
     },
     {
       "type": "DiagonalAndL",
-      "color": "BLUE"
+      "color": "BLUE",
+      "id": "3"
     },
     {
       "type": "DiagonalAndL",
-      "color": "PURPLE"
+      "color": "PURPLE",
+      "id": "4"
     },
     {
       "type": "Resources",
-      "symbol": "FUNGI"
+      "symbol": "FUNGI",
+      "id": "9"
     },
     {
       "type": "Resources",
-      "symbol": "PLANT"
+      "symbol": "PLANT",
+      "id": "10"
     },
     {
       "type": "Resources",
-      "symbol": "ANIMAL"
+      "symbol": "ANIMAL",
+      "id": "11"
     },
     {
       "type": "Resources",
-      "symbol": "INSECT"
+      "symbol": "INSECT",
+      "id": "12"
     },
     {
       "type": "Item",
@@ -39,22 +47,26 @@
         "QUILL",
         "INKWELL",
         "MANUSCRIPT"
-      ]
+      ],
+      "id": "13"
     },
     {
       "type": "Item",
       "basePoint": 2,
-      "symbols": ["MANUSCRIPT"]
+      "symbols": ["MANUSCRIPT"],
+      "id": "14"
     },
     {
       "type": "Item",
       "basePoint": 2,
-      "symbols": ["INKWELL"]
+      "symbols": ["INKWELL"],
+      "id": "15"
     },
     {
       "type": "Item",
       "basePoint": 2,
-      "symbols": ["QUILL"]
+      "symbols": ["QUILL"],
+      "id": "16"
     }
   ]
 }

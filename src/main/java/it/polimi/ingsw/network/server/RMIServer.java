@@ -6,23 +6,19 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
-import it.polimi.ingsw.Controller.ServerController;
 import it.polimi.ingsw.model.card.Achievement;
 import it.polimi.ingsw.model.card.Card;
+import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.network.client.RMIClientHandler;
 
 public class RMIServer implements VirtualServer {
-
-    //private final Controller controller;
-    private Queue<Action> actionQueue;
+    private final Queue<Action> actionQueue;
     private boolean processingAction;
     private final Server server;
     private final int port;
-    //private RMIConnection connection;
-    private Map<String, RMIConnection> connections;
+    private final Map<String, RMIConnection> connections;
 
-    //TODO: sistemare controller
-    public RMIServer(Server server, int port, ServerController controller){
+    public RMIServer(Server server, int port){
         this.server = server;
         this.port = port;
         connections = Collections.synchronizedMap(new HashMap<>());
@@ -30,6 +26,21 @@ public class RMIServer implements VirtualServer {
         processingAction = false;
         pickQueue();
         this.startServer();
+    }
+
+    //TODO controllare le messe in coda
+    public void removeFromServer(String username) throws RemoteException {
+        int playersToDelete = connections.get(username).getLobby().getGame().getLobbySize()-1;
+        addToQueue(() -> connections.get(username).getLobby().getGame().setLobbySize(playersToDelete));
+        if (playersToDelete != 0) {
+            addToQueue(() -> connections.remove(username));
+            addToQueue(() -> server.removePlayers(username));
+        }
+        else {
+            server.removeGame(connections.get(username).getLobby());
+            addToQueue(() -> connections.remove(username));
+            addToQueue(() -> server.removePlayers(username));
+        }
     }
 
     @Override
@@ -45,7 +56,7 @@ public class RMIServer implements VirtualServer {
     }
 
     public void pingConnection(String username) throws RemoteException{
-        addToQueue(() -> connections.get(username).catchPing());
+        connections.get(username).catchPing();
     }
 
     //TODO: se faccio implementare virtualServer a Connection ogni volta che do uno stub ad una nuova connessione creo una connection diversa e vado a comunicare diremttamente
@@ -61,8 +72,12 @@ public class RMIServer implements VirtualServer {
     }
 
     @Override
-    public void flipCard(Card card, String username) throws RemoteException {
-        addToQueue(() -> connections.get(username).flipCard(card));
+    public void sendChatMessage(String message, String sender, String receiver) throws RemoteException {
+        addToQueue(() -> connections.get(sender).sendChatMessage(message, connections.get(receiver)));
+    }
+    @Override
+    public void sendChatMessage(String message, String sender) throws RemoteException {
+        addToQueue(() -> connections.get(sender).sendChatMessage(message));
     }
 
     @Override
@@ -70,22 +85,27 @@ public class RMIServer implements VirtualServer {
         addToQueue(() -> connections.get(username).placeStarterCard(card));
     }
 
-    //@Override
+    @Override
+    public void setColor(Color color, String username) throws RemoteException {
+        addToQueue(() -> connections.get(username).setColor(color));
+    }
+
+    @Override
     public void placeCard(Card card, int[] placingCoordinates, String username) {
         addToQueue(() -> connections.get(username).placeCard(card, placingCoordinates));
     }
 
-    //@Override
+    @Override
     public void drawCard(String chosenDeck, String username) throws RemoteException {
         addToQueue(() -> connections.get(username).drawCard(chosenDeck));
     }
 
-    //@Override
+    @Override
     public void drawCardFromBoard(int index, String username) throws RemoteException {
         addToQueue(() -> connections.get(username).drawCardFromBoard(index));
     }
 
-    //@Override
+    @Override
     public void setAchievement(Achievement achievement, String username) throws RemoteException {
         addToQueue(() -> connections.get(username).setAchievement(achievement));
     }

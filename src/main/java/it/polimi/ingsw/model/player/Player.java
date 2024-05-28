@@ -5,10 +5,7 @@ import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.GameBoard;
 import it.polimi.ingsw.model.card.Achievement;
 import it.polimi.ingsw.model.card.Card;
-import it.polimi.ingsw.model.enums.CornerEnum;
-import it.polimi.ingsw.model.enums.CornerState;
-import it.polimi.ingsw.model.enums.PlayerState;
-import it.polimi.ingsw.model.enums.Symbols;
+import it.polimi.ingsw.model.enums.*;
 import it.polimi.ingsw.model.exceptions.*;
 
 import java.io.Serializable;
@@ -24,14 +21,15 @@ public class Player implements Serializable {
      */
     private boolean firstToEnd;
     private boolean firstToPlay;
-    private Card[] cardInHand;
-    private Achievement[] personalObj;
+    private Color pionColor;
+    private final Card[] cardInHand;
+    private final Achievement[] personalObj;
     private Achievement chosenObj;
     private int points = 0;
     private PlayerState playerState;
-    private ArrayList<String> chat;
+    private final ArrayList<String> chat;
     private Game game;
-    private PlayerBoard playerBoard;
+    private final PlayerBoard playerBoard;
     private boolean disconnected;
     private int objCompleted = 0;
 
@@ -49,6 +47,7 @@ public class Player implements Serializable {
         this.game = game;
         this.playerBoard = new PlayerBoard();
         this.disconnected = false;
+        this.firstToEnd = false;
     }
 
     public boolean isDisconnected() {
@@ -57,15 +56,20 @@ public class Player implements Serializable {
 
     public void setDisconnected(boolean disconnected) {
         this.disconnected = disconnected;
-        int disconnections;
         if (this.disconnected){
-            disconnections = game.getDisconnections()+1;
-            game.setDisconnections(disconnections);
+            game.addDisconnections(1);
         }
         else {
-            disconnections = game.getDisconnections()-1;
-            game.setDisconnections(disconnections);
+            game.addDisconnections(-1);
         }
+    }
+
+    public Color getPionColor() {
+        return pionColor;
+    }
+
+    public void setPionColor(Color pionColor) {
+        this.pionColor = pionColor;
     }
 
     /**
@@ -99,9 +103,9 @@ public class Player implements Serializable {
     public Achievement[] getPersonalObj() {
         return personalObj;
     }
-    //TODO: controllare se è giusto il commento
+
     /**
-     * getter to get the chat log
+     * gets the chat log
      * @return the chat log
      */
     public ArrayList<String> getChat() {
@@ -141,10 +145,10 @@ public class Player implements Serializable {
 
     /**
      * adder to add points to the score
+     *
      * @param pointsToAdd are the points that will be added
-     * @return the updated player score
      */
-    public int addPoints(int pointsToAdd){
+    public void addPoints(int pointsToAdd){
         this.points = this.points + pointsToAdd;
         if (this.points >= 20){
             firstToEnd = true;
@@ -152,15 +156,21 @@ public class Player implements Serializable {
         if (this.points > 29){
             this.points = 29;
         }
-        return this.points;
+    }
+
+    public boolean isFirstToEnd(){
+        return firstToEnd;
     }
 
     /**
      * set the boolean value used to know who is the starting player
-     * @param username is the username of the first player
      */
-    public void isFirstToPlay(String username){
-        firstToPlay = this.username.equals(username);
+    public void setFirstToPlay(){
+        firstToPlay = true;
+    }
+
+    public boolean isFirstToPlay(){
+        return firstToPlay;
     }
 
     /**
@@ -168,7 +178,7 @@ public class Player implements Serializable {
      * @param receiver is the player that is receiving the message
      * @param message is the core of the message
      */
-    public void sendMessage(Player receiver, String message){
+    public void sendChatMessage(Player receiver, String message){
         try{
             this.game.getChat().forwardMessage(this, receiver, false, message);
         }
@@ -181,7 +191,7 @@ public class Player implements Serializable {
      * used when a player need to send a message to all the other players
      * @param message is the core of the message
      */
-    public void sendMessage(String message){
+    public void sendChatMessage(String message){
         try{
             this.game.getChat().forwardMessage(this, null, true, message);
         }
@@ -192,33 +202,12 @@ public class Player implements Serializable {
     //TODO: commentare
     public void displayMessage(Player sender, String message){
         if(chat.size() >= Chat.CHATDIM){
-            chat.set(Chat.CHATDIM - 1, sender.getUsername() + " : " + message);
+            chat.set(Chat.CHATDIM - 1, sender.getUsername() + ": " + message);
             Collections.rotate(chat, 1);
         }
         else{
-            chat.addFirst(sender.getUsername() + " : " + message);
+            chat.addFirst(sender.getUsername() + ": " + message);
         }
-        //Stampa per test
-        //for(int i = 0; i < chat.size(); i++){
-        //    System.out.println(chat.get(i));
-        //}
-    }
-
-    /**
-     * setter to set the game parameter
-     * @param game is the game the player is in
-     */
-    //temporaneo
-    public void setGame(Game game){
-        this.game = game;
-    }
-
-    /**
-     * getter to get the game parameter
-     * @return the game the player is in
-     */
-    public Game getGame(){
-        return this.game;
     }
 
     /**
@@ -247,8 +236,8 @@ public class Player implements Serializable {
      * @param cardToRemove is the card that will be removed by the player's hand
      */
     public void removeFromHand(Card cardToRemove){
-        for (int i = 0; i < this.cardInHand.length && this.cardInHand[i] != null; i++) {
-            if (this.cardInHand[i].equals(cardToRemove)){
+        for (int i = 0; i < this.cardInHand.length; i++) {
+            if (this.cardInHand[i] != null && this.cardInHand[i].equals(cardToRemove)){
                 this.cardInHand[i] = null;
                 break;
             }
@@ -358,7 +347,6 @@ public class Player implements Serializable {
             throw new NotInTurnException();
         }
         if (card.getType().equalsIgnoreCase("Resource")){
-            //TODO: ottimizza
             if (!card.equals(gBoard.getCommonResource()[0]) && !card.equals(gBoard.getCommonResource()[1])){
                 throw new CardNotFoundException();
             }
@@ -379,11 +367,12 @@ public class Player implements Serializable {
     /**
      * Place card then removes it from the player's hand
      * @param card to place
-     * @param coordinates of the card which corner will be covered after the placement
+     * @param coordinates of the place where the card will be placed
      * @throws NotInTurnException player is not in PLACE_CARD state
      * @throws OccupiedCornerException one of the corners CardToBePlaced will cover is already covered or is hidden
      * @throws CostNotSatisfiedException player doesn't own enough resources to place a gold card
      * @throws AlreadyUsedPositionException player tries to place a card in a position already occupied by another card
+     * @throws InvalidCoordinatesException player tries to place a card on a spot not linked with any other card
      */
     public void placeCard(Card card, int[] coordinates) throws OccupiedCornerException, NotInTurnException, AlreadyUsedPositionException, CostNotSatisfiedException, InvalidCoordinatesException {
         CornerEnum corner = null;
@@ -400,12 +389,8 @@ public class Player implements Serializable {
             throw new InvalidCoordinatesException();
         }
         canPlace(corner, coordinates, card);
-        //coordinates of the new card
-        int[] newCoordinates = new int[2];
-        newCoordinates[0] = coordinates[0] + corner.getX();
-        newCoordinates[1] = coordinates[1] + corner.getY();
-        this.playerBoard.setCardPosition(card, newCoordinates);
-        this.playerBoard.coverCorner(card, newCoordinates);
+        this.playerBoard.setCardPosition(card, coordinates);
+        this.playerBoard.coverCorner(card, coordinates);
         card.calcPoints(this);
         removeFromHand(card);
     }
@@ -423,13 +408,18 @@ public class Player implements Serializable {
     public void canPlace(CornerEnum cornerPosition, int[] coordinates, Card cardToBePlaced) throws NotInTurnException, OccupiedCornerException, CostNotSatisfiedException, AlreadyUsedPositionException{
         int[] newCoordinates = new int[2];
         int[] coord = new int[2];
-        System.arraycopy(coordinates, 0, coord, 0, 2);
+        coord[0] = coordinates[0] + cornerPosition.getX();
+        coord[1] = coordinates[1] + cornerPosition.getY();
+        //Check if that position is available
+        if (this.playerBoard.getCard(coordinates) != null){
+            throw new AlreadyUsedPositionException();
+        }
         //check if the player placing the card is the player in turn
         if (this.playerState.equals(PlayerState.NOT_IN_TURN) || this.playerState.equals(PlayerState.DRAW_CARD)){
             throw new NotInTurnException();
         }
         //check if the corner we are placing the card on is available
-        if (this.playerBoard.getCard(coord).getCornerState(cornerPosition).equals(CornerState.NOT_VISIBLE) || this.playerBoard.getCard(coord).getCornerState(cornerPosition).equals(CornerState.OCCUPIED)){
+        if (this.playerBoard.getCard(coord).getCornerState(Objects.requireNonNull(cornerPosition.getOppositePosition())).equals(CornerState.NOT_VISIBLE) || this.playerBoard.getCard(coord).getCornerState(cornerPosition.getOppositePosition()).equals(CornerState.OCCUPIED)){
             throw new OccupiedCornerException();
         }
         if(!cardToBePlaced.checkCost(this)){
@@ -439,17 +429,13 @@ public class Player implements Serializable {
         //Calculates the coveredCard position
         coord[0] = coord[0]-cornerPosition.getX();
         coord[1] = coord[1]-cornerPosition.getY();
-        //Check if that position is available
-        if (this.playerBoard.getCard(coord) != null){
-            throw new AlreadyUsedPositionException();
-        }
         //for each corner of the placed card checks if the corner below is visible
         for (CornerEnum c: CornerEnum.values()){
             if(!cardToBePlaced.getCornerSymbol(c).equals(Symbols.NOCORNER)){
                 newCoordinates[0] = coord[0]+c.getX();
                 newCoordinates[1] = coord[1]+c.getY();
                 if (this.playerBoard.getCard(newCoordinates) != null){
-                    if (this.playerBoard.getCard(newCoordinates).getCornerState(c.getOppositePosition()).equals(CornerState.NOT_VISIBLE) || this.playerBoard.getCard(newCoordinates).getCornerState(c.getOppositePosition()).equals(CornerState.OCCUPIED)){
+                    if (this.playerBoard.getCard(newCoordinates).getCornerState(Objects.requireNonNull(c.getOppositePosition())).equals(CornerState.NOT_VISIBLE) || this.playerBoard.getCard(newCoordinates).getCornerState(c.getOppositePosition()).equals(CornerState.OCCUPIED)){
                         throw new OccupiedCornerException();
                     }
                 }

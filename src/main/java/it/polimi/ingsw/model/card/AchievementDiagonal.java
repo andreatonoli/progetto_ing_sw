@@ -8,22 +8,28 @@ import it.polimi.ingsw.model.enums.Symbols;
 import java.util.*;
 
 public class AchievementDiagonal implements Achievement{
+
+    /**
+     * Unique number to identify the card
+     */
+    private final int id;
     /**
      * points given upon completion of the achievement
      */
-    private int basePoint;
+    private final int basePoint;
     /**
      * the needed color (from the color enumeration) of the cards in a diagonal-shaped pattern have to be
      */
-    private Color color;
+    private final Color color;
     /**
      * Builds cards which achievement is creating a diagonal with cards of the same color.
      * They've all the same base points (2)
      * @param color color of the diagonal
      */
-    public AchievementDiagonal(Color color){
+    public AchievementDiagonal(Color color, int id){
         this.basePoint = 2;
         this.color = color;
+        this.id = id;
     }
     //TODO: Riscrivere commento e spiegare correttamente l'algoritmo
     /**
@@ -33,8 +39,6 @@ public class AchievementDiagonal implements Achievement{
      * @param player to calculate the points
      */
     @Override
-    //TODO: controlla effettiva utilità di marked
-    //TODO: scrivere sorting del set per velocizzare algoritmo
     public void calcPoints(Player player) {
         int point = 0;
         PlayerBoard pBoard = player.getPlayerBoard();
@@ -80,6 +84,10 @@ public class AchievementDiagonal implements Achievement{
         player.addPoints(point);
     }
 
+    @Override
+    public int getId(){
+        return this.id;
+    }
     @Override
     public int getPoints(){ return this.basePoint; }
     @Override

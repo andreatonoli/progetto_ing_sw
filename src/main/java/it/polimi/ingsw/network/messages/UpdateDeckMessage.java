@@ -1,24 +1,29 @@
 package it.polimi.ingsw.network.messages;
 
-import it.polimi.ingsw.model.card.Card;
-import it.polimi.ingsw.model.card.CardBack;
 import it.polimi.ingsw.network.server.Server;
+import it.polimi.ingsw.model.enums.Color;
 
 public class UpdateDeckMessage extends Message{
-    private final CardBack card;
-    public UpdateDeckMessage(CardBack card){
+    private final Color color;
+    private final boolean isResource;
+    public UpdateDeckMessage(Color backColor, boolean resource){
         super(MessageType.DECK_UPDATE, Server.serverName);
-        this.card = card;
+        this.color = backColor;
+        this.isResource = resource;
     }
 
-    public Card getCard() {
-        return this.card;
+    public Color getColor() {
+        return this.color;
+    }
+    public boolean getIsResource(){
+        return isResource;
     }
 
     @Override
     public String toString() {
         return "UpdateDeckMessage{"+
-                "CardBack : " + card +
+                "colorBack : " + color +
+                "isResource: " + isResource +
                 '}';
     }
 }

@@ -165,4 +165,13 @@ public abstract class Card implements Serializable {
     public int getCardNumber(){
         return this.cardNumber;
     }
+
+    /**
+     * Checks if two cards are equals
+     * @param card which we want to compare with {@code this}
+     * @return true if the cards are equals
+     */
+    public boolean equals(Card card) {
+        return card.getType().equalsIgnoreCase(this.type) && (card.getCardNumber() == this.cardNumber);
+    }
 }

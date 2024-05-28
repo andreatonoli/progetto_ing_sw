@@ -8,6 +8,11 @@ import java.util.ArrayList;
 import java.io.Serializable;
 
 public interface Achievement extends Serializable {
+
+    /**
+     * @return the achievement's id
+     */
+    int getId();
     /**
      * This method calculates the points made by a player upon completing an achievement
      * @param player to calculate the points

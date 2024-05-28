@@ -1,7 +1,8 @@
 package it.polimi.ingsw.network.client;
 
-import it.polimi.ingsw.model.card.Achievement;
 import it.polimi.ingsw.model.card.Card;
+import it.polimi.ingsw.model.enums.Color;
+import it.polimi.ingsw.model.enums.GameState;
 import it.polimi.ingsw.model.enums.PlayerState;
 import it.polimi.ingsw.model.player.PlayerBoard;
 import it.polimi.ingsw.network.messages.*;
@@ -11,34 +12,37 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class SocketClient implements ClientInterface {
     private Socket socket;
     private String username;
-    private Ui view;
+    private final Ui view;
     private ObjectInputStream in;
     private ObjectOutputStream out;
     private boolean disconnected = false;
-    private Card starterCard;
-    private Card[] commonGold;
-    private Card[] commonResources;
-    private final Achievement[] commonAchievement;
+    private GameBean game;
     private PlayerBean player;
     private ArrayList<PlayerBean> opponents;
-    //private HashMap<Integer, Card> board1;
-    //private HashMap<Integer, Card> board2;
-    //private HashMap<Integer, Card> board3;
-    //private HashMap<Integer, Card> board4;
+    private final BlockingQueue<Message> messageQueue;
+    private boolean processingAction;
+    private final Object outputLock = new Object();
     public SocketClient(String username, String address, int port, Ui view){
         this.username = username;
         this.view = view;
         this.player = new PlayerBean(this.username);
         this.opponents = new ArrayList<>();
-        this.commonAchievement = new Achievement[2];
-        this.commonResources = new Card[2];
-        this.commonGold = new Card[2];
-        this.startClient(address, port);
+        this.game = new GameBean();
+        messageQueue = new LinkedBlockingQueue<>();
+        processingAction = false;
+        pickQueue();
+        new Thread(() -> { this.startClient(address, port); }).start();
     }
     public void startClient(String address, int port){
         try {
@@ -56,12 +60,16 @@ public class SocketClient implements ClientInterface {
             System.out.println("Connection successfully ended");
         }
     }
-    //TODO: fare lettura parallela dei messaggi
     public void readMessage(){
         Message message;
         try {
             message = (Message) in.readObject();
-            update(message);
+            if (message.getType().equals(MessageType.PING)){
+                sendMessage(new CatchPingMessage(this.username));
+            }
+            else{
+                messageQueue.add(message);
+            }
         } catch (IOException | ClassNotFoundException e) {
             this.onDisconnect();
             System.err.println(e.getMessage());
@@ -69,35 +77,74 @@ public class SocketClient implements ClientInterface {
     }
     public void sendMessage(Message message){
         try {
-            out.writeObject(message);
-            out.reset();
+            synchronized (outputLock){
+                out.writeObject(message);
+                out.reset();
+            }
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
     }
+
+    private void pickQueue(){
+        Timer t = new Timer();
+        t.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                processQueue();
+            }
+        }, 0, 500);
+    }
+
+    private void processQueue() {
+        if (!messageQueue.isEmpty() && !processingAction) {
+            Message message = messageQueue.poll();
+            processingAction = true;
+            this.update(message);
+            processingAction = false;
+            if (!messageQueue.isEmpty()) {
+                processQueue();
+            }
+        }
+    }
+
+    //TODO: stampare view con comandi al passaggio del turno
     public void update(Message message){
         String name;
         switch (message.getType()){
+            case RECONNECTION:
+                this.player = ((ReconnectionMessage) message).getPlayerBean();
+                this.game = ((ReconnectionMessage) message).getGameBean();
+                //TODO cerca di passare copia della lista
+                this.opponents = ((ReconnectionMessage) message).getOpponents();
+                break;
             case USERNAME_REQUEST:
                 System.out.println("Username is already taken, please choose another: ");
                 this.username = this.view.askNickname();
                 sendMessage(new LoginResponseMessage(this.username));
                 player.setUsername(this.username);
                 break;
+            case NUM_PLAYER_REQUEST:
+                int lobbySize = this.view.setLobbySize();
+                sendMessage(new NumPlayerResponseMessage(this.username, lobbySize));
+                break;
             case FREE_LOBBY:
                 int freeLobbySize = ((FreeLobbyMessage) message).getLobbyNumber();
                 int response = this.view.selectGame(freeLobbySize);
                 if (response == freeLobbySize){
-                    int lobbySize = this.view.setLobbySize();
-                    sendMessage(new NumPlayerResponseMessage(this.username, lobbySize));
+                    int numOfPlayers = this.view.setLobbySize();
+                    sendMessage(new NumPlayerResponseMessage(this.username, numOfPlayers));
                 }
                 else {
                     sendMessage(new LobbyIndexMessage(this.username, response));
                 }
                 break;
-            case NUM_PLAYER_REQUEST:
-                int lobbySize = this.view.setLobbySize();
-                sendMessage(new NumPlayerResponseMessage(this.username, lobbySize));
+            case GAME_STATE:
+                GameState state = ((GameStateMessage) message).getState();
+                game.setState(state);
+                if (state.ordinal() >= 2){
+                    this.view.printViewWithCommands(player, game, opponents);
+                }
                 break;
             case OPPONENTS:
                 ArrayList<String> playersName = ((OpponentsMessage) message).getPlayers();
@@ -107,85 +154,135 @@ public class SocketClient implements ClientInterface {
                     }
                 }
                 break;
+            case COMMON_GOLD_UPDATE:
+                int index = ((CommonCardUpdateMessage) message).getIndex();
+                game.setCommonGold(index, ((CommonCardUpdateMessage) message).getCard());
+                break;
+            case COMMON_RESOURCE_UPDATE:
+                int index1 = ((CommonCardUpdateMessage) message).getIndex();
+                game.setCommonResources(index1, ((CommonCardUpdateMessage) message).getCard());
+                break;
+            case COMMON_ACHIEVEMENT:
+                System.arraycopy(((AchievementMessage) message).getAchievements(), 0, game.getCommonAchievement(), 0, 2);
+                break;
+            case DECK_UPDATE:
+                Color color = ((UpdateDeckMessage) message).getColor();
+                boolean isResource = ((UpdateDeckMessage) message).getIsResource();
+                if (isResource){
+                    game.setResourceDeckRetro(color);
+                }
+                else{
+                    game.setGoldDeckRetro(color);
+                }
+                break;
+            case STARTER_CARD:
+                Card starterCard = ((StarterCardMessage) message).getCard();
+                this.view.printStarterCard(starterCard);
+                boolean choice = this.view.askSide();
+                if (!choice) {
+                    starterCard.setCurrentSide();
+                }
+                player.setStarterCard(starterCard);
+                sendMessage(new PlaceStarterRequestMessage(username, starterCard));
+                break;
             case CARD_HAND:
                 //Copied the message body into the player's cards
                 System.arraycopy(((CardInHandMessage) message).getHand(), 0, player.getHand(), 0, 3);
-                break;
-            case COMMON_ACHIEVEMENT:
-                System.arraycopy(((AchievementMessage) message).getAchievements(), 0, this.commonAchievement, 0, 2);
                 break;
             case PRIVATE_ACHIEVEMENT:
                 this.player.setAchievement(this.view.chooseAchievement(((AchievementMessage) message).getAchievements()));
                 sendMessage(new SetPrivateAchievementMessage(this.username, this.player.getAchievement()));
                 break;
-            case COMMON_GOLD_UPDATE:
-                if(commonGold[0] == null){
-                    commonGold[0] = ((CommonCardUpdateMessage) message).getCard();
-                }
-                else{
-                    commonGold[1] = ((CommonCardUpdateMessage) message).getCard();
-                }
-                break;
-            case COMMON_RESOURCE_UPDATE:
-                if(commonResources[0] == null){
-                    commonResources[0] = ((CommonCardUpdateMessage) message).getCard();
-                }
-                else{
-                    commonResources[1] = ((CommonCardUpdateMessage) message).getCard();
-                }
-                break;
-            case STARTER_CARD:
-                //TODO: usare printStarterCard e non chiedere più di flippare ogni volta
-                this.starterCard = ((StarterCardMessage) message).getCard();
-                this.view.printCard(starterCard);
-                boolean choice = this.view.askToFlip();
-                if (choice){
-                    sendMessage(new FlipRequestMessage(this.username, this.starterCard));
-                }
-                else{
-                    sendMessage(new PlaceStarterRequestMessage(this.username, this.starterCard));
-                }
-                break;
-            case SCORE_UPDATE:
-                name = ((ScoreUpdateMessage) message).getName();
-                int points = ((ScoreUpdateMessage) message).getPoint();
-                if (name.equalsIgnoreCase(username)){
-                    player.addPoints(points);
+            case PLAYER_STATE:
+                PlayerState playerState = ((PlayerStateMessage) message).getState();
+                name = ((PlayerStateMessage) message).getName();
+                if (username.equals(name)) {
+                    player.setState(playerState);
                 }
                 else {
                     for (PlayerBean p : opponents){
-                        if (p.getUsername().equalsIgnoreCase(name)){
-                            p.addPoints(points);
+                        if (p.getUsername().equals(name)){
+                            p.setState(playerState);
                         }
                     }
                 }
                 break;
-            case PLAYER_STATE:
-                PlayerState playerState = ((PlayerStateMessage) message).getState();
-                this.player.setState(playerState);
-                //this.view.printViewWithCommands(player.getBoard(), player.getHand(), username, commonResources, commonGold, commonAchievement, opponents, player.getChat());
+            case COLOR_REQUEST:
+                Color chosenColor = this.view.chooseColor(((ColorRequestMessage) message).getColors());
+                player.setPionColor(chosenColor);
+                sendMessage(new ColorResponseMessage(username, chosenColor));
+                break;
+            case COLOR_RESPONSE:
+                Color setColor = ((ColorResponseMessage) message).getColor();
+                name = message.getSender();
+                if (name.equalsIgnoreCase(username)){
+                    player.setPionColor(setColor);
+                }
+                else{
+                    for (PlayerBean p : opponents){
+                        if (p.getUsername().equalsIgnoreCase(name)){
+                            p.setPionColor(setColor);
+                            break;
+                        }
+                    }
+                }
                 break;
             case PLAYERBOARD_UPDATE:
                 PlayerBoard playerBoard = ((PlayerBoardUpdateMessage) message).getpBoard();
                 name = ((PlayerBoardUpdateMessage) message).getName();
                 if (name.equalsIgnoreCase(username)){
                     player.setBoard(playerBoard);
-                    //this.view.printViewWithCommands(playerBoard,this.player.getHand(),this.username,this.commonResources,this.commonGold, this.commonAchievement, this.opponents,this.player.getChat());
+                    this.view.printViewWithCommands(this.player, this.game, this.opponents);
                 }
                 else{
                     for (PlayerBean p : opponents){
                         if (p.getUsername().equals(name)){
-                            player.setBoard(playerBoard);
+                            p.setBoard(playerBoard);
                         }
                     }
                 }
                 break;
+            case CARD_UPDATE:
+                Card drawedCard = ((UpdateCardMessage) message).getCard();
+                player.setCardinHand(drawedCard);
+                this.view.printViewWithCommands(this.player, this.game, this.opponents);
+                break;
+            case SCORE_UPDATE:
+                name = ((ScoreUpdateMessage) message).getName();
+                int points = ((ScoreUpdateMessage) message).getPoint();
+                if (name.equalsIgnoreCase(username)){
+                    player.setPoints(points);
+                }
+                else {
+                    for (PlayerBean p : opponents){
+                        if (p.getUsername().equalsIgnoreCase(name)){
+                            p.setPoints(points);
+                        }
+                    }
+                }
+                break;
+            case CHAT:
+                player.setChat(((ChatMessage) message).getChat());
+                this.view.printViewWithCommands(this.player, this.game, this.opponents);
+                break;
+            case DECLARE_WINNER:
+                ArrayList<String> winners = ((WinnerMessage) message).getWinners();
+                this.view.declareWinners(winners);
+                sendMessage(new RemoveFromServerMessage(username));
+                this.onDisconnect();
+                break;
             case GENERIC_MESSAGE:
-                this.view.showText(message.toString());
+                this.view.setMessage(message.toString(), false);
+                break;
+            case ERROR:
+                this.view.setMessage(message.toString(), true);
+                this.view.printViewWithCommands(player, game, opponents);
+                break;
             default:
                 break;
         }
     }
+
     public void onDisconnect(){
         try {
             this.disconnected = true;
@@ -199,18 +296,21 @@ public class SocketClient implements ClientInterface {
 
     @Override
     public void sendChatMessage(String message) {
-
+        sendMessage(new AddToChatMessage(username, message));
     }
 
     @Override
     public void sendChatMessage(String receiver, String message) {
-
+        sendMessage(new AddToChatMessage(username, receiver, message));
     }
 
     @Override
     public void placeCard(Card card, int[] placingCoordinates) {
-        if (this.player.getState().equals(PlayerState.PLAY_CARD)){
+        if (this.player.getState().equals(PlayerState.PLAY_CARD)){ //TODO: imparare a leggere una griglia per capire se così traspongo giuste le coordinate
+            placingCoordinates[0] = placingCoordinates[0] - 6;
+            placingCoordinates[1] = 6 - placingCoordinates[1];
             sendMessage(new PlaceMessage(username, card, placingCoordinates));
+            player.removeCardFromHand(card);
         }
         else{
             //TODO: errore profondo

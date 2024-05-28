@@ -1,38 +1,39 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.card.Achievement;
+import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.GameState;
 import it.polimi.ingsw.model.enums.PlayerState;
+import it.polimi.ingsw.model.exceptions.NotEnoughPlayersException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.exceptions.GameNotStartedException;
 import it.polimi.ingsw.network.messages.GenericMessage;
-import it.polimi.ingsw.network.messages.WinnerMessage;
 import it.polimi.ingsw.observer.Observable;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class Game extends Observable implements Serializable {
     private int lobbySize;
-    private GameBoard gameBoard;
+    private final GameBoard gameBoard;
     private GameState gameState;
     private final ArrayList<Player> players;
     private int willPlay;
     private boolean gameFull;
     private Player firstPlayer;
     private Player playerInTurn;
-    private Chat chatHandler;
+    private final Chat chatHandler;
     /**
      * number of disconnected players
      */
-    private int disconnections;
+    private final int disconnections;
+    private final List<Color> availableColors;
 
 
     /**
      *
-     * @throws IOException
      */
 
     public Game(int lobbySize) {
@@ -45,10 +46,17 @@ public class Game extends Observable implements Serializable {
         this.disconnections = 0;
         this.chatHandler = new Chat(this);
         this.gameBoard = new GameBoard(this);
+        this.availableColors = new ArrayList<>(List.of(Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW));
     }
 
-    public void startGame(){
-        this.gameState = GameState.START;
+    public List<Color> getAvailableColors(){
+        return availableColors;
+    }
+
+    public void startGame() throws NotEnoughPlayersException{
+        if (!this.gameFull){
+            throw new NotEnoughPlayersException();
+        }
         //Decks are shuffled
         Collections.shuffle(gameBoard.getStarterDeck());
         Collections.shuffle(gameBoard.getAchievementDeck());
@@ -82,66 +90,59 @@ public class Game extends Observable implements Serializable {
         //the first player is chosen in a random way
         Collections.shuffle(players);
         setFirstPlayer();
-        this.gameState = GameState.IN_GAME;
     }
 
-    public void endGame() throws GameNotStartedException {
-        try{
-            if(!this.gameState.equals(GameState.IN_GAME)){
-                throw new GameNotStartedException();
+    public ArrayList<Player> endGame() throws GameNotStartedException {
+        if(!this.gameState.equals(GameState.IN_GAME)){
+            throw new GameNotStartedException();
+        }
+        this.gameState = GameState.END;
+        int endPoints;
+        for (Player p: players){
+            endPoints = p.getPoints();
+            p.getChosenObj().calcPoints(p);
+            if (p.getPoints()>endPoints){
+                p.addObjCompleted();
+                endPoints=p.getPoints();
             }
-            this.gameState = GameState.END;
-            notifyAll(new GenericMessage("game is ended, counting objective points..."));
-            int endPoints;
-            for (Player p: players){
-                endPoints = p.getPoints();
-                p.getChosenObj().calcPoints(p);
+            for (Achievement a : gameBoard.getCommonAchievement()){
+                a.calcPoints(p);
                 if (p.getPoints()>endPoints){
                     p.addObjCompleted();
-                    endPoints=p.getPoints();
-                }
-                for (Achievement a : gameBoard.getCommonAchievement()){
-                    a.calcPoints(p);
-                    if (p.getPoints()>endPoints){
-                        p.addObjCompleted();
-                    }
+                    endPoints = p.getPoints();
                 }
             }
-            /** the winner is chosen by the number of points */
-            int max = 0;
-            ArrayList<Player> winners = new ArrayList<>();
-            for (Player p: players){
-                if (p.getPoints() == max && p.getObjCompleted()>winners.getFirst().getObjCompleted()) {
-                    winners = new ArrayList<>();
-                    winners.add(p);
-                }
-                else if (p.getPoints() == max && p.getObjCompleted()==winners.getFirst().getObjCompleted()){
-                    winners.add(p);
-                }
-                else if (p.getPoints() > max){
-                    winners = new ArrayList<>();
-                    winners.add(p);
-                    max = p.getPoints();
-                }
+        }
+        //the winner is chosen by the number of points
+        int max = 0;
+        ArrayList<Player> winners = new ArrayList<>();
+        for (Player p: players){
+            if (p.getPoints() == max && p.getObjCompleted()>winners.getFirst().getObjCompleted()) {
+                winners = new ArrayList<>();
+                winners.add(p);
             }
-            notifyAll(new WinnerMessage(winners));
+            else if (p.getPoints() == max && p.getObjCompleted()==winners.getFirst().getObjCompleted()){
+                winners.add(p);
+            }
+            else if (p.getPoints() > max){
+                winners = new ArrayList<>();
+                winners.add(p);
+                max = p.getPoints();
+            }
         }
-        catch(GameNotStartedException e){
-            System.err.println("Game not started");
-        }
+        return winners;
     }
 
-    public void endGameByDisconnection(Player lastManStanding){
+    public Player endGameByDisconnection(Player lastManStanding){
         notifyAll(new GenericMessage("game ended due to lack of players"));
-        ArrayList<Player> winners = new ArrayList<>();
-        winners.add(lastManStanding);
-        notifyAll(new WinnerMessage(winners));
+        this.gameState = GameState.END;
+        return lastManStanding;
     }
 
     private void setFirstPlayer()
     {
         firstPlayer = players.getFirst();
-        firstPlayer.isFirstToPlay(firstPlayer.getUsername());
+        firstPlayer.setFirstToPlay();
         firstPlayer.setPlayerState(PlayerState.PLAY_CARD);
         willPlay = 0;
     }
@@ -155,7 +156,7 @@ public class Game extends Observable implements Serializable {
         this.gameState = nextGameState;
     }
 
-    public void setPlayerInTurn()
+    public Player setPlayerInTurn()
     {
         willPlay++;
 
@@ -171,21 +172,15 @@ public class Game extends Observable implements Serializable {
         }
         this.playerInTurn = players.get(willPlay);
         playerInTurn.setPlayerState(PlayerState.PLAY_CARD);
-        notifyAll(new GenericMessage("it's "+playerInTurn+" turn"));
+        return playerInTurn;
     }
 
+    /**
+     * @return returns the state in which the game is played
+     */
     public GameState getGameState()
     {
-        /** returns the state in which the game is played */
         return gameState;
-    }
-
-    public Player getPlayerInTurn()
-    {
-        /**
-         returns player that is playing the game at that moment
-         */
-        return playerInTurn;
     }
 
     public ArrayList<Player> getPlayers(){
@@ -207,8 +202,11 @@ public class Game extends Observable implements Serializable {
             if (players.size()==this.lobbySize){
                 gameFull = true;
             }
-            notifyAll(new GenericMessage("Players in lobby: " + players.size() + "/" + lobbySize));
         }
+    }
+
+    public void setLobbySize(int lobbySize) {
+        this.lobbySize = lobbySize;
     }
 
     public boolean isFull(){
@@ -229,8 +227,9 @@ public class Game extends Observable implements Serializable {
     public int getDisconnections() {
         return disconnections;
     }
-    public void setDisconnections(int disconnectedPlayers) {
-        disconnections = disconnectedPlayers;
+    //TODO: fix
+    public void addDisconnections(int disconnectedPlayers) {
+        //disconnections += disconnectedPlayers;
     }
 
 

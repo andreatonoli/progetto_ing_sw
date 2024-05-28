@@ -15,21 +15,24 @@ public class Server {
     private List<Controller> startingGames;
     private final Map<String, Connection> client;
     private final ServerController controller;
+    private List<String> disconnectedPlayers;
     public Server(){
         this.controller = new ServerController(this);
         this.client = Collections.synchronizedMap(new HashMap<>());
         this.activeGames = Collections.synchronizedList(new ArrayList<>());
         this.startingGames = Collections.synchronizedList(new ArrayList<>());
+        this.disconnectedPlayers = new ArrayList<>();
         //Starts the RMI server and the socket server
         startServer();
     }
     public void startServer(){
-        new RMIServer(this, rmiPort, this.controller);
-        new SocketServer(this, socketPort, this.controller);
+        new RMIServer(this, rmiPort);
+        new SocketServer(this, socketPort);
     }
     public void login(Connection client, String username){
         this.client.put(username, client);
         System.err.println("user " + username + " connected");
+        new Thread(client::ping).start();
         if (this.startingGames.isEmpty()){
             client.createGame();
         }
@@ -56,4 +59,23 @@ public class Server {
         return this.client.get(name);
     }
 
+    public void addDisconnectedPlayer(String username){
+        disconnectedPlayers.add(username);
+    }
+    //TODO finire
+    //TODO: riscrivere meglio
+    //TODO: per ogni nuovo game salvarsi il suo id e usarlo per riconnettersi. se no bisogna cercare l'username per tutti i game iniziati
+    public void reconnectPlayer(Connection client, String username){
+        Connection oldConnection = this.client.replace(username, client);
+        this.disconnectedPlayers.remove(username);
+        client.reconnect(oldConnection);
+    }
+
+    public void removePlayers(String username){
+        this.disconnectedPlayers.remove(username);
+        this.client.remove(username);
+    }
+    public void removeGame(Controller game){
+        this.activeGames.remove(game);
+    }
 }
