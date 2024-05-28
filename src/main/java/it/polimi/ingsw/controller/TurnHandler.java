@@ -35,7 +35,7 @@ public class TurnHandler extends Observable {
     }
 
     public void changePlayerState(Player player){
-        if (game.getLobbySize()-2 >= game.getDisconnections()) {
+        if (game.getDisconnections()+1 < game.getLobbySize()) {
             int i = (player.getPlayerState().ordinal() + 1) % 3;
             if (endingCycle && endCountDown==0 && PlayerState.values()[i].equals(PlayerState.DRAW_CARD)){
                 i++;

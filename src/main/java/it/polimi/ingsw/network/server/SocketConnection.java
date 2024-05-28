@@ -26,6 +26,7 @@ public class SocketConnection extends Connection implements Runnable {
     private Timer catchPing;
     private Timer ping;
     private boolean firstTime = true;
+    private boolean go = true;
     private BlockingQueue<Message> messageQueue;
     private boolean processingAction;
     private final Object outputLock = new Object();
@@ -48,7 +49,7 @@ public class SocketConnection extends Connection implements Runnable {
     @Override
     public void run() {
         //TODO: capire quando chiudere connessione
-        while(this.getConnectionStatus()) {
+        while(getConnectionStatus() && go) {
             readMessage();
         }
     }
@@ -65,6 +66,7 @@ public class SocketConnection extends Connection implements Runnable {
             }
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("Connection successfully ended");
+            go = false;
             System.err.println(e.getMessage());
         }
     }
@@ -136,7 +138,7 @@ public class SocketConnection extends Connection implements Runnable {
                 in.close();
                 out.close();
                 socket.close();
-                this.setConnectionStatus(false);
+                setConnectionStatus(false);
                 lobby.getGame().getPlayerByUsername(username).setDisconnected(true);
                 server.addDisconnectedPlayer(username);
             } catch (IOException e) {

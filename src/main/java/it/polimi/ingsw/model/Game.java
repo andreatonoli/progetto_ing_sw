@@ -28,7 +28,7 @@ public class Game extends Observable implements Serializable {
     /**
      * number of disconnected players
      */
-    private final int disconnections;
+    private int disconnections;
     private final List<Color> availableColors;
 
 
@@ -227,9 +227,9 @@ public class Game extends Observable implements Serializable {
     public int getDisconnections() {
         return disconnections;
     }
-    //TODO: fix
+
     public void addDisconnections(int disconnectedPlayers) {
-        //disconnections += disconnectedPlayers;
+        disconnections += disconnectedPlayers;
     }
 
 
