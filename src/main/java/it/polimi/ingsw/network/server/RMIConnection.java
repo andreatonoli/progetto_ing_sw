@@ -59,7 +59,6 @@ public class RMIConnection extends Connection {
     }
 
     public void catchPing(){
-
         catchPing.cancel();
         catchPing = new Timer();
         catchPing.schedule(new TimerTask() {
@@ -78,6 +77,9 @@ public class RMIConnection extends Connection {
 
     public void onDisconnect(){
         if (!lobby.getGame().getGameState().equals(GameState.END)) {
+            if (lobby.getGame().getPlayerInTurn().getUsername().equals(username)){
+                lobby.disconnectedWhileInTurn(username);
+            }
             lobby.getGame().getPlayerByUsername(username).setDisconnected(true);
             setConnectionStatus(false);
             server.addDisconnectedPlayer(username);

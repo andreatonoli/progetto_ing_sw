@@ -144,7 +144,8 @@ public class Game extends Observable implements Serializable {
         firstPlayer = players.getFirst();
         firstPlayer.setFirstToPlay();
         firstPlayer.setPlayerState(PlayerState.PLAY_CARD);
-        willPlay = 0;
+        willPlay = 4;
+        setPlayerInTurn();
     }
 
     public Player getFirstPlayer(){
@@ -156,11 +157,10 @@ public class Game extends Observable implements Serializable {
         this.gameState = nextGameState;
     }
 
-    public Player setPlayerInTurn()
+    public void setPlayerInTurn()
     {
         willPlay++;
-
-        if (willPlay == lobbySize){
+        if (willPlay >= lobbySize){
             willPlay = 0;
         }
 
@@ -172,7 +172,10 @@ public class Game extends Observable implements Serializable {
         }
         this.playerInTurn = players.get(willPlay);
         playerInTurn.setPlayerState(PlayerState.PLAY_CARD);
-        return playerInTurn;
+    }
+
+    public Player getPlayerInTurn(){
+        return this.playerInTurn;
     }
 
     /**

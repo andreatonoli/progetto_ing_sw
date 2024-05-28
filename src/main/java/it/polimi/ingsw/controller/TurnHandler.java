@@ -34,6 +34,16 @@ public class TurnHandler extends Observable {
         }
     }
 
+    public void disconnectedWhileInTurn(Player player){
+        if (player.getPlayerState().equals(PlayerState.PLAY_CARD)){
+            player.setPlayerState(PlayerState.DRAW_CARD);
+        }
+        else if (player.getPlayerState().equals(PlayerState.DRAW_CARD)) {
+            player.setPlayerState(PlayerState.PLAY_CARD);
+        }
+        this.changePlayerState(player);
+    }
+
     public void changePlayerState(Player player){
         if (game.getDisconnections()+1 < game.getLobbySize()) {
             int i = (player.getPlayerState().ordinal() + 1) % 3;
@@ -60,7 +70,8 @@ public class TurnHandler extends Observable {
                     }
                     endCountDown--;
                 }
-                Player playerInTurn = game.setPlayerInTurn();
+                game.setPlayerInTurn();
+                Player playerInTurn = game.getPlayerInTurn();
                 if (endingCycle && playerInTurn.isFirstToPlay()){
                     if (endCountDown > 0){
                         endCountDown--;

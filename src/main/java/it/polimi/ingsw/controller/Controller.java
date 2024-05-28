@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.card.Achievement;
 import it.polimi.ingsw.model.card.Card;
 import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.GameState;
+import it.polimi.ingsw.model.enums.PlayerState;
 import it.polimi.ingsw.model.exceptions.*;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.messages.*;
@@ -302,6 +303,11 @@ public class Controller extends Observable {
 
     public Player getPlayerByClient(Connection user){
         return this.connectedPlayers.get(user);
+    }
+
+    public void disconnectedWhileInTurn(String username){
+        Player player = game.getPlayerByUsername(username);
+        turnHandler.disconnectedWhileInTurn(player);
     }
 
     /**

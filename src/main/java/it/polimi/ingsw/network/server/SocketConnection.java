@@ -134,6 +134,9 @@ public class SocketConnection extends Connection implements Runnable {
     public void onDisconnect(){
         if (!lobby.getGame().getGameState().equals(GameState.END)) {
             try {
+                if (lobby.getGame().getPlayerInTurn().getUsername().equals(username)){
+                    lobby.disconnectedWhileInTurn(username);
+                }
                 System.err.println(username + " got disconnected");
                 in.close();
                 out.close();
@@ -141,6 +144,9 @@ public class SocketConnection extends Connection implements Runnable {
                 setConnectionStatus(false);
                 lobby.getGame().getPlayerByUsername(username).setDisconnected(true);
                 server.addDisconnectedPlayer(username);
+                if (lobby.getGame().getPlayerInTurn().getUsername().equals(username)){
+                    lobby.disconnectedWhileInTurn(username);
+                }
             } catch (IOException e) {
                 System.err.println(e.getMessage());
             }
