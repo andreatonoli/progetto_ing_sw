@@ -35,12 +35,7 @@ public class RMIConnection extends Connection {
         ping.schedule(new TimerTask() {
             @Override
             public void run() {
-                if (lobby == null || !lobby.getGame().getGameState().equals(GameState.END)){
-                    pingClient();
-                }
-                else {
-                    cancelPing();
-                }
+                pingClient();
             }
         }, 0, 5000);
         if (firstTime) {
@@ -64,20 +59,16 @@ public class RMIConnection extends Connection {
     }
 
     public void catchPing(){
-        if (lobby == null || !lobby.getGame().getGameState().equals(GameState.END)){
-            catchPing.cancel();
-            catchPing = new Timer();
-            catchPing.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    cancelPing();
-                    onDisconnect();
-                }
-            }, 8000, 8000);
-        }
-        else{
-            cancelPing();
-        }
+
+        catchPing.cancel();
+        catchPing = new Timer();
+        catchPing.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                cancelPing();
+                onDisconnect();
+            }
+        }, 8000, 8000);
     }
 
     public void cancelPing(){
@@ -88,10 +79,11 @@ public class RMIConnection extends Connection {
     public void onDisconnect(){
         lobby.getGame().getPlayerByUsername(username).setDisconnected(true);
         setConnectionStatus(false);
-        server.addDisconnectedPlayer(username);
+        if (!lobby.getGame().getGameState().equals(GameState.END)) {
+            server.addDisconnectedPlayer(username);
+        }
     }
 
-    //TODO è da mettere in coda??
     @Override
     public void reconnect(Connection oldConnection) {
         this.lobby = oldConnection.getLobby();

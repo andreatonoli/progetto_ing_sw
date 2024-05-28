@@ -98,12 +98,7 @@ public class SocketConnection extends Connection implements Runnable {
         ping.schedule(new TimerTask() {
             @Override
             public void run() {
-                if (lobby == null || !lobby.getGame().getGameState().equals(GameState.END)) {
-                    sendMessage(new PingMessage());
-                }
-                else {
-                    cancelPing();
-                }
+                sendMessage(new PingMessage());
             }
         }, 0, 5000);
         if (firstTime) {
@@ -119,20 +114,15 @@ public class SocketConnection extends Connection implements Runnable {
     }
 
     public synchronized void catchPing(){
-        if (lobby == null || !lobby.getGame().getGameState().equals(GameState.END)) {
-            catchPing.cancel();
-            catchPing = new Timer();
-            catchPing.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    cancelPing();
-                    onDisconnect();
-                }
-            }, 8000, 8000);
-        }
-        else {
-            cancelPing();
-        }
+        catchPing.cancel();
+        catchPing = new Timer();
+        catchPing.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                cancelPing();
+                onDisconnect();
+            }
+        }, 8000, 8000);
     }
 
     public void cancelPing(){
@@ -146,9 +136,11 @@ public class SocketConnection extends Connection implements Runnable {
             in.close();
             out.close();
             socket.close();
-            lobby.getGame().getPlayerByUsername(username).setDisconnected(true);
             this.setConnectionStatus(false);
-            server.addDisconnectedPlayer(username);
+            if (!lobby.getGame().getGameState().equals(GameState.END)) {
+                lobby.getGame().getPlayerByUsername(username).setDisconnected(true);
+                server.addDisconnectedPlayer(username);
+            }
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
