@@ -35,7 +35,7 @@ public class RMIConnection extends Connection {
         ping.schedule(new TimerTask() {
             @Override
             public void run() {
-                if (!lobby.getGame().getGameState().equals(GameState.END)){
+                if (lobby == null || !lobby.getGame().getGameState().equals(GameState.END)){
                     pingClient();
                 }
                 else {
@@ -64,7 +64,7 @@ public class RMIConnection extends Connection {
     }
 
     public void catchPing(){
-        if (!lobby.getGame().getGameState().equals(GameState.END)){
+        if (lobby == null || !lobby.getGame().getGameState().equals(GameState.END)){
             catchPing.cancel();
             catchPing = new Timer();
             catchPing.schedule(new TimerTask() {

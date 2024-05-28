@@ -98,7 +98,7 @@ public class SocketConnection extends Connection implements Runnable {
         ping.schedule(new TimerTask() {
             @Override
             public void run() {
-                if (!lobby.getGame().getGameState().equals(GameState.END)) {
+                if (lobby == null || !lobby.getGame().getGameState().equals(GameState.END)) {
                     sendMessage(new PingMessage());
                 }
                 else {
@@ -119,7 +119,7 @@ public class SocketConnection extends Connection implements Runnable {
     }
 
     public synchronized void catchPing(){
-        if (!lobby.getGame().getGameState().equals(GameState.END)) {
+        if (lobby == null || !lobby.getGame().getGameState().equals(GameState.END)) {
             catchPing.cancel();
             catchPing = new Timer();
             catchPing.schedule(new TimerTask() {
