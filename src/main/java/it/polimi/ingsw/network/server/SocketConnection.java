@@ -130,18 +130,18 @@ public class SocketConnection extends Connection implements Runnable {
     }
 
     public void onDisconnect(){
-        try {
-            System.err.println(username + " got disconnected");
-            in.close();
-            out.close();
-            socket.close();
-            this.setConnectionStatus(false);
-            if (!lobby.getGame().getGameState().equals(GameState.END)) {
+        if (!lobby.getGame().getGameState().equals(GameState.END)) {
+            try {
+                System.err.println(username + " got disconnected");
+                in.close();
+                out.close();
+                socket.close();
+                this.setConnectionStatus(false);
                 lobby.getGame().getPlayerByUsername(username).setDisconnected(true);
                 server.addDisconnectedPlayer(username);
+            } catch (IOException e) {
+                System.err.println(e.getMessage());
             }
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
         }
     }
 
@@ -196,6 +196,7 @@ public class SocketConnection extends Connection implements Runnable {
     public void onMessage(Message message){
         switch (message.getType()){
             case REMOVE_FROM_SERVER:
+                this.cancelPing();
                 int playersToDelete = lobby.getGame().getLobbySize()-1;
                 lobby.getGame().setLobbySize(playersToDelete);
                 server.removePlayers(username);

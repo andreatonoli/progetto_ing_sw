@@ -1,6 +1,6 @@
 package it.polimi.ingsw.network.server;
 
-import it.polimi.ingsw.controller.Controller;
+import it.polimi.ingsw.controller.*;
 import it.polimi.ingsw.model.card.Achievement;
 import it.polimi.ingsw.model.card.Card;
 import it.polimi.ingsw.model.enums.Color;
@@ -77,9 +77,9 @@ public class RMIConnection extends Connection {
     }
 
     public void onDisconnect(){
-        lobby.getGame().getPlayerByUsername(username).setDisconnected(true);
-        setConnectionStatus(false);
         if (!lobby.getGame().getGameState().equals(GameState.END)) {
+            lobby.getGame().getPlayerByUsername(username).setDisconnected(true);
+            setConnectionStatus(false);
             server.addDisconnectedPlayer(username);
         }
     }
