@@ -1,7 +1,7 @@
 package it.polimi.ingsw.network.server;
 
-import it.polimi.ingsw.Controller.Controller;
-import it.polimi.ingsw.Controller.ServerController;
+import it.polimi.ingsw.controller.Controller;
+import it.polimi.ingsw.controller.ServerController;
 
 import java.util.*;
 

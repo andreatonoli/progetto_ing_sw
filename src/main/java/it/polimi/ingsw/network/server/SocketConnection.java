@@ -1,6 +1,6 @@
 package it.polimi.ingsw.network.server;
 
-import it.polimi.ingsw.Controller.Controller;
+import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.card.Achievement;
 import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.GameState;
@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;

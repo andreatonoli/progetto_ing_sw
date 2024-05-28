@@ -1,6 +1,6 @@
 package it.polimi.ingsw.network.server;
 
-import it.polimi.ingsw.Controller.Controller;
+import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.card.Achievement;
 import it.polimi.ingsw.model.card.Card;
 import it.polimi.ingsw.model.enums.Color;

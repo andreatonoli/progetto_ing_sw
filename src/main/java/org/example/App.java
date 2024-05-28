@@ -1,22 +1,6 @@
 <<<<<<< HEAD
 package org.example;
 
-import it.polimi.ingsw.Controller.Controller;
-import it.polimi.ingsw.model.*;
-import it.polimi.ingsw.model.card.*;
-import it.polimi.ingsw.model.enums.*;
-import it.polimi.ingsw.model.exceptions.*;
-import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.network.client.PlayerBean;
-import it.polimi.ingsw.network.server.Server;
-import it.polimi.ingsw.view.*;
-import javafx.application.Platform;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-
-import java.io.IOException;
-import java.util.*;
-
 /**
  * Hello world!
  *

@@ -1,17 +1,15 @@
 package Controller;
 
-import it.polimi.ingsw.Controller.Controller;
+import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.card.*;
 import it.polimi.ingsw.model.enums.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
 
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.server.SocketConnection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
