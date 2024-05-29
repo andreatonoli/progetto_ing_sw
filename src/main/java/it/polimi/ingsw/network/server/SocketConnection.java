@@ -26,7 +26,6 @@ public class SocketConnection extends Connection implements Runnable {
     private Timer catchPing;
     private Timer ping;
     private boolean firstTime = true;
-    private boolean go = true;
     private BlockingQueue<Message> messageQueue;
     private boolean processingAction;
     private final Object outputLock = new Object();
@@ -49,25 +48,25 @@ public class SocketConnection extends Connection implements Runnable {
     @Override
     public void run() {
         //TODO: capire quando chiudere connessione
-        while(getConnectionStatus() && go) {
-            readMessage();
-        }
-    }
-
-    public void readMessage(){
-        Message message;
         try {
-            message = (Message) in.readObject();
-            if (message.getType().equals(MessageType.CATCH_PING)){
-                catchPing();
-            }
-            else{
-                messageQueue.add(message);
+            while(!Thread.currentThread().isInterrupted()) {
+                    readMessage();
             }
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("Connection successfully ended");
-            go = false;
             System.err.println(e.getMessage());
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    public void readMessage() throws IOException, ClassNotFoundException {
+        Message message;
+        message = (Message) in.readObject();
+        if (message.getType().equals(MessageType.CATCH_PING)){
+            catchPing();
+        }
+        else{
+            messageQueue.add(message);
         }
     }
 

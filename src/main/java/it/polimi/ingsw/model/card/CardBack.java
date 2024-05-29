@@ -12,7 +12,7 @@ public class CardBack extends Card{
     /**
      * list of one or more symbols (from the symbols enumeration) which appear in the center of the card
      */
-    private List<Symbols> centerSymbols;
+    private final List<Symbols> centerSymbols;
     /**
      * Builds the back of the cards, even the empty corners
      * @param centerSymbols one or more symbols which appear in the center of the card

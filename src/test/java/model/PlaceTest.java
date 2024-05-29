@@ -7,6 +7,7 @@ import it.polimi.ingsw.model.enums.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import it.polimi.ingsw.model.exceptions.CostNotSatisfiedException;
@@ -16,6 +17,8 @@ import it.polimi.ingsw.model.exceptions.OccupiedCornerException;
 import it.polimi.ingsw.model.player.Player;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.condition.DisabledIfSystemProperties;
+
 public class PlaceTest{
     private Game game;
     @Test
@@ -168,5 +171,38 @@ public class PlaceTest{
         GoldCard b = new GoldCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 3, Condition.NOTHING, 17, new Integer[]{0, 3, 0, 0}, null);
         player.getPlayerBoard().setStarterCard(s);
         assertThrows(InvalidCoordinatesException.class, () -> player.placeCard(b, new int[]{40,40}));
+    }
+
+    @Test
+    @DisplayName("Placing gold card retro")
+    public void goldCardRetro() {
+        game = new Game(4);
+        Player player = new Player("pippo", game);
+        StarterCard s = new StarterCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}, 2, new CardBack(new ArrayList<>(List.of(Symbols.FUNGI)), Color.WHITE, new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY)}));
+        GoldCard b = new GoldCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 3, Condition.NOTHING, 17, new Integer[]{0, 3, 0, 0}, null);
+        player.setPlayerState(PlayerState.PLAY_CARD);
+        player.getPlayerBoard().setStarterCard(s);
+        //Flip the gold card to place its retro
+        b.setCurrentSide();
+        //Placing the card
+        assertDoesNotThrow(() -> player.placeCard(b, new int[]{1, 1}));
+    }
+
+    @Test
+    @DisplayName("Placing retro does not add points")
+    public void noAddPoints() {
+        Player player = new Player("pippo", game);
+        StarterCard s = new StarterCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}, 2, new CardBack(new ArrayList<>(List.of(Symbols.FUNGI)), Color.WHITE, new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY)}));
+        ResourceCard a = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.FUNGI) }, 1, 1);
+        //Giving the player some points
+        int offset = 5;
+        player.addPoints(offset);
+        //Player can place its card
+        player.setPlayerState(PlayerState.PLAY_CARD);
+        player.getPlayerBoard().setStarterCard(s);
+        //Flipping the resource card. When placed on the front side it gives 1 point, when placed on the back it gives 0 points
+        a.setCurrentSide();
+        assertDoesNotThrow(() -> player.placeCard(a, new int[]{1, 1}));
+        assertEquals(offset, player.getPoints());
     }
 }

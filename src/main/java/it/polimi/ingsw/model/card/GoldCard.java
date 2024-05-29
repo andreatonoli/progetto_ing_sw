@@ -32,11 +32,11 @@ public class GoldCard extends Card {
      * @param corners Array of corners
      * @param basePoint point number written on the card
      * @param condition condition (if present) to calc points. For example 1 point for every visible quill
-     * @param card_number unique number to distinguish through various cards
+     * @param cardNumber unique number to distinguish through various cards
      * @param cost represents the cost, in terms of symbols, necessary to place the card
      * @param requiredItem is the item needed for the condition.ITEM
      */
-    public GoldCard(Corner[] corners, int basePoint, Condition condition, int card_number, Integer[] cost, Symbols requiredItem){
+    public GoldCard(Corner[] corners, int basePoint, Condition condition, int cardNumber, Integer[] cost, Symbols requiredItem){
         this.currentSide = this;
         this.requiredItem = requiredItem;
         this.front = this;
@@ -46,24 +46,24 @@ public class GoldCard extends Card {
         this.type = "gold";
         this.basePoint = basePoint;
         this.condition = condition;
-        this.cardNumber = card_number;
+        this.cardNumber = cardNumber;
         this.back = false;
         System.arraycopy(cost, 0, this.cost, 0, 4);
-        if (card_number <= 10){ /**Gold fungi retro*/
+        if (cardNumber <= 10){ //Gold fungi retro
             this.color = Color.RED;
             this.retro = new CardBack(new ArrayList<>(List.of(Symbols.FUNGI)), Color.RED);
         }
-        else if (card_number <= 20) /**gold plant retro*/
+        else if (cardNumber <= 20) //gold plant retro
         {
             this.color = Color.GREEN;
             this.retro = new CardBack(new ArrayList<>(List.of(Symbols.PLANT)), Color.GREEN);
         }
-        else if(card_number <= 30) /**gold animal retro*/
+        else if(cardNumber <= 30) //gold animal retro
         {
             this.color = Color.BLUE;
             this.retro = new CardBack(new ArrayList<>(List.of(Symbols.ANIMAL)), Color.BLUE);
         }
-        else /**gold insect retro*/
+        else //gold insect retro
         {
             this.color = Color.PURPLE;
             this.retro = new CardBack(new ArrayList<>(List.of(Symbols.INSECT)), Color.PURPLE);
@@ -71,14 +71,15 @@ public class GoldCard extends Card {
         this.back = false;
     }
 
-    //TODO: riscrivere meglio questa funzione
     @Override
     public boolean checkCost(Player player) {
-        for (Symbols s : Symbols.values()){
-            if (s.ordinal() < 4){
-                if (cost[s.ordinal()] > player.getPlayerBoard().getSymbolCount(s))
-                {
-                    return false;
+        if (!this.back){
+            for (Symbols s : Symbols.values()){
+                if (s.ordinal() < 4){
+                    if (cost[s.ordinal()] > player.getPlayerBoard().getSymbolCount(s))
+                    {
+                        return false;
+                    }
                 }
             }
         }
@@ -120,11 +121,11 @@ public class GoldCard extends Card {
         player.addPoints(point);
     }
     @Override
-    public Integer[] getCost(){ return this.cost; }
+    public Integer[] getCost(){ return this.currentSide.getCost(); }
     @Override
-    public int getPoints(){ return this.basePoint; }
+    public int getPoints(){ return this.currentSide.getPoints(); }
     @Override
-    public Condition getCondition(){ return this.condition; }
+    public Condition getCondition(){ return this.currentSide.getCondition(); }
     @Override
-    public Symbols getRequiredItem(){ return this.requiredItem; }
+    public Symbols getRequiredItem(){ return this.currentSide.getRequiredItem(); }
 }
