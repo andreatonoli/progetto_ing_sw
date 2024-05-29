@@ -1,10 +1,8 @@
 package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.model.card.*;
-import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.Symbols;
 import javafx.animation.KeyFrame;
-import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -243,8 +241,8 @@ public class Gui extends Application {
         bp.setBackground(new Background(i));
 
         Timeline t = new Timeline(new KeyFrame(Duration.seconds(5), event2 -> {
-            StarterCard s = new StarterCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}, 1, new CardBack(new ArrayList<>(List.of(Symbols.FUNGI, Symbols.PLANT, Symbols.ANIMAL)), Color.WHITE, new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY)}));
-            stage.getScene().setRoot(this.starterFlip(stage, s, true));
+            StarterCard s = new StarterCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)});
+            //stage.getScene().setRoot(this.starterFlip(stage, s, true));
         }));
         t.setCycleCount(1);
         t.play();

@@ -13,6 +13,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 
+import java.util.List;
+
 public class DrawFromBoardTest {
 
     private Game game;
@@ -27,8 +29,8 @@ public class DrawFromBoardTest {
     @Test
     @DisplayName("Take Resource from Board")
     public void takeResource(){
-        Card rCard = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null, new Corner(Symbols.FUNGI) }, 1, 0);
-        Card rCard2 = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null }, 2, 0);
+        Card rCard = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null, new Corner(Symbols.FUNGI) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.RED);
+        Card rCard2 = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.RED);
         p.setPlayerState(PlayerState.DRAW_CARD);
         //Player's hand is empty, so he can take one card from the board
         game.getGameBoard().setCommonResource(rCard, 0);
@@ -48,8 +50,8 @@ public class DrawFromBoardTest {
     @Test
     @DisplayName("Take Gold from Board")
     public void takeGold(){
-        Card gCard = new GoldCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null, new Corner(Symbols.FUNGI) }, 1, Condition.NOTHING, 1, new Integer[]{0,0,0,0}, null);
-        Card gCard2 = new GoldCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER)}, 2, Condition.NOTHING, 2, new Integer[]{0,0,0,0}, null);
+        Card gCard = new Card(new GoldCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER)}, 2, Condition.NOTHING, new Integer[]{0,0,0,0}, null), new CardBack(List.of(Symbols.INSECT)), "gold", 36, Color.PURPLE);
+        Card gCard2 = new Card(new GoldCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER)}, 2, Condition.NOTHING, new Integer[]{0,0,0,0}, null), new CardBack(List.of(Symbols.INSECT)), "gold", 36, Color.PURPLE);
         p.setPlayerState(PlayerState.DRAW_CARD);
         //player hand is empty, and he is in draw_card state, so he can draw from the board
         game.getGameBoard().setCommonGold(gCard, 0);
@@ -71,10 +73,10 @@ public class DrawFromBoardTest {
     @Test
     @DisplayName("Cannot Draw From Bord - Not in Turn")
     public void notInTurnTest() {
-        Card rCard = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null, new Corner(Symbols.FUNGI) }, 1, 0);
-        Card rCard2 = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null }, 2, 0);
-        Card gCard = new GoldCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null, new Corner(Symbols.FUNGI) }, 1, Condition.NOTHING, 1, new Integer[]{0,0,0,0}, null);
-        Card gCard2 = new GoldCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER)}, 2, Condition.NOTHING, 2, new Integer[]{0,0,0,0}, null);
+        Card rCard = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null, new Corner(Symbols.FUNGI) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.RED);
+        Card rCard2 = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.RED);
+        Card gCard = new Card(new GoldCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER)}, 2, Condition.NOTHING, new Integer[]{0,0,0,0}, null), new CardBack(List.of(Symbols.INSECT)), "gold", 36, Color.PURPLE);
+        Card gCard2 = new Card(new GoldCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER)}, 2, Condition.NOTHING, new Integer[]{0,0,0,0}, null), new CardBack(List.of(Symbols.INSECT)), "gold", 36, Color.PURPLE);
         p.setPlayerState(PlayerState.NOT_IN_TURN);
         //Placing the cards on the game board
         game.getGameBoard().setCommonResource(rCard, 0);
@@ -105,13 +107,13 @@ public class DrawFromBoardTest {
     @DisplayName("Cannot Draw From Board - Card not found")
     public void cardNotFound() {
         //Card on the board
-        Card rCard = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null, new Corner(Symbols.FUNGI) }, 1, 0);
-        Card rCard2 = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null }, 2, 0);
-        Card gCard = new GoldCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null, new Corner(Symbols.FUNGI) }, 1, Condition.NOTHING, 1, new Integer[]{0,0,0,0}, null);
-        Card gCard2 = new GoldCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER)}, 2, Condition.NOTHING, 2, new Integer[]{0,0,0,0}, null);
+        Card rCard = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null, new Corner(Symbols.FUNGI) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.RED);
+        Card rCard2 = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.RED);
+        Card gCard = new Card(new GoldCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER)}, 2, Condition.NOTHING, new Integer[]{0,0,0,0}, null), new CardBack(List.of(Symbols.INSECT)), "gold", 36, Color.PURPLE);
+        Card gCard2 = new Card(new GoldCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER)}, 2, Condition.NOTHING, new Integer[]{0,0,0,0}, null), new CardBack(List.of(Symbols.INSECT)), "gold", 36, Color.PURPLE);
         //External cards
-        ResourceCard a = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.NOCORNER), null, new Corner(Symbols.FUNGI) }, 5, 0);
-        GoldCard b = new GoldCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 3, Condition.NOTHING, 17, new Integer[]{0, 0, 0, 0}, null);
+        Card a = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.NOCORNER), null, new Corner(Symbols.FUNGI) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 9, Color.RED);
+        Card b = new Card( new GoldCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 3, Condition.NOTHING, new Integer[]{0, 0, 0, 0}, null), new CardBack(List.of(Symbols.FUNGI)), "resource", 8, Color.RED);
         //Player can draw
         p.setPlayerState(PlayerState.DRAW_CARD);
         //Placing the cards on the game board
@@ -133,14 +135,14 @@ public class DrawFromBoardTest {
     @DisplayName("Cannot Draw From Board - Full hand")
     public void fullHandTest() {
         //Card on the board
-        Card rCard = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null, new Corner(Symbols.FUNGI) }, 1, 0);
-        Card rCard2 = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null }, 2, 0);
-        Card gCard = new GoldCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null, new Corner(Symbols.FUNGI) }, 1, Condition.NOTHING, 1, new Integer[]{0,0,0,0}, null);
-        Card gCard2 = new GoldCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER)}, 2, Condition.NOTHING, 2, new Integer[]{0,0,0,0}, null);
+        Card rCard = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null, new Corner(Symbols.FUNGI) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.RED);
+        Card rCard2 = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.RED);
+        Card gCard = new Card(new GoldCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER)}, 2, Condition.NOTHING, new Integer[]{0,0,0,0}, null), new CardBack(List.of(Symbols.INSECT)), "gold", 36, Color.PURPLE);
+        Card gCard2 = new Card(new GoldCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER)}, 2, Condition.NOTHING, new Integer[]{0,0,0,0}, null), new CardBack(List.of(Symbols.INSECT)), "gold", 36, Color.PURPLE);
         //Player's hand
-        ResourceCard a = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.NOCORNER), null, new Corner(Symbols.FUNGI) }, 5, 0);
-        GoldCard b = new GoldCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 3, Condition.NOTHING, 17, new Integer[]{0, 0, 0, 0}, null);
-        ResourceCard c = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), new Corner(Symbols.PLANT), new Corner(Symbols.NOCORNER) }, 19, 1);
+        Card a = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.NOCORNER), null, new Corner(Symbols.FUNGI) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.RED);
+        Card b = new Card( new GoldCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 3, Condition.NOTHING, new Integer[]{0, 0, 0, 0}, null), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.RED);
+        Card c = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), new Corner(Symbols.PLANT), new Corner(Symbols.NOCORNER) }, 1), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.RED);
         //Player can draw
         p.setPlayerState(PlayerState.DRAW_CARD);
         //Placing the cards on the game board

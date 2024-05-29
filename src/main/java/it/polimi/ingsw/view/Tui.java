@@ -12,9 +12,7 @@ import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Scanner;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.atomic.AtomicReference;
+
 //TODO: rendere unico lo stream di output
 //TODO: separare il metodo clear aggiungendo flush e mettendo la string nella enum di ColorCli
 public class Tui implements Ui{
@@ -328,7 +326,7 @@ public class Tui implements Ui{
 
             }
 
-            if(!card.isBack()){
+            if(card.isNotBack()){
                 //aggiungi punti se ci sono
                 int topCenter = 4;
                 if (card.getPoints() != 0) {
@@ -352,7 +350,7 @@ public class Tui implements Ui{
                 }
             }
 
-            if(!card.isBack()){
+            if(card.isNotBack()){
                 //aggiungi costo se c'è
                 if(card.getCost() != null){
                     int costSum = Arrays.stream(card.getCost()).reduce(0, Integer::sum);

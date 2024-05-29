@@ -11,7 +11,6 @@ import it.polimi.ingsw.model.player.Player;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -95,7 +94,7 @@ public class GameTest {
         assertEquals(game1.getGameBoard().getCommonResource().length, 2);
         //every card in the commonResources array is a ResourceCard that is no more contained in the resource deck
         for (int i = 0; i < game1.getGameBoard().getCommonResource().length; i++){
-            assertInstanceOf(ResourceCard.class, game1.getGameBoard().getCommonResource()[i]);
+            assertEquals("resource", game1.getGameBoard().getCommonResource()[i].getType());
             assertFalse(game1.getGameBoard().getResourceDeck().contains(game1.getGameBoard().getCommonResource()[i]));
         }
         //common gold are drew and placed on the game board
@@ -103,7 +102,7 @@ public class GameTest {
         assertEquals(game1.getGameBoard().getCommonGold().length, 2);
         //every card in the commonGold array is a GoldCard that is no more contained in the gold deck
         for (int i = 0; i < game1.getGameBoard().getCommonGold().length; i++){
-            assertInstanceOf(GoldCard.class, game1.getGameBoard().getCommonGold()[i]);
+            assertEquals("gold", game1.getGameBoard().getCommonGold()[i].getType());
             assertFalse(game1.getGameBoard().getGoldDeck().contains(game1.getGameBoard().getCommonGold()[i]));
         }
 
@@ -111,7 +110,7 @@ public class GameTest {
         for (Player p : game1.getPlayers()){
             //every player is given a starterCard that is no more contained in the starterDeck
             assertNotNull(p.getPlayerBoard().getStarterCard());
-            assertInstanceOf(StarterCard.class, p.getPlayerBoard().getStarterCard());
+            assertEquals("starter", p.getPlayerBoard().getStarterCard().getType());
             assertFalse(game1.getGameBoard().getStarterDeck().contains(p.getPlayerBoard().getStarterCard()));
             //two players cannot have the same starterCard
             playersWithoutP = new ArrayList<>(game1.getPlayers());
@@ -124,7 +123,7 @@ public class GameTest {
             assertEquals(p.getCardInHand().length, 3);
             //the first two cards are resource cards
             for (int i = 0; i < p.getCardInHand().length - 1; i++){
-                assertInstanceOf(ResourceCard.class, p.getCardInHand()[i]);
+                assertEquals("resource", p.getCardInHand()[i].getType());
                 assertFalse(game1.getGameBoard().getResourceDeck().contains(p.getCardInHand()[i]));
                 //two players cannot have the same card in hand
                 playersWithoutP = new ArrayList<>(game1.getPlayers());
@@ -136,7 +135,7 @@ public class GameTest {
                 }
             }
             //The third card in hand is a gold card
-            assertInstanceOf(GoldCard.class, p.getCardInHand()[2]);
+            assertEquals("gold", p.getCardInHand()[2].getType());
             assertFalse(game1.getGameBoard().getGoldDeck().contains(p.getCardInHand()[2]));
             //two players cannot have the same gold card in hand
             playersWithoutP = new ArrayList<>(game1.getPlayers());
@@ -237,9 +236,9 @@ public class GameTest {
         }
         //player1 places his cards
         player1.setPlayerState(PlayerState.PLAY_CARD);
-        ResourceCard r2 = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER) }, 2, 0);
-        ResourceCard r3 = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI) }, 3, 0);
-        ResourceCard g11 = new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.PLANT) }, 11, 0);
+        Card r2 = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 2, Color.RED);
+        Card r3 = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 3, Color.RED);
+        Card g11 = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.PLANT) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 11, Color.GREEN);
         try {
             player1.placeCard(r2, new int[]{1,1});
             player1.placeCard(r3, new int[]{1,-1});
@@ -248,9 +247,9 @@ public class GameTest {
                  AlreadyUsedPositionException | InvalidCoordinatesException ex) {
             System.out.println(ex.getMessage());
         }
-        ResourceCard p31 = new ResourceCard(new Corner[]{new Corner(Symbols.INSECT), new Corner(Symbols.INSECT), new Corner(Symbols.NOCORNER), new Corner(Symbols.EMPTY) }, 31, 0);
-        ResourceCard p32 = new ResourceCard(new Corner[]{new Corner(Symbols.NOCORNER), new Corner(Symbols.EMPTY), new Corner(Symbols.INSECT), new Corner(Symbols.INSECT) }, 32, 0);
-        ResourceCard p33 = new ResourceCard(new Corner[]{new Corner(Symbols.INSECT), new Corner(Symbols.NOCORNER), new Corner(Symbols.EMPTY), new Corner(Symbols.INSECT) }, 33, 0);
+        Card p31 = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.INSECT), new Corner(Symbols.INSECT), new Corner(Symbols.NOCORNER), new Corner(Symbols.EMPTY) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 31, Color.PURPLE);
+        Card p32 = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.NOCORNER), new Corner(Symbols.EMPTY), new Corner(Symbols.INSECT), new Corner(Symbols.INSECT) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 32, Color.PURPLE);
+        Card p33 = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.INSECT), new Corner(Symbols.NOCORNER), new Corner(Symbols.EMPTY), new Corner(Symbols.INSECT) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 33, Color.PURPLE);
         try {
             player1.placeCard(p31, new int[]{-1,1});
             player1.placeCard(p33, new int[]{-2,2});
@@ -263,9 +262,9 @@ public class GameTest {
         player1.setPlayerState(PlayerState.NOT_IN_TURN);
         //player2 can now place his cards
         player2.setPlayerState(PlayerState.PLAY_CARD);
-        ResourceCard r6 = new ResourceCard(new Corner[]{new Corner(Symbols.INKWELL), new Corner(Symbols.FUNGI), new Corner(Symbols.ANIMAL), new Corner(Symbols.NOCORNER) }, 6, 0);
-        ResourceCard g15 = new ResourceCard(new Corner[]{new Corner(Symbols.NOCORNER), new Corner(Symbols.INSECT), new Corner(Symbols.PLANT), new Corner(Symbols.QUILL) }, 15, 0);
-        ResourceCard b26 = new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.MANUSCRIPT), new Corner(Symbols.NOCORNER) }, 26, 0);
+        Card r6 = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.INKWELL), new Corner(Symbols.FUNGI), new Corner(Symbols.ANIMAL), new Corner(Symbols.NOCORNER) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 6, Color.RED);
+        Card g15 = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.NOCORNER), new Corner(Symbols.INSECT), new Corner(Symbols.PLANT), new Corner(Symbols.QUILL) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 15, Color.GREEN);
+        Card b26 = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.MANUSCRIPT), new Corner(Symbols.NOCORNER) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 26, Color.BLUE);
         try {
             player2.placeCard(r6, new int[]{1,1});
             player2.placeCard(g15, new int[]{2,0});
@@ -273,21 +272,20 @@ public class GameTest {
         } catch (OccupiedCornerException | NotInTurnException | AlreadyUsedPositionException | CostNotSatisfiedException | InvalidCoordinatesException ex) {
             System.out.println(ex.getMessage());
         }
-        ResourceCard b21 = new ResourceCard(new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.ANIMAL), new Corner(Symbols.NOCORNER), new Corner(Symbols.EMPTY) }, 21, 0);
+        Card b21 = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.ANIMAL), new Corner(Symbols.NOCORNER), new Corner(Symbols.EMPTY) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 21, Color.BLUE);
         try {
             player2.placeCard(b21, new int[]{-1,1});
-        } catch (OccupiedCornerException | NotInTurnException | CostNotSatisfiedException ex) {
+        } catch (OccupiedCornerException | NotInTurnException | CostNotSatisfiedException |
+                 AlreadyUsedPositionException | InvalidCoordinatesException ex) {
             System.out.println(ex.getMessage());
-        } catch (AlreadyUsedPositionException | InvalidCoordinatesException e) {
-            throw new RuntimeException(e);
         }
         //player2 made a2 and a4 achievements (total 5 points)
         player2.setPlayerState(PlayerState.NOT_IN_TURN);
         //player3 can now place his cards
         player3.setPlayerState(PlayerState.PLAY_CARD);
-        ResourceCard g12 = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.PLANT), new Corner(Symbols.PLANT) }, 12, 0);
-        ResourceCard g13 = new ResourceCard(new Corner[]{new Corner(Symbols.NOCORNER), new Corner(Symbols.PLANT), new Corner(Symbols.PLANT), new Corner(Symbols.EMPTY) }, 13, 0);
-        ResourceCard p34 = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.INSECT), new Corner(Symbols.INSECT), new Corner(Symbols.NOCORNER) }, 34, 0);
+        Card g12 = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.ANIMAL), new Corner(Symbols.NOCORNER), new Corner(Symbols.EMPTY) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 12, Color.GREEN);
+        Card g13 = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.ANIMAL), new Corner(Symbols.NOCORNER), new Corner(Symbols.EMPTY) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 13, Color.GREEN);
+        Card p34 = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.ANIMAL), new Corner(Symbols.NOCORNER), new Corner(Symbols.EMPTY) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 34, Color.PURPLE);
         try {
             player3.placeCard(g12, new int[]{1,1});
             player3.placeCard(g13, new int[]{1,-1});
@@ -297,9 +295,9 @@ public class GameTest {
         } catch (AlreadyUsedPositionException | InvalidCoordinatesException e) {
             throw new RuntimeException(e);
         }
-        ResourceCard b25 = new ResourceCard(new Corner[]{new Corner(Symbols.NOCORNER), new Corner(Symbols.INSECT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INKWELL) }, 25, 0);
-        ResourceCard g17 = new ResourceCard(new Corner[]{new Corner(Symbols.MANUSCRIPT), new Corner(Symbols.NOCORNER), new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL) }, 17, 0);
-        ResourceCard p35 = new ResourceCard(new Corner[]{new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL), new Corner(Symbols.INSECT), new Corner(Symbols.ANIMAL) }, 35, 0);
+        Card b25 = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.NOCORNER), new Corner(Symbols.INSECT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INKWELL) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 25, Color.BLUE);
+        Card g17 = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.MANUSCRIPT), new Corner(Symbols.NOCORNER), new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 27, Color.GREEN);
+        Card p35 = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL), new Corner(Symbols.INSECT), new Corner(Symbols.ANIMAL) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 35, Color.PURPLE);
         try {
             player3.placeCard(g17, new int[]{-1,1});
             player3.placeCard(b25, new int[]{-2,0});

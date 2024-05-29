@@ -171,7 +171,7 @@ public class Controller extends Observable {
             }
             turnHandler.changePlayerState(this.getPlayerByClient(user));
             notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState(), user.getUsername()));
-            notifyAll(new UpdateDeckMessage(deck.getFirst().getBack().getColor(), isResource));
+            notifyAll(new UpdateDeckMessage(deck.getFirst().getColor(), isResource));
             user.sendMessage(new UpdateCardMessage(drawedCard));
         } catch (EmptyException | NotInTurnException | FullHandException e) {
             user.sendMessage(new ErrorMessage(e.getMessage()));

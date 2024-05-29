@@ -4,8 +4,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.card.Card;
+import it.polimi.ingsw.model.card.CardBack;
 import it.polimi.ingsw.model.card.Corner;
 import it.polimi.ingsw.model.card.ResourceCard;
+import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.PlayerState;
 import it.polimi.ingsw.model.enums.Symbols;
 import it.polimi.ingsw.model.exceptions.EmptyException;
@@ -15,6 +17,7 @@ import it.polimi.ingsw.model.player.Player;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import java.util.LinkedList;
+import java.util.List;
 
 public class DrawTest {
     /**
@@ -27,12 +30,12 @@ public class DrawTest {
         Player player = new Player("pippo", game);
         player.setPlayerState(PlayerState.DRAW_CARD);
         LinkedList<Card> deck = new LinkedList<>();
-        ResourceCard drawed = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null, new Corner(Symbols.FUNGI) }, 1, 0);
-        deck.add(drawed);
-        deck.add(new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null }, 2, 0));
-        deck.add(new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), null, new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI)}, 3, 0));
+        Card drew = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null, new Corner(Symbols.FUNGI) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.RED);
+        deck.add(drew);
+        deck.add(new Card( new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.INSECT), new Corner(Symbols.ANIMAL), new Corner(Symbols.PLANT) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.RED));
+        deck.add(new Card( new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), new Corner(Symbols.QUILL), new Corner(Symbols.PLANT) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.RED));
         assertDoesNotThrow(()->player.drawCard(deck));
-        assertEquals(player.getCardInHand()[0], drawed);
+        assertEquals(player.getCardInHand()[0], drew);
         assertNotEquals(player.getCardInHand()[0], deck.getFirst());
     }
     /**
@@ -46,8 +49,8 @@ public class DrawTest {
         Player player = new Player("pippo", game);
         player.setPlayerState(PlayerState.DRAW_CARD);
         LinkedList<Card> deck = new LinkedList<>();
-        ResourceCard a = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null, new Corner(Symbols.FUNGI) }, 1, 0);
-        ResourceCard b = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null }, 2, 0);
+        Card a = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null, new Corner(Symbols.FUNGI) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.RED);
+        Card b = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.RED);
         player.addInHand(a);
         player.addInHand(b);
         assertThrows(EmptyException.class, () -> player.drawCard(deck));
@@ -66,10 +69,10 @@ public class DrawTest {
         Player player = new Player("pippo", game);
         player.setPlayerState(PlayerState.DRAW_CARD);
         LinkedList<Card> deck = new LinkedList<>();
-        ResourceCard a = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null, new Corner(Symbols.FUNGI) }, 1, 0);
-        ResourceCard b = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null }, 2, 0);
-        ResourceCard d = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), null, new Corner(Symbols.EMPTY) }, 8, 1);
-        ResourceCard e = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), null, new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY) }, 9, 1);
+        Card a = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null, new Corner(Symbols.FUNGI) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.RED);
+        Card b = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.RED);
+        Card d = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), null, new Corner(Symbols.EMPTY) }, 1), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.RED);
+        Card e = new Card(  new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), null, new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY) }, 1), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.RED);
         //Full player's hand
         player.addInHand(a);
         player.addInHand(b);
@@ -98,8 +101,8 @@ public class DrawTest {
         Player player = new Player("pippo", game);
         player.setPlayerState(PlayerState.NOT_IN_TURN);
         LinkedList<Card> deck = new LinkedList<>();
-        ResourceCard a = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null, new Corner(Symbols.FUNGI) }, 1, 0);
-        ResourceCard b = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null }, 2, 0);
+        Card a = new Card(  new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null, new Corner(Symbols.FUNGI) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.RED);
+        Card b = new Card(  new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), null }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.RED);
         deck.add(a);
         player.addInHand(b);
         assertThrows(NotInTurnException.class, () -> player.drawCard(deck));

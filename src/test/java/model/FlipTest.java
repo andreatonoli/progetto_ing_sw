@@ -4,13 +4,7 @@ import it.polimi.ingsw.model.Game;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import it.polimi.ingsw.model.card.CardBack;
-import it.polimi.ingsw.model.card.Corner;
-import it.polimi.ingsw.model.card.ResourceCard;
-import it.polimi.ingsw.model.card.StarterCard;
+import it.polimi.ingsw.model.card.*;
 import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.CornerEnum;
 import it.polimi.ingsw.model.enums.PlayerState;
@@ -19,6 +13,8 @@ import it.polimi.ingsw.model.exceptions.OccupiedCornerException;
 import it.polimi.ingsw.model.player.Player;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
+
+import java.util.List;
 
 
 public class FlipTest {
@@ -30,7 +26,7 @@ public class FlipTest {
         Player player = new Player("pippo", game);
         player.setPlayerState(PlayerState.DRAW_CARD);
         //First card of the deck
-        ResourceCard a = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), new Corner(Symbols.PLANT), new Corner(Symbols.NOCORNER)}, 19, 1);
+        Card a = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.EMPTY), new Corner(Symbols.PLANT), new Corner(Symbols.NOCORNER)}, 1), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.RED);
         player.addInHand(a);
         //Checks that the card added in the player hand is really a
         assertEquals(a.getColor(), player.getCardInHand()[0].getColor());
@@ -42,7 +38,7 @@ public class FlipTest {
         assertEquals(a.getColor(), player.getCardInHand()[0].getColor());
         assertNotNull(player.getCardInHand()[0].getSymbols());
         assertEquals(1, player.getCardInHand()[0].getSymbols().size());
-        assertEquals(Symbols.PLANT, player.getCardInHand()[0].getSymbols().getFirst());
+        assertEquals(Symbols.FUNGI, player.getCardInHand()[0].getSymbols().getFirst());
         for (CornerEnum co : CornerEnum.values()) {
             assertEquals(Symbols.EMPTY, player.getCardInHand()[0].getCornerSymbol(co));
         }
@@ -54,8 +50,8 @@ public class FlipTest {
         Game game = new Game(4);
         Player player = new Player("pippo", game);
         //a is a green card, so it has a permanent plant symbol on its back
-        ResourceCard a = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), new Corner(Symbols.PLANT), new Corner(Symbols.NOCORNER)}, 19, 1);
-        StarterCard s = new StarterCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}, 2, new CardBack(new ArrayList<>(List.of(Symbols.FUNGI)), Color.WHITE, new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY)}));
+        Card a = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), new Corner(Symbols.PLANT), new Corner(Symbols.NOCORNER)}, 1), new CardBack(List.of(Symbols.PLANT)), "resource", 30, Color.RED);
+        Card s = new Card(new StarterCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}), new CardBack(List.of(Symbols.ANIMAL, Symbols.INSECT, Symbols.PLANT), new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER)}), "starter", 1, Color.WHITE);
         player.setPlayerState(PlayerState.PLAY_CARD);
         player.getPlayerBoard().setStarterCard(s);
         player.addInHand(a);
@@ -73,7 +69,7 @@ public class FlipTest {
     @Test
     @DisplayName("Flip StarterCard")
     public void FlipStarterCard(){
-        StarterCard s = new StarterCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}, 2, new CardBack(new ArrayList<>(List.of(Symbols.FUNGI)), Color.WHITE, new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.EMPTY)}));
+        Card s = new Card(new StarterCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}), new CardBack(List.of(Symbols.FUNGI), new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.EMPTY)}), "starter", 1, Color.WHITE);
         //Flip a starter card with only one back symbol
         s.setCurrentSide();
         assertEquals(Symbols.ANIMAL,s.getCornerSymbol(CornerEnum.TL));
@@ -84,7 +80,7 @@ public class FlipTest {
         assertEquals(1, s.getSymbols().size());
         assertEquals(Symbols.FUNGI, s.getSymbols().getFirst());
         //Flip a starterCard with more back symbols
-        StarterCard a = new StarterCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI), new Corner(Symbols.ANIMAL)}, 4, new CardBack(new ArrayList<>(List.of(Symbols.ANIMAL, Symbols.INSECT)), Color.WHITE, new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY)}));
+        Card a = new Card(new StarterCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI), new Corner(Symbols.ANIMAL)}), new CardBack(List.of(Symbols.ANIMAL, Symbols.INSECT), new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY)}), "starter", 1, Color.WHITE);
         a.setCurrentSide();
         for (CornerEnum c : CornerEnum.values()){
             assertEquals(Symbols.EMPTY, a.getCornerSymbol(c));
@@ -100,8 +96,8 @@ public class FlipTest {
     public void FlipStarterNotValidPlacement() {
         Game game = new Game(4);
         Player player = new Player("pippo", game);
-        ResourceCard a = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), new Corner(Symbols.PLANT), new Corner(Symbols.NOCORNER)}, 19, 1);
-        StarterCard s = new StarterCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}, 2, new CardBack(new ArrayList<>(List.of(Symbols.FUNGI)), Color.WHITE, new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.EMPTY)}));
+        Card a = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), new Corner(Symbols.PLANT), new Corner(Symbols.NOCORNER)}, 1), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.RED);
+        Card s = new Card(new StarterCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}), new CardBack(List.of(Symbols.FUNGI), new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.EMPTY)}), "starter", 1, Color.WHITE);
         player.setPlayerState(PlayerState.PLAY_CARD);
         s.setCurrentSide();
         player.getPlayerBoard().setStarterCard(s);

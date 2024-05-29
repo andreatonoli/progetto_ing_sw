@@ -6,104 +6,112 @@ import it.polimi.ingsw.model.player.Player;
 import java.io.Serializable;
 import java.util.List;
 
-public abstract class Card implements Serializable {
-    //TODO: fare in modo di sfruttare correttamente l'ereditarietà
-    /**
-     * array containing the current side card's corners
-     */
-    protected Corner[] corners;
-    /**
-     * indicates the card's type
-     */
-    protected String type;
-    /**
-     * indicates the card's color (from the color enumeration)
-     */
-    protected Color color;
-    /**
-     * is the id of the card
-     */
-    protected int cardNumber;
-    /**
-     * card side that is currently visible
-     */
-    protected Card currentSide;
-    /**
-     * true <=> card's current side is back
-     */
-    protected boolean back;
-    /**
-     * a reference to the card's front side
-     */
-    protected Card front;
-    /**
-     * a reference to the card's back side
-     */
-    protected CardBack retro;
 
+public class Card implements Serializable {
+    private final Face front;
+    private final Face retro;
+    private final String type;
+    private final int cardNumber;
+    private final Color color;
+    private Face currentSide;
+    private boolean isBack = false;
+    public Card (Face front, Face retro, String type, int cardNumber, Color color){
+        this.front = front;
+        this.retro = retro;
+        this.type = type;
+        this.cardNumber = cardNumber;
+        this.color = color;
+        this.currentSide = front;
+    }
 
-    /**
-     * getter of the symbols list
-     * @return all the symbol in the center of the card
-     */
-    public abstract List<Symbols> getSymbols();
+    public String getType(){
+        return this.type;
+    }
 
-    /**
-     * @param player in the one to check
-     * @return if the player could handle the cost of the gold card
-     */
-    public abstract boolean checkCost(Player player);
-
-    /**
-     * used to check if the player has completed the card condition to get the points
-     * @param player is the one to check
-     */
-    public abstract void calcPoints(Player player);
-
-    /**
-     * getter to get the cost array
-     * @return the cost, in terms of symbols, necessary to place the card
-     */
-    public abstract Integer[] getCost();
-
-    /**
-     * getter to get the points value
-     * @return the point number written on the card
-     */
-    public abstract int getPoints();
-
-    /**
-     * getter tp get the condition value
-     * @return the condition (if present) to calc points. For example 1 point for every visible quill
-     */
-    public abstract Condition getCondition();
-
-    /**
-     * getter to get the requiredItem value
-     * @return (if present) the item needed for the condition.ITEM
-     */
-    public abstract Symbols getRequiredItem();
+    public int getCardNumber(){
+        return this.cardNumber;
+    }
 
     /**
      * getter to get the color value
      * @return the color of the card
      */
     public Color getColor() {
-        return color;
+        return this.color;
+    }
+    
+    public boolean isNotBack(){
+        return !isBack;
     }
 
     /**
      * setter to set side of the card
      */
     public void setCurrentSide(){
-        if (currentSide.back){
+        if (this.isBack){
             this.currentSide = front;
-            this.back = false;
+            this.isBack = false;
         }
         else{
             this.currentSide = retro;
-            this.back = true;
+            this.isBack = true;
         }
+    }
+
+    /**
+     * getter of the symbols list
+     * @return all the symbol in the center of the card
+     */
+    public List<Symbols> getSymbols(){
+        return currentSide.getSymbols();
+    }
+
+    /**
+     * @param player in the one to check
+     * @return if the player could handle the cost of the gold card
+     */
+    public boolean checkCost(Player player){
+        return currentSide.checkCost(player);
+    }
+
+    /**
+     * used to check if the player has completed the card condition to get the points
+     * @param player is the one to check
+     */
+    public void calcPoints(Player player){
+        currentSide.calcPoints(player, this);
+    }
+
+    /**
+     * getter to get the cost array
+     * @return the cost, in terms of symbols, necessary to place the card
+     */
+    public Integer[] getCost(){
+        return currentSide.getCost();
+    }
+
+    /**
+     * getter to get the points value
+     * @return the point number written on the card
+     */
+    public int getPoints(){
+        return currentSide.getPoints();
+    }
+
+    /**
+     * getter tp get the condition value
+     * @return the condition (if present) to calc points. For example 1 point for every visible quill
+     */
+    public Condition getCondition(){
+        return currentSide.getCondition();
+    }
+
+    /**
+     * getter to get the requiredItem value
+     * @return (if present) the item needed for the condition.ITEM
+     */
+    public Symbols getRequiredItem() {
+        return currentSide.getRequiredItem();
     }
 
     /**
@@ -115,15 +123,13 @@ public abstract class Card implements Serializable {
         return currentSide.corners[corner.ordinal()];
     }
 
-    public boolean isBack(){ return this.back; }
-
-    public CardBack getBack(){ return this.retro; }
-
     /**
      * getter of the corners array
      * @return all the card's corners.
      */
-    public Corner[] getCorners(){ return this.corners; }
+    public Corner[] getCorners(){
+        return currentSide.getCorners();
+    }
 
     /**
      * getter to get the symbol in the card's corner
@@ -131,7 +137,7 @@ public abstract class Card implements Serializable {
      * @return the symbol in the corner position.
      */
     public Symbols getCornerSymbol(CornerEnum corner){
-        return currentSide.corners[corner.ordinal()].getSymbol();
+        return currentSide.getCornerSymbol(corner);
     }
 
     /**
@@ -140,7 +146,7 @@ public abstract class Card implements Serializable {
      * @return the corner's state
      */
     public CornerState getCornerState(CornerEnum corner){
-        return currentSide.corners[corner.ordinal()].getState();
+        return currentSide.getCornerState(corner);
     }
 
     /**
@@ -149,21 +155,7 @@ public abstract class Card implements Serializable {
      * @param state is the corner's state
      */
     public void setCornerState(CornerEnum corner, CornerState state){
-        currentSide.corners[corner.ordinal()].setState(state);
-    }
-    /**
-     * getter of the type value
-     * @return the type of the card (e.g. Resource, Gold)
-     */
-    public String getType(){
-        return  this.type;
-    }
-    /**
-     * getter of the {@code cardNumber} attribute
-     * @return the number of the card chosen in the json files
-     */
-    public int getCardNumber(){
-        return this.cardNumber;
+        currentSide.setCornerState(corner, state);
     }
 
     /**

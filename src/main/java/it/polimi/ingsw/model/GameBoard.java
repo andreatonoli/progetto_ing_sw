@@ -42,6 +42,7 @@ public class GameBoard implements Serializable {
             int basePoint;
             int cardNumber;
             Symbols conditionItem;
+            Card card;
 
             String path;
             JsonObject json;
@@ -110,16 +111,18 @@ public class GameBoard implements Serializable {
                     costList.add(elem.getAsInt());
                 }
                 cost = costList.toArray(new Integer[0]);
-                cardNumber = jo.get("id").getAsInt();
+                cardNumber = jo.get("id").getAsInt() - 1;
                 GoldCard gCard;
                 if (colorOrSymbol.equals("ITEM")){
                     conditionItem = Symbols.valueOf(jo.get("symbol").getAsString());
-                    gCard = new GoldCard(arrayCorner, basePoint, Condition.valueOf(colorOrSymbol), cardNumber, cost, conditionItem);
+                    gCard = new GoldCard(arrayCorner, basePoint, Condition.valueOf(colorOrSymbol), cost, conditionItem);
                 }
                 else{
-                    gCard = new GoldCard(arrayCorner, basePoint, Condition.valueOf(colorOrSymbol), cardNumber, cost, null);
+                    gCard = new GoldCard(arrayCorner, basePoint, Condition.valueOf(colorOrSymbol), cost, null);
                 }
-                goldDeck.add(gCard);
+                CardBack retro = new CardBack(List.of(Symbols.values()[cardNumber/10]));
+                card = new Card(gCard, retro, "gold", cardNumber + 1, Color.values()[cardNumber/10]);
+                goldDeck.add(card);
             }
             //creation of resourceDeck
             this.resourceDeck = new LinkedList<>();
@@ -139,9 +142,11 @@ public class GameBoard implements Serializable {
                 }
                 arrayCorner = cornerList.toArray(new Corner[0]);
                 basePoint = jo.get("point").getAsInt();
-                cardNumber = jo.get("id").getAsInt();
-                ResourceCard rCard = new ResourceCard(arrayCorner, cardNumber, basePoint);
-                resourceDeck.add(rCard);
+                cardNumber = jo.get("id").getAsInt() - 1;
+                ResourceCard rCard = new ResourceCard(arrayCorner, basePoint);
+                CardBack retro = new CardBack(List.of(Symbols.values()[cardNumber/10]));
+                card = new Card(rCard, retro, "resource", cardNumber + 1, Color.values()[cardNumber/10]);
+                resourceDeck.add(card);
             }
             //creation of starterDeck
             this.starterDeck = new LinkedList<>();
@@ -166,7 +171,7 @@ public class GameBoard implements Serializable {
                     retroCornerList.add(new Corner(Symbols.valueOf(elem.getAsString())));
                 }
                 arrayCorner = retroCornerList.toArray(new Corner[0]);
-                CardBack back = new CardBack(items, Color.WHITE, arrayCorner);
+                CardBack back = new CardBack(items, arrayCorner);
                 symbols = jo.get("corners").getAsJsonArray();
                 ArrayList<Corner> cornerList = new ArrayList<>();
                 for (JsonElement elem : symbols){
@@ -174,8 +179,9 @@ public class GameBoard implements Serializable {
                 }
                 arrayCorner = cornerList.toArray(new Corner[0]);
                 cardNumber = jo.get("id").getAsInt();
-                StarterCard sCard = new StarterCard(arrayCorner, cardNumber, back);
-                starterDeck.add(sCard);
+                StarterCard sCard = new StarterCard(arrayCorner);
+                card = new Card(sCard, back, "starter", cardNumber, Color.WHITE);
+                starterDeck.add(card);
             }
             commonResource = new Card[2];
             commonGold = new Card[2];
