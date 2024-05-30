@@ -278,7 +278,12 @@ public class SocketClient implements ClientInterface {
                 this.onDisconnect();
                 break;
             case GENERIC_MESSAGE:
-                this.view.setMessage(message.toString(), false);
+                if (!game.getState().equals(GameState.WAIT_PLAYERS)) {
+                    this.view.setMessage(message.toString(), false);
+                }
+                else {
+                    System.out.println(message);
+                }
                 break;
             case ERROR:
                 this.view.setMessage(message.toString(), true);
