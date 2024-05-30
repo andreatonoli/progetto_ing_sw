@@ -15,13 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameTest {
-    private final Game game1;
-    private Player player1, player2, player3;
-
-    public GameTest() {
-        this.game1 = new Game(3);
-    }
-
 
 /**
      * Checks if the game class constructor correctly initializes all the variables
@@ -45,9 +38,10 @@ public class GameTest {
     @Test
     @DisplayName("Add Player")
     public void addPlayerTest(){
-        player1 = new Player("mario", game1);
-        player2 = new Player("luigi", game1);
-        player3 = new Player("peach", game1);
+        Game game1 = new Game(3);
+        Player player1 = new Player("mario", game1);
+        Player player2 = new Player("luigi", game1);
+        Player player3 = new Player("peach", game1);
         //initially the game is empty
         assertEquals(0, game1.getPlayers().size());
         assertFalse(game1.isFull());
@@ -71,9 +65,10 @@ public class GameTest {
     @Test
     @DisplayName("Test game start")
     public void testGameStart() {
-        player1 = new Player("mario", game1);
-        player2 = new Player("luigi", game1);
-        player3 = new Player("peach", game1);
+        Game game1 = new Game(3);
+        Player player1 = new Player("mario", game1);
+        Player player2 = new Player("luigi", game1);
+        Player player3 = new Player("peach", game1);
         game1.addPlayer(player1);
         game1.addPlayer(player2);
         game1.addPlayer(player3);
@@ -182,9 +177,10 @@ public class GameTest {
     @Test
     @DisplayName("Game does not start unless it's full")
     public void fewPlayerTest(){
-        player1 = new Player("mario", game1);
-        player2 = new Player("luigi", game1);
-        player3 = new Player("peach", game1);
+        Game game1 = new Game(3);
+        Player player1 = new Player("mario", game1);
+        Player player2 = new Player("luigi", game1);
+        Player player3 = new Player("peach", game1);
         game1.addPlayer(player1);
         game1.addPlayer(player2);
         //lobby size = 3 but only 2 players have joined
@@ -204,9 +200,10 @@ public class GameTest {
     @Test
     @DisplayName("Test game end")
     public void testGameEnd() {
-        player1 = new Player("mario", game1);
-        player2 = new Player("luigi", game1);
-        player3 = new Player("peach", game1);
+        Game game1 = new Game(3);
+        Player player1 = new Player("mario", game1);
+        Player player2 = new Player("luigi", game1);
+        Player player3 = new Player("peach", game1);
         game1.addPlayer(player1);
         game1.addPlayer(player2);
         game1.addPlayer(player3);
@@ -335,9 +332,10 @@ public class GameTest {
     @Test
     @DisplayName("Test game end without starting before")
     public void testGameEndWithoutStarting() {
-        player1 = new Player("mario", game1);
-        player2 = new Player("luigi", game1);
-        player3 = new Player("peach", game1);
+        Game game1 = new Game(3);
+        Player player1 = new Player("mario", game1);
+        Player player2 = new Player("luigi", game1);
+        Player player3 = new Player("peach", game1);
         game1.addPlayer(player1);
         game1.addPlayer(player2);
         game1.addPlayer(player3);

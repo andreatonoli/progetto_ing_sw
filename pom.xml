@@ -15,8 +15,7 @@
     <maven.compiler.source>21</maven.compiler.source>
     <maven.compiler.target>21</maven.compiler.target>
   </properties>
-  <!-- Controlla esercitazione GUI per usare resources -->
-  <!-- TODO: CREA UN JAR PER SERVER E UNO PER CLIENT-->
+
   <dependencies>
     <dependency>
       <groupId>org.openjfx</groupId>
@@ -33,8 +32,7 @@
       <artifactId>gson</artifactId>
       <version>2.10.1</version>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/org.json/json -->
-    <!-- Forse inutile org.json -->
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -64,76 +62,60 @@
 
   <build>
     <plugins>
-      <!-- Plugin per creare i file JAR -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>3.3.0</version>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.2.4</version>
         <executions>
-          <!-- Creazione del JAR per ClientLauncher -->
+
           <execution>
-            <id>CodexClient-jar</id>
+            <id>${project.artifactId}-server</id>
             <phase>package</phase>
             <goals>
-              <goal>jar</goal>
+              <goal>shade</goal>
             </goals>
             <configuration>
-              <classifier>client</classifier>
-              <archive>
-                <manifest>
-                  <addClasspath>true</addClasspath>
-                  <classpathPrefix>lib/</classpathPrefix>
-                  <mainClass>it.polimi.ingsw.ClientLauncher</mainClass>
-                </manifest>
-              </archive>
-            </configuration>
-          </execution>
-          <!-- Creazione del JAR per ServerLauncher -->
-          <execution>
-            <id>CodexServer-jar</id>
-            <phase>package</phase>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-            <configuration>
-              <classifier>server</classifier>
-              <archive>
-                <manifest>
-                  <addClasspath>true</addClasspath>
-                  <classpathPrefix>lib/</classpathPrefix>
+              <finalName>${project.artifactId}-server</finalName>
+              <transformers>
+                <transformer
+                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                   <mainClass>it.polimi.ingsw.ServerLauncher</mainClass>
-                </manifest>
-              </archive>
+                </transformer>
+              </transformers>
+              <artifactSet>
+                <excludes>
+                  <exclude>org.openjfx:*</exclude>
+                </excludes>
+              </artifactSet>
+              <filters>
+                <filter artifact="*:*">
+                </filter>
+              </filters>
             </configuration>
           </execution>
-        </executions>
-      </plugin>
-      <!-- Plugin per copiare le dipendenze -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <version>3.6.0</version>
-        <executions>
+
           <execution>
-            <id>copy-dependencies</id>
+            <id>${project.artifactId}-client</id>
             <phase>package</phase>
             <goals>
-              <goal>copy-dependencies</goal>
+              <goal>shade</goal>
             </goals>
             <configuration>
-              <outputDirectory>${project.build.directory}/lib</outputDirectory>
+              <finalName>${project.artifactId}-client</finalName>
+              <transformers>
+                <transformer
+                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <mainClass>it.polimi.ingsw.ClientLauncher</mainClass>
+                </transformer>
+              </transformers>
+              <filters>
+                <filter artifact="*:*">
+                </filter>
+              </filters>
             </configuration>
           </execution>
+
         </executions>
-      </plugin>
-      <!-- Plugin JavaFX -->
-      <plugin>
-        <groupId>org.openjfx</groupId>
-        <artifactId>javafx-maven-plugin</artifactId>
-        <version>0.0.8</version>
-        <configuration>
-          <mainClass>it.polimi.ingsw.ClientLauncher</mainClass>
-        </configuration>
       </plugin>
     </plugins>
   </build>

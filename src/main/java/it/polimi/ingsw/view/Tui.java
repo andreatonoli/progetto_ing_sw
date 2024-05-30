@@ -994,6 +994,7 @@ public class Tui implements Ui{
             } else if(game.getState().equals(GameState.END)){
                 System.out.println("\nGG to everyone");
                 this.running = false;
+                System.exit(1);
             }
             else {
                 if (player.getState().equals(PlayerState.PLAY_CARD)) {
