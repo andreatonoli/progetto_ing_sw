@@ -1006,19 +1006,25 @@ public class Tui implements Ui{
                     for (PlayerBean p : players) {
                         if (!p.getState().equals(PlayerState.NOT_IN_TURN)) {
                             playerInTurn = p;
-                            break;
                         }
                     }
-                    System.out.println(playerInTurn.getUsername() + "'s turn. Wait for your turn to play");
+                    if (playerInTurn == null){
+                        System.out.println("only one player connected, the other players have one minute to reconnect.");
+                    }
+                    else {
+                        System.out.println(playerInTurn.getUsername() + "'s turn. Wait for your turn to play");
+                    }
                 }
                 System.out.println();
                 System.out.println("Press [1] to view a card from your hand");
                 System.out.println("Press [2] to view a card from your board");
                 System.out.println("Press [3] to view another player's board");
-                if (playerInTurn.getUsername().equals(username) && playerInTurn.getState().equals(PlayerState.PLAY_CARD)) {
-                    System.out.println("Press [4] to place a card");
-                } else if (playerInTurn.getUsername().equals(username) && playerInTurn.getState().equals(PlayerState.DRAW_CARD)) {
-                    System.out.println("Press [4] to draw a card");
+                if (playerInTurn != null) {
+                    if (playerInTurn.getUsername().equals(username) && playerInTurn.getState().equals(PlayerState.PLAY_CARD)) {
+                        System.out.println("Press [4] to place a card");
+                    } else if (playerInTurn.getUsername().equals(username) && playerInTurn.getState().equals(PlayerState.DRAW_CARD)) {
+                        System.out.println("Press [4] to draw a card");
+                    }
                 }
                 System.out.println("Press [c] anytime to send a message");
             }
@@ -1558,13 +1564,14 @@ public class Tui implements Ui{
     @Override //TODO: occhio al warning
     public void declareWinners(ArrayList<String> winners){
         if (winners.size() == 1){
-           message = "The winner is: " + winners.getFirst();
+           message = "\nThe winner is: " + winners.getFirst();
         }
         else{
-            message = "The winners are: \n";
+            message = "\nThe winners are: \n";
             for (String s : winners){
                 message += "\t" + s + "\n";
             }
         }
+        System.out.println(message);
     }
 }

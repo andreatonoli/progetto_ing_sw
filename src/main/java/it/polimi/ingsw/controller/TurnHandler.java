@@ -92,7 +92,7 @@ public class TurnHandler extends Observable {
             player.setPlayerState(PlayerState.values()[i]);
         }
         else {
-            notifyAll(new GenericMessage("only one player connected, the other players have one minute to reconnect."));
+            notifyAll(new WaitingReconnectionMessage(player.getUsername()));
             Timer ping = new Timer();
             ping.schedule(new TimerTask() {
                 @Override
@@ -102,7 +102,7 @@ public class TurnHandler extends Observable {
                     ping.cancel();
                 }
             }, 60000, 2000);
-            while (game.getDisconnections()<2);
+            while (game.getDisconnections()+1 >= game.getLobbySize());
             ping.cancel();
             this.changePlayerState(player);
         }

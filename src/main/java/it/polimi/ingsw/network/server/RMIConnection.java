@@ -21,6 +21,7 @@ public class RMIConnection extends Connection {
     private Timer catchPing;
     private Timer ping;
     private boolean firstTime = true;
+    private boolean disconnected = false;
 
     public RMIConnection(Server server, RMIClientHandler client, String username){
         this.client = client;
@@ -83,6 +84,7 @@ public class RMIConnection extends Connection {
             lobby.getGame().getPlayerByUsername(username).setDisconnected(true);
             setConnectionStatus(false);
             server.addDisconnectedPlayer(username);
+            this.disconnected = true;
         }
     }
 
@@ -90,6 +92,7 @@ public class RMIConnection extends Connection {
     public void reconnect(Connection oldConnection) {
         this.lobby = oldConnection.getLobby();
         this.lobby.addAction(new ActionMessage(this, () -> lobby.reconnectBackup(this/*, oldConnection*/)));
+        this.disconnected = false;
     }
 
     @Override
@@ -104,10 +107,12 @@ public class RMIConnection extends Connection {
 
     @Override
     public void sendMessage(Message message) {
-        try {
-            this.client.update(message);
-        } catch (RemoteException e) {
-            System.err.println(e.getMessage() + "RMIConnection/sendMessage");
+        if (!this.disconnected) {
+            try {
+                this.client.update(message);
+            } catch (RemoteException e) {
+                System.err.println(e.getMessage() + "RMIConnection/sendMessage");
+            }
         }
     }
 

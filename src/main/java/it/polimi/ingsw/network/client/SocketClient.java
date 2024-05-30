@@ -264,6 +264,13 @@ public class SocketClient implements ClientInterface {
                 player.setChat(((ChatMessage) message).getChat());
                 this.view.printViewWithCommands(this.player, this.game, this.opponents);
                 break;
+            case WAITING_RECONNECTION:
+                name = ((WaitingReconnectionMessage) message).getUsername();
+                if (username.equals(name)) {
+                    player.setState(PlayerState.NOT_IN_TURN);
+                }
+                this.view.printViewWithCommands(this.player, this.game, this.opponents);
+                break;
             case DECLARE_WINNER:
                 ArrayList<String> winners = ((WinnerMessage) message).getWinners();
                 this.view.declareWinners(winners);

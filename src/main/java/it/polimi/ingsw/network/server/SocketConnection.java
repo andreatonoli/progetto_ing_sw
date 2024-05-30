@@ -26,6 +26,7 @@ public class SocketConnection extends Connection implements Runnable {
     private Timer catchPing;
     private Timer ping;
     private boolean firstTime = true;
+    private boolean disconnected = false;
     private BlockingQueue<Message> messageQueue;
     private boolean processingAction;
     private final Object outputLock = new Object();
@@ -143,9 +144,7 @@ public class SocketConnection extends Connection implements Runnable {
                 setConnectionStatus(false);
                 lobby.getGame().getPlayerByUsername(username).setDisconnected(true);
                 server.addDisconnectedPlayer(username);
-                if (lobby.getGame().getPlayerInTurn().getUsername().equals(username)){
-                    lobby.disconnectedWhileInTurn(username);
-                }
+                this.disconnected = true;
             } catch (IOException e) {
                 System.err.println(e.getMessage());
             }
@@ -156,6 +155,7 @@ public class SocketConnection extends Connection implements Runnable {
     public void reconnect(Connection oldConnection) {
         this.lobby = oldConnection.getLobby();
         this.lobby.reconnectBackup(this/*, oldConnection*/);
+        this.disconnected = false;
     }
 
     @Override
@@ -180,13 +180,15 @@ public class SocketConnection extends Connection implements Runnable {
 
     @Override
     public void sendMessage(Message message) {
-        try {
-            synchronized (outputLock){
-                out.writeObject(message);
-                out.reset();
+        if(!disconnected) {
+            try {
+                synchronized (outputLock) {
+                    out.writeObject(message);
+                    out.reset();
+                }
+            } catch (IOException e) {
+                System.err.println(e.getMessage() + " SocketConnection/sendMessage");
             }
-        } catch (IOException e) {
-            System.err.println(e.getMessage() + " SocketConnection/sendMessage");
         }
     }
 
