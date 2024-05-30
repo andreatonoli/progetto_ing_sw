@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 public class ClientLauncher {
     public static void main (String[] args){
+        Tui.clearConsole();
         System.out.println("Premi [0] per giocare con la TUI.\nPremi [1] per giocare con la GUI");
         Scanner scan = new Scanner(System.in);
         int choice = scan.nextInt();
