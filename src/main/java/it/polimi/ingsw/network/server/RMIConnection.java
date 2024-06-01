@@ -38,7 +38,7 @@ public class RMIConnection extends Connection {
             public void run() {
                 pingClient();
             }
-        }, 0, 5000);
+        }, 0, 4000);
         if (firstTime) {
             firstTime = false;
             catchPing.schedule(new TimerTask() {
@@ -47,7 +47,7 @@ public class RMIConnection extends Connection {
                     cancelPing();
                     onDisconnect();
                 }
-            }, 8000, 8000);
+            }, 5000, 5000);
         }
     }
 
@@ -68,7 +68,7 @@ public class RMIConnection extends Connection {
                 cancelPing();
                 onDisconnect();
             }
-        }, 8000, 8000);
+        }, 5000, 5000);
     }
 
     public void cancelPing(){
@@ -78,13 +78,13 @@ public class RMIConnection extends Connection {
 
     public void onDisconnect(){
         if (!lobby.getGame().getGameState().equals(GameState.END)) {
-            if (lobby.getGame().getPlayerInTurn().getUsername().equals(username)){
-                lobby.disconnectedWhileInTurn(username);
-            }
+            this.disconnected = true;
             lobby.getGame().getPlayerByUsername(username).setDisconnected(true);
             setConnectionStatus(false);
             server.addDisconnectedPlayer(username);
-            this.disconnected = true;
+            if (lobby.getGame().getPlayerInTurn().getUsername().equals(username)){
+                lobby.disconnectedWhileInTurn(username);
+            }
         }
     }
 
@@ -139,6 +139,7 @@ public class RMIConnection extends Connection {
             System.err.println(e.getMessage());
         }
     }
+
     @Override
     public String getUsername(){
         return this.username;

@@ -11,6 +11,7 @@ public class Server {
     public final static String serverName = "GameServer";
     public final static int rmiPort = 1234;
     public final static int socketPort = 1235;
+    private List<Integer> idTaken;
     private List<Controller> activeGames;
     private List<Controller> startingGames;
     private final Map<String, Connection> client;
@@ -21,14 +22,17 @@ public class Server {
         this.client = Collections.synchronizedMap(new HashMap<>());
         this.activeGames = Collections.synchronizedList(new ArrayList<>());
         this.startingGames = Collections.synchronizedList(new ArrayList<>());
+        this.idTaken = Collections.synchronizedList(new ArrayList<Integer>());
         this.disconnectedPlayers = new ArrayList<>();
         //Starts the RMI server and the socket server
         startServer();
     }
+
     public void startServer(){
         new RMIServer(this, rmiPort);
         new SocketServer(this, socketPort);
     }
+
     public void login(Connection client, String username){
         this.client.put(username, client);
         System.err.println("user " + username + " connected");
@@ -45,8 +49,28 @@ public class Server {
         return client.containsKey(username);
     }
     public void createLobby(String username, int numPlayers){
-        this.startingGames.add(controller.createLobby(username, numPlayers));
+        int gameId = 0;
+        boolean founded = false;
+        if (idTaken.isEmpty()){
+            idTaken.add(1);
+        }
+        else {
+            for (int i=0; i<idTaken.size(); i++){
+                if (idTaken.get(i) == -1){
+                    founded = true;
+                    idTaken.set(i,1);
+                    gameId = i;
+                    break;
+                }
+            }
+            if (!founded){
+                gameId = idTaken.size();
+                idTaken.add(1);
+            }
+        }
+        this.startingGames.add(controller.createLobby(username, numPlayers, gameId));
     }
+
     public void joinLobby(String username, int indexGame){
         Controller controller = this.startingGames.get(indexGame);
         boolean full = this.controller.joinLobby(username, controller);
@@ -55,6 +79,7 @@ public class Server {
             startingGames.remove(controller);
         }
     }
+
     public Connection getClientFromName(String name){
         return this.client.get(name);
     }
@@ -77,5 +102,6 @@ public class Server {
     }
     public void removeGame(Controller game){
         this.activeGames.remove(game);
+        idTaken.set(game.getId(),-1);
     }
 }

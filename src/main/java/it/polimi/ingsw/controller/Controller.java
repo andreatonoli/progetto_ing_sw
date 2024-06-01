@@ -22,6 +22,7 @@ public class Controller extends Observable {
      * Reference to the game (model) controlled by {@code this}
      */
     private final Game game;
+    private int id;
     /**
      * Map to connect the different Connections (client handlers) to their representation on the model (Player)
      */
@@ -38,11 +39,16 @@ public class Controller extends Observable {
 
     //TODO: mettere controllo lato server per controllare che client non scammi
 
-    public Controller(int numPlayers){
-        this.game = new Game(numPlayers);
+    public Controller(int numPlayers, int id){
+        this.id = id;
+        this.game = new Game(numPlayers, id);
         this.turnHandler = new TurnHandler(game);
         this.connectedPlayers = Collections.synchronizedMap(new HashMap<>());
         this.actionQueue = new LinkedBlockingQueue<>();
+    }
+
+    public int getId(){
+        return id;
     }
 
     /**
@@ -170,7 +176,7 @@ public class Controller extends Observable {
                 turnHandler.startEnd(this.getPlayerByClient(user));
             }
             turnHandler.changePlayerState(this.getPlayerByClient(user));
-            notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState(), user.getUsername()));
+            //notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState(), user.getUsername()));
             notifyAll(new UpdateDeckMessage(deck.getFirst().getColor(), isResource));
             user.sendMessage(new UpdateCardMessage(drawedCard));
         } catch (EmptyException | NotInTurnException | FullHandException e) {
@@ -207,7 +213,7 @@ public class Controller extends Observable {
                 notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_RESOURCE_UPDATE, game.getGameBoard().getCommonResource()[index], index));
             }
             turnHandler.changePlayerState(this.getPlayerByClient(user));
-            notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState(), user.getUsername()));
+            //notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState(), user.getUsername()));
             user.sendMessage(new UpdateCardMessage(drawedCard));
         } catch (CardNotFoundException | NotInTurnException | FullHandException e) {
             user.sendMessage(new ErrorMessage(e.getMessage()));
@@ -241,7 +247,7 @@ public class Controller extends Observable {
             }
             turnHandler.changePlayerState(p);
             //notifies all players the changed made by user
-            notifyAll(new PlayerStateMessage(p.getPlayerState(), p.getUsername()));
+            //notifyAll(new PlayerStateMessage(p.getPlayerState(), p.getUsername()));
             notifyAll(new ScoreUpdateMessage(p.getPoints(), p.getUsername()));
             notifyAll(new PlayerBoardUpdateMessage(p.getPlayerBoard(), p.getUsername()));
         } catch (NotInTurnException | OccupiedCornerException | CostNotSatisfiedException |

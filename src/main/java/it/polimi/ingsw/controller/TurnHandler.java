@@ -20,6 +20,7 @@ public class TurnHandler extends Observable {
     private int j = 0;
     private boolean endingCycle = false;
     private boolean endingByPlacingCard = false;
+    private boolean disconnectedWhileInTurn = false;
     private int endCountDown;
 
     public TurnHandler(Game game){
@@ -41,14 +42,16 @@ public class TurnHandler extends Observable {
         else if (player.getPlayerState().equals(PlayerState.DRAW_CARD)) {
             player.setPlayerState(PlayerState.PLAY_CARD);
         }
+        disconnectedWhileInTurn = true;
         this.changePlayerState(player);
+        disconnectedWhileInTurn = false;
     }
 
     public void changePlayerState(Player player){
-        if (game.getDisconnections()+1 < game.getLobbySize()) {
+        if (game.getDisconnections()+1 < game.getLobbySize() || disconnectedWhileInTurn) {
             int i = (player.getPlayerState().ordinal() + 1) % 3;
             if (endingCycle && endCountDown==0 && PlayerState.values()[i].equals(PlayerState.DRAW_CARD)){
-                i++;
+                i=2;
             }
             if (player.isDisconnected() && PlayerState.values()[i].equals(PlayerState.DRAW_CARD)) {
                 try {
@@ -90,6 +93,7 @@ public class TurnHandler extends Observable {
                 notifyAll(new PlayerBoardUpdateMessage(playerInTurn.getPlayerBoard(), playerInTurn.getUsername()));
             }
             player.setPlayerState(PlayerState.values()[i]);
+            notifyAll(new PlayerStateMessage(player.getPlayerState(), player.getUsername()));
         }
         else {
             notifyAll(new WaitingReconnectionMessage(player.getUsername()));

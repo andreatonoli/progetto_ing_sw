@@ -76,13 +76,15 @@ public class SocketClient implements ClientInterface {
         }
     }
     public void sendMessage(Message message){
-        try {
-            synchronized (outputLock){
-                out.writeObject(message);
-                out.reset();
+        if (!disconnected) {
+            try {
+                synchronized (outputLock) {
+                    out.writeObject(message);
+                    out.reset();
+                }
+            } catch (IOException e) {
+                System.err.println(e.getMessage());
             }
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
         }
     }
 
