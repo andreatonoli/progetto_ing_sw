@@ -36,6 +36,8 @@ public class PlaceTest{
         assertEquals(3, player.getPlayerBoard().getSymbolCount(Symbols.FUNGI)); //checks if card symbols were successfully added to the symbol count
         assertEquals(0, player.getPlayerBoard().getSymbolCount(Symbols.ANIMAL)); //if true placeCard() has successfully covered the top-right corner
         assertEquals(1, player.getPoints());
+        assertEquals(CornerState.NOT_VISIBLE, s.getCornerState(CornerEnum.TR));
+        assertEquals(CornerState.OCCUPIED, a.getCornerState(CornerEnum.BL));
     }
 
     @Test

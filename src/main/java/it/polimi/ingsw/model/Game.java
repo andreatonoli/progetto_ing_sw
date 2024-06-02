@@ -17,7 +17,6 @@ import java.util.List;
 
 public class Game extends Observable implements Serializable {
     private int lobbySize;
-    private int id;
     private final GameBoard gameBoard;
     private GameState gameState;
     private final ArrayList<Player> players;
@@ -37,8 +36,7 @@ public class Game extends Observable implements Serializable {
      *
      */
 
-    public Game(int lobbySize, int id) {
-        this.id = id;
+    public Game(int lobbySize) {
         this.lobbySize = lobbySize;
         this.gameState = GameState.WAIT_PLAYERS;
         this.gameFull = false;

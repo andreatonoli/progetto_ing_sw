@@ -42,7 +42,7 @@ public class SocketClient implements ClientInterface {
         messageQueue = new LinkedBlockingQueue<>();
         processingAction = false;
         pickQueue();
-        new Thread(() -> { this.startClient(address, port); }).start();
+        new Thread(() -> this.startClient(address, port)).start();
     }
     public void startClient(String address, int port){
         try {
