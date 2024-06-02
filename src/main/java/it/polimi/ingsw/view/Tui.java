@@ -891,7 +891,7 @@ public class Tui implements Ui{
 //        }
 //    }
     //TODO: posso togliere i parametri
-    public void printView(PlayerBean player, GameBean game, ArrayList<PlayerBean> players){
+    public void printView(){
         clearConsole();
         String [][] resourceDeck = createPrintableRetro(game.getResourceDeckRetro());
         String [][] goldDeck = createPrintableRetro(game.getGoldDeckRetro());
@@ -963,7 +963,7 @@ public class Tui implements Ui{
             this.players = players;
             PlayerBean playerInTurn = null;
             String username = player.getUsername();
-            this.printView(player, game, players);
+            this.printView();
             if (!error.isEmpty()){
                 moveCursor(37, 0);
                 System.out.println(TuiColors.getColor(TuiColors.ANSI_RED) + error + TuiColors.getColor(TuiColors.ANSI_RESET));
@@ -1032,7 +1032,7 @@ public class Tui implements Ui{
         Scanner input = new Scanner(System.in);
         int[] coord = new int[2];
         clearConsole();
-        printView(player, game, players);
+        printView();
         switch (choice) {
             case "1" -> {
                 clearConsole();
@@ -1045,7 +1045,7 @@ public class Tui implements Ui{
                     System.out.println("Which card do you want to display? [1] [2] [3]");
                     a = input.next();
                     clearConsole();
-                    this.printView(player, game, players);
+                    this.printView();
                 } while (!a.equals("1") && !a.equals("2") && !a.equals("3") && !a.equals("c"));
 
                 if (a.equals("c")) {
@@ -1070,13 +1070,13 @@ public class Tui implements Ui{
                 System.out.println("Type row number");
                 String a = input.next();
                 clearConsole();
-                this.printView(player, game, players);
+                this.printView();
                 while (!a.equals("c") && Integer.parseInt(a) > PLAYERBOARD_DIM) {
                     moveCursor(39, 0);
                     System.out.println("Retype row number");
                     a = input.next();
                     clearConsole();
-                    this.printView(player, game, players);
+                    this.printView();
                 }
                 if (a.equals("c")) {
                     this.printChat();
@@ -1086,20 +1086,20 @@ public class Tui implements Ui{
                     System.out.println("Type column number");
                     a = input.next();
                     clearConsole();
-                    this.printView(player, game, players);
+                    this.printView();
                     while (!a.equals("c") && Integer.parseInt(a) > PLAYERBOARD_DIM) {
                         moveCursor(39, 0);
                         System.out.println("Retype column number");
                         a = input.next();
                         clearConsole();
-                        this.printView(player, game, players);
+                        this.printView();
                     }
                     if (a.equals("c")) {
                         this.printChat();
                     } else {
                         coord[1] = Integer.parseInt(a);
                         clearConsole();
-                        this.printView(player, game, players);
+                        this.printView();
                         this.printCardMatrix(createPrintableCard(player.getBoard().getCard(coord)), 40, 15);
                     }
                 }
@@ -1107,7 +1107,7 @@ public class Tui implements Ui{
             case "4" -> {
                 String a;
                 clearConsole();
-                this.printView(player, game, players);
+                this.printView();
                 do {
                     moveCursor(39, 0);
                     System.out.println("Which player's do you want to display?");
@@ -1116,7 +1116,7 @@ public class Tui implements Ui{
                     }
                     a = input.next();
                     clearConsole();
-                    this.printView(player, game, players);
+                    this.printView();
                 } while (!a.equals("c") && (Integer.parseInt(a) <= 0 || Integer.parseInt(a) > players.size()));
                     if (a.equals("c")) {
                     this.printChat();
@@ -1133,18 +1133,18 @@ public class Tui implements Ui{
                     System.out.println("Which card do you want to place? [1] [2] [3]");
                     String a = input.next();
                     clearConsole();
-                    this.printView(player, game, players);
+                    this.printView();
                     while (!a.equals("1") && !a.equals("2") && !a.equals("3") && !a.equals("c")) {
                         System.out.println("Which card do you want to place? [1] [2] [3]");
                         a = input.next();
                         clearConsole();
-                        this.printView(player, game, players);
+                        this.printView();
                     }
                     if (a.equals("c")) {
                         this.printChat();
                     } else {
                         clearConsole();
-                        this.printView(player, game, players);
+                        this.printView();
                         Card cardToPlace;
                         String b;
                         do {
@@ -1171,14 +1171,14 @@ public class Tui implements Ui{
                         }
                         else if (b.equals("f")) {
                             clearConsole();
-                            printView(player, game, players);
+                            printView();
                             moveCursor(37, 0);
                             this.printCard(hand[Integer.parseInt(a) - 1]);
                         }
                         else {
                             //TODO: pensare a come rimuovere printCard
                             clearConsole();
-                            printView(player, game, players);
+                            printView();
                             moveCursor(37, 0);
                             cardToPlace.setCurrentSide();
                             this.printCard(cardToPlace);
@@ -1189,7 +1189,7 @@ public class Tui implements Ui{
                         //TODO: cambiare condizione
                         while (!a.equals("c") && Integer.parseInt(a) > PLAYERBOARD_DIM) {
                             clearConsole();
-                            this.printView(player, game, players);
+                            this.printView();
                             moveCursor(39, 0);
                             System.out.println("Retype row number");
                             a = input.next();
@@ -1198,7 +1198,7 @@ public class Tui implements Ui{
                             this.printChat();
                         } else {
                             clearConsole();
-                            printView(player, game, players);
+                            printView();
                             moveCursor(37, 0);
                             this.printCard(cardToPlace);
                             coord[0] = Integer.parseInt(a);
@@ -1207,13 +1207,13 @@ public class Tui implements Ui{
                             a = input.next();
                             while (!a.equals("c") && Integer.parseInt(a) > PLAYERBOARD_DIM) {
                                 clearConsole();
-                                this.printView(player, game, players);
+                                this.printView();
                                 moveCursor(39, 0);
                                 System.out.println("Retype column number");
                                 a = input.next();
                             }
                             if(a.equals("c")){
-                                this.printView(player, game, players);
+                                this.printView();
                             }
                             else{
                                 coord[1] = Integer.parseInt(a);
@@ -1234,7 +1234,7 @@ public class Tui implements Ui{
                         this.printChat();
                     } else if (a.equals("1")) {
                         clearConsole();
-                        printView(player, game, players);
+                        printView();
                         moveCursor(37, 0);
                         String[][] rDeck = this.createPrintableRetro(resourceBack);
                         String[][] gDeck = this.createPrintableRetro(goldBack);
@@ -1263,7 +1263,7 @@ public class Tui implements Ui{
                         String[][] g2 = this.createPrintableCard(commonGold[1]);
                         do {
                             clearConsole();
-                            printView(player, game, players);
+                            printView();
                             moveCursor(37, 0);
                             System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "resource cards:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
                             moveCursor(37, 32);
@@ -1315,7 +1315,7 @@ public class Tui implements Ui{
             u = input.nextInt();
         } while (u < 0 || u > players.size() + 1);
         if (u == 0){
-            printView(player, game, players);
+            printView();
         }
         else {
             //Send the message
