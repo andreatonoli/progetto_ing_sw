@@ -11,7 +11,7 @@ public enum TuiColors {
     ANSI_WHITE("\u001B[37;1m"),
     ANSI_CLEAR("\033[H\033[2J");
 
-    String color;
+    final String color;
 
     TuiColors(String color){ this.color = color; }
 
