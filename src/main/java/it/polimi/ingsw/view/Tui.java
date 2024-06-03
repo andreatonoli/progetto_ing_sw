@@ -23,8 +23,8 @@ public class Tui implements Ui{
     private static final int PLAYERBOARD_DIM = 11;
     private static final int SCOREBOARD_ROW = 9;
     private static final int SCOREBOARD_COLUMN = 5;
-    private static final int STARTER_ROW = 15;
-    private static final int STARTER_COLUMN = 59;
+    private static final int STARTER_ROW = 17;
+    private static final int STARTER_COLUMN = 60;
     private String error = "";
     private final Scanner scanner;
     private final PrintStream out;
@@ -398,7 +398,7 @@ public class Tui implements Ui{
         int centerPoints = 1;
         int centerObject = 6;
         switch (achievement) {
-            case AchievementDiagonal achievementDiagonal -> {
+            case AchievementDiagonal ignored3 -> {
                 matCard[0][centerPoints] = Color.getBackground(Color.YELLOW) + TuiColors.getColor(TuiColors.ANSI_BLACK) + String.valueOf(achievement.getPoints()) + TuiColors.getColor(TuiColors.ANSI_RESET);
                 switch(achievement.getColor()){
                     case RED -> {
@@ -424,7 +424,7 @@ public class Tui implements Ui{
                 }
 
             }
-            case AchievementL achievementL -> {
+            case AchievementL ignored2 -> {
                 matCard[0][centerPoints] = Color.getBackground(Color.YELLOW) + TuiColors.getColor(TuiColors.ANSI_BLACK) + String.valueOf(achievement.getPoints()) + TuiColors.getColor(TuiColors.ANSI_RESET);
                 switch(achievement.getColor()){
                     case RED -> {
@@ -449,7 +449,7 @@ public class Tui implements Ui{
                     }
                 }
             }
-            case AchievementItem achievementItem -> {
+            case AchievementItem ignored1 -> {
                 matCard[0][centerPoints] = Color.getBackground(Color.YELLOW) + TuiColors.getColor(TuiColors.ANSI_BLACK) + String.valueOf(achievement.getPoints()) + TuiColors.getColor(TuiColors.ANSI_RESET);
                 matCard[2][centerObject - 1] = Color.getBackground(Color.YELLOW) + Symbols.getStringBlack(achievement.getSymbols().get(0)) + TuiColors.getColor(TuiColors.ANSI_RESET);
                 if (achievement.getSymbols().size() == 3) {
@@ -457,7 +457,7 @@ public class Tui implements Ui{
                     matCard[1][centerObject] = Color.getBackground(Color.YELLOW) + Symbols.getStringBlack(achievement.getSymbols().get(2)) + TuiColors.getColor(TuiColors.ANSI_RESET);
                 }
             }
-            case AchievementResources achievementResources -> {
+            case AchievementResources ignored -> {
                 matCard[0][centerPoints] = Color.getBackground(Color.YELLOW) + TuiColors.getColor(TuiColors.ANSI_BLACK) + String.valueOf(achievement.getPoints()) + TuiColors.getColor(TuiColors.ANSI_RESET);
                 matCard[1][centerObject] = Color.getBackground(Color.YELLOW) + Symbols.getStringBlack(achievement.getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
                 matCard[2][centerObject - 1] = Color.getBackground(Color.YELLOW) + Symbols.getStringBlack(achievement.getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
@@ -495,402 +495,22 @@ public class Tui implements Ui{
 
 
         for(int i = 0; i < scoreBoardPoints.length; i++){
-            matScoreBoard[1][1][scoreBoardPoints[i][0]][scoreBoardPoints[i][1]] = TuiColors.getColor(TuiColors.ANSI_YELLOW) + String.valueOf(i / 10) + String.valueOf((i) - ((i)/10)*10) + TuiColors.getColor(TuiColors.ANSI_RESET);
+            matScoreBoard[1][1][scoreBoardPoints[i][0]][scoreBoardPoints[i][1]] = TuiColors.getColor(TuiColors.ANSI_YELLOW) + i / 10 + ((i) - ((i) / 10) * 10) + TuiColors.getColor(TuiColors.ANSI_RESET);
         }
 
-        //per il momento viene inserito il numero del player poi verrà stampato il colore del token
         for(int i = 0; i < players.size(); i++){
             if (players.get(i).getPionColor() != null){
                 if(players.get(i).getPoints() > 29){
-                    matScoreBoard[scoreBoardPosition[i][0]][scoreBoardPosition[i][1]][scoreBoardPoints[29][0]][scoreBoardPoints[29][1]] = Color.getBackground(players.get(i).getPionColor()) + String.valueOf(i + 1) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                    matScoreBoard[scoreBoardPosition[i][0]][scoreBoardPosition[i][1]][scoreBoardPoints[29][0]][scoreBoardPoints[29][1]] = Color.getBackground(players.get(i).getPionColor()) + (i + 1) + TuiColors.getColor(TuiColors.ANSI_RESET);
                 }
                 else{
-                    matScoreBoard[scoreBoardPosition[i][0]][scoreBoardPosition[i][1]][scoreBoardPoints[players.get(i).getPoints()][0]][scoreBoardPoints[players.get(i).getPoints()][1]] = Color.getBackground(players.get(i).getPionColor()) + String.valueOf(i + 1) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                    matScoreBoard[scoreBoardPosition[i][0]][scoreBoardPosition[i][1]][scoreBoardPoints[players.get(i).getPoints()][0]][scoreBoardPoints[players.get(i).getPoints()][1]] = Color.getBackground(players.get(i).getPionColor()) + (i + 1) + TuiColors.getColor(TuiColors.ANSI_RESET);
                 }
             }
         }
         return matScoreBoard;
     }
-
-    public String[] createPrintableChat(ArrayList<String> chat){
-        String[] matChat = new String[7];
-
-        for(int i = 0; i < 7; i++){
-            matChat[i] = "";
-        }
-
-        for(int i = 0; i < chat.size(); i++){
-            matChat[i] = chat.get(i);
-        }
-
-        return matChat;
-    }
-
-//    public void printView(PlayerBean player, GameBean game, ArrayList<PlayerBean> players){
-//        PlayerBoard pBoard = player.getBoard();
-//        Card[] hand = player.getHand();
-//        String username = player.getUsername();
-//        Card[] commonResource = game.getCommonResources();
-//        Color resourceBack = game.getResourceDeckRetro();
-//        Card[] commonGold = game.getCommonGold();
-//        Color goldBack = game.getGoldDeckRetro();
-//        Achievement[] commonAchievement = game.getCommonAchievement();
-//        Achievement privateAchievement = player.getAchievement();
-//        ArrayList<String> messages = player.getChat();
-//        String[][] commonResource1 = this.createPrintableCard(commonResource[0]);
-//        String[][] commonResource2 = this.createPrintableCard(commonResource[1]);
-//        String[][] rBack = this.createPrintableRetro(resourceBack);
-//        String[][] commonGold1 = this.createPrintableCard(commonGold[0]);
-//        String[][] commonGold2 = this.createPrintableCard(commonGold[1]);
-//        String[][] gBack = this.createPrintableRetro(goldBack);
-//        String[][] commonAchievement1 = this.createPrintableAchievement(commonAchievement[0]);
-//        String[][] commonAchievement2 = this.createPrintableAchievement(commonAchievement[1]);
-//        players.add(player);
-//        String[][][][] scoreBoard = this.createPrintableScoreBoard(players);
-//        players.removeLast();
-//        String[] chat = this.createPrintableChat(messages);
-//        String[][][][] playerBoard = this.createPrintablePlayerBoard(pBoard);
-//        String[][] hand1 = this.createPrintableCard(hand[0]);
-//        String[][] hand2 = this.createPrintableCard(hand[1]);
-//        String[][] hand3 = this.createPrintableCard(hand[2]);
-//        String[][] privateAch = this.createPrintableAchievement(privateAchievement);
-//
-//        System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "commonboard" + TuiColors.getColor(TuiColors.ANSI_RESET));
-//        System.out.print(" ".repeat((3*COLUMN) + 6 + 6 - 11));
-//        System.out.print("      ");
-//        System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "scoreboard" + TuiColors.getColor(TuiColors.ANSI_RESET));
-//        System.out.print(" ".repeat((5*SCOREBOARD_COLUMN) + 1 - 10));
-//        System.out.print("      ");
-//        System.out.println(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "chat" + TuiColors.getColor(TuiColors.ANSI_RESET));
-//        System.out.println();
-//
-//        int q = 0;
-//        int k = 6;
-//        boolean r = true;
-//        boolean g = false;
-//        boolean a = false;
-//        boolean divider;
-//        int height = 9;
-//        for(int i = 0; i < SCOREBOARD_ROW; i++){
-//            divider = true;
-//            for(int t = 0; t < 3; t++){
-//                if(q < ROW && r){
-//                    for(int j = 0; j < COLUMN; j++){
-//                        System.out.print(rBack[q][j]);
-//                    }
-//                    System.out.print("      ");
-//                    for(int j = 0; j < COLUMN; j++){
-//                        System.out.print(commonResource1[q][j]);
-//                    }
-//                    System.out.print("      ");
-//                    for(int j = 0; j < COLUMN; j++){
-//                        System.out.print(commonResource2[q][j]);
-//                    }
-//                    System.out.print("      ");
-//                    q += 1;
-//                }
-//                else if(q < ROW && g){
-//                    for(int j = 0; j < COLUMN; j++){
-//                        System.out.print(gBack[q][j]);
-//                    }
-//                    System.out.print("      ");
-//                    for(int j = 0; j < COLUMN; j++){
-//                        System.out.print(commonGold1[q][j]);
-//                    }
-//                    System.out.print("      ");
-//                    for(int j = 0; j < COLUMN; j++){
-//                        System.out.print(commonGold2[q][j]);
-//                    }
-//                    System.out.print("      ");
-//                    q += 1;
-//                }
-//                else if(q < ROW && a){
-//                    System.out.print(" ".repeat(COLUMN));
-//                    System.out.print("      ");
-//                    for(int j = 0; j < COLUMN; j++){
-//                        System.out.print(commonAchievement1[q][j]);
-//                    }
-//                    System.out.print("      ");
-//                    for(int j = 0; j < COLUMN; j++){
-//                        System.out.print(commonAchievement2[q][j]);
-//                    }
-//                    System.out.print("      ");
-//                    q += 1;
-//                }
-//                else{
-//                    System.out.print(" ".repeat(COLUMN));
-//                    System.out.print("      ");
-//                    System.out.print(" ".repeat(COLUMN));
-//                    System.out.print("      ");
-//                    System.out.print(" ".repeat(COLUMN));
-//                    System.out.print("      ");
-//                    q = 0;
-//                    if(r){
-//                        r = false;
-//                        g = true;
-//                    }
-//                    else if(g){
-//                        g = false;
-//                        a = true;
-//                    }
-//                    else if(a){
-//                        a = false;
-//                    }
-//                }
-//                if(t == 0 && divider){
-//                    System.out.print("‾".repeat(26));
-//                    divider = false;
-//                    t = -1;
-//                }
-//                else{
-//                    System.out.print("|");
-//                    for(int j = 0; j < SCOREBOARD_COLUMN; j++){
-//                        for(int s = 0; s < 3; s++){
-//                            System.out.print(scoreBoard[s][t][i][j]);
-//                        }
-//                        System.out.print("|");
-//                    }
-//                }
-//                System.out.print("      ");
-//                if(k >= 0){
-//                    if(!chat[k].isEmpty()){
-//                        System.out.print(chat[k]);
-//                    }
-//                    k -= 1;
-//                }
-//                System.out.println();
-//            }
-//        }
-//        System.out.print(" ".repeat((3*COLUMN) + 6 + 6 + 6));
-//        System.out.println("‾".repeat(26));
-//        System.out.println();
-//
-//        System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "your playerboard" + TuiColors.getColor(TuiColors.ANSI_RESET));
-//        System.out.print(" ".repeat(10*(PLAYERBOARD_DIM) - 14 - username.length()));
-//        System.out.print("      ");
-//        System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "your hand" + TuiColors.getColor(TuiColors.ANSI_RESET));
-//        System.out.print(" ".repeat(2*COLUMN + 2*6));
-//        System.out.print("      ");
-//        System.out.println(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "your personal achievement" + TuiColors.getColor(TuiColors.ANSI_RESET));
-//        System.out.println();
-//
-//        for(int i = 0; i < PLAYERBOARD_DIM; i++){
-//            for(int j = 0; j < PLAYERBOARD_DIM; j++){
-//                System.out.print(playerBoard[0][0][i][j]);
-//                System.out.print(playerBoard[0][1][i][j]);
-//            }
-//            System.out.print("      ");
-//
-//            Symbols[] symbols = {Symbols.FUNGI, Symbols.PLANT, Symbols.ANIMAL, Symbols.INSECT, Symbols.MANUSCRIPT, Symbols.INKWELL, Symbols.QUILL, Symbols.EMPTY, Symbols.CORNER, Symbols.CARD};
-//            if(3*i >= height && 3*i < height + 10){
-//                if(3*i > height + 6){
-//                    System.out.print(" ".repeat(19));
-//                    System.out.print("      ");
-//                    System.out.print(Symbols.getString(symbols[3*i - height]) + TuiColors.getColor(TuiColors.ANSI_WHITE) + " -> " + Symbols.getLongString(symbols[3*i - height]) + TuiColors.getColor(TuiColors.ANSI_RESET));
-//                }
-//                else{
-//                    System.out.print(Symbols.getLongString(symbols[3*i - height]) + TuiColors.getColor(TuiColors.ANSI_WHITE) + ": " + pBoard.getSymbolCount(symbols[3*i - height]) + TuiColors.getColor(TuiColors.ANSI_RESET));
-//                    int precLine = Symbols.getLongString(symbols[3*i - height]).length() + 2 + String.valueOf(pBoard.getSymbolCount(symbols[3*i - height])).length() - 11;
-//                    System.out.print(" ".repeat(19 + 6 - precLine));
-//                    System.out.print(Symbols.getString(symbols[3*i - height]) + TuiColors.getColor(TuiColors.ANSI_WHITE) + " -> " + Symbols.getLongString(symbols[3*i - height]) + TuiColors.getColor(TuiColors.ANSI_RESET));
-//                }
-//            }
-//
-//            if(hand1 != null){
-//                if(3*i < hand1.length){
-//                    for(int j = 0; j < COLUMN; j++){
-//                        System.out.print(hand1[3*i][j]);
-//                    }
-//                }
-//                else{
-//                    System.out.print(" ".repeat(COLUMN));
-//                }
-//                System.out.print("      ");
-//            }
-//
-//            if(hand2 != null){
-//                if(3*i < hand2.length){
-//                    for(int j = 0; j < COLUMN; j++){
-//                        System.out.print(hand2[3*i][j]);
-//                    }
-//                }
-//                else{
-//                    System.out.print(" ".repeat(COLUMN));
-//                }
-//                System.out.print("      ");
-//            }
-//
-//            if(hand3 != null){
-//                if(3*i < hand3.length){
-//                    for(int j = 0; j < COLUMN; j++){
-//                        System.out.print(hand3[3*i][j]);
-//                    }
-//                }
-//                else{
-//                    System.out.print(" ".repeat(COLUMN));
-//                }
-//                System.out.print("      ");
-//            }
-//
-//            if(privateAchievement != null){
-//                if(3*i < privateAch.length){
-//                    for(int j = 0; j < COLUMN; j++){
-//                        System.out.print(privateAch[3*i][j]);
-//                    }
-//                }
-//                else{
-//                    System.out.print(" ".repeat(COLUMN));
-//                }
-//                System.out.print("      ");
-//            }
-//            System.out.println();
-//
-//            for(int j = 0; j < PLAYERBOARD_DIM; j++){
-//                System.out.print(playerBoard[1][0][i][j]);
-//                System.out.print(playerBoard[1][1][i][j]);
-//            }
-//            System.out.print("      ");
-//
-//            if(3*i + 1 == height - 2){
-//                System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "your symbol's count" + TuiColors.getColor(TuiColors.ANSI_RESET));
-//                System.out.print("      ");
-//                System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "legend" + TuiColors.getColor(TuiColors.ANSI_RESET));
-//            }
-//
-//            if(3*i + 1 >= height && 3*i + 1 < height + 10){
-//                if(3*i + 1 > height + 6){
-//                    System.out.print(" ".repeat(19));
-//                    System.out.print("      ");
-//                    System.out.print(Symbols.getString(symbols[3*i + 1 - height]) + TuiColors.getColor(TuiColors.ANSI_WHITE) + " -> " + Symbols.getLongString(symbols[3*i + 1 - height]) + TuiColors.getColor(TuiColors.ANSI_RESET));
-//                }
-//                else{
-//                    System.out.print(Symbols.getLongString(symbols[3*i + 1 - height]) + TuiColors.getColor(TuiColors.ANSI_WHITE) + ": " + pBoard.getSymbolCount(symbols[3*i + 1 - height]) + TuiColors.getColor(TuiColors.ANSI_RESET));
-//                    int precLine = Symbols.getLongString(symbols[3*i + 1 - height]).length() + 2 + String.valueOf(pBoard.getSymbolCount(symbols[3*i + 1 - height])).length() - 11;
-//                    System.out.print(" ".repeat(19 + 6 - precLine));
-//                    System.out.print(Symbols.getString(symbols[3*i + 1 - height]) + TuiColors.getColor(TuiColors.ANSI_WHITE) + " -> " + Symbols.getLongString(symbols[3*i + 1 - height]) + TuiColors.getColor(TuiColors.ANSI_RESET));
-//                }
-//            }
-//
-//            if(hand1 != null){
-//                if(3*i + 1 < hand1.length){
-//                    for(int j = 0; j < COLUMN; j++){
-//                        System.out.print(hand1[3*i + 1][j]);
-//                    }
-//                }
-//                else{
-//                    System.out.print(" ".repeat(COLUMN));
-//                }
-//                System.out.print("      ");
-//            }
-//
-//            if(hand2 != null){
-//                if(3*i + 1 < hand2.length){
-//                    for(int j = 0; j < COLUMN; j++){
-//                        System.out.print(hand2[3*i + 1][j]);
-//                    }
-//                }
-//                else{
-//                    System.out.print(" ".repeat(COLUMN));
-//                }
-//                System.out.print("      ");
-//            }
-//
-//            if(hand3 != null){
-//                if(3*i + 1 < hand3.length){
-//                    for(int j = 0; j < COLUMN; j++){
-//                        System.out.print(hand3[3*i + 1][j]);
-//                    }
-//                }
-//                else{
-//                    System.out.print(" ".repeat(COLUMN));
-//                }
-//                System.out.print("      ");
-//            }
-//
-//            if(privateAch != null){
-//                if(3*i + 1 < privateAch.length){
-//                    for(int j = 0; j < COLUMN; j++){
-//                        System.out.print(privateAch[3*i + 1][j]);
-//                    }
-//                }
-//                else{
-//                    System.out.print(" ".repeat(COLUMN));
-//                }
-//                System.out.print("      ");
-//            }
-//            System.out.println();
-//
-//            for(int j = 0; j < PLAYERBOARD_DIM; j++){
-//                System.out.print(playerBoard[2][0][i][j]);
-//                System.out.print(playerBoard[2][1][i][j]);
-//            }
-//            System.out.print("      ");
-//
-//            if(3*i + 2 >= height && 3*i + 2 < height + 10){
-//                if(3*i + 2 > height + 6){
-//                    System.out.print(" ".repeat(19));
-//                    System.out.print("      ");
-//                    System.out.print(Symbols.getString(symbols[3*i + 2 - height]) + TuiColors.getColor(TuiColors.ANSI_WHITE) + " -> " + Symbols.getLongString(symbols[3*i + 2 - height]) + TuiColors.getColor(TuiColors.ANSI_RESET));
-//                }
-//                else{
-//                    System.out.print(Symbols.getLongString(symbols[3*i + 2 - height]) + TuiColors.getColor(TuiColors.ANSI_WHITE) + ": " + pBoard.getSymbolCount(symbols[3*i + 2 - height]) + TuiColors.getColor(TuiColors.ANSI_RESET));
-//                    int precLine = Symbols.getLongString(symbols[3*i + 2 - height]).length() + 2 + String.valueOf(pBoard.getSymbolCount(symbols[3*i + 2 - height])).length() - 11;
-//                    System.out.print(" ".repeat(19 + 6 - precLine));
-//                    System.out.print(Symbols.getString(symbols[3*i + 2 - height]) + TuiColors.getColor(TuiColors.ANSI_WHITE) + " -> " + Symbols.getLongString(symbols[3*i + 2 - height]) + TuiColors.getColor(TuiColors.ANSI_RESET));
-//                }
-//            }
-//
-//            if(hand1 != null){
-//                if(3*i + 2 < hand1.length){
-//                    for(int j = 0; j < COLUMN; j++){
-//                        System.out.print(hand1[3*i + 2][j]);
-//                    }
-//                }
-//                else{
-//                    System.out.print(" ".repeat(COLUMN));
-//                }
-//                System.out.print("      ");
-//            }
-//
-//            if(hand2 != null){
-//                if(3*i + 2 < hand2.length){
-//                    for(int j = 0; j < COLUMN; j++){
-//                        System.out.print(hand2[3*i + 2][j]);
-//                    }
-//                }
-//                else{
-//                    System.out.print(" ".repeat(COLUMN));
-//                }
-//                System.out.print("      ");
-//            }
-//
-//            if(hand3 != null){
-//                if(3*i + 2 < hand3.length){
-//                    for(int j = 0; j < COLUMN; j++){
-//                        System.out.print(hand3[3*i + 2][j]);
-//                    }
-//                }
-//                else{
-//                    System.out.print(" ".repeat(COLUMN));
-//                }
-//                System.out.print("      ");
-//            }
-//
-//            if(privateAch != null){
-//                if(3*i + 2 < privateAch.length){
-//                    for(int j = 0; j < COLUMN; j++){
-//                        System.out.print(privateAch[3*i + 2][j]);
-//                    }
-//                }
-//                else{
-//                    System.out.print(" ".repeat(COLUMN));
-//                }
-//                System.out.print("      ");
-//            }
-//            System.out.println();
-//        }
-//    }
-    //TODO: posso togliere i parametri
+    
     public void printView(){
         clearConsole();
         String [][] resourceDeck = createPrintableRetro(game.getResourceDeckRetro());
@@ -908,7 +528,7 @@ public class Tui implements Ui{
         //TODO: mettere label più specifiche
         //TODO: forse posso mettere le posizioni come costanti
         //CommonBoard label
-        moveCursor(14,140);
+        moveCursor(14,134);
         System.out.println(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "common board" + TuiColors.getColor(TuiColors.ANSI_RESET));
 
         //print resource retro card
@@ -931,7 +551,7 @@ public class Tui implements Ui{
 
         //Player's hand and private achievement
         //Player's hand label
-        moveCursor(2, 142);
+        moveCursor(2, 134);
         System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "your hand" + TuiColors.getColor(TuiColors.ANSI_RESET));
 
         printCardMatrix(hand1, 4, 134);
@@ -945,6 +565,12 @@ public class Tui implements Ui{
         printCardMatrix(privateAchievement, 10, 134);
 
         //TODO: legenda
+        moveCursor(36, 155);
+        System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "legend" + TuiColors.getColor(TuiColors.ANSI_RESET));
+
+        moveCursor(36, 134);
+        System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "symbol's count" + TuiColors.getColor(TuiColors.ANSI_RESET));
+        printLabel();
 
         //TODO: playerBoard
         printBoard(player);
@@ -953,7 +579,6 @@ public class Tui implements Ui{
         System.out.println();
     }
     //TODO: aggiungere comando per uscire dal gioco
-    //TODO: trova un modo migliore per condividere il model tra print e handle
     @Override
     public void printViewWithCommands(PlayerBean player, GameBean game, ArrayList<PlayerBean> players) {
         synchronized (lock){
@@ -1036,7 +661,11 @@ public class Tui implements Ui{
         switch (choice) {
             case "1" -> {
                 clearConsole();
-                //TODO: stampa scoreTrack
+                //TODO: stampa scoreTrack meglio
+                ArrayList<PlayerBean> allPlayers = new ArrayList<>(players);
+                allPlayers.add(player);
+                String [][][][] scoreTrack = createPrintableScoreBoard(allPlayers);
+                printTrack(scoreTrack);
             }
             case "2"-> {
                 String a;
@@ -1158,10 +787,10 @@ public class Tui implements Ui{
                             String[][] back = this.createPrintableCard(hand[Integer.parseInt(a) - 1]);
                             hand[Integer.parseInt(a) - 1].setCurrentSide();
                             moveCursor(39, 0);
-                            System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "back:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
+                            System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "front:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
                             printCardMatrix(front, 39, 8);
                             moveCursor(39, 22);
-                            System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "front:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
+                            System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "back:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
                             printCardMatrix(back, 39, 29);
                             b = input.next();
                         } while (!b.equals("f") && !b.equals("b") && !b.equals("c"));
@@ -1172,16 +801,14 @@ public class Tui implements Ui{
                         else if (b.equals("f")) {
                             clearConsole();
                             printView();
-                            moveCursor(37, 0);
-                            this.printCard(hand[Integer.parseInt(a) - 1]);
+                            this.printCard(hand[Integer.parseInt(a) - 1], 37, 0);
                         }
                         else {
                             //TODO: pensare a come rimuovere printCard
                             clearConsole();
                             printView();
-                            moveCursor(37, 0);
                             cardToPlace.setCurrentSide();
-                            this.printCard(cardToPlace);
+                            this.printCard(cardToPlace, 37, 0);
                         }
                         System.out.println("Where do you want to place it?");
                         System.out.println("Type row number");
@@ -1199,16 +826,15 @@ public class Tui implements Ui{
                         } else {
                             clearConsole();
                             printView();
-                            moveCursor(37, 0);
-                            this.printCard(cardToPlace);
+                            this.printCard(cardToPlace, 37, 0);
                             coord[0] = Integer.parseInt(a);
-                            moveCursor(39, 0);
+                            moveCursor(40, 0);
                             System.out.println("Type column number");
                             a = input.next();
                             while (!a.equals("c") && Integer.parseInt(a) > PLAYERBOARD_DIM) {
                                 clearConsole();
                                 this.printView();
-                                moveCursor(39, 0);
+                                moveCursor(40, 0);
                                 System.out.println("Retype column number");
                                 a = input.next();
                             }
@@ -1288,7 +914,7 @@ public class Tui implements Ui{
             case "c" -> this.printChat();
             default -> System.out.print("");
         }
-        moveCursor(45, 50);
+        moveCursor(45, 70);
         System.out.println("Press [q] to return to the main menu");
     }
 
@@ -1348,40 +974,34 @@ public class Tui implements Ui{
                 + TuiColors.getColor(TuiColors.ANSI_RESET));
     }
 
-//    public void printCardFromPlayerBoard(PlayerBoard playerBoard, int[] coord){
-//        int[] c = new int[2];
-//        c[0] = coord[1] - (PLAYERBOARD_DIM / 2) - 1;
-//        c[1] = (PLAYERBOARD_DIM / 2) + 1 - coord[0];
-//        this.printCard(playerBoard, playerBoard.getCard(c));
-//    }
-//
-//    public void printCard(PlayerBoard playerBoard, Card card){
-//        if(card == null){
-//            System.out.println("Card not existing at this coordinates");
-//        }
-//        else{
-//            String[][] mat = this.createPrintableCard(playerBoard, card);
-//
-//            for (int i = 0; i < ROW; i++) {
-//                for (int j = 0; j < COLUMN; j++) {
-//                    System.out.print(mat[i][j]);
-//                }
-//                System.out.print("\n");
-//            }
-//            System.out.print("\n");
-//        }
-//
-//    }
-
-    public void printCard(Card card){
-        String[][] mat = this.createPrintableCard(card);
-        for (int i = 0; i < ROW; i++) {
-            for (int j = 0; j < COLUMN; j++) {
-                System.out.print(mat[i][j]);
+    public void printTrack(String[][][][] scoretrack){
+        int padding = 75;
+        System.out.print(" ".repeat(padding));
+        System.out.println("─".repeat(26));
+        System.out.print(" ".repeat(padding));
+        for (int i = 0; i < SCOREBOARD_ROW; i++){
+            for (int j = 0; j < 3; j++) {
+                //print the scoretrack cell
+                for (int k = 0; k < SCOREBOARD_COLUMN; k++) {
+                    System.out.print("|");
+                    for (int l = 0; l < 3; l++) {
+                        System.out.print(scoretrack[l][j][i][k]);
+                    }
+                }
+                System.out.print("|");
+                System.out.println();
+                System.out.print(" ".repeat(padding));
             }
-            System.out.print("\n");
+            System.out.print("─".repeat(26));
+            System.out.println();
+            System.out.print(" ".repeat(padding));
         }
-        System.out.print("\n");
+    }
+
+    //TODO: pensare a come fonderlo con printCardMatrix
+    public void printCard(Card card, int row, int column){
+        String[][] mat = this.createPrintableCard(card);
+        printCardMatrix(mat, row, column);
     }
 
     public void printCardMatrix(String[][] template, int row, int column){
@@ -1395,10 +1015,23 @@ public class Tui implements Ui{
     }
     //TODO: tirare fuori due costanti per la posizione della prima carta
     public void printBoard(PlayerBean playerToShow){
-        //TODO: griglia con +1 in altezza e +7 in larghezza
         PlayerBoard pBoard = playerToShow.getBoard();
         int[] coord = new int[2];
         String [][] printableCard;
+
+        //Print the grid (column)
+        for (int i = 0; i < 15; i++) {
+            moveCursor(2 * i + 4, 0);
+            System.out.print(8 - i);
+        }
+
+        //Print the grid (row)
+        for (int i = 0; i < 15; i++) {
+            moveCursor(0, 8 * i + 8);
+            System.out.print(i - 7);
+        }
+
+        //Print the placed card
         for (Integer i : pBoard.getPositionCardKeys()){
             coord[0] = (i / 1024) - PlayerBoard.OFFSET;
             coord[1] = (i % 1024) - PlayerBoard.OFFSET;
@@ -1406,12 +1039,20 @@ public class Tui implements Ui{
             printCardMatrix(printableCard, STARTER_ROW - (coord[1] * 2), STARTER_COLUMN + (coord[0] * 8));
         }
     }
+    public void printLabel() {
+        int COMMON_ROW = 38;
+        for (int i = 0; i < 7; i++) {
+            //System.out.print(TuiColors.getColor());
+            moveCursor(COMMON_ROW + i, 134);
+            System.out.print(Symbols.getString(Symbols.values()[i]) + TuiColors.getColor(TuiColors.ANSI_WHITE) + " -> " + player.getBoard().getSymbolCount(Symbols.values()[i]) + TuiColors.getColor(TuiColors.ANSI_RESET));
+            moveCursor(COMMON_ROW + i, 155);
+            System.out.print(Symbols.getString(Symbols.values()[i]) + TuiColors.getColor(TuiColors.ANSI_WHITE) + " -> " + Symbols.getLongString(Symbols.values()[i]) + TuiColors.getColor(TuiColors.ANSI_RESET));
+        }
+    }
 
     public void printAchievement(Achievement achievement){
         String[][] mat = this.createPrintableAchievement(achievement);
 
-        //stampa i bordi superiori e inferiori e la matrice
-        //System.out.println(topBorder);
         for (int i = 0; i < ROW; i++) {
             for (int j = 0; j < COLUMN; j++) {
                 System.out.print(mat[i][j]);
@@ -1419,8 +1060,8 @@ public class Tui implements Ui{
             System.out.print("\n");
         }
         System.out.print("\n");
-        //System.out.println(bottomBorder);
     }
+
     public static void clearConsole(){
         System.out.println(TuiColors.getColor(TuiColors.ANSI_CLEAR));
         System.out.flush();
