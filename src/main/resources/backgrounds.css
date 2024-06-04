@@ -1,0 +1,17 @@
+#start-scene {
+    -fx-background-image: url("images/background.png");
+    -fx-background-size: 100% 100%;
+    -fx-background-position: center center;
+}
+
+#setup-scene {
+    -fx-background-image: url("images/forest_background.jpeg");
+    -fx-background-size: 100% 100%;
+    -fx-background-position: center center;
+}
+
+#game-scene {
+    -fx-background-image: url("images/wood_background.jpg");
+    -fx-background-size: 100% 100%;
+    -fx-background-position: center center;
+}
