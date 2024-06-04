@@ -14,7 +14,7 @@ public interface Ui{
     String askNickname();
     String askServerAddress();
     int askServerPort(String connectionType);
-    int selectGame(int freeLobbies);
+    int selectGame(List<Integer> startingGamesId, List<Integer> gamesWhitDisconnectionsId);
     int setLobbySize();
     boolean askSide(Card starterCard);
     void printViewWithCommands(PlayerBean player, GameBean game, ArrayList<PlayerBean> players);

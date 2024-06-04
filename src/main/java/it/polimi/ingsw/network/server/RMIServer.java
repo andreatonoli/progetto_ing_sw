@@ -44,15 +44,20 @@ public class RMIServer implements VirtualServer {
     }
 
     @Override
-    public void login(RMIClientHandler client, String username) throws RemoteException {
-        RMIConnection c = new RMIConnection(server, client, username);
+    public void login(RMIClientHandler client) throws RemoteException {
+        RMIConnection c = new RMIConnection(server, client);
+        String username = server.login(c);
         connections.put(username, c);
-        server.login(c, username);
     }
 
     @Override
     public boolean usernameTaken(String username) throws RemoteException {
         return server.usernameTaken(username);
+    }
+
+    @Override
+    public boolean userNotDisconnected(String username, int gameId) throws RemoteException {
+        return server.userNotDisconnected(username, gameId);
     }
 
     public void pingConnection(String username) throws RemoteException{

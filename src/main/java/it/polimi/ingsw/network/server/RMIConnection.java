@@ -17,16 +17,16 @@ public class RMIConnection extends Connection {
     private final RMIClientHandler client;
     private Controller lobby;
     private final transient Server server;
-    private final String username;
+    private String username;
     private Timer catchPing;
     private Timer ping;
     private boolean firstTime = true;
     private boolean disconnected = false;
 
-    public RMIConnection(Server server, RMIClientHandler client, String username){
+    public RMIConnection(Server server, RMIClientHandler client){
         this.client = client;
         this.server = server;
-        this.username = username;
+        //this.username = username;
         this.setConnectionStatus(true);
     }
 
@@ -81,7 +81,7 @@ public class RMIConnection extends Connection {
             this.disconnected = true;
             lobby.getGame().getPlayerByUsername(username).setDisconnected(true);
             setConnectionStatus(false);
-            server.addDisconnectedPlayer(username);
+            server.addDisconnectedPlayer(username,lobby);
             if (lobby.getGame().getPlayerInTurn().getUsername().equals(username)){
                 lobby.disconnectedWhileInTurn(username);
             }
@@ -117,14 +117,20 @@ public class RMIConnection extends Connection {
     }
 
     @Override
-    public void joinGame(List<Controller> startingGames){
+    public void joinGame(List<Integer> startingGamesId, List<Integer> gamesWhitDisconnectionsId){
         try{
-            int response = this.client.joinGame(startingGames.size());
-            if (response == startingGames.size()){
-                this.server.createLobby(this.username, this.client.setLobbySize());
+            int response = this.client.joinGame(startingGamesId, gamesWhitDisconnectionsId);
+            if (response == -1){
+                this.createGame();
             }
-            else{
+            else if (startingGamesId.contains(response)){
+                this.username = client.askUsername();
+                server.setClient(this, username);
                 this.server.joinLobby(this.username, response);
+            }
+            else if (gamesWhitDisconnectionsId.contains(response)){
+                this.username = client.askUsername(response);
+                this.server.reconnectPlayer(this, username);
             }
         } catch (RemoteException e){
             System.err.println(e.getMessage() + " in RMIConnection/joinGame");
@@ -134,10 +140,13 @@ public class RMIConnection extends Connection {
     @Override
     public void createGame(){
         try {
+            this.username = client.askUsername();
+            server.setClient(this, username);
             this.server.createLobby(this.username, this.client.setLobbySize());
         } catch (RemoteException e) {
             System.err.println(e.getMessage());
         }
+        server.setClient(this, username);
     }
 
     @Override

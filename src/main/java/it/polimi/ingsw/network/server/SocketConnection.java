@@ -136,7 +136,7 @@ public class SocketConnection extends Connection implements Runnable {
             try {
                 this.disconnected = true;
                 lobby.getGame().getPlayerByUsername(username).setDisconnected(true);
-                server.addDisconnectedPlayer(username);
+                server.addDisconnectedPlayer(username, lobby);
                 setConnectionStatus(false);
                 if (lobby.getGame().getPlayerInTurn().getUsername().equals(username)){
                     lobby.disconnectedWhileInTurn(username);
@@ -193,8 +193,8 @@ public class SocketConnection extends Connection implements Runnable {
     }
 
     @Override
-    public void joinGame(List<Controller> activeGames) {
-        sendMessage(new FreeLobbyMessage(activeGames.size()));
+    public void joinGame(List<Integer> startingGamesId, List<Integer> gamesWhitDisconnectionsId) {
+        sendMessage(new FreeLobbyMessage(startingGamesId, gamesWhitDisconnectionsId));
     }
 
     @Override
@@ -230,19 +230,38 @@ public class SocketConnection extends Connection implements Runnable {
                 }
                 break;
             case LOGIN_RESPONSE:
-                if (server.usernameTaken(message.getSender())){
-                    sendMessage(new UsernameRequestMessage());
-                }
-                else{
-                    this.username = message.getSender();
-                    server.login(this, this.username);
-                }
+                server.login(this);
                 break;
             case NUM_PLAYER_RESPONSE:
-                server.createLobby(message.getSender(), ((NumPlayerResponseMessage) message).getSize());
+                if (server.usernameTaken(message.getSender())){
+                    sendMessage(new UsernameRequestMessage(true, ((NumPlayerResponseMessage) message).getSize()));
+                }
+                else {
+                    this.username = message.getSender();
+                    server.setClient(this, username);
+                    server.createLobby(username, ((NumPlayerResponseMessage) message).getSize());
+                }
                 break;
             case LOBBY_INDEX:
-                server.joinLobby(message.getSender(), ((LobbyIndexMessage) message).getChoice());
+                if (server.usernameTaken(message.getSender())){
+                    sendMessage(new UsernameRequestMessage(false, ((LobbyIndexMessage) message).getChoice()));
+                }
+                else {
+                    this.username = message.getSender();
+                    server.setClient(this, username);
+                    server.joinLobby(username, ((LobbyIndexMessage) message).getChoice());
+                }
+                break;
+            case RECONNECT_LOBBY_INDEX:
+                int room = ((ReconnectLobbyIndexMessage) message).getChoice();
+                if (!server.userNotDisconnected(username, room)) {
+                    System.out.println("there is no player disconnected in game "+ room + "with that name.");
+                    server.login(this);
+                }
+                else {
+                    this.username = message.getSender();
+                    server.reconnectPlayer(this, message.getSender());
+                }
                 break;
             case PLACE_STARTER_CARD:
                 lobby.addAction(new ActionMessage(this, () -> lobby.placeStarterCard(this, ((PlaceStarterRequestMessage) message).getCard())));

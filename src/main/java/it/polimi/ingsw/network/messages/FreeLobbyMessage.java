@@ -2,24 +2,33 @@ package it.polimi.ingsw.network.messages;
 
 import it.polimi.ingsw.network.server.Server;
 
+import java.util.List;
+
 public class FreeLobbyMessage extends Message{
     /**
      * number of not started games
      */
-    private final int lobbyNumber;
-    public FreeLobbyMessage(int lobbyNumber) {
+    private final List<Integer> startingGamesId;
+    private final List<Integer> gamesWhitDisconnectionsId;
+    public FreeLobbyMessage(List<Integer> startingGamesId, List<Integer> gamesWhitDisconnectionsId) {
         super(MessageType.FREE_LOBBY, Server.serverName);
-        this.lobbyNumber = lobbyNumber;
+        this.startingGamesId = startingGamesId;
+        this.gamesWhitDisconnectionsId = gamesWhitDisconnectionsId;
     }
 
-    public int getLobbyNumber() {
-        return lobbyNumber;
+    public List<Integer> getstartingGamesId() {
+        return startingGamesId;
+    }
+
+    public List<Integer> getgamesWhitDisconnectionsId() {
+        return gamesWhitDisconnectionsId;
     }
 
     @Override
     public String toString(){
         return "FreeLobbyMessage{" +
-                "lobbyNumber: " + lobbyNumber +
+                "startingGamesId: " + startingGamesId +
+                "gamesWhitDisconnectionsId: " + gamesWhitDisconnectionsId +
                 '}';
     }
 }

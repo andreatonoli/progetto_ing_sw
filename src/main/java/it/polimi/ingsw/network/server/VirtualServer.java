@@ -10,9 +10,11 @@ import java.rmi.RemoteException;
 
 //per inserire i metodi che vogliamo che il client chiami del server
 public interface VirtualServer extends Remote {
-    void login(RMIClientHandler client, String username) throws RemoteException;
+    void login(RMIClientHandler client) throws RemoteException;
 
     boolean usernameTaken(String username) throws RemoteException;
+
+    boolean userNotDisconnected(String username, int gameId) throws RemoteException;
 
     void placeStarterCard(Card card, String username) throws RemoteException;
 

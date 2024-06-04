@@ -105,7 +105,7 @@ public class TurnHandler extends Observable {
                     declareWinnerByDisconnection(winner);
                     ping.cancel();
                 }
-            }, 60000, 2000);
+            }, 120000, 2000);
             while (game.getDisconnections()+1 >= game.getLobbySize());
             ping.cancel();
             this.changePlayerState(player);

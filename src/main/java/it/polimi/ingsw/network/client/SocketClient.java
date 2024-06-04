@@ -33,10 +33,8 @@ public class SocketClient implements ClientInterface {
     private final BlockingQueue<Message> messageQueue;
     private boolean processingAction;
     private final Object outputLock = new Object();
-    public SocketClient(String username, String address, int port, Ui view){
-        this.username = username;
+    public SocketClient(String address, int port, Ui view){
         this.view = view;
-        this.player = new PlayerBean(this.username);
         this.opponents = new ArrayList<>();
         this.game = new GameBean();
         messageQueue = new LinkedBlockingQueue<>();
@@ -49,8 +47,7 @@ public class SocketClient implements ClientInterface {
             socket = new Socket(address, port);
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
-            sendMessage(new LoginResponseMessage(this.username));
-            //TODO: capire come far chiudere la connessione
+            sendMessage(new LoginResponseMessage());
             while(!disconnected){
                 readMessage();
             }
@@ -123,22 +120,36 @@ public class SocketClient implements ClientInterface {
             case USERNAME_REQUEST:
                 System.out.println("Username is already taken, please choose another: ");
                 this.username = this.view.askNickname();
-                sendMessage(new LoginResponseMessage(this.username));
                 player.setUsername(this.username);
+                int number = ((UsernameRequestMessage) message).getNumber();
+                if (((UsernameRequestMessage) message).isCreation()){
+                    sendMessage(new NumPlayerResponseMessage(username, number));
+                }
+                else {
+                    sendMessage(new LobbyIndexMessage(this.username, number));
+                }
                 break;
             case NUM_PLAYER_REQUEST:
                 int lobbySize = this.view.setLobbySize();
+                this.username = view.askNickname();
+                this.player = new PlayerBean(this.username);
                 sendMessage(new NumPlayerResponseMessage(this.username, lobbySize));
                 break;
             case FREE_LOBBY:
-                int freeLobbySize = ((FreeLobbyMessage) message).getLobbyNumber();
-                int response = this.view.selectGame(freeLobbySize);
-                if (response == freeLobbySize){
+                List<Integer> startingGamesId = ((FreeLobbyMessage) message).getstartingGamesId();
+                List<Integer> gamesWhitDisconnectionsId = ((FreeLobbyMessage) message).getgamesWhitDisconnectionsId();
+                int response = this.view.selectGame(startingGamesId, gamesWhitDisconnectionsId);
+                this.username = this.view.askNickname();
+                this.player = new PlayerBean(username);
+                if (response == -1){
                     int numOfPlayers = this.view.setLobbySize();
-                    sendMessage(new NumPlayerResponseMessage(this.username, numOfPlayers));
+                    sendMessage(new NumPlayerResponseMessage(username, numOfPlayers));
                 }
-                else {
+                else if (startingGamesId.contains(response)){
                     sendMessage(new LobbyIndexMessage(this.username, response));
+                }
+                else if (gamesWhitDisconnectionsId.contains(response)){
+                    sendMessage(new ReconnectLobbyIndexMessage(this.username, response));
                 }
                 break;
             case GAME_STATE:

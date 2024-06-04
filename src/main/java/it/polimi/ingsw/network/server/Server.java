@@ -2,6 +2,7 @@ package it.polimi.ingsw.network.server;
 
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.controller.ServerController;
+import it.polimi.ingsw.model.player.Player;
 
 import java.util.*;
 
@@ -13,16 +14,23 @@ public class Server {
     public final static int socketPort = 1235;
     private List<Integer> idTaken;
     private List<Controller> activeGames;
+    private List<Controller> gamesWithDisconnections;
+    private List<Integer> gamesWithDisconnectionsId;
     private List<Controller> startingGames;
+    private List<Integer> startingGamesId;
     private final Map<String, Connection> client;
     private final ServerController controller;
     private List<String> disconnectedPlayers;
+    private final Object gameSelectionLock = new Object();
     public Server(){
         this.controller = new ServerController(this);
         this.client = Collections.synchronizedMap(new HashMap<>());
+        this.gamesWithDisconnections = Collections.synchronizedList(new ArrayList<>());
         this.activeGames = Collections.synchronizedList(new ArrayList<>());
         this.startingGames = Collections.synchronizedList(new ArrayList<>());
-        this.idTaken = Collections.synchronizedList(new ArrayList<Integer>());
+        this.gamesWithDisconnectionsId = Collections.synchronizedList(new ArrayList<>());
+        this.startingGamesId = Collections.synchronizedList(new ArrayList<>());
+        this.idTaken = Collections.synchronizedList(new ArrayList<>());
         this.disconnectedPlayers = new ArrayList<>();
         //Starts the RMI server and the socket server
         startServer();
@@ -33,21 +41,44 @@ public class Server {
         new SocketServer(this, socketPort);
     }
 
-    public void login(Connection client, String username){
-        this.client.put(username, client);
-        System.err.println("user " + username + " connected");
+    public String login(Connection client){
+        //synchronized (gameSelectionLock) {
+            if (this.startingGames.isEmpty() && this.gamesWithDisconnections.isEmpty()) {
+                client.createGame();
+            } else {
+                client.joinGame(startingGamesId, gamesWithDisconnectionsId);
+            }
+        //}
+        String username = client.getUsername();
         new Thread(client::ping).start();
-        if (this.startingGames.isEmpty()){
-            client.createGame();
-        }
-        else{
-            client.joinGame(this.startingGames);
-        }
+        System.err.println("user " + username + " connected");
+        return username;
+    }
+
+    public void setClient(Connection c, String u){
+        this.client.put(u, c);
     }
 
     public boolean usernameTaken(String username){
         return client.containsKey(username);
     }
+
+    public boolean userNotDisconnected(String username, int gameId){
+        boolean check1 = false;
+        for (Controller game : gamesWithDisconnections){
+            if (game.getId() == gameId){
+                for (Player p : game.getGame().getPlayers()){
+                    if (p.getUsername().equals(username)) {
+                        check1 = true;
+                        break;
+                    }
+                }
+            }
+        }
+        boolean check2 = disconnectedPlayers.contains(username);
+        return check1 && check2;
+    }
+
     public void createLobby(String username, int numPlayers){
         int gameId = 0;
         boolean founded = false;
@@ -69,14 +100,16 @@ public class Server {
             }
         }
         this.startingGames.add(controller.createLobby(username, numPlayers, gameId));
+        this.startingGamesId.add(gameId);
     }
 
     public void joinLobby(String username, int indexGame){
         Controller controller = this.startingGames.get(indexGame);
         boolean full = this.controller.joinLobby(username, controller);
         if (full){
-            activeGames.add(controller);
-            startingGames.remove(controller);
+            this.activeGames.add(controller);
+            this.startingGames.remove(controller);
+            this.startingGamesId.remove((Integer) controller.getId());
         }
     }
 
@@ -84,8 +117,19 @@ public class Server {
         return this.client.get(name);
     }
 
-    public void addDisconnectedPlayer(String username){
+    public void addDisconnectedPlayer(String username, Controller game){
+        boolean alreadyWithDisconnections = false;
         disconnectedPlayers.add(username);
+        for (Controller g : gamesWithDisconnections){
+            if (g.equals(game)) {
+                alreadyWithDisconnections = true;
+                break;
+            }
+        }
+        if (!alreadyWithDisconnections) {
+            gamesWithDisconnections.add(game);
+            gamesWithDisconnectionsId.add(game.getId());
+        }
     }
     //TODO finire
     //TODO: riscrivere meglio
@@ -102,6 +146,8 @@ public class Server {
     }
     public void removeGame(Controller game){
         this.activeGames.remove(game);
+        this.gamesWithDisconnections.remove(game);
+        this.gamesWithDisconnectionsId.remove((Integer) game.getId());
         idTaken.set(game.getId(),-1);
     }
 }
