@@ -51,7 +51,6 @@ public class Tui implements Ui{
         try {
             this.printTitle();
             String choice;
-            String username = askNickname();
             System.out.println("Please specify the following settings. The default value is shown between brackets.");
             String address = askServerAddress();
             System.out.println("Choose your connection method: Write:\n\tI)RMI\n\tII)Socket");
@@ -62,10 +61,10 @@ public class Tui implements Ui{
             }
             int port = askServerPort(choice);
             if (choice.equalsIgnoreCase("RMI")){
-                client = new RMIClient(username, address, port, this);
+                client = new RMIClient(address, port, this);
             }
             else{
-                client = new SocketClient(username, address, port, this);
+                client = new SocketClient(address, port, this);
             }
         } catch (RemoteException e) {
             System.err.println(e.getMessage());
@@ -80,7 +79,7 @@ public class Tui implements Ui{
     public String askNickname(){
         String nickname;
         System.out.print("Please insert your username: ");
-        nickname = scanner.nextLine();
+        nickname = scanner.next();
         return nickname;
     }
 
@@ -125,19 +124,53 @@ public class Tui implements Ui{
     }
 
     @Override
-    public int selectGame(int freeLobbies){
-        System.out.println("Select one of the following game's lobby by writing the respective number");
-        int i;
-        for (i = 0; i < freeLobbies; i++){
-            System.out.println("Lobby " + i);
-        }
-        System.out.println("Lobby " + i + "(create new game)");
-        int choice = scanner.nextInt();
-        while (choice > freeLobbies || choice < 0){
-            System.out.print("Invalid input.\nInsert the lobby number: ");
+    public int selectGame(List<Integer> startingGamesId, List<Integer> gamesWhitDisconnectionsId){
+        int lobby = -1;
+        int choice;
+        System.out.println("Select one of the following options by writing the respective number:\n[1] create a game\n[2] join a game\n[3] reconnect to a game");
+        choice = scanner.nextInt();
+        while (choice != 1 && choice != 2 && choice != 3){
+            System.out.print("Invalid input.\nChose an option between [1] [2] [3]");
             choice = scanner.nextInt();
         }
-        return choice;
+        if (choice == 1) {
+            System.out.println("Creating a new game...");;
+        }
+        else if (choice == 2){
+            System.out.println("Select one of the following game's lobby by writing the respective number:");
+            for (Integer i : startingGamesId){
+                System.out.println("Lobby [" + i + "]");
+            }
+            lobby = scanner.nextInt();
+            while (!startingGamesId.contains(lobby)){
+                System.out.print("Invalid input.\nInsert the lobby number:");
+                lobby = scanner.nextInt();
+            }
+        }
+        else if (choice == 3){
+            System.out.println("Select one of the following game's lobby by writing the respective number:");
+            for (Integer i : gamesWhitDisconnectionsId){
+                System.out.println("Lobby [" + i + "]");
+            }
+            lobby = scanner.nextInt();
+            while (!gamesWhitDisconnectionsId.contains(lobby)){
+                System.out.print("Invalid input.\nInsert the lobby number:");
+                lobby = scanner.nextInt();
+            }
+        }
+        return lobby;
+        //System.out.println("Select one of the following game's lobby by writing the respective number");
+        //int i;
+        //for (i = 0; i < freeLobbies; i++){
+        //    System.out.println("Lobby " + i);
+        //}
+        //System.out.println("Lobby " + i + "(create new game)");
+        //int choice = scanner.nextInt();
+        //while (choice > freeLobbies || choice < 0){
+        //    System.out.print("Invalid input.\nInsert the lobby number: ");
+        //    choice = scanner.nextInt();
+        //}
+        //return choice;
     }
 
     public int setLobbySize(){
