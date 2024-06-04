@@ -22,7 +22,7 @@ public class Controller extends Observable {
      * Reference to the game (model) controlled by {@code this}
      */
     private final Game game;
-    private int id;
+    private final int id;
     /**
      * Map to connect the different Connections (client handlers) to their representation on the model (Player)
      */
@@ -41,7 +41,7 @@ public class Controller extends Observable {
 
     public Controller(int numPlayers, int id){
         this.id = id;
-        this.game = new Game(numPlayers, id);
+        this.game = new Game(numPlayers);
         this.turnHandler = new TurnHandler(game);
         this.connectedPlayers = Collections.synchronizedMap(new HashMap<>());
         this.actionQueue = new LinkedBlockingQueue<>();
@@ -289,6 +289,7 @@ public class Controller extends Observable {
         this.game.getAvailableColors().remove(color);
         getPlayerByClient(user).setPionColor(color);
         notifyAll(new ColorResponseMessage(user.getUsername(), color));
+        notifyAll(new PlayerBoardUpdateMessage(getPlayerByClient(user).getPlayerBoard(), user.getUsername()));
         playerInTurn = turnHandler.changeSetupPlayer();
         if (playerInTurn == null){
             setupFinished = true;

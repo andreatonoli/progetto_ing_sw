@@ -60,6 +60,9 @@ public class Server {
     }
 
     public boolean usernameTaken(String username){
+        if (username.isEmpty()){
+            return true;
+        }
         return client.containsKey(username);
     }
 

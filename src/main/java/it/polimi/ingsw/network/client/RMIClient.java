@@ -295,7 +295,12 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                 }
                 break;
             case GENERIC_MESSAGE:
-                this.view.setMessage(message.toString(), false);
+                if (!game.getState().equals(GameState.WAIT_PLAYERS)) {
+                    this.view.setMessage(message.toString(), false);
+                }
+                else {
+                    System.out.println(message);
+                }
                 break;
             case ERROR:
                 this.view.setMessage(message.toString(), true);
@@ -335,8 +340,6 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
     public void placeCard(Card card, int[] placingCoordinates) {
         if (player.getState().equals(PlayerState.PLAY_CARD)) {
             try { //TODO: imparare a leggere una griglia per capire se così traspongo giuste le coordinate
-                placingCoordinates[0] = placingCoordinates[0] - 6;
-                placingCoordinates[1] = 6 - placingCoordinates[1];
                 server.placeCard(card, placingCoordinates, username);
                 player.removeCardFromHand(card);
             } catch (RemoteException e) {

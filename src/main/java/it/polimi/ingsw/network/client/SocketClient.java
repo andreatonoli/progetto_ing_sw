@@ -40,7 +40,7 @@ public class SocketClient implements ClientInterface {
         messageQueue = new LinkedBlockingQueue<>();
         processingAction = false;
         pickQueue();
-        new Thread(() -> { this.startClient(address, port); }).start();
+        new Thread(() -> this.startClient(address, port)).start();
     }
     public void startClient(String address, int port){
         try {
@@ -330,8 +330,6 @@ public class SocketClient implements ClientInterface {
     @Override
     public void placeCard(Card card, int[] placingCoordinates) {
         if (this.player.getState().equals(PlayerState.PLAY_CARD)){ //TODO: imparare a leggere una griglia per capire se così traspongo giuste le coordinate
-            placingCoordinates[0] = placingCoordinates[0] - 6;
-            placingCoordinates[1] = 6 - placingCoordinates[1];
             sendMessage(new PlaceMessage(username, card, placingCoordinates));
             player.removeCardFromHand(card);
         }
