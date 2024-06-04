@@ -76,6 +76,7 @@ public class RMIConnection extends Connection {
         catchPing.cancel();
     }
 
+    //TODO: potrebbe conflittare con le operazioni del controller
     public void onDisconnect(){
         if (!lobby.getGame().getGameState().equals(GameState.END)) {
             this.disconnected = true;

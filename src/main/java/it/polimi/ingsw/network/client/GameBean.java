@@ -5,7 +5,9 @@ import it.polimi.ingsw.model.card.Card;
 import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.GameState;
 
-public class GameBean {
+import java.io.Serializable;
+
+public class GameBean implements Serializable {
     private GameState state;
     private final Card[] commonResources;
     private final Card[] commonGold;

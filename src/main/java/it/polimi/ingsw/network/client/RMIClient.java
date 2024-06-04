@@ -24,7 +24,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, ClientInterface {
-    private InputStream fakeData;
     private final BlockingQueue<Message> messageQueue;
     private boolean processingAction;
     private static final String serverName = "GameServer";
@@ -128,8 +127,8 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
         messageQueue.add(message);
     }
     /**
-     * gets messages from the messageQueue and updates the view according to the message type
-     * @param message sent from the server
+     * gets messages from the messageQueue and updates the view according to the message type.
+     * @param message sent from the server.
      */
     public void onMessage(Message message) {
         String name;
@@ -137,8 +136,10 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
             case RECONNECTION:
                 this.player = ((ReconnectionMessage) message).getPlayerBean();
                 this.game = ((ReconnectionMessage) message).getGameBean();
-                //TODO: Controlla come viene passato il paramentro e cerca di passare una copia
+                //TODO: Controlla come viene passato il parametro e cerca di passare una copia
                 this.opponents = ((ReconnectionMessage) message).getOpponents();
+                System.out.println(game.getGoldDeckRetro());
+                this.view.printViewWithCommands(this.player, this.game, this.opponents);
                 break;
             case GAME_STATE:
                 GameState state = ((GameStateMessage) message).getState();

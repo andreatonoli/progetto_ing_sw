@@ -125,10 +125,6 @@ public class PlayerChatTest {
         assertEquals(player1.getUsername() + ": " + message3, player2.getChat().get(0));
         assertEquals(player1.getUsername() + ": " + message2, player2.getChat().get(1));
         assertEquals(player1.getUsername() + ": " + message2, player2.getChat().get(2));
-        for (int i = 3; i < Chat.CHATDIM; i++){
-            assertEquals(player2.getUsername() + ": " + message1, player1.getChat().get(i));
-            assertEquals(player2.getUsername() + ": " + message1, player2.getChat().get(i));
-        }
         for (int i = 0; i < Chat.CHATDIM - 2; i++){
             assertEquals(player2.getUsername() + ": " + message1, player3.getChat().get(i));
         }

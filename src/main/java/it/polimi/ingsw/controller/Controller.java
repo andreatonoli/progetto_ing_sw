@@ -15,6 +15,7 @@ import it.polimi.ingsw.observer.Observable;
 
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Controller extends Observable {
@@ -26,7 +27,7 @@ public class Controller extends Observable {
     /**
      * Map to connect the different Connections (client handlers) to their representation on the model (Player)
      */
-    private final Map<Connection, Player> connectedPlayers;
+    private final ConcurrentHashMap<Connection, Player> connectedPlayers;
     private final TurnHandler turnHandler;
     /**
      * Queue that stores all the actions required by the players to be carried out by the controller
@@ -43,7 +44,7 @@ public class Controller extends Observable {
         this.id = id;
         this.game = new Game(numPlayers);
         this.turnHandler = new TurnHandler(game);
-        this.connectedPlayers = Collections.synchronizedMap(new HashMap<>());
+        this.connectedPlayers = new ConcurrentHashMap<>();
         this.actionQueue = new LinkedBlockingQueue<>();
     }
 
@@ -308,7 +309,7 @@ public class Controller extends Observable {
         notifyAll(new ChatMessage(getPlayerByClient(sender).getChat()));
     }
 
-    public Player getPlayerByClient(Connection user){
+    public synchronized Player getPlayerByClient(Connection user){
         return this.connectedPlayers.get(user);
     }
 
@@ -319,7 +320,7 @@ public class Controller extends Observable {
 
     /**
      * Sends back the model state to the player who has reconnected
-     * Precondition: user.username is equal to one, and only one, username //TODO: Verificare che la precondizione sia sempre verificata
+     * Precondition: user.username is equal to one, and only one, username
      * @param user who reconnected
      */
     public void reconnectBackup(Connection user /*, Connection oldConnection*/){
@@ -331,7 +332,9 @@ public class Controller extends Observable {
         String username = user.getUsername();
         Player reconnectedPlayer = null;
         List<Player> opponents = new ArrayList<>();
-        for (Connection c : connectedPlayers.keySet()){
+        Set<Connection> connectionSet = connectedPlayers.keySet();
+        //TODO: corsa di dati
+        for (Connection c : connectionSet){
             if (c.getUsername().equalsIgnoreCase(username)){
                 reconnectedPlayer = getPlayerByClient(c);
                 connectedPlayers.remove(c);

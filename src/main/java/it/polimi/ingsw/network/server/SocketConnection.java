@@ -154,7 +154,7 @@ public class SocketConnection extends Connection implements Runnable {
     @Override
     public void reconnect(Connection oldConnection) {
         this.lobby = oldConnection.getLobby();
-        this.lobby.reconnectBackup(this/*, oldConnection*/);
+        lobby.addAction(new ActionMessage(this, () -> this.lobby.reconnectBackup(this/*, oldConnection*/)));
         this.disconnected = false;
     }
 

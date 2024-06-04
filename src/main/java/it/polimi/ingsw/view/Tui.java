@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.*;
 
-//TODO: rendere unico lo stream di output
 public class Tui implements Ui{
     private ClientInterface client;
     private String error = "";
@@ -123,54 +122,41 @@ public class Tui implements Ui{
         return Integer.parseInt(port);
     }
 
+    //TODO: se startingGamesId vuoto non puoi selezionare quella scelta
     @Override
     public int selectGame(List<Integer> startingGamesId, List<Integer> gamesWhitDisconnectionsId){
         int lobby = -1;
         int choice;
-        System.out.println("Select one of the following options by writing the respective number:\n[1] create a game\n[2] join a game\n[3] reconnect to a game");
-        choice = scanner.nextInt();
-        while (choice != 1 && choice != 2 && choice != 3){
-            System.out.print("Invalid input.\nChose an option between [1] [2] [3]");
+        do {
+            System.out.println("Select one of the following options by writing the respective number:\n[1] create a game\n[2] join a game\n[3] reconnect to a game");
             choice = scanner.nextInt();
-        }
-        if (choice == 1) {
-            System.out.println("Creating a new game...");;
-        }
-        else if (choice == 2){
-            System.out.println("Select one of the following game's lobby by writing the respective number:");
-            for (Integer i : startingGamesId){
-                System.out.println("Lobby [" + i + "]");
-            }
-            lobby = scanner.nextInt();
-            while (!startingGamesId.contains(lobby)){
-                System.out.print("Invalid input.\nInsert the lobby number:");
+        } while (choice > 3 || choice <= 0);
+        switch (choice){
+            case 1 -> System.out.println("Creating a new game...");
+            case 2 -> {
+                System.out.println("Select one of the following game's lobby by writing the respective number:");
+                for (Integer i : startingGamesId){
+                    System.out.println("Lobby [" + i + "]");
+                }
                 lobby = scanner.nextInt();
+                while (!startingGamesId.contains(lobby)){
+                    System.out.print("Invalid input.\nInsert the lobby number:");
+                    lobby = scanner.nextInt();
+                }
             }
-        }
-        else if (choice == 3){
-            System.out.println("Select one of the following game's lobby by writing the respective number:");
-            for (Integer i : gamesWhitDisconnectionsId){
-                System.out.println("Lobby [" + i + "]");
-            }
-            lobby = scanner.nextInt();
-            while (!gamesWhitDisconnectionsId.contains(lobby)){
-                System.out.print("Invalid input.\nInsert the lobby number:");
+            case 3 -> {
+                System.out.println("Select one of the following game's lobby by writing the respective number:");
+                for (Integer i : gamesWhitDisconnectionsId){
+                    System.out.println("Lobby [" + i + "]");
+                }
                 lobby = scanner.nextInt();
+                while (!gamesWhitDisconnectionsId.contains(lobby)){
+                    System.out.print("Invalid input.\nInsert the lobby number:");
+                    lobby = scanner.nextInt();
+                }
             }
         }
         return lobby;
-        //System.out.println("Select one of the following game's lobby by writing the respective number");
-        //int i;
-        //for (i = 0; i < freeLobbies; i++){
-        //    System.out.println("Lobby " + i);
-        //}
-        //System.out.println("Lobby " + i + "(create new game)");
-        //int choice = scanner.nextInt();
-        //while (choice > freeLobbies || choice < 0){
-        //    System.out.print("Invalid input.\nInsert the lobby number: ");
-        //    choice = scanner.nextInt();
-        //}
-        //return choice;
     }
 
     public int setLobbySize(){

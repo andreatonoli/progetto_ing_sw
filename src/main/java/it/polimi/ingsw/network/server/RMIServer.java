@@ -5,6 +5,8 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import it.polimi.ingsw.model.card.Achievement;
 import it.polimi.ingsw.model.card.Card;
@@ -12,7 +14,7 @@ import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.network.client.RMIClientHandler;
 
 public class RMIServer implements VirtualServer {
-    private final Queue<Action> actionQueue;
+    private final BlockingQueue<Action> actionQueue;
     private boolean processingAction;
     private final Server server;
     private final int port;
@@ -22,7 +24,7 @@ public class RMIServer implements VirtualServer {
         this.server = server;
         this.port = port;
         connections = Collections.synchronizedMap(new HashMap<>());
-        actionQueue = new LinkedList<>();
+        actionQueue = new LinkedBlockingQueue<>();
         processingAction = false;
         pickQueue();
         this.startServer();
@@ -32,15 +34,11 @@ public class RMIServer implements VirtualServer {
         connections.get(username).cancelPing();
         int playersToDelete = connections.get(username).getLobby().getGame().getLobbySize()-1;
         addToQueue(() -> connections.get(username).getLobby().getGame().setLobbySize(playersToDelete));
-        if (playersToDelete != 0) {
-            addToQueue(() -> connections.remove(username));
-            addToQueue(() -> server.removePlayers(username));
-        }
-        else {
+        if (playersToDelete == 0) {
             server.removeGame(connections.get(username).getLobby());
-            addToQueue(() -> connections.remove(username));
-            addToQueue(() -> server.removePlayers(username));
         }
+        addToQueue(() -> connections.remove(username));
+        addToQueue(() -> server.removePlayers(username));
     }
 
     @Override
@@ -64,7 +62,6 @@ public class RMIServer implements VirtualServer {
         connections.get(username).catchPing();
     }
 
-    //TODO: se faccio implementare virtualServer a Connection ogni volta che do uno stub ad una nuova connessione creo una connection diversa e vado a comunicare diremttamente
     public void startServer(){
         try {
             VirtualServer stub = (VirtualServer) UnicastRemoteObject.exportObject(this, 0);
@@ -140,7 +137,5 @@ public class RMIServer implements VirtualServer {
             }
         }
     }
-    //TODO: cambia le queue in blockiing queue
-
 
 }
