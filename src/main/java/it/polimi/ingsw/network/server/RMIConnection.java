@@ -26,7 +26,6 @@ public class RMIConnection extends Connection {
     public RMIConnection(Server server, RMIClientHandler client){
         this.client = client;
         this.server = server;
-        //this.username = username;
         this.setConnectionStatus(true);
     }
 

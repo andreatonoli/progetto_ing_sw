@@ -96,6 +96,7 @@ public class Controller extends Observable {
      * @param user of the client who's joining the game
      * @return {@code true} if the game is full, {@code false} otherwise
      */
+    //TODO: controlla che quando faccio disconnessione non rifaccio più il setup
     public boolean joinGame(Connection user){
         Player player = new Player(user.getUsername(), game);
         this.connectedPlayers.put(user, player);
@@ -139,6 +140,8 @@ public class Controller extends Observable {
         //sends the color of the first card of the deck
         notifyAll(new UpdateDeckMessage(game.getGameBoard().getResourceDeck().getFirst().getColor(), true));
         notifyAll(new UpdateDeckMessage(game.getGameBoard().getGoldDeck().getFirst().getColor(), false));
+        //setting the first player to set up its game
+        playerInTurn = game.getFirstPlayer().getUsername();
         //Sends each player their private information
         for (Connection u : this.connectedPlayers.keySet()) {
             Player p = getPlayerByClient(u);
@@ -150,8 +153,10 @@ public class Controller extends Observable {
             u.sendMessage(new AchievementMessage(MessageType.PRIVATE_ACHIEVEMENT, p.getPersonalObj()));
             //Send players their state
             notifyAll(new PlayerStateMessage(p.getPlayerState(), p.getUsername()));
+            if (!u.getUsername().equals(playerInTurn)){
+                u.sendMessage(new GenericMessage("Waiting for other players to finish their setup"));
+            }
         }
-        playerInTurn = game.getFirstPlayer().getUsername();
         pickQueue();
     }
 
