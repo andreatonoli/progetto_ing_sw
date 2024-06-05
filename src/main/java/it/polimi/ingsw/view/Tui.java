@@ -652,6 +652,7 @@ public class Tui implements Ui{
     }
     //TODO: Refactor di questa funzione
     //TODO: altezza circa 50 -> larghezza guesso 120/150
+    //TODO: togli il q per chiudere dal fondo e mettilo nei vari case
     public void handleInput(String choice){
         Card[] hand = player.getHand();
         Card[] commonResource = game.getCommonResources();

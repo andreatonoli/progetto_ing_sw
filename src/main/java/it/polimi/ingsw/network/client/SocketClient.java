@@ -42,6 +42,7 @@ public class SocketClient implements ClientInterface {
         pickQueue();
         new Thread(() -> this.startClient(address, port)).start();
     }
+    //TODO: mi collego con username null e non lo setto mai più
     public void startClient(String address, int port){
         try {
             socket = new Socket(address, port);
