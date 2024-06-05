@@ -8,8 +8,8 @@ public class ServerController {
     public ServerController(Server server){
         this.server = server;
     }
-    public Controller createLobby(String username, int numPlayers){
-        Controller controller = new Controller(numPlayers);
+    public Controller createLobby(String username, int numPlayers, int id){
+        Controller controller = new Controller(numPlayers, id);
         joinLobby(username, controller);
         return controller;
     }

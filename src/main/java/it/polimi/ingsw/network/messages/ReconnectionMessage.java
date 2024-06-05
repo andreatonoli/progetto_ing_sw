@@ -1,8 +1,6 @@
 package it.polimi.ingsw.network.messages;
 
-import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.GameBoard;
-import it.polimi.ingsw.model.enums.PlayerState;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.client.GameBean;
 import it.polimi.ingsw.network.client.PlayerBean;
@@ -19,7 +17,6 @@ public class ReconnectionMessage extends Message {
     private final ArrayList<PlayerBean> opponents;
     public ReconnectionMessage(GameBoard board, Player player, List<Player> opponents){
         super(MessageType.RECONNECTION, Server.serverName);
-
         //Creating gameBean
         gameBean = new GameBean();
         for (int i=0; i<2; i++) {
@@ -31,8 +28,8 @@ public class ReconnectionMessage extends Message {
         for (int i=0; i<2; i++) {
             gameBean.setCommonAchievement(i, board.getCommonAchievement()[i]);
         }
-        gameBean.setGoldDeckRetro(board.getGoldDeckRetro());
-        gameBean.setResourceDeckRetro(board.getResourceDeckRetro());
+        gameBean.setGoldDeckRetro(board.getGoldDeck().getFirst().getColor());
+        gameBean.setResourceDeckRetro(board.getResourceDeck().getFirst().getColor());
 
         //Creating playerBean
         playerBean = new PlayerBean(player.getUsername());
@@ -56,15 +53,15 @@ public class ReconnectionMessage extends Message {
     }
 
     public GameBean getGameBean() {
-        return gameBean;
+        return this.gameBean;
     }
 
     public PlayerBean getPlayerBean() {
-        return playerBean;
+        return this.playerBean;
     }
 
     public ArrayList<PlayerBean> getOpponents(){
-        return opponents;
+        return this.opponents;
     }
 
     public String toString(){

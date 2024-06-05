@@ -24,7 +24,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, ClientInterface {
-    private InputStream fakeData;
     private final BlockingQueue<Message> messageQueue;
     private boolean processingAction;
     private static final String serverName = "GameServer";
@@ -36,11 +35,9 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
     private ArrayList<PlayerBean> opponents;
     private int playersRemaining;
 
-    public RMIClient(String username, String host, int port, Ui view) throws RemoteException{
-        this.username = username;
+    public RMIClient(String host, int port, Ui view) throws RemoteException{
         this.view = view;
         //Initialization of player's attributes
-        this.player = new PlayerBean(username);
         this.game = new GameBean();
         this.opponents = new ArrayList<>();
         messageQueue = new LinkedBlockingQueue<>();
@@ -49,19 +46,34 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
         try {
             Registry registry = LocateRegistry.getRegistry(host, port);
             server = (VirtualServer) registry.lookup(serverName);
-            while (server.usernameTaken(this.username)){
-                System.out.println("Username is already taken, please choose another: ");
-                this.username = view.askNickname();
-                player.setUsername(this.username);
-            }
-            server.login(this, this.username);
+            server.login(this);
         } catch (RemoteException | NotBoundException e){
             System.out.println(e.getMessage());
         }
     }
 
-    public int joinGame(int freeLobbies) throws RemoteException{
-        return this.view.selectGame(freeLobbies);
+    public String askUsername() throws RemoteException{
+        this.username = view.askNickname();
+        while (server.usernameTaken(this.username)) {
+            System.out.println("Username is already taken, please choose another: ");
+            this.username = view.askNickname();
+        }
+        this.player = new PlayerBean(username);
+        return username;
+    }
+
+    public String askUsername(int lobby) throws RemoteException{
+        this.username = view.askNickname();
+        if (!server.userNotDisconnected(username, lobby)) {
+            System.out.println("there is no player disconnected in game "+ lobby + " with that name.");
+            server.login(this);
+        }
+        this.player = new PlayerBean(username);
+        return username;
+    }
+
+    public int joinGame(List<Integer> startingGamesId, List<Integer> gamesWhitDisconnectionsId) throws RemoteException{
+        return this.view.selectGame(startingGamesId, gamesWhitDisconnectionsId);
     }
 
     public int setLobbySize() throws RemoteException{
@@ -115,8 +127,8 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
         messageQueue.add(message);
     }
     /**
-     * gets messages from the messageQueue and updates the view according to the message type
-     * @param message sent from the server
+     * gets messages from the messageQueue and updates the view according to the message type.
+     * @param message sent from the server.
      */
     public void onMessage(Message message) {
         String name;
@@ -124,8 +136,10 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
             case RECONNECTION:
                 this.player = ((ReconnectionMessage) message).getPlayerBean();
                 this.game = ((ReconnectionMessage) message).getGameBean();
-                //TODO: Controlla come viene passato il paramentro e cerca di passare una copia
+                //TODO: Controlla come viene passato il parametro e cerca di passare una copia
                 this.opponents = ((ReconnectionMessage) message).getOpponents();
+                System.out.println(game.getGoldDeckRetro());
+                this.view.printViewWithCommands(this.player, this.game, this.opponents);
                 break;
             case GAME_STATE:
                 GameState state = ((GameStateMessage) message).getState();
@@ -166,8 +180,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                 break;
             case STARTER_CARD:
                 Card starterCard = ((StarterCardMessage) message).getCard();
-                this.view.printStarterCard(starterCard);
-                boolean choice = this.view.askSide();
+                boolean choice = this.view.askSide(starterCard);
                 if (!choice) {
                     starterCard.setCurrentSide();
                 }
@@ -266,6 +279,13 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                 player.setChat(((ChatMessage) message).getChat());
                 this.view.printViewWithCommands(this.player, this.game, this.opponents);
                 break;
+            case WAITING_RECONNECTION:
+                name = ((WaitingReconnectionMessage) message).getUsername();
+                if (username.equals(name)) {
+                    player.setState(PlayerState.NOT_IN_TURN);
+                }
+                this.view.printViewWithCommands(this.player, this.game, this.opponents);
+                break;
             case DECLARE_WINNER:
                 ArrayList<String> winners = ((WinnerMessage) message).getWinners();
                 this.view.declareWinners(winners);
@@ -276,7 +296,12 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                 }
                 break;
             case GENERIC_MESSAGE:
-                this.view.setMessage(message.toString(), false);
+                if (game.getState().ordinal() > 1) {
+                    this.view.setMessage(message.toString(), false);
+                }
+                else {
+                    System.out.println(message);
+                }
                 break;
             case ERROR:
                 this.view.setMessage(message.toString(), true);
@@ -316,8 +341,6 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
     public void placeCard(Card card, int[] placingCoordinates) {
         if (player.getState().equals(PlayerState.PLAY_CARD)) {
             try { //TODO: imparare a leggere una griglia per capire se così traspongo giuste le coordinate
-                placingCoordinates[0] = placingCoordinates[0] - 6;
-                placingCoordinates[1] = 6 - placingCoordinates[1];
                 server.placeCard(card, placingCoordinates, username);
                 player.removeCardFromHand(card);
             } catch (RemoteException e) {

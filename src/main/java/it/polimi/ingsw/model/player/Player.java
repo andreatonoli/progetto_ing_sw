@@ -28,7 +28,7 @@ public class Player implements Serializable {
     private int points = 0;
     private PlayerState playerState;
     private final ArrayList<String> chat;
-    private Game game;
+    private final Game game;
     private final PlayerBoard playerBoard;
     private boolean disconnected;
     private int objCompleted = 0;
@@ -295,7 +295,7 @@ public class Player implements Serializable {
     }
 
     /**
-     * Permits the player to take one card from the board, then replaces it with the same type card drawed from the decks
+     * Permits the player to take one card from the board, then replaces it with the same type card drew from the decks
      * @param card taken by the player
      */
     public Card drawCardFromBoard(Card card) throws CardNotFoundException, NotInTurnException, FullHandException{

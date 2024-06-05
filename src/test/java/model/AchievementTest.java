@@ -21,7 +21,7 @@ public class AchievementTest {
     public void diagonalTest() {
         Game game = new Game(4);
         Achievement a = new AchievementDiagonal(Color.PURPLE, 4);
-        Card c = new ResourceCard(new Corner[]{new Corner(Symbols.INSECT), new Corner(Symbols.PLANT), new Corner(Symbols.NOCORNER), new Corner(Symbols.INKWELL) }, 37, 0);
+        Card c = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.NOCORNER), new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY) }, 1), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.PURPLE);
         Player p = new Player("pippo", game);
         //Creating a purple diagonal
         p.getPlayerBoard().setCardPosition(c, new int[]{-40,-40});
@@ -37,7 +37,7 @@ public class AchievementTest {
     public void noDiagonalTest() {
         Game game = new Game(4);
         Achievement a = new AchievementDiagonal(Color.RED, 1);
-        Card c = new ResourceCard(new Corner[]{new Corner(Symbols.INSECT), new Corner(Symbols.PLANT), new Corner(Symbols.NOCORNER), new Corner(Symbols.INKWELL) }, 37, 0);
+        Card c = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.NOCORNER), new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY) }, 1), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.PURPLE);
         Player p = new Player("pippo", game);
         int offset = 5; //Added some points to the player to see if calcPoints adds 0 points
         //Added some cards to the player board. None of them is red
@@ -54,7 +54,7 @@ public class AchievementTest {
     public void noReuseTest() {
         Game game = new Game(4);
         Achievement a = new AchievementDiagonal(Color.PURPLE, 4);
-        Card c = new ResourceCard(new Corner[]{new Corner(Symbols.INSECT), new Corner(Symbols.PLANT), new Corner(Symbols.NOCORNER), new Corner(Symbols.INKWELL) }, 37, 0);
+        Card c = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.NOCORNER), new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY) }, 1), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.PURPLE);
         Player p = new Player("pippo", game);
         //Creating a six-card purple diagonal
         p.getPlayerBoard().setCardPosition(c, new int[]{0,0});
@@ -73,12 +73,12 @@ public class AchievementTest {
         Game game = new Game(4);
         Player p = new Player("pippo", game);
         Achievement a = new AchievementItem(3, new ArrayList<>(List.of(Symbols.QUILL, Symbols.INKWELL, Symbols.MANUSCRIPT)), 15);
-        Card b = new ResourceCard(new Corner[]{new Corner(Symbols.QUILL), new Corner(Symbols.INKWELL), new Corner(Symbols.MANUSCRIPT), new Corner(Symbols.EMPTY) }, 14, 0);
-        Card c = new ResourceCard(new Corner[]{new Corner(Symbols.QUILL), new Corner(Symbols.MANUSCRIPT), new Corner(Symbols.PLANT), new Corner(Symbols.QUILL) }, 15, 0);
-        Card d = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.INKWELL), new Corner(Symbols.INKWELL), new Corner(Symbols.NOCORNER) }, 16, 0);
-        Card e = new ResourceCard(new Corner[]{new Corner(Symbols.MANUSCRIPT), new Corner(Symbols.QUILL), new Corner(Symbols.ANIMAL), new Corner(Symbols.PLANT) }, 17, 0);
-        Card f = new ResourceCard(new Corner[]{new Corner(Symbols.INKWELL), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.PLANT) }, 18, 1);
-        StarterCard s = new StarterCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT)}, 1, new CardBack(new ArrayList<>(List.of(Symbols.INSECT)), Color.WHITE, new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.PLANT), new Corner(Symbols.EMPTY), new Corner(Symbols.INSECT)}));
+        Card b = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.QUILL), new Corner(Symbols.INKWELL), new Corner(Symbols.MANUSCRIPT), new Corner(Symbols.QUILL) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.PURPLE);
+        Card c = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.INKWELL), new Corner(Symbols.INKWELL), new Corner(Symbols.MANUSCRIPT) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.PURPLE);
+        Card d = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.NOCORNER), new Corner(Symbols.FUNGI), new Corner(Symbols.QUILL), new Corner(Symbols.EMPTY) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.PURPLE);
+        Card e = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.MANUSCRIPT), new Corner(Symbols.QUILL), new Corner(Symbols.ANIMAL), new Corner(Symbols.PLANT) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.PURPLE);
+        Card f = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.INKWELL), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.PLANT) }, 1), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.PURPLE);
+        Card s = new Card(new StarterCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}), new CardBack(List.of(Symbols.ANIMAL, Symbols.INSECT, Symbols.PLANT), new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER)}), "starter", 1, Color.WHITE);
         p.setPlayerState(PlayerState.PLAY_CARD);
         //Place some cards
         p.getPlayerBoard().setStarterCard(s);
@@ -130,12 +130,12 @@ public class AchievementTest {
         Achievement c = new AchievementResources(Symbols.ANIMAL, 10);
         Achievement d = new AchievementResources(Symbols.INSECT, 11);
         //Define a bunch of cards to populate the board
-        Card e = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.INKWELL), new Corner(Symbols.INSECT), new Corner(Symbols.EMPTY) }, 14, 0);
-        Card f = new ResourceCard(new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.PLANT), new Corner(Symbols.PLANT), new Corner(Symbols.QUILL) }, 15, 0);
-        Card g = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.NOCORNER) }, 16, 0);
-        Card h = new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.FUNGI), new Corner(Symbols.ANIMAL), new Corner(Symbols.PLANT) }, 17, 0);
-        Card i = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.PLANT) }, 18, 0);
-        StarterCard s = new StarterCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT)}, 1, new CardBack(new ArrayList<>(List.of(Symbols.INSECT)), Color.WHITE, new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.PLANT), new Corner(Symbols.EMPTY), new Corner(Symbols.INSECT)}));
+        Card e = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.INKWELL), new Corner(Symbols.INSECT), new Corner(Symbols.EMPTY) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.PURPLE);
+        Card f = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.PLANT), new Corner(Symbols.PLANT), new Corner(Symbols.QUILL) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.PURPLE);
+        Card g = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.NOCORNER) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.PURPLE);
+        Card h = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.FUNGI), new Corner(Symbols.ANIMAL), new Corner(Symbols.PLANT) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.PURPLE);
+        Card i = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.PLANT) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.PURPLE);
+        Card s = new Card(new StarterCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}), new CardBack(List.of(Symbols.ANIMAL, Symbols.INSECT, Symbols.PLANT), new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER)}), "starter", 1, Color.WHITE);
         p.getPlayerBoard().setStarterCard(s);
         //p can place card
         p.setPlayerState(PlayerState.PLAY_CARD);
@@ -177,22 +177,22 @@ public class AchievementTest {
         Achievement c = new AchievementL(Color.GREEN, 3);
         Achievement d = new AchievementL(Color.PURPLE, 4);
         //Define 2 red cards
-        Card r1 = new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.FUNGI), new Corner(Symbols.ANIMAL), new Corner(Symbols.PLANT) }, 7, 0);
-        Card r2 = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), new Corner(Symbols.ANIMAL), new Corner(Symbols.PLANT) }, 8, 0);
+        Card r1 = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.FUNGI), new Corner(Symbols.ANIMAL), new Corner(Symbols.PLANT) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.RED);
+        Card r2 = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), new Corner(Symbols.ANIMAL), new Corner(Symbols.PLANT) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.RED);
         //Define 2 green cards
-        Card g1 = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.INKWELL), new Corner(Symbols.INSECT), new Corner(Symbols.EMPTY) }, 14, 0);
-        Card g2 = new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY) }, 15, 0);
+        Card g1 = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.INKWELL), new Corner(Symbols.INSECT), new Corner(Symbols.EMPTY) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.GREEN);
+        Card g2 = new Card(  new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.GREEN);
         //Define 2 blue cards
-        Card b1 = new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY) }, 24, 0);
-        Card b2 = new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY) }, 27, 0);
+        Card b1 = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.BLUE);
+        Card b2 = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.BLUE);
         //Define 2 purple cards
-        Card p1 = new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY) }, 32, 0);
-        Card p2 = new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY) }, 38, 0);
+        Card p1 = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.PURPLE);
+        Card p2 = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.PURPLE);
         //Define 2 cards to link the structure
-        Card place1 = new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY) }, 12, 0);
-        Card place2 = new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY) }, 26, 0);
-        Card place3 = new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY) }, 36, 0);
-        StarterCard s = new StarterCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT)}, 1, new CardBack(new ArrayList<>(List.of(Symbols.INSECT)), Color.WHITE, new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.PLANT), new Corner(Symbols.EMPTY), new Corner(Symbols.INSECT)}));
+        Card place1 = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.BLUE);
+        Card place2 = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.GREEN);
+        Card place3 = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.PURPLE);
+        Card s = new Card(new StarterCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}), new CardBack(List.of(Symbols.ANIMAL, Symbols.INSECT, Symbols.PLANT), new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER)}), "starter", 1, Color.WHITE);
         p.setPlayerState(PlayerState.PLAY_CARD);
         p.getPlayerBoard().setStarterCard(s);
         try {
@@ -229,18 +229,18 @@ public class AchievementTest {
         Achievement c = new AchievementItem(2, new ArrayList<>(List.of(Symbols.QUILL)), 9);
         Achievement d = new AchievementResources(Symbols.INSECT, 6);
         //Define a bunch of cards to fill the board
-        Card r1 = new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.INSECT), new Corner(Symbols.ANIMAL), new Corner(Symbols.PLANT) }, 7, 0);
-        Card r2 = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), new Corner(Symbols.QUILL), new Corner(Symbols.PLANT) }, 8, 0);
-        Card g1 = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.INKWELL), new Corner(Symbols.INSECT), new Corner(Symbols.QUILL) }, 14, 0);
-        Card g2 = new ResourceCard(new Corner[]{new Corner(Symbols.QUILL), new Corner(Symbols.ANIMAL), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY) }, 15, 0);
-        Card g3 = new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY) }, 12, 0);
-        Card b1 = new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.FUNGI), new Corner(Symbols.INSECT) }, 24, 0);
-        Card b2 = new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.QUILL), new Corner(Symbols.INSECT), new Corner(Symbols.QUILL) }, 27, 0);
-        Card p1 = new ResourceCard(new Corner[]{new Corner(Symbols.QUILL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY) }, 32, 0);
-        Card p2 = new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.QUILL), new Corner(Symbols.QUILL) }, 38, 0);
-        Card b3 = new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.QUILL), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY) }, 26, 0);
-        Card p3 = new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.QUILL), new Corner(Symbols.EMPTY) }, 36, 0);
-        StarterCard s = new StarterCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT)}, 1, new CardBack(new ArrayList<>(List.of(Symbols.INSECT)), Color.WHITE, new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.PLANT), new Corner(Symbols.EMPTY), new Corner(Symbols.INSECT)}));
+        Card r1 = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.INSECT), new Corner(Symbols.ANIMAL), new Corner(Symbols.PLANT) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.RED);
+        Card r2 = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), new Corner(Symbols.QUILL), new Corner(Symbols.PLANT) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.RED);
+        Card g1 = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.INKWELL), new Corner(Symbols.INSECT), new Corner(Symbols.QUILL) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.GREEN);
+        Card g2 = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.QUILL), new Corner(Symbols.ANIMAL), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.GREEN);
+        Card g3 = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.GREEN);
+        Card b1 = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.FUNGI), new Corner(Symbols.INSECT) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.BLUE);
+        Card b2 = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.QUILL), new Corner(Symbols.INSECT), new Corner(Symbols.QUILL) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.BLUE);
+        Card p1 = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.QUILL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.PURPLE);
+        Card p2 = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.QUILL), new Corner(Symbols.QUILL) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.PURPLE);
+        Card b3 = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.QUILL), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.BLUE);
+        Card p3 = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.QUILL), new Corner(Symbols.EMPTY) }, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.PURPLE);
+        Card s = new Card(new StarterCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}), new CardBack(List.of(Symbols.ANIMAL, Symbols.INSECT, Symbols.PLANT), new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER)}), "starter", 1, Color.WHITE);
         p.setPlayerState(PlayerState.PLAY_CARD);
         p.getPlayerBoard().setStarterCard(s);
         //Placing the cards

@@ -26,6 +26,7 @@ public class SocketConnection extends Connection implements Runnable {
     private Timer catchPing;
     private Timer ping;
     private boolean firstTime = true;
+    private boolean disconnected = false;
     private BlockingQueue<Message> messageQueue;
     private boolean processingAction;
     private final Object outputLock = new Object();
@@ -48,24 +49,25 @@ public class SocketConnection extends Connection implements Runnable {
     @Override
     public void run() {
         //TODO: capire quando chiudere connessione
-        while(this.getConnectionStatus()) {
-            readMessage();
-        }
-    }
-
-    public void readMessage(){
-        Message message;
         try {
-            message = (Message) in.readObject();
-            if (message.getType().equals(MessageType.CATCH_PING)){
-                catchPing();
-            }
-            else{
-                messageQueue.add(message);
+            while(!Thread.currentThread().isInterrupted()) {
+                    readMessage();
             }
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("Connection successfully ended");
             System.err.println(e.getMessage());
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    public void readMessage() throws IOException, ClassNotFoundException {
+        Message message;
+        message = (Message) in.readObject();
+        if (message.getType().equals(MessageType.CATCH_PING)){
+            catchPing();
+        }
+        else{
+            messageQueue.add(message);
         }
     }
 
@@ -97,41 +99,31 @@ public class SocketConnection extends Connection implements Runnable {
         ping.schedule(new TimerTask() {
             @Override
             public void run() {
-                if (!lobby.getGame().getGameState().equals(GameState.END)) {
-                    sendMessage(new PingMessage());
-                }
-                else {
-                    cancelPing();
-                }
+                sendMessage(new PingMessage());
             }
-        }, 0, 5000);
+        }, 0, 4000);
         if (firstTime) {
             firstTime = false;
             catchPing.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    cancelPing();
                     onDisconnect();
+                    cancelPing();
                 }
-            }, 8000, 8000);
+            }, 5000, 5000);
         }
     }
 
     public synchronized void catchPing(){
-        if (!lobby.getGame().getGameState().equals(GameState.END)) {
-            catchPing.cancel();
-            catchPing = new Timer();
-            catchPing.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    cancelPing();
-                    onDisconnect();
-                }
-            }, 8000, 8000);
-        }
-        else {
-            cancelPing();
-        }
+        catchPing.cancel();
+        catchPing = new Timer();
+        catchPing.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                onDisconnect();
+                cancelPing();
+            }
+        }, 5000, 5000);
     }
 
     public void cancelPing(){
@@ -140,23 +132,30 @@ public class SocketConnection extends Connection implements Runnable {
     }
 
     public void onDisconnect(){
-        try {
-            System.err.println(username + " got disconnected");
-            in.close();
-            out.close();
-            socket.close();
-            lobby.getGame().getPlayerByUsername(username).setDisconnected(true);
-            this.setConnectionStatus(false);
-            server.addDisconnectedPlayer(username);
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
+        if (!lobby.getGame().getGameState().equals(GameState.END)) {
+            try {
+                this.disconnected = true;
+                lobby.getGame().getPlayerByUsername(username).setDisconnected(true);
+                server.addDisconnectedPlayer(username, lobby);
+                setConnectionStatus(false);
+                if (lobby.getGame().getPlayerInTurn().getUsername().equals(username)){
+                    lobby.disconnectedWhileInTurn(username);
+                }
+                System.err.println(username + " got disconnected");
+                in.close();
+                out.close();
+                socket.close();
+            } catch (IOException e) {
+                System.err.println(e.getMessage());
+            }
         }
     }
 
     @Override
     public void reconnect(Connection oldConnection) {
         this.lobby = oldConnection.getLobby();
-        this.lobby.reconnectBackup(this/*, oldConnection*/);
+        lobby.addAction(new ActionMessage(this, () -> this.lobby.reconnectBackup(this/*, oldConnection*/)));
+        this.disconnected = false;
     }
 
     @Override
@@ -181,19 +180,21 @@ public class SocketConnection extends Connection implements Runnable {
 
     @Override
     public void sendMessage(Message message) {
-        try {
-            synchronized (outputLock){
-                out.writeObject(message);
-                out.reset();
+        if(!disconnected) {
+            try {
+                synchronized (outputLock) {
+                    out.writeObject(message);
+                    out.reset();
+                }
+            } catch (IOException e) {
+                System.err.println(e.getMessage() + " SocketConnection/sendMessage");
             }
-        } catch (IOException e) {
-            System.err.println(e.getMessage() + " SocketConnection/sendMessage");
         }
     }
 
     @Override
-    public void joinGame(List<Controller> activeGames) {
-        sendMessage(new FreeLobbyMessage(activeGames.size()));
+    public void joinGame(List<Integer> startingGamesId, List<Integer> gamesWhitDisconnectionsId) {
+        sendMessage(new FreeLobbyMessage(startingGamesId, gamesWhitDisconnectionsId));
     }
 
     @Override
@@ -204,6 +205,7 @@ public class SocketConnection extends Connection implements Runnable {
     public void onMessage(Message message){
         switch (message.getType()){
             case REMOVE_FROM_SERVER:
+                this.cancelPing();
                 int playersToDelete = lobby.getGame().getLobbySize()-1;
                 lobby.getGame().setLobbySize(playersToDelete);
                 server.removePlayers(username);
@@ -228,19 +230,38 @@ public class SocketConnection extends Connection implements Runnable {
                 }
                 break;
             case LOGIN_RESPONSE:
-                if (server.usernameTaken(message.getSender())){
-                    sendMessage(new UsernameRequestMessage());
-                }
-                else{
-                    this.username = message.getSender();
-                    server.login(this, this.username);
-                }
+                server.login(this);
                 break;
             case NUM_PLAYER_RESPONSE:
-                server.createLobby(message.getSender(), ((NumPlayerResponseMessage) message).getSize());
+                if (server.usernameTaken(message.getSender())){
+                    sendMessage(new UsernameRequestMessage(true, ((NumPlayerResponseMessage) message).getSize()));
+                }
+                else {
+                    this.username = message.getSender();
+                    server.setClient(this, username);
+                    server.createLobby(username, ((NumPlayerResponseMessage) message).getSize());
+                }
                 break;
             case LOBBY_INDEX:
-                server.joinLobby(message.getSender(), ((LobbyIndexMessage) message).getChoice());
+                if (server.usernameTaken(message.getSender())){
+                    sendMessage(new UsernameRequestMessage(false, ((LobbyIndexMessage) message).getChoice()));
+                }
+                else {
+                    this.username = message.getSender();
+                    server.setClient(this, username);
+                    server.joinLobby(username, ((LobbyIndexMessage) message).getChoice());
+                }
+                break;
+            case RECONNECT_LOBBY_INDEX:
+                int room = ((ReconnectLobbyIndexMessage) message).getChoice();
+                if (!server.userNotDisconnected(username, room)) {
+                    System.out.println("there is no player disconnected in game "+ room + "with that name.");
+                    server.login(this);
+                }
+                else {
+                    this.username = message.getSender();
+                    server.reconnectPlayer(this, message.getSender());
+                }
                 break;
             case PLACE_STARTER_CARD:
                 lobby.addAction(new ActionMessage(this, () -> lobby.placeStarterCard(this, ((PlaceStarterRequestMessage) message).getCard())));

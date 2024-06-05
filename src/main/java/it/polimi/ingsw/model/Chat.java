@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class Chat implements Serializable {
 
-    public static final int CHATDIM = 7;
+    public static final int CHATDIM = 25;
 
     /** game's id */
     private Game game;
@@ -21,7 +21,7 @@ public class Chat implements Serializable {
         this.players = game.getPlayers();
     }
 
-    /** this method is useful to send messages */
+    /** this method saves the messages into the players' chat according to the sender */
 
     public void forwardMessage(Player sender, Player receiver, boolean global, String message) throws PlayerNotFoundException {
         if (global){

@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.card.Achievement;
 import it.polimi.ingsw.model.card.Card;
 import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.GameState;
+import it.polimi.ingsw.model.enums.PlayerState;
 import it.polimi.ingsw.model.exceptions.*;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.messages.*;
@@ -14,6 +15,7 @@ import it.polimi.ingsw.observer.Observable;
 
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Controller extends Observable {
@@ -21,10 +23,11 @@ public class Controller extends Observable {
      * Reference to the game (model) controlled by {@code this}
      */
     private final Game game;
+    private final int id;
     /**
      * Map to connect the different Connections (client handlers) to their representation on the model (Player)
      */
-    private final Map<Connection, Player> connectedPlayers;
+    private final ConcurrentHashMap<Connection, Player> connectedPlayers;
     private final TurnHandler turnHandler;
     /**
      * Queue that stores all the actions required by the players to be carried out by the controller
@@ -37,11 +40,16 @@ public class Controller extends Observable {
 
     //TODO: mettere controllo lato server per controllare che client non scammi
 
-    public Controller(int numPlayers){
+    public Controller(int numPlayers, int id){
+        this.id = id;
         this.game = new Game(numPlayers);
         this.turnHandler = new TurnHandler(game);
-        this.connectedPlayers = Collections.synchronizedMap(new HashMap<>());
+        this.connectedPlayers = new ConcurrentHashMap<>();
         this.actionQueue = new LinkedBlockingQueue<>();
+    }
+
+    public int getId(){
+        return id;
     }
 
     /**
@@ -88,6 +96,7 @@ public class Controller extends Observable {
      * @param user of the client who's joining the game
      * @return {@code true} if the game is full, {@code false} otherwise
      */
+    //TODO: controlla che quando faccio disconnessione non rifaccio più il setup
     public boolean joinGame(Connection user){
         Player player = new Player(user.getUsername(), game);
         this.connectedPlayers.put(user, player);
@@ -131,6 +140,8 @@ public class Controller extends Observable {
         //sends the color of the first card of the deck
         notifyAll(new UpdateDeckMessage(game.getGameBoard().getResourceDeck().getFirst().getColor(), true));
         notifyAll(new UpdateDeckMessage(game.getGameBoard().getGoldDeck().getFirst().getColor(), false));
+        //setting the first player to set up its game
+        playerInTurn = game.getFirstPlayer().getUsername();
         //Sends each player their private information
         for (Connection u : this.connectedPlayers.keySet()) {
             Player p = getPlayerByClient(u);
@@ -142,8 +153,10 @@ public class Controller extends Observable {
             u.sendMessage(new AchievementMessage(MessageType.PRIVATE_ACHIEVEMENT, p.getPersonalObj()));
             //Send players their state
             notifyAll(new PlayerStateMessage(p.getPlayerState(), p.getUsername()));
+            if (!u.getUsername().equals(playerInTurn)){
+                u.sendMessage(new GenericMessage("Waiting for other players to finish their setup"));
+            }
         }
-        playerInTurn = game.getFirstPlayer().getUsername();
         pickQueue();
     }
 
@@ -169,8 +182,8 @@ public class Controller extends Observable {
                 turnHandler.startEnd(this.getPlayerByClient(user));
             }
             turnHandler.changePlayerState(this.getPlayerByClient(user));
-            notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState(), user.getUsername()));
-            notifyAll(new UpdateDeckMessage(deck.getFirst().getBack().getColor(), isResource));
+            //notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState(), user.getUsername()));
+            notifyAll(new UpdateDeckMessage(deck.getFirst().getColor(), isResource));
             user.sendMessage(new UpdateCardMessage(drawedCard));
         } catch (EmptyException | NotInTurnException | FullHandException e) {
             user.sendMessage(new ErrorMessage(e.getMessage()));
@@ -206,7 +219,7 @@ public class Controller extends Observable {
                 notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_RESOURCE_UPDATE, game.getGameBoard().getCommonResource()[index], index));
             }
             turnHandler.changePlayerState(this.getPlayerByClient(user));
-            notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState(), user.getUsername()));
+            //notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState(), user.getUsername()));
             user.sendMessage(new UpdateCardMessage(drawedCard));
         } catch (CardNotFoundException | NotInTurnException | FullHandException e) {
             user.sendMessage(new ErrorMessage(e.getMessage()));
@@ -240,7 +253,7 @@ public class Controller extends Observable {
             }
             turnHandler.changePlayerState(p);
             //notifies all players the changed made by user
-            notifyAll(new PlayerStateMessage(p.getPlayerState(), p.getUsername()));
+            //notifyAll(new PlayerStateMessage(p.getPlayerState(), p.getUsername()));
             notifyAll(new ScoreUpdateMessage(p.getPoints(), p.getUsername()));
             notifyAll(new PlayerBoardUpdateMessage(p.getPlayerBoard(), p.getUsername()));
         } catch (NotInTurnException | OccupiedCornerException | CostNotSatisfiedException |
@@ -282,6 +295,7 @@ public class Controller extends Observable {
         this.game.getAvailableColors().remove(color);
         getPlayerByClient(user).setPionColor(color);
         notifyAll(new ColorResponseMessage(user.getUsername(), color));
+        notifyAll(new PlayerBoardUpdateMessage(getPlayerByClient(user).getPlayerBoard(), user.getUsername()));
         playerInTurn = turnHandler.changeSetupPlayer();
         if (playerInTurn == null){
             setupFinished = true;
@@ -300,13 +314,18 @@ public class Controller extends Observable {
         notifyAll(new ChatMessage(getPlayerByClient(sender).getChat()));
     }
 
-    public Player getPlayerByClient(Connection user){
+    public synchronized Player getPlayerByClient(Connection user){
         return this.connectedPlayers.get(user);
+    }
+
+    public void disconnectedWhileInTurn(String username){
+        Player player = game.getPlayerByUsername(username);
+        turnHandler.disconnectedWhileInTurn(player);
     }
 
     /**
      * Sends back the model state to the player who has reconnected
-     * Precondition: user.username is equal to one, and only one, username //TODO: Verificare che la precondizione sia sempre verificata
+     * Precondition: user.username is equal to one, and only one, username
      * @param user who reconnected
      */
     public void reconnectBackup(Connection user /*, Connection oldConnection*/){
@@ -318,7 +337,9 @@ public class Controller extends Observable {
         String username = user.getUsername();
         Player reconnectedPlayer = null;
         List<Player> opponents = new ArrayList<>();
-        for (Connection c : connectedPlayers.keySet()){
+        Set<Connection> connectionSet = connectedPlayers.keySet();
+        //TODO: corsa di dati
+        for (Connection c : connectionSet){
             if (c.getUsername().equalsIgnoreCase(username)){
                 reconnectedPlayer = getPlayerByClient(c);
                 connectedPlayers.remove(c);

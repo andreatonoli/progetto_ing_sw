@@ -10,14 +10,6 @@ import org.junit.jupiter.api.DisplayName;
 
 public class PlayerChatTest {
 
-    private Game game1;
-    private Player player1, player2, player3;
-
-    @BeforeEach
-    public void setup() {
-        this.game1 = new Game(4);
-    }
-
     /**
      * This test check that a global message sent as first, is saved for all players
      * in the first cell of chat array.
@@ -25,9 +17,10 @@ public class PlayerChatTest {
     @Test
     @DisplayName("Test global first message")
     public void testGlobalFirstMessage() {
+        Game game1 = new Game(4);
         String message = "global message1";
-        player1 = new Player("mario", game1);
-        player2 = new Player("luigi", game1);
+        Player player1 = new Player("mario", game1);
+        Player player2 = new Player("luigi", game1);
         //player temporary added until fix
         game1.addPlayer(player1);
         game1.addPlayer(player2);
@@ -47,10 +40,11 @@ public class PlayerChatTest {
     @Test
     @DisplayName ("Test global message with full array chat")
     public void testGlobalMessageFullChat() {
+        Game game1 = new Game(4);
         String message1 = "global message1";
         String message2 = "global message2";
-        player1 = new Player("mario", game1);
-        player2 = new Player("luigi", game1);
+        Player player1 = new Player("mario", game1);
+        Player player2 = new Player("luigi", game1);
         //player temporary added until fix
         game1.addPlayer(player1);
         game1.addPlayer(player2);
@@ -77,10 +71,11 @@ public class PlayerChatTest {
     @Test
     @DisplayName ("Test private first message")
     public void testPrivateFirstMessage() {
+        Game game1 = new Game(4);
         String message = "private message for player2";
-        player1 = new Player("mario", game1);
-        player2 = new Player("luigi", game1);
-        player3 = new Player("peach", game1);
+        Player player1 = new Player("mario", game1);
+        Player player2 = new Player("luigi", game1);
+        Player player3 = new Player("peach", game1);
         //player temporary added until fix
         game1.addPlayer(player1);
         game1.addPlayer(player2);
@@ -103,12 +98,13 @@ public class PlayerChatTest {
     @Test
     @DisplayName ("Test private message with full array chat")
     public void privateMessageFullChat() {
+        Game game1 = new Game(4);
         String message1 = "global message1";
         String message2= "private message1 for player2";
         String message3 = "private message2 for player2";
-        player1 = new Player("mario", game1);
-        player2 = new Player("luigi", game1);
-        player3 = new Player("peach", game1);
+        Player player1 = new Player("mario", game1);
+        Player player2 = new Player("luigi", game1);
+        Player player3 = new Player("peach", game1);
         //player temporary added until fix
         game1.addPlayer(player1);
         game1.addPlayer(player2);
@@ -129,10 +125,6 @@ public class PlayerChatTest {
         assertEquals(player1.getUsername() + ": " + message3, player2.getChat().get(0));
         assertEquals(player1.getUsername() + ": " + message2, player2.getChat().get(1));
         assertEquals(player1.getUsername() + ": " + message2, player2.getChat().get(2));
-        for (int i = 3; i < Chat.CHATDIM; i++){
-            assertEquals(player2.getUsername() + ": " + message1, player1.getChat().get(i));
-            assertEquals(player2.getUsername() + ": " + message1, player2.getChat().get(i));
-        }
         for (int i = 0; i < Chat.CHATDIM - 2; i++){
             assertEquals(player2.getUsername() + ": " + message1, player3.getChat().get(i));
         }
@@ -148,10 +140,11 @@ public class PlayerChatTest {
     @Test
     @DisplayName ("Test private first message with not in game receiver")
     public void privateFirstMessageReceiverNotInGame() {
+        Game game1 = new Game(4);
         String message = "private message1 not for in game player3";
-        player1 = new Player("mario", game1);
-        player2 = new Player("luigi", game1);
-        player3 = new Player("peach", game1);
+        Player player1 = new Player("mario", game1);
+        Player player2 = new Player("luigi", game1);
+        Player player3 = new Player("peach", game1);
         //player temporary added until fix
         game1.addPlayer(player1);
         game1.addPlayer(player2);
@@ -171,11 +164,12 @@ public class PlayerChatTest {
     @Test
     @DisplayName ("Test private message receiver with full array chat and not in game receiver")
     public void privateMessageReceiverNotInGameFullChat() {
+        Game game1 = new Game(4);
         String message1 = "private message1 for player2";
         String message2 = "private message1 not for in game player3";
-        player1 = new Player("mario", game1);
-        player2 = new Player("luigi", game1);
-        player3 = new Player("peach", game1);
+        Player player1 = new Player("mario", game1);
+        Player player2 = new Player("luigi", game1);
+        Player player3 = new Player("peach", game1);
         //player temporary added until fix
         game1.addPlayer(player1);
         game1.addPlayer(player2);

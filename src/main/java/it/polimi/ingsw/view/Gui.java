@@ -13,7 +13,6 @@ import it.polimi.ingsw.view.controllers.ColorChoiceSceneController;
 import it.polimi.ingsw.view.controllers.LobbiesSceneController;
 import it.polimi.ingsw.view.controllers.StarterFlipSceneController;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -55,7 +54,7 @@ public class Gui extends Application implements Ui{
 
     @Override
     public void start(Stage s) throws Exception {
-        StarterCard s1 = new StarterCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}, 1, new CardBack(new ArrayList<>(List.of(Symbols.FUNGI, Symbols.PLANT, Symbols.ANIMAL)), Color.WHITE, new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY)}));
+        //StarterCard s1 = new StarterCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}, 1, new CardBack(new ArrayList<>(List.of(Symbols.FUNGI, Symbols.PLANT, Symbols.ANIMAL)), Color.WHITE, new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY)}));
 
         Achievement a1 = new AchievementItem(3, new ArrayList<>(List.of(Symbols.QUILL, Symbols.INKWELL, Symbols.MANUSCRIPT)), 13);
         Achievement a2 = new AchievementDiagonal(Color.PURPLE, 4);
@@ -144,11 +143,11 @@ public class Gui extends Application implements Ui{
     }
 
     @Override
-    public int selectGame(int freeLobbies) {
+    public int selectGame(List<Integer> startingGamesId, List<Integer> gamesWhitDisconnectionsId) {
         String result = null;
         loadScene(GuiScenes.LOBBIES_SCENE);
         LobbiesSceneController c = loader.getController();
-        c.setLobbies(freeLobbies);
+        c.setLobbies(startingGamesId);
         stage.getScene().setRoot(root);
 
         try {
@@ -162,7 +161,7 @@ public class Gui extends Application implements Ui{
         }
 
         if(result.equals("newLobby")){
-            return freeLobbies;
+            return -1;
         }
         else{
             return Integer.parseInt(result);
@@ -188,7 +187,7 @@ public class Gui extends Application implements Ui{
     }
 
     @Override
-    public boolean askSide() {
+    public boolean askSide(Card starterCard) {
         String result = null;
         loadScene(GuiScenes.STARTER_FLIP_SCENE);
         StarterFlipSceneController c = loader.getController();
@@ -214,37 +213,7 @@ public class Gui extends Application implements Ui{
     }
 
     @Override
-    public void printView(PlayerBean player, GameBean game, ArrayList<PlayerBean> players) {
-
-    }
-
-    @Override
     public void printViewWithCommands(PlayerBean player, GameBean game, ArrayList<PlayerBean> players) {
-
-    }
-
-    @Override
-    public void printCardFromPlayerBoard(PlayerBoard playerBoard, int[] coord) {
-
-    }
-
-    @Override
-    public void printStarterCard(Card card) {
-
-    }
-
-    @Override
-    public void printCard(PlayerBoard playerBoard, Card card) {
-
-    }
-
-    @Override
-    public void printCard(Card card) {
-
-    }
-
-    @Override
-    public void printAchievement(Achievement achievement) {
 
     }
 

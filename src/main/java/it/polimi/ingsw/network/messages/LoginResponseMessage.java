@@ -1,13 +1,13 @@
 package it.polimi.ingsw.network.messages;
 
 public class LoginResponseMessage extends Message{
-    public LoginResponseMessage(String username){
-        super(MessageType.LOGIN_RESPONSE, username);
+    public LoginResponseMessage(){
+        super(MessageType.LOGIN_RESPONSE, null);
     }
     @Override
     public String toString(){
         return "LoginResponse{" +
-                "sender = " + getSender() +
+                "sender = " + null +
                 '}';
     }
 }

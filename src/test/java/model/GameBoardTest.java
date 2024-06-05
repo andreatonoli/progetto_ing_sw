@@ -22,12 +22,11 @@ class GameBoardTest {
     public void resourceCardTest(){
         Game game = new Game(2);
         GameBoard board = game.getGameBoard();
-        ResourceCard firstCard = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.FUNGI)}, 1, 0);
-        ResourceCard midCard = new ResourceCard(new Corner[]{new Corner(Symbols.NOCORNER), new Corner(Symbols.PLANT), new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY)}, 20, 1);
-        ResourceCard lastCard = new ResourceCard(new Corner[]{new Corner(Symbols.NOCORNER), new Corner(Symbols.INSECT), new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY)}, 40, 1);
+        Card firstCard = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.FUNGI)}, 0), new CardBack(List.of(Symbols.FUNGI)), "resource", 1, Color.RED);
+        Card midCard = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.NOCORNER), new Corner(Symbols.PLANT), new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY)}, 1), new CardBack(List.of(Symbols.FUNGI)), "resource", 20, Color.BLUE);
+        Card lastCard = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.NOCORNER), new Corner(Symbols.INSECT), new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY)}, 1), new CardBack(List.of(Symbols.FUNGI)), "resource", 40, Color.PURPLE );
         LinkedList<Card> resourceDeck = board.getResourceDeck();
-
-        //firstCard
+       //firstCard
         assertEquals(resourceDeck.getFirst().getCardNumber(), firstCard.getCardNumber());
         assertEquals(resourceDeck.getFirst().getPoints(), firstCard.getPoints());
         for (CornerEnum c : CornerEnum.values()){
@@ -45,21 +44,18 @@ class GameBoardTest {
         for (CornerEnum c : CornerEnum.values()){
             assertEquals(resourceDeck.get(39).getCornerSymbol(c), lastCard.getCornerSymbol(c));
         }
-
-        assertEquals(40,resourceDeck.size());
+       assertEquals(40,resourceDeck.size());
     }
-
-    @Test
+   @Test
     @DisplayName("checking goldCard deck")
     public void goldCardTest(){
         Game game = new Game(2);
         GameBoard board = game.getGameBoard();
-        GoldCard firstCard = new GoldCard(new Corner[]{new Corner(Symbols.NOCORNER), new Corner(Symbols.EMPTY), new Corner(Symbols.QUILL), new Corner(Symbols.EMPTY)}, 1, Condition.ITEM, 1,new Integer[]{2,0,1,0},Symbols.QUILL);
-        GoldCard midCard = new GoldCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER)}, 5, Condition.NOTHING, 20,new Integer[]{0,5,0,0}, null);
-        GoldCard lastCard = new GoldCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER)}, 5, Condition.NOTHING, 40,new Integer[]{0,0,0,5},null);
+        Card firstCard = new Card( new GoldCard(new Corner[]{new Corner(Symbols.NOCORNER), new Corner(Symbols.EMPTY), new Corner(Symbols.QUILL), new Corner(Symbols.EMPTY)}, 1, Condition.ITEM, new Integer[]{2,0,1,0},Symbols.QUILL), new CardBack(List.of(Symbols.FUNGI)), "gold", 1, Color.RED);
+        Card midCard = new Card( new GoldCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER)}, 5, Condition.NOTHING, new Integer[]{0,5,0,0}, null), new CardBack(List.of(Symbols.FUNGI)), "gold", 20, Color.BLUE);
+        Card lastCard = new Card( new GoldCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER)}, 5, Condition.NOTHING, new Integer[]{0,0,0,5},null), new CardBack(List.of(Symbols.FUNGI)), "gold", 40, Color.PURPLE);
         LinkedList<Card> goldDeck = board.getGoldDeck();
-
-        //firstCard
+       //firstCard
         assertEquals(goldDeck.getFirst().getCardNumber(), firstCard.getCardNumber());
         assertEquals(goldDeck.getFirst().getPoints(), firstCard.getPoints());
         assertEquals(goldDeck.getFirst().getCondition(), firstCard.getCondition());
@@ -72,8 +68,7 @@ class GameBoardTest {
         for (CornerEnum c : CornerEnum.values()){
             assertEquals(goldDeck.getFirst().getCornerSymbol(c), firstCard.getCornerSymbol(c));
         }
-
-        //midCard
+       //midCard
         assertEquals(goldDeck.get(19).getCardNumber(), midCard.getCardNumber());
         assertEquals(goldDeck.get(19).getPoints(), midCard.getPoints());
         assertEquals(goldDeck.get(19).getCondition(), midCard.getCondition());
@@ -86,8 +81,7 @@ class GameBoardTest {
         for (CornerEnum c : CornerEnum.values()){
             assertEquals(goldDeck.get(19).getCornerSymbol(c), midCard.getCornerSymbol(c));
         }
-
-        //lastCard
+       //lastCard
         assertEquals(goldDeck.get(39).getCardNumber(), lastCard.getCardNumber());
         assertEquals(goldDeck.get(39).getPoints(), lastCard.getPoints());
         assertEquals(goldDeck.get(39).getCondition(), lastCard.getCondition());
@@ -100,21 +94,18 @@ class GameBoardTest {
         for (CornerEnum c : CornerEnum.values()){
             assertEquals(goldDeck.get(39).getCornerSymbol(c), lastCard.getCornerSymbol(c));
         }
-
-        assertEquals(40,goldDeck.size());
+       assertEquals(40,goldDeck.size());
     }
-
-    @Test
+   @Test
     @DisplayName("checking starterCard deck")
     public void starterCardTest(){
         Game game = new Game(2);
         GameBoard board = game.getGameBoard();
-        StarterCard firstCard = new StarterCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT)}, 1, new CardBack(new ArrayList<>(List.of(Symbols.INSECT)), Color.WHITE, new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.PLANT), new Corner(Symbols.EMPTY), new Corner(Symbols.INSECT)}));
-        StarterCard midCard = new StarterCard(new Corner[]{new Corner(Symbols.INSECT), new Corner(Symbols.ANIMAL), new Corner(Symbols.PLANT), new Corner(Symbols.FUNGI)}, 3, new CardBack(new ArrayList<>(List.of(Symbols.PLANT,Symbols.FUNGI)), Color.WHITE, new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY)}));
-        StarterCard lastCard = new StarterCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.PLANT)}, 6, new CardBack(new ArrayList<>(List.of(Symbols.PLANT,Symbols.ANIMAL,Symbols.FUNGI)), Color.WHITE, new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER)}));
+        Card firstCard = new Card( new StarterCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT)}), new CardBack(new ArrayList<>(List.of(Symbols.INSECT)), new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.PLANT), new Corner(Symbols.EMPTY), new Corner(Symbols.INSECT)}), "starter", 1, Color.WHITE);
+        Card midCard = new Card( new StarterCard(new Corner[]{new Corner(Symbols.INSECT), new Corner(Symbols.ANIMAL), new Corner(Symbols.PLANT), new Corner(Symbols.FUNGI)}), new CardBack(new ArrayList<>(List.of(Symbols.PLANT,Symbols.FUNGI)), new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY)}), "starter", 3, Color.WHITE);
+        Card lastCard = new Card( new StarterCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.PLANT)}), new CardBack(new ArrayList<>(List.of(Symbols.PLANT,Symbols.ANIMAL,Symbols.FUNGI)), new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER)}), "starter", 6, Color.WHITE);
         LinkedList<Card> starterDeck = board.getStarterDeck();
-
-        //firstCard front
+       //firstCard front
         assertEquals(starterDeck.getFirst().getCardNumber(), firstCard.getCardNumber());
         for (CornerEnum c : CornerEnum.values()){
             assertEquals(starterDeck.getFirst().getCornerSymbol(c), firstCard.getCornerSymbol(c));
@@ -129,8 +120,7 @@ class GameBoardTest {
         for (CornerEnum c : CornerEnum.values()){
             assertEquals(starterDeck.getFirst().getCornerSymbol(c), firstCard.getCornerSymbol(c));
         }
-
-        //midCard front
+       //midCard front
         assertEquals(starterDeck.get(2).getCardNumber(), midCard.getCardNumber());
         for (CornerEnum c : CornerEnum.values()){
             assertEquals(starterDeck.get(2).getCornerSymbol(c), midCard.getCornerSymbol(c));
@@ -145,8 +135,7 @@ class GameBoardTest {
         for (CornerEnum c : CornerEnum.values()){
             assertEquals(starterDeck.get(2).getCornerSymbol(c), midCard.getCornerSymbol(c));
         }
-
-        //lastCard front
+       //lastCard front
         assertEquals(lastCard.getCardNumber(),starterDeck.get(5).getCardNumber());
         for (CornerEnum c : CornerEnum.values()){
             assertEquals(starterDeck.get(5).getCornerSymbol(c), lastCard.getCornerSymbol(c));
@@ -161,8 +150,7 @@ class GameBoardTest {
         for (CornerEnum c : CornerEnum.values()){
             assertEquals(starterDeck.get(5).getCornerSymbol(c), lastCard.getCornerSymbol(c));
         }
-
-        assertEquals(6,starterDeck.size());
+       assertEquals(6,starterDeck.size());
     }
 
     @Test

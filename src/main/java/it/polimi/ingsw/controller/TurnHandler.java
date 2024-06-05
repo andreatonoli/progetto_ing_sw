@@ -20,6 +20,7 @@ public class TurnHandler extends Observable {
     private int j = 0;
     private boolean endingCycle = false;
     private boolean endingByPlacingCard = false;
+    private boolean disconnectedWhileInTurn = false;
     private int endCountDown;
 
     public TurnHandler(Game game){
@@ -34,11 +35,23 @@ public class TurnHandler extends Observable {
         }
     }
 
+    public void disconnectedWhileInTurn(Player player){
+        if (player.getPlayerState().equals(PlayerState.PLAY_CARD)){
+            player.setPlayerState(PlayerState.DRAW_CARD);
+        }
+        else if (player.getPlayerState().equals(PlayerState.DRAW_CARD)) {
+            player.setPlayerState(PlayerState.PLAY_CARD);
+        }
+        disconnectedWhileInTurn = true;
+        this.changePlayerState(player);
+        disconnectedWhileInTurn = false;
+    }
+
     public void changePlayerState(Player player){
-        if (game.getLobbySize()-2 >= game.getDisconnections()) {
+        if (game.getDisconnections()+1 < game.getLobbySize() || disconnectedWhileInTurn) {
             int i = (player.getPlayerState().ordinal() + 1) % 3;
             if (endingCycle && endCountDown==0 && PlayerState.values()[i].equals(PlayerState.DRAW_CARD)){
-                i++;
+                i=2;
             }
             if (player.isDisconnected() && PlayerState.values()[i].equals(PlayerState.DRAW_CARD)) {
                 try {
@@ -60,7 +73,8 @@ public class TurnHandler extends Observable {
                     }
                     endCountDown--;
                 }
-                Player playerInTurn = game.setPlayerInTurn();
+                game.setPlayerInTurn();
+                Player playerInTurn = game.getPlayerInTurn();
                 if (endingCycle && playerInTurn.isFirstToPlay()){
                     if (endCountDown > 0){
                         endCountDown--;
@@ -79,9 +93,10 @@ public class TurnHandler extends Observable {
                 notifyAll(new PlayerBoardUpdateMessage(playerInTurn.getPlayerBoard(), playerInTurn.getUsername()));
             }
             player.setPlayerState(PlayerState.values()[i]);
+            notifyAll(new PlayerStateMessage(player.getPlayerState(), player.getUsername()));
         }
         else {
-            notifyAll(new GenericMessage("only one player connected, the other players have one minute to reconnect."));
+            notifyAll(new WaitingReconnectionMessage(player.getUsername()));
             Timer ping = new Timer();
             ping.schedule(new TimerTask() {
                 @Override
@@ -90,8 +105,8 @@ public class TurnHandler extends Observable {
                     declareWinnerByDisconnection(winner);
                     ping.cancel();
                 }
-            }, 60000, 2000);
-            while (game.getDisconnections()<2);
+            }, 120000, 2000);
+            while (game.getDisconnections()+1 >= game.getLobbySize());
             ping.cancel();
             this.changePlayerState(player);
         }

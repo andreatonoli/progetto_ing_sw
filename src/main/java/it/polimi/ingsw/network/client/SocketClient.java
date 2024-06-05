@@ -33,24 +33,22 @@ public class SocketClient implements ClientInterface {
     private final BlockingQueue<Message> messageQueue;
     private boolean processingAction;
     private final Object outputLock = new Object();
-    public SocketClient(String username, String address, int port, Ui view){
-        this.username = username;
+    public SocketClient(String address, int port, Ui view){
         this.view = view;
-        this.player = new PlayerBean(this.username);
         this.opponents = new ArrayList<>();
         this.game = new GameBean();
         messageQueue = new LinkedBlockingQueue<>();
         processingAction = false;
         pickQueue();
-        new Thread(() -> { this.startClient(address, port); }).start();
+        new Thread(() -> this.startClient(address, port)).start();
     }
+    //TODO: mi collego con username null e non lo setto mai più
     public void startClient(String address, int port){
         try {
             socket = new Socket(address, port);
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
-            sendMessage(new LoginResponseMessage(this.username));
-            //TODO: capire come far chiudere la connessione
+            sendMessage(new LoginResponseMessage());
             while(!disconnected){
                 readMessage();
             }
@@ -76,13 +74,15 @@ public class SocketClient implements ClientInterface {
         }
     }
     public void sendMessage(Message message){
-        try {
-            synchronized (outputLock){
-                out.writeObject(message);
-                out.reset();
+        if (!disconnected) {
+            try {
+                synchronized (outputLock) {
+                    out.writeObject(message);
+                    out.reset();
+                }
+            } catch (IOException e) {
+                System.err.println(e.getMessage());
             }
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
         }
     }
 
@@ -121,22 +121,36 @@ public class SocketClient implements ClientInterface {
             case USERNAME_REQUEST:
                 System.out.println("Username is already taken, please choose another: ");
                 this.username = this.view.askNickname();
-                sendMessage(new LoginResponseMessage(this.username));
                 player.setUsername(this.username);
+                int number = ((UsernameRequestMessage) message).getNumber();
+                if (((UsernameRequestMessage) message).isCreation()){
+                    sendMessage(new NumPlayerResponseMessage(username, number));
+                }
+                else {
+                    sendMessage(new LobbyIndexMessage(this.username, number));
+                }
                 break;
             case NUM_PLAYER_REQUEST:
                 int lobbySize = this.view.setLobbySize();
+                this.username = view.askNickname();
+                this.player = new PlayerBean(this.username);
                 sendMessage(new NumPlayerResponseMessage(this.username, lobbySize));
                 break;
             case FREE_LOBBY:
-                int freeLobbySize = ((FreeLobbyMessage) message).getLobbyNumber();
-                int response = this.view.selectGame(freeLobbySize);
-                if (response == freeLobbySize){
+                List<Integer> startingGamesId = ((FreeLobbyMessage) message).getstartingGamesId();
+                List<Integer> gamesWhitDisconnectionsId = ((FreeLobbyMessage) message).getgamesWhitDisconnectionsId();
+                int response = this.view.selectGame(startingGamesId, gamesWhitDisconnectionsId);
+                this.username = this.view.askNickname();
+                this.player = new PlayerBean(username);
+                if (response == -1){
                     int numOfPlayers = this.view.setLobbySize();
-                    sendMessage(new NumPlayerResponseMessage(this.username, numOfPlayers));
+                    sendMessage(new NumPlayerResponseMessage(username, numOfPlayers));
                 }
-                else {
+                else if (startingGamesId.contains(response)){
                     sendMessage(new LobbyIndexMessage(this.username, response));
+                }
+                else if (gamesWhitDisconnectionsId.contains(response)){
+                    sendMessage(new ReconnectLobbyIndexMessage(this.username, response));
                 }
                 break;
             case GAME_STATE:
@@ -177,8 +191,7 @@ public class SocketClient implements ClientInterface {
                 break;
             case STARTER_CARD:
                 Card starterCard = ((StarterCardMessage) message).getCard();
-                this.view.printStarterCard(starterCard);
-                boolean choice = this.view.askSide();
+                boolean choice = this.view.askSide(starterCard);
                 if (!choice) {
                     starterCard.setCurrentSide();
                 }
@@ -265,6 +278,13 @@ public class SocketClient implements ClientInterface {
                 player.setChat(((ChatMessage) message).getChat());
                 this.view.printViewWithCommands(this.player, this.game, this.opponents);
                 break;
+            case WAITING_RECONNECTION:
+                name = ((WaitingReconnectionMessage) message).getUsername();
+                if (username.equals(name)) {
+                    player.setState(PlayerState.NOT_IN_TURN);
+                }
+                this.view.printViewWithCommands(this.player, this.game, this.opponents);
+                break;
             case DECLARE_WINNER:
                 ArrayList<String> winners = ((WinnerMessage) message).getWinners();
                 this.view.declareWinners(winners);
@@ -272,7 +292,12 @@ public class SocketClient implements ClientInterface {
                 this.onDisconnect();
                 break;
             case GENERIC_MESSAGE:
-                this.view.setMessage(message.toString(), false);
+                if (game.getState().ordinal() > 1) {
+                    this.view.setMessage(message.toString(), false);
+                }
+                else {
+                    System.out.println(message);
+                }
                 break;
             case ERROR:
                 this.view.setMessage(message.toString(), true);
@@ -282,7 +307,6 @@ public class SocketClient implements ClientInterface {
                 break;
         }
     }
-
     public void onDisconnect(){
         try {
             this.disconnected = true;
@@ -307,8 +331,6 @@ public class SocketClient implements ClientInterface {
     @Override
     public void placeCard(Card card, int[] placingCoordinates) {
         if (this.player.getState().equals(PlayerState.PLAY_CARD)){ //TODO: imparare a leggere una griglia per capire se così traspongo giuste le coordinate
-            placingCoordinates[0] = placingCoordinates[0] - 6;
-            placingCoordinates[1] = 6 - placingCoordinates[1];
             sendMessage(new PlaceMessage(username, card, placingCoordinates));
             player.removeCardFromHand(card);
         }

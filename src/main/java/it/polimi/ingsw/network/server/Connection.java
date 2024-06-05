@@ -7,7 +7,7 @@ import it.polimi.ingsw.observer.Observer;
 import java.util.List;
 //TODO: scrivere metodi in comune tra le connection
 public abstract class Connection implements Observer {
-    private boolean isConnected;
+    private volatile boolean isConnected;
     public boolean getConnectionStatus(){
         return isConnected;
     }
@@ -17,7 +17,7 @@ public abstract class Connection implements Observer {
     public abstract void setLobby(Controller controller);
     public abstract Controller getLobby();
     public abstract void sendMessage(Message message);
-    public abstract void joinGame(List<Controller> startingGames);
+    public abstract void joinGame(List<Integer> startingGamesId, List<Integer> gamesWhitDisconnectionsId);
     public abstract void createGame();
     public abstract String getUsername();
     public abstract void ping();

@@ -6,9 +6,10 @@ import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.PlayerState;
 import it.polimi.ingsw.model.player.PlayerBoard;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class PlayerBean {
+public class PlayerBean implements Serializable {
     private String username;
     private Card starterCard;
     private Card[] hand;

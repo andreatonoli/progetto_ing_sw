@@ -15,8 +15,7 @@
     <maven.compiler.source>21</maven.compiler.source>
     <maven.compiler.target>21</maven.compiler.target>
   </properties>
-  <!-- Controlla esercitazione GUI per usare resources -->
-  <!-- TODO: CREA UN JAR PER SERVER E UNO PER CLIENT-->
+
   <dependencies>
     <dependency>
       <groupId>org.openjfx</groupId>
@@ -33,12 +32,11 @@
       <artifactId>gson</artifactId>
       <version>2.10.1</version>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/org.json/json -->
-    <!-- Forse inutile org.json -->
+
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <version>5.10.0</version>
       <scope>test</scope>
     </dependency>
       <dependency>
@@ -59,71 +57,74 @@
       <version>5.11.0</version>
       <scope>test</scope>
     </dependency>
-
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-junit-jupiter</artifactId>
+      <version>3.8.0</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
     <plugins>
-      <!-- Plugin per creare i file JAR -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>3.3.0</version>
-        <executions>
-          <!-- Creazione del JAR per ClientLauncher -->
-          <execution>
-            <id>CodexClient-jar</id>
-            <phase>package</phase>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-            <configuration>
-              <classifier>client</classifier>
-              <archive>
-                <manifest>
-                  <addClasspath>true</addClasspath>
-                  <classpathPrefix>lib/</classpathPrefix>
-                  <mainClass>it.polimi.ingsw.ClientLauncher</mainClass>
-                </manifest>
-              </archive>
-            </configuration>
-          </execution>
-          <!-- Creazione del JAR per ServerLauncher -->
-          <execution>
-            <id>CodexServer-jar</id>
-            <phase>package</phase>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-            <configuration>
-              <classifier>server</classifier>
-              <archive>
-                <manifest>
-                  <addClasspath>true</addClasspath>
-                  <classpathPrefix>lib/</classpathPrefix>
-                  <mainClass>it.polimi.ingsw.ServerLauncher</mainClass>
-                </manifest>
-              </archive>
-            </configuration>
-          </execution>
-        </executions>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.2.5</version>
       </plugin>
-      <!-- Plugin per copiare le dipendenze -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <version>3.6.0</version>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.2.4</version>
         <executions>
+
           <execution>
-            <id>copy-dependencies</id>
+            <id>${project.artifactId}-server</id>
             <phase>package</phase>
             <goals>
-              <goal>copy-dependencies</goal>
+              <goal>shade</goal>
             </goals>
             <configuration>
-              <outputDirectory>${project.build.directory}/lib</outputDirectory>
+              <finalName>${project.artifactId}-server</finalName>
+              <transformers>
+                <transformer
+                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <mainClass>it.polimi.ingsw.ServerLauncher</mainClass>
+                </transformer>
+              </transformers>
+              <artifactSet>
+                <excludes>
+                  <exclude>org.openjfx:*</exclude>
+                </excludes>
+              </artifactSet>
+              <filters>
+                <filter artifact="*:*">
+                </filter>
+              </filters>
             </configuration>
           </execution>
+
+          <execution>
+            <id>${project.artifactId}-client</id>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <finalName>${project.artifactId}-client</finalName>
+              <transformers>
+                <transformer
+                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <mainClass>it.polimi.ingsw.ClientLauncher</mainClass>
+                </transformer>
+              </transformers>
+              <filters>
+                <filter artifact="*:*">
+                </filter>
+              </filters>
+            </configuration>
+          </execution>
+
         </executions>
       </plugin>
       <!-- Plugin JavaFX -->

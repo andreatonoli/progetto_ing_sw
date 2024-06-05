@@ -27,9 +27,9 @@ public enum Symbols {
     CARD(TuiColors.getColor(TuiColors.ANSI_WHITE) + "D" + TuiColors.getColor(TuiColors.ANSI_RESET), TuiColors.getColor(TuiColors.ANSI_BLACK) + "D" + TuiColors.getColor(TuiColors.ANSI_RESET), "A generic card");
     //"\u2B1B"
 
-    String string;
-    String stringBlack;
-    String longString;
+    private final String string;
+    private final String stringBlack;
+    private final String longString;
 
     Symbols(String string, String stringBlack, String longString){
         this.string = string;

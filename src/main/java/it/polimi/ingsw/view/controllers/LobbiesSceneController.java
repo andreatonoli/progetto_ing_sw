@@ -9,6 +9,8 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
+import java.util.List;
+
 public class LobbiesSceneController {
 
     @FXML
@@ -19,13 +21,13 @@ public class LobbiesSceneController {
 
     }
 
-    public void setLobbies(Integer freeLobbies){
-        for (int i = 0; i < freeLobbies; i++){
+    public void setLobbies(List<Integer> freeLobbies){
+        for (Integer i : freeLobbies){
             HBox h = new HBox();
-            Text t = new Text("Lobby " + (i + 1));
+            Text t = new Text("Lobby " + i);
             t.setFont(new Font(70));
             t.setId("setup-text");
-            Button b = new Button ("Join lobby " + (i + 1));
+            Button b = new Button ("Join lobby " + i);
             b.setFont(new Font(30));
             b.setPrefSize(230, 30);
             b.setId("setup-small-button");
@@ -40,13 +42,14 @@ public class LobbiesSceneController {
             if(i == 0){
                 h.setPadding(new Insets(30, 0, 0, 0));
             }
-            //add padding to the bottom only for the last row
-            if(i == freeLobbies - 1){
-                h.setPadding(new Insets(0, 0, 50, 0));
-            }
             h.setAlignment(Pos.CENTER);
             v.getChildren().add(h);
         }
+
+        //add padding to the bottom only for the last row
+        HBox h = new HBox();
+        h.setPadding(new Insets(0, 0, 50, 0));
+
     }
 
     private void joinLobbyButtonClicked(Integer selectedLobby){ Gui.addReturnValue(String.valueOf(selectedLobby)); }

@@ -5,10 +5,12 @@ import it.polimi.ingsw.model.card.Card;
 import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.GameState;
 
-public class GameBean {
+import java.io.Serializable;
+
+public class GameBean implements Serializable {
     private GameState state;
-    private Card[] commonResources;
-    private Card[] commonGold;
+    private final Card[] commonResources;
+    private final Card[] commonGold;
     private final Achievement[] commonAchievement;
     private Color resourceDeckRetro;
     private Color resourceGoldRetro;
@@ -17,6 +19,7 @@ public class GameBean {
         this.commonAchievement = new Achievement[2];
         this.commonGold = new Card[2];
         this.commonResources = new Card[2];
+        this.state = GameState.WAIT_PLAYERS;
     }
 
     public Card[] getCommonResources() {

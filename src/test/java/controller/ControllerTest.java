@@ -1,31 +1,38 @@
-package Controller;
-
-import it.polimi.ingsw.controller.Controller;
-import it.polimi.ingsw.model.card.*;
-import it.polimi.ingsw.model.enums.*;
+package controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 
-import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.controller.Controller;
+import it.polimi.ingsw.model.player.*;
+import it.polimi.ingsw.model.card.*;
+import it.polimi.ingsw.model.enums.*;
 import it.polimi.ingsw.network.server.SocketConnection;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 public class ControllerTest {
 
-    private Controller c;
     @Mock
     private SocketConnection p1;
 
+    private Controller c;
+
     @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-        c = new Controller(4);  // Initialize the controller with 4 players
+    public void setUp(){
+        System.out.println("SUCA");
+        c = new Controller(4, 0);  // Initialize the controller
+        //MockitoAnnotations.openMocks(this);  // Initialize mocks
+        when(p1.getUsername()).thenReturn("testUser");
     }
 
     @Test
+    @DisplayName("ChooseObj test")
     public void testChooseObj() {
         // Create one fake player
         c.joinGame(p1);
