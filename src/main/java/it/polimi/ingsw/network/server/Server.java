@@ -42,13 +42,11 @@ public class Server {
     }
 
     public String login(Connection client){
-        //synchronized (gameSelectionLock) {
             if (this.startingGames.isEmpty() && this.gamesWithDisconnections.isEmpty()) {
                 client.createGame();
             } else {
                 client.joinGame(startingGamesId, gamesWithDisconnectionsId);
             }
-        //}
         String username = client.getUsername();
         new Thread(client::ping).start();
         System.err.println("user " + username + " connected");
