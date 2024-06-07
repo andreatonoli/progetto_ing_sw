@@ -6,7 +6,6 @@ import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.player.PlayerBoard;
 import it.polimi.ingsw.network.client.*;
 import it.polimi.ingsw.network.server.Server;
-import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.AnsiConsole;
 
 import java.io.Console;
@@ -14,8 +13,6 @@ import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Scanner;
 import java.util.*;
-
-import static org.fusesource.jansi.Ansi.ansi;
 
 public class Tui implements Ui{
     private ClientInterface client;
@@ -55,7 +52,7 @@ public class Tui implements Ui{
         try {
             this.printTitle();
             String choice;
-            AnsiConsole.out().println(ansi().fg(Ansi.Color.RED).a("Please specify the following settings. The default value is shown between brackets."));
+            AnsiConsole.out().println("Please specify the following settings. The default value is shown between brackets.");
             String address = askServerAddress();
             AnsiConsole.out().println("Choose your connection method: Write:\n\tI)RMI\n\tII)Socket");
             choice = scanner.nextLine();
@@ -188,7 +185,7 @@ public class Tui implements Ui{
     public boolean askSide(Card starterCard){
         clearConsole();
         this.printStarterCard(starterCard);
-        scanner.skip("\n");
+        //scanner.skip("\n");
         String choice;
         do {
             AnsiConsole.out().println("Which side you want to play?\nPress [f] for front and [b] for back");
