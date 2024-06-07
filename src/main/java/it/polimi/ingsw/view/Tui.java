@@ -41,7 +41,6 @@ public class Tui implements Ui{
     });
 
     public Tui(){
-        AnsiConsole.systemInstall();
         scanner = new Scanner(System.in);
     }
 
@@ -50,6 +49,7 @@ public class Tui implements Ui{
      */
     public void run(){
         try {
+            AnsiConsole.systemInstall();
             this.printTitle();
             String choice;
             AnsiConsole.out().println("Please specify the following settings. The default value is shown between brackets.");
@@ -70,6 +70,7 @@ public class Tui implements Ui{
         } catch (RemoteException e) {
             System.err.println(e.getMessage());
         }
+        AnsiConsole.systemUninstall();
     }
 
     /**
@@ -195,6 +196,7 @@ public class Tui implements Ui{
     }
 
     private void printStarterCard(Card card) {
+        AnsiConsole.systemInstall();
         if(card == null){
             AnsiConsole.out().println("Starter card not existing");
         }
@@ -221,6 +223,7 @@ public class Tui implements Ui{
             AnsiConsole.out().println();
 
         }
+        AnsiConsole.systemUninstall();
     }
 
     public String[][] createPrintableCardToPlace(int[] coord) {
