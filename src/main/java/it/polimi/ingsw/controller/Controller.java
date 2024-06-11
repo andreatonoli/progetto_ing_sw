@@ -248,6 +248,7 @@ public class Controller extends Observable {
             }
             if (!present){
                 //TODO: errore profondo
+                //TODO rimanda mano???
                 return;
             }
             //Place card and change player's state

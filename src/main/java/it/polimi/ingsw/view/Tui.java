@@ -23,26 +23,36 @@ public class Tui implements Ui{
     private ArrayList<PlayerBean> players;
     private final Scanner scanner;
     private final Object lock = new Object();
-    private boolean running = true;
-    private final Thread inputThread = new Thread(() -> {
-        Scanner input = new Scanner(System.in);
-        while (running) {
-            String choice = input.nextLine();
-            synchronized (lock) {
-                if (choice.equals("q")){
-                    printViewWithCommands(player, game, players);
-                }
-                else{
-                    handleInput(choice);
-                }
-            }
-        }
-        input.close();
-    });
+    private boolean running;
+    private Thread inputThread;
 
     public Tui(){
         AnsiConsole.systemInstall();
         scanner = new Scanner(System.in);
+        spawnThread();
+        this.running = true;
+    }
+
+    public void spawnThread(){
+        inputThread = new Thread(() -> {
+            Scanner input = new Scanner(System.in);
+            while (running) {
+                String choice = input.nextLine();
+                synchronized (lock) {
+                    if (choice.equals("q")){
+                        printViewWithCommands(player, game, players);
+                    }
+                    else{
+                        handleInput(choice);
+                    }
+                }
+            }
+            input.close();
+        });
+    }
+
+    public void handleReconnection(){
+        this.inputThread.start();
     }
 
     /**
@@ -189,7 +199,7 @@ public class Tui implements Ui{
         String choice;
         do {
             AnsiConsole.out().println("Which side you want to play?\nPress [f] for front and [b] for back");
-            choice = scanner.nextLine();
+            choice = scanner.next();
         } while (!choice.equalsIgnoreCase("b") && !choice.equalsIgnoreCase("f"));
         return choice.equalsIgnoreCase("f");
     }
@@ -509,7 +519,7 @@ public class Tui implements Ui{
         }
         return matScoreBoard;
     }
-    
+
     public void printView(){
         clearConsole();
         String [][] resourceDeck = createPrintableRetro(game.getResourceDeckRetro());
@@ -618,6 +628,7 @@ public class Tui implements Ui{
                         }
                     }
                     if (playerInTurn == null){
+                        moveCursor(39, 0);
                         AnsiConsole.out().println("only one player connected, the other players have one minute to reconnect.");
                     }
                     else {
@@ -743,7 +754,7 @@ public class Tui implements Ui{
                     clearConsole();
                     this.printView();
                 } while (!a.equals("c") && (Integer.parseInt(a) <= 0 || Integer.parseInt(a) > players.size()));
-                    if (a.equals("c")) {
+                if (a.equals("c")) {
                     this.printChat();
                 } else {
                     clearConsole();
@@ -774,7 +785,7 @@ public class Tui implements Ui{
                         String b;
                         do {
                             moveCursor(37, 0);
-                             cardToPlace = hand[Integer.parseInt(a) - 1];
+                            cardToPlace = hand[Integer.parseInt(a) - 1];
                             AnsiConsole.out().println("Which side do you want to place? [f] for front [b] for back");
                             AnsiConsole.out().println();
                             //TODO: 1162 - 1171 scrivere metodo che stampa fronte e retro
@@ -871,7 +882,7 @@ public class Tui implements Ui{
                             AnsiConsole.out().println("Do you want to draw from resource deck or gold deck? [r] for resource [g] for gold");
                             a = input.next();
                         } while (!a.equals("r") && !a.equals("g") && !a.equals("c"));
-                            if (a.equals("c")) {
+                        if (a.equals("c")) {
                             this.printChat();
                         } else if (a.equals("r")) {
                             client.drawCard("resource");
@@ -1096,7 +1107,7 @@ public class Tui implements Ui{
     @Override //TODO: occhio al warning
     public void declareWinners(ArrayList<String> winners){
         if (winners.size() == 1){
-           message = "\nThe winner is: " + winners.getFirst();
+            message = "\nThe winner is: " + winners.getFirst();
         }
         else{
             message = "\nThe winners are: \n";

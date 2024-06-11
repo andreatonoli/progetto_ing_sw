@@ -78,6 +78,11 @@ public class Gui extends Application implements Ui{
     }
 
     @Override
+    public void handleReconnection() {
+
+    }
+
+    @Override
     public String askNickname(){
         String result = null;
         loadScene(GuiScenes.LOGIN_SCENE);

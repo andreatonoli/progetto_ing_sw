@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class ClientLauncher {
     public static void main (String[] args){
         Tui.clearConsole();
-        System.out.println("Press[0] to play the game with TUI.\nPress [1] to play the game with GUI");
+        System.out.println("Press [0] to play the game with TUI.\nPress [1] to play the game with GUI");
         Scanner scan = new Scanner(System.in);
         int choice = scan.nextInt();
         if (choice == 0){

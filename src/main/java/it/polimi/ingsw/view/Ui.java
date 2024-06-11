@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface Ui{
+    void handleReconnection();
     String askNickname();
     String askServerAddress();
     int askServerPort(String connectionType);

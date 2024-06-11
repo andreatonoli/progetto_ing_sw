@@ -117,6 +117,8 @@ public class SocketClient implements ClientInterface {
                 this.game = ((ReconnectionMessage) message).getGameBean();
                 //TODO cerca di passare copia della lista
                 this.opponents = ((ReconnectionMessage) message).getOpponents();
+                this.view.handleReconnection();
+                this.view.printViewWithCommands(player, game, opponents);
                 break;
             case USERNAME_REQUEST:
                 System.out.println("Username is already taken, please choose another: ");

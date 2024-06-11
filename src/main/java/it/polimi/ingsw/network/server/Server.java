@@ -41,17 +41,18 @@ public class Server {
         new SocketServer(this, socketPort);
     }
 
-    public String login(Connection client){
-            if (this.startingGames.isEmpty() && this.gamesWithDisconnections.isEmpty()) {
-                client.createGame();
-            } else {
-                client.joinGame(startingGamesId, gamesWithDisconnectionsId);
-            }
-        String username = client.getUsername();
-            //TODO spostare il ping sopra e fare eslpodere tutto se uno si scollega nella selezione del game (e mettere setup automatico se serve)
+    public void login(Connection client){
+        if (this.startingGames.isEmpty() && this.gamesWithDisconnections.isEmpty()) {
+            client.createGame();
+        } else {
+            client.joinGame(startingGamesId, gamesWithDisconnectionsId);
+        }
+        //TODO spostare il ping sopra e fare eslpodere tutto se uno si scollega nella selezione del game (e mettere setup automatico se serve
+    }
+
+    public void startPing(Connection client){
         new Thread(client::ping).start();
-        System.err.println("user " + username + " connected");
-        return username;
+        System.err.println("user " + client.getUsername() + " connected");
     }
 
     public void setClient(Connection c, String u){
