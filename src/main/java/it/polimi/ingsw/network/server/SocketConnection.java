@@ -66,6 +66,9 @@ public class SocketConnection extends Connection implements Runnable {
         if (message.getType().equals(MessageType.CATCH_PING)){
             catchPing();
         }
+        else if (message.getType().equals(MessageType.RECONNECT_LOBBY_INDEX)){
+            reconnectLobbyIndex(message);
+        }
         else{
             messageQueue.add(message);
         }
@@ -131,23 +134,38 @@ public class SocketConnection extends Connection implements Runnable {
         catchPing.cancel();
     }
 
-    public void onDisconnect(){
-        if (!lobby.getGame().getGameState().equals(GameState.END)) {
-            try {
-                this.disconnected = true;
-                lobby.getGame().getPlayerByUsername(username).setDisconnected(true);
-                server.addDisconnectedPlayer(username, lobby);
-                setConnectionStatus(false);
-                if (lobby.getGame().getPlayerInTurn().getUsername().equals(username)){
-                    lobby.disconnectedWhileInTurn(username);
+    public void onDisconnect() throws NullPointerException{
+        try {
+            if (!lobby.getGame().getGameState().equals(GameState.END)) {
+                try {
+                    this.disconnected = true;
+                    lobby.getGame().getPlayerByUsername(username).setDisconnected(true);
+                    server.addDisconnectedPlayer(username, lobby);
+                    setConnectionStatus(false);
+                    if (lobby.getGame().getPlayerInTurn().getUsername().equals(username)) {
+                        lobby.disconnectedWhileInTurn(username);
+                    }
+                    System.err.println(username + " got disconnected");
+                    in.close();
+                    out.close();
+                    socket.close();
+                } catch (IOException e) {
+                    System.err.println(e.getMessage());
                 }
-                System.err.println(username + " got disconnected");
-                in.close();
-                out.close();
-                socket.close();
-            } catch (IOException e) {
-                System.err.println(e.getMessage());
             }
+        } catch (NullPointerException ignored){} //TODO
+    }
+
+    private void reconnectLobbyIndex(Message message){
+        String user = message.getSender();
+        int room = ((ReconnectLobbyIndexMessage) message).getChoice();
+        if (!server.userNotDisconnected(user, room)) {
+            sendMessage(new GenericMessage("there is no player disconnected in game "+ room + " with that name.\n"));
+            server.login(this);
+        }
+        else {
+            this.username = message.getSender();
+            server.reconnectPlayer(this, message.getSender());
         }
     }
 
@@ -252,17 +270,19 @@ public class SocketConnection extends Connection implements Runnable {
                     server.joinLobby(username, ((LobbyIndexMessage) message).getChoice());
                 }
                 break;
-            case RECONNECT_LOBBY_INDEX:
-                int room = ((ReconnectLobbyIndexMessage) message).getChoice();
-                if (!server.userNotDisconnected(username, room)) {
-                    System.out.println("there is no player disconnected in game "+ room + "with that name.");
-                    server.login(this);
-                }
-                else {
-                    this.username = message.getSender();
-                    server.reconnectPlayer(this, message.getSender());
-                }
-                break;
+            //case RECONNECT_LOBBY_INDEX:
+            //    String user = message.getSender();
+            //    int room = ((ReconnectLobbyIndexMessage) message).getChoice();
+            //    //TODO fermare quella mignotta
+            //    if (!server.userNotDisconnected(user, room)) {
+            //        sendMessage(new GenericMessage("there is no player disconnected in game "+ room + " with that name.\n"));
+            //        server.login(this);
+            //    }
+            //    else {
+            //        this.username = message.getSender();
+            //        server.reconnectPlayer(this, message.getSender());
+            //    }
+            //    break;
             case PLACE_STARTER_CARD:
                 lobby.addAction(new ActionMessage(this, () -> lobby.placeStarterCard(this, ((PlaceStarterRequestMessage) message).getCard())));
                 break;

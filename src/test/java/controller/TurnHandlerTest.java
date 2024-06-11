@@ -1,5 +1,6 @@
-package it.polimi.ingsw.controller;
+package controller;
 
+import it.polimi.ingsw.controller.TurnHandler;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.enums.PlayerState;
 import it.polimi.ingsw.model.exceptions.*;
@@ -9,7 +10,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class TurnHandlerTest {
+class
+TurnHandlerTest {
 
     @Test
     @DisplayName("changing player state and player turn")

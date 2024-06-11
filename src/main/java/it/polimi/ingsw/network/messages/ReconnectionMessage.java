@@ -1,6 +1,7 @@
 package it.polimi.ingsw.network.messages;
 
 import it.polimi.ingsw.model.GameBoard;
+import it.polimi.ingsw.model.enums.PlayerState;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.client.GameBean;
 import it.polimi.ingsw.network.client.PlayerBean;
@@ -38,6 +39,7 @@ public class ReconnectionMessage extends Message {
         playerBean.setHand(player.getCardInHand());
         playerBean.setPoints(player.getPoints());
         playerBean.setAchievement(player.getChosenObj());
+        playerBean.setState(PlayerState.NOT_IN_TURN);
         playerBean.setStarterCard(null);
 
         //Creating opponents

@@ -275,6 +275,7 @@ public class SocketClient implements ClientInterface {
                 }
                 break;
             case CHAT:
+                System.err.println(username);
                 player.setChat(((ChatMessage) message).getChat());
                 this.view.printViewWithCommands(this.player, this.game, this.opponents);
                 break;

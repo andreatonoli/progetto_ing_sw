@@ -11,6 +11,7 @@ import it.polimi.ingsw.network.messages.*;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.CountDownLatch;
 
 public class TurnHandler extends Observable {
     /**
@@ -97,17 +98,36 @@ public class TurnHandler extends Observable {
         }
         else {
             notifyAll(new WaitingReconnectionMessage(player.getUsername()));
-            Timer ping = new Timer();
-            ping.schedule(new TimerTask() {
+            Timer t = new Timer();
+            Timer rec = new Timer();
+            CountDownLatch latch = new CountDownLatch(1);
+            t.schedule(new TimerTask() {
                 @Override
                 public void run() {
                     Player winner = game.endGameByDisconnection(player);
                     declareWinnerByDisconnection(winner);
-                    ping.cancel();
+                    rec.cancel();
+                    t.cancel();
                 }
             }, 120000, 2000);
-            while (game.getDisconnections()+1 >= game.getLobbySize());
-            ping.cancel();
+            //TODO fixare
+            rec.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    if (game.getDisconnections()+1 < game.getLobbySize()){
+                        latch.countDown();
+                        t.cancel();
+                        rec.cancel();
+                    }
+                }
+            }, 1000, 2000);
+
+            try {
+                latch.await();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+
             this.changePlayerState(player);
         }
     }
