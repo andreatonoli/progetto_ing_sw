@@ -7,6 +7,7 @@ public enum GuiScenes {
     SERVER_PORT_SCENE("/fxml/serverPortScene.fxml"),
     LOBBIES_SCENE("/fxml/lobbiesScene.fxml"),
     LOBBY_SIZE_SCENE("/fxml/lobbySizeScene.fxml"),
+    RECONNECT_SCENE("/fxml/reconnectScene.fxml"),
     WAITING_SCENE("/fxml/waitingScene.fxml"),
     LOGIN_SCENE("/fxml/loginScene.fxml"),
     STARTER_FLIP_SCENE("/fxml/starterFlipScene.fxml"),

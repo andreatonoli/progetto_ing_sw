@@ -6,13 +6,14 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.layout.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 import java.util.List;
 
-public class LobbiesSceneController {
+public class ReconnectSceneController {
 
     @FXML
     private VBox v = new VBox();
@@ -28,13 +29,13 @@ public class LobbiesSceneController {
             Text t = new Text("Lobby " + i);
             t.setFont(new Font(70));
             t.setId("setup-text");
-            Button b = new Button ("Join lobby " + i);
+            Button b = new Button ("Reconnect to lobby " + i);
             b.setFont(new Font(30));
-            b.setPrefSize(230, 30);
+            b.setPrefSize(320, 30);
             b.setId("setup-small-button");
             int finalI = i;
             b.setOnAction(event -> {
-                joinLobbyButtonClicked(finalI);
+                reconnectLobbyButtonClicked(finalI);
             });
 
             h.getChildren().addAll(t, b);
@@ -49,12 +50,6 @@ public class LobbiesSceneController {
 
     }
 
-    private void joinLobbyButtonClicked(Integer selectedLobby){ Gui.addReturnValue(String.valueOf(selectedLobby)); }
-
-    @FXML
-    private void createLobbyButtonClicked(){ Gui.addReturnValue(String.valueOf("newLobby")); }
-
-    @FXML
-    public void reconnectButtonClicked(ActionEvent e) { Gui.addReturnValue("reconnect"); }
+    private void reconnectLobbyButtonClicked(Integer selectedLobby){ Gui.addReturnValue(String.valueOf(selectedLobby)); }
 }
 
