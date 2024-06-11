@@ -39,4 +39,6 @@ public interface Achievement extends Serializable {
      */
     Symbols getSymbol();
 
+    boolean equals(Achievement achievementToCompare);
+
 }

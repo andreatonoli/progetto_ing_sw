@@ -15,11 +15,11 @@ public class AchievementItem implements Achievement{
     /**
      * points given upon completion of the achievement
      */
-    private int basePoint;
+    private final int basePoint;
     /**
      * indicates the symbols (from the symbols enumeration) to collect
      */
-    private ArrayList<Symbols> symbol;
+    private final ArrayList<Symbols> symbol;
 
     /**
      * Builds cards which achievement is getting some uncovered symbol
@@ -70,4 +70,21 @@ public class AchievementItem implements Achievement{
     public ArrayList<Symbols> getSymbols(){ return this.symbol; }
     @Override
     public Symbols getSymbol(){ return null; }
+
+    @Override
+    public boolean equals(Achievement achievementToCompare) {
+        if (!this.getClass().getName().equals(achievementToCompare.getClass().getName())){
+            return false;
+        }
+        if(achievementToCompare.getId() != this.id){
+            return false;
+        }
+        if (this.basePoint != achievementToCompare.getPoints()){
+            return false;
+        }
+        if (this.symbol.size() != achievementToCompare.getSymbols().size() && !this.symbol.containsAll(achievementToCompare.getSymbols())){
+            return false;
+        }
+        return true;
+    }
 }

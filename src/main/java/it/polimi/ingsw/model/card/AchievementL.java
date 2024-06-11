@@ -106,4 +106,18 @@ public class AchievementL implements Achievement{
     public ArrayList<Symbols> getSymbols(){ return null; }
     @Override
     public Symbols getSymbol(){ return null; }
+
+    @Override
+    public boolean equals(Achievement achievementToCompare) {
+        if (!this.getClass().getName().equals(achievementToCompare.getClass().getName())){
+            return false;
+        }
+        if(achievementToCompare.getId() != this.id){
+            return false;
+        }
+        if (!this.color.equals(achievementToCompare.getColor())){
+            return false;
+        }
+        return true;
+    }
 }
