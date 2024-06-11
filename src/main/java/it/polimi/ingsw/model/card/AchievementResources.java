@@ -15,11 +15,11 @@ public class AchievementResources implements Achievement{
     /**
      * points given upon completion of the achievement
      */
-    private int basePoint;
+    private final int basePoint;
     /**
      * indicates the symbols (from the symbols enumeration) to collect
      */
-    private Symbols symbol;
+    private final Symbols symbol;
     /**
      * Builds card which achievement is "Collect 3 symbols of the same type"
      * @param symbol symbol to collect
@@ -53,4 +53,18 @@ public class AchievementResources implements Achievement{
     public ArrayList<Symbols> getSymbols(){ return null; }
     @Override
     public Symbols getSymbol(){ return this.symbol; }
+
+    @Override
+    public boolean equals(Achievement achievementToCompare) {
+        if (!this.getClass().getName().equals(achievementToCompare.getClass().getName())){
+            return false;
+        }
+        if(achievementToCompare.getId() != this.id){
+            return false;
+        }
+        if (!this.symbol.equals(achievementToCompare.getSymbol())){
+            return false;
+        }
+        return true;
+    }
 }

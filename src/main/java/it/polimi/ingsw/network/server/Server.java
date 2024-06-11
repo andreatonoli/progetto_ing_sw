@@ -42,14 +42,13 @@ public class Server {
     }
 
     public String login(Connection client){
-        //synchronized (gameSelectionLock) {
             if (this.startingGames.isEmpty() && this.gamesWithDisconnections.isEmpty()) {
                 client.createGame();
             } else {
                 client.joinGame(startingGamesId, gamesWithDisconnectionsId);
             }
-        //}
         String username = client.getUsername();
+            //TODO spostare il ping sopra e fare eslpodere tutto se uno si scollega nella selezione del game (e mettere setup automatico se serve)
         new Thread(client::ping).start();
         System.err.println("user " + username + " connected");
         return username;

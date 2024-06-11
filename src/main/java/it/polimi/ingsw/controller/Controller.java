@@ -123,6 +123,7 @@ public class Controller extends Observable {
             game.startGame();
         } catch (NotEnoughPlayersException e) {
             System.err.println(e.getMessage());
+            return;
         }
         //send all players their opponents name
         ArrayList<String> players = new ArrayList<>();
@@ -172,8 +173,12 @@ public class Controller extends Observable {
             deck = game.getGameBoard().getResourceDeck();
             isResource = true;
         }
-        else{
+        else if (chosenDeck.equalsIgnoreCase("gold")){
             deck = game.getGameBoard().getGoldDeck();
+        }
+        else {
+            //TODO: errore profondo
+            return;
         }
         try {
             Card drawedCard = this.getPlayerByClient(user).drawCard(deck);
@@ -268,6 +273,7 @@ public class Controller extends Observable {
         Player player = getPlayerByClient(user);
         if (!starterCard.equals(player.getPlayerBoard().getStarterCard())){
             //TODO: errore profondo
+            return;
         }
         player.getPlayerBoard().setStarterCard(starterCard);
     }
@@ -281,6 +287,7 @@ public class Controller extends Observable {
         Player player = getPlayerByClient(user);
         if (!achievement.equals(player.getPersonalObj()[0]) && !achievement.equals(player.getPersonalObj()[1])){
             //TODO: errore profondo
+            return;
         }
         player.setChosenObj(achievement);
         chooseColor(user);
@@ -344,6 +351,11 @@ public class Controller extends Observable {
                 reconnectedPlayer = getPlayerByClient(c);
                 connectedPlayers.remove(c);
                 connectedPlayers.put(user, reconnectedPlayer);
+                this.removeObserver(c);
+                this.addObserver(user);
+                this.turnHandler.removeObserver(c);
+                this.turnHandler.addObserver(user);
+                //TODO controllare se da linux va
                 reconnectedPlayer.setDisconnected(false);
             }
             else {

@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.player.PlayerBoard;
 import it.polimi.ingsw.network.client.*;
 import it.polimi.ingsw.network.server.Server;
+import org.fusesource.jansi.AnsiConsole;
 
 import java.io.Console;
 import java.rmi.RemoteException;
@@ -40,6 +41,7 @@ public class Tui implements Ui{
     });
 
     public Tui(){
+        AnsiConsole.systemInstall();
         scanner = new Scanner(System.in);
     }
 
@@ -50,12 +52,12 @@ public class Tui implements Ui{
         try {
             this.printTitle();
             String choice;
-            System.out.println("Please specify the following settings. The default value is shown between brackets.");
+            AnsiConsole.out().println("Please specify the following settings. The default value is shown between brackets.");
             String address = askServerAddress();
-            System.out.println("Choose your connection method: Write:\n\tI)RMI\n\tII)Socket");
+            AnsiConsole.out().println("Choose your connection method: Write:\n\tI)RMI\n\tII)Socket");
             choice = scanner.nextLine();
             while(!choice.equalsIgnoreCase("RMI") && !choice.equalsIgnoreCase("Socket")){
-                System.out.println("Wrong input.\nPlease, choose your connection method. Write:\n\tI)RMI\n\tII)Socket");
+                AnsiConsole.out().println("Wrong input.\nPlease, choose your connection method. Write:\n\tI)RMI\n\tII)Socket");
                 choice = scanner.nextLine();
             }
             int port = askServerPort(choice);
@@ -77,7 +79,7 @@ public class Tui implements Ui{
     @Override
     public String askNickname(){
         String nickname;
-        System.out.print("Please insert your username: ");
+        AnsiConsole.out().print("Please insert your username: ");
         nickname = scanner.next();
         return nickname;
     }
@@ -90,7 +92,7 @@ public class Tui implements Ui{
     public String askServerAddress() {
         String defaultAddress = "localhost";
         String host;
-        System.out.print("Enter the server address [" + defaultAddress + "]: ");
+        AnsiConsole.out().print("Enter the server address [" + defaultAddress + "]: ");
         String address = scanner.nextLine();
         if (address.isEmpty()) {
             host = defaultAddress;
@@ -114,7 +116,7 @@ public class Tui implements Ui{
         else{
             defaultPort = String.valueOf(Server.socketPort);
         }
-        System.out.print("Enter the server port [" + defaultPort + "]: ");
+        AnsiConsole.out().print("Enter the server port [" + defaultPort + "]: ");
         port = scanner.nextLine();
         if (port.isEmpty()) {
             port = defaultPort;
@@ -122,48 +124,58 @@ public class Tui implements Ui{
         return Integer.parseInt(port);
     }
 
-    //TODO: se startingGamesId vuoto non puoi selezionare quella scelta
     @Override
     public int selectGame(List<Integer> startingGamesId, List<Integer> gamesWhitDisconnectionsId){
         int lobby = -1;
         int choice;
         do {
-            System.out.println("Select one of the following options by writing the respective number:\n[1] create a game\n[2] join a game\n[3] reconnect to a game");
+            AnsiConsole.out().println("Select one of the following options by writing the respective number:\n[1] create a game\n[2] join a game\n[3] reconnect to a game");
             choice = scanner.nextInt();
         } while (choice > 3 || choice <= 0);
         switch (choice){
-            case 1 -> System.out.println("Creating a new game...");
+            case 1 -> AnsiConsole.out().println("Creating a new game...");
             case 2 -> {
-                System.out.println("Select one of the following game's lobby by writing the respective number:");
-                for (Integer i : startingGamesId){
-                    System.out.println("Lobby [" + i + "]");
+                if(startingGamesId.isEmpty()){
+                    //TODO: forse ricorsione non è la scelta migliore
+                    AnsiConsole.out().println("There are no lobbies yet");
+                    lobby = selectGame(startingGamesId, gamesWhitDisconnectionsId);
                 }
-                lobby = scanner.nextInt();
-                while (!startingGamesId.contains(lobby)){
-                    System.out.print("Invalid input.\nInsert the lobby number:");
-                    lobby = scanner.nextInt();
+                else{
+                    lobby = getLobby(startingGamesId);
                 }
             }
             case 3 -> {
-                System.out.println("Select one of the following game's lobby by writing the respective number:");
-                for (Integer i : gamesWhitDisconnectionsId){
-                    System.out.println("Lobby [" + i + "]");
+                if (gamesWhitDisconnectionsId.isEmpty()) {
+                    AnsiConsole.out().println("There are no lobbies with disconnected players");
+                    lobby = selectGame(startingGamesId, gamesWhitDisconnectionsId);
                 }
-                lobby = scanner.nextInt();
-                while (!gamesWhitDisconnectionsId.contains(lobby)){
-                    System.out.print("Invalid input.\nInsert the lobby number:");
-                    lobby = scanner.nextInt();
+                else{
+                    lobby = getLobby(gamesWhitDisconnectionsId);
                 }
             }
         }
         return lobby;
     }
 
+    public int getLobby(List<Integer> lobbyList) {
+        int lobby;
+        AnsiConsole.out().println("Select one of the following game's lobby by writing the respective number:");
+        for (Integer i : lobbyList){
+            AnsiConsole.out().println("Lobby [" + i + "]");
+        }
+        lobby = scanner.nextInt();
+        while (!lobbyList.contains(lobby)){
+            AnsiConsole.out().print("Invalid input.\nInsert the lobby number:");
+            lobby = scanner.nextInt();
+        }
+        return lobby;
+    }
+
     public int setLobbySize(){
-        System.out.println("Select the lobby's capacity (min is " + Server.MIN_PLAYERS_PER_LOBBY + " and max is " + Server.MAX_PLAYERS_PER_LOBBY + " players)");
+        AnsiConsole.out().println("Select the lobby's capacity (min is " + Server.MIN_PLAYERS_PER_LOBBY + " and max is " + Server.MAX_PLAYERS_PER_LOBBY + " players)");
         int lobbySize = scanner.nextInt();
         while (lobbySize < Server.MIN_PLAYERS_PER_LOBBY || lobbySize > Server.MAX_PLAYERS_PER_LOBBY){
-            System.out.println("Invalid input.\n Insert a valid number");
+            AnsiConsole.out().println("Invalid input.\n Insert a valid number");
             lobbySize = scanner.nextInt();
         }
         return lobbySize;
@@ -173,10 +185,10 @@ public class Tui implements Ui{
     public boolean askSide(Card starterCard){
         clearConsole();
         this.printStarterCard(starterCard);
-        scanner.skip("\n");
+        //scanner.skip("\n");
         String choice;
         do {
-            System.out.println("Which side you want to play?\nPress [f] for front and [b] for back");
+            AnsiConsole.out().println("Which side you want to play?\nPress [f] for front and [b] for back");
             choice = scanner.nextLine();
         } while (!choice.equalsIgnoreCase("b") && !choice.equalsIgnoreCase("f"));
         return choice.equalsIgnoreCase("f");
@@ -184,7 +196,7 @@ public class Tui implements Ui{
 
     private void printStarterCard(Card card) {
         if(card == null){
-            System.out.println("Starter card not existing");
+            AnsiConsole.out().println("Starter card not existing");
         }
         else{
             String[][] starterFront = this.createPrintableCard(card);
@@ -192,21 +204,21 @@ public class Tui implements Ui{
             String[][] starterBack = this.createPrintableCard(card);
             card.setCurrentSide();
 
-            System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "front:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
-            System.out.print(" ".repeat(TuiCostants.COLUMN + 6 - 7));
-            System.out.println(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "back:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
-            System.out.println();
+            AnsiConsole.out().print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "front:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
+            AnsiConsole.out().print(" ".repeat(TuiCostants.COLUMN + 6 - 7));
+            AnsiConsole.out().println(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "back:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
+            AnsiConsole.out().println();
             for (int i = 0; i < TuiCostants.ROW; i++) {
                 for (int j = 0; j < TuiCostants.COLUMN; j++) {
-                    System.out.print(starterFront[i][j]);
+                    AnsiConsole.out().print(starterFront[i][j]);
                 }
-                System.out.print("      ");
+                AnsiConsole.out().print("      ");
                 for (int j = 0; j < TuiCostants.COLUMN; j++) {
-                    System.out.print(starterBack[i][j]);
+                    AnsiConsole.out().print(starterBack[i][j]);
                 }
-                System.out.println();
+                AnsiConsole.out().println();
             }
-            System.out.println();
+            AnsiConsole.out().println();
 
         }
     }
@@ -252,44 +264,52 @@ public class Tui implements Ui{
             }
         }
 
-        //add points (if present)
-        int topCenter = 4;
+        //if card gives points when placed display points and condition
         if (card.getPoints() != 0) {
-            switch (card.getCondition()) {
-                case NOTHING -> {
-                    if(card.getPoints() != 0){
-                        matCard[0][topCenter] = Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_BLACK) + String.valueOf(card.getPoints()) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                    }
-                }
-                case CORNER -> {
-                    matCard[0][topCenter - 1] = Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_BLACK) + String.valueOf(card.getPoints()) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                    matCard[0][topCenter] = Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "|" + TuiColors.getColor(TuiColors.ANSI_RESET);
-                    matCard[0][topCenter + 1] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.CORNER) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                }
-                case ITEM -> {
-                    matCard[0][topCenter - 1] = Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_BLACK) + String.valueOf(card.getPoints()) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                    matCard[0][topCenter] = Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "|" + TuiColors.getColor(TuiColors.ANSI_RESET);
-                    matCard[0][topCenter + 1] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(card.getRequiredItem()) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                }
-            }
+            addConditionAndPoints(matCard, card);
         }
 
         //add cost (if present)
         if(card.getCost() != null){
             int bottomCenter = 4 - card.getCost().length / 2 + 1;
-            for (int i = 0; i < card.getCost().length; i++) {
-                for (int j = 0; j < card.getCost()[i]; j++) {
-                    switch (i) {
-                        case 0 -> matCard[2][bottomCenter] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.FUNGI) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                        case 1 -> matCard[2][bottomCenter] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.PLANT) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                        case 2 -> matCard[2][bottomCenter] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.ANIMAL) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                        case 3 -> matCard[2][bottomCenter] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.INSECT) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                    }
-                    bottomCenter += 1;
-                }
-            }
+            addCost(matCard, card, bottomCenter);
         }
         return matCard;
+    }
+
+    public void addCost(String[][] matCard, Card card, int bottomCenter) {
+        for (int i = 0; i < card.getCost().length; i++) {
+            for (int j = 0; j < card.getCost()[i]; j++) {
+                switch (i) {
+                    case 0 -> matCard[2][bottomCenter] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.FUNGI) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                    case 1 -> matCard[2][bottomCenter] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.PLANT) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                    case 2 -> matCard[2][bottomCenter] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.ANIMAL) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                    case 3 -> matCard[2][bottomCenter] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.INSECT) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                }
+                bottomCenter += 1;
+            }
+        }
+    }
+
+    public void addConditionAndPoints(String[][] matCard, Card card) {
+        int topCenter = 4;
+        switch (card.getCondition()) {
+            case NOTHING -> {
+                if(card.getPoints() != 0){
+                    matCard[0][topCenter] = Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_BLACK) + card.getPoints() + TuiColors.getColor(TuiColors.ANSI_RESET);
+                }
+            }
+            case CORNER -> {
+                matCard[0][topCenter - 1] = Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_BLACK) + card.getPoints() + TuiColors.getColor(TuiColors.ANSI_RESET);
+                matCard[0][topCenter] = Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "|" + TuiColors.getColor(TuiColors.ANSI_RESET);
+                matCard[0][topCenter + 1] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.CORNER) + TuiColors.getColor(TuiColors.ANSI_RESET);
+            }
+            case ITEM -> {
+                matCard[0][topCenter - 1] = Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_BLACK) + card.getPoints() + TuiColors.getColor(TuiColors.ANSI_RESET);
+                matCard[0][topCenter] = Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "|" + TuiColors.getColor(TuiColors.ANSI_RESET);
+                matCard[0][topCenter + 1] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(card.getRequiredItem()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+            }
+        }
     }
 
     public String[][] createPrintableRetro(Color color){
@@ -342,26 +362,7 @@ public class Tui implements Ui{
 
             if(card.isNotBack()){
                 //aggiungi punti se ci sono
-                int topCenter = 4;
-                if (card.getPoints() != 0) {
-                    switch (card.getCondition()) {
-                        case NOTHING -> {
-                            if(card.getPoints() != 0){
-                                matCard[0][topCenter] = Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_BLACK) + String.valueOf(card.getPoints()) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                            }
-                        }
-                        case CORNER -> {
-                            matCard[0][topCenter - 1] = Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_BLACK) + String.valueOf(card.getPoints()) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                            matCard[0][topCenter] = Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "|" + TuiColors.getColor(TuiColors.ANSI_RESET);
-                            matCard[0][topCenter + 1] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.CORNER) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                        }
-                        case ITEM -> {
-                            matCard[0][topCenter - 1] = Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_BLACK) + String.valueOf(card.getPoints()) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                            matCard[0][topCenter] = Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "|" + TuiColors.getColor(TuiColors.ANSI_RESET);
-                            matCard[0][topCenter + 1] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(card.getRequiredItem()) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                        }
-                    }
-                }
+                addConditionAndPoints(matCard, card);
             }
 
             if(card.isNotBack()){
@@ -369,17 +370,7 @@ public class Tui implements Ui{
                 if(card.getCost() != null){
                     int costSum = Arrays.stream(card.getCost()).reduce(0, Integer::sum);
                     int bottomCenter = 4 - costSum / 2;
-                    for (int i = 0; i < card.getCost().length; i++) {
-                        for (int j = 0; j < card.getCost()[i]; j++) {
-                            switch (i) {
-                                case 0 -> matCard[2][bottomCenter] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.FUNGI) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                                case 1 -> matCard[2][bottomCenter] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.PLANT) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                                case 2 -> matCard[2][bottomCenter] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.ANIMAL) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                                case 3 -> matCard[2][bottomCenter] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.INSECT) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                            }
-                            bottomCenter += 1;
-                        }
-                    }
+                    addCost(matCard, card, bottomCenter);
                 }
             }
         }
@@ -407,7 +398,7 @@ public class Tui implements Ui{
         int centerObject = 6;
         switch (achievement) {
             case AchievementDiagonal ignored3 -> {
-                matCard[0][centerPoints] = Color.getBackground(Color.YELLOW) + TuiColors.getColor(TuiColors.ANSI_BLACK) + String.valueOf(achievement.getPoints()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                matCard[0][centerPoints] = Color.getBackground(Color.YELLOW) + TuiColors.getColor(TuiColors.ANSI_BLACK) + achievement.getPoints() + TuiColors.getColor(TuiColors.ANSI_RESET);
                 switch(achievement.getColor()){
                     case RED -> {
                         matCard[0][centerObject - 1] = Color.getBackground(Color.RED) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
@@ -433,7 +424,7 @@ public class Tui implements Ui{
 
             }
             case AchievementL ignored2 -> {
-                matCard[0][centerPoints] = Color.getBackground(Color.YELLOW) + TuiColors.getColor(TuiColors.ANSI_BLACK) + String.valueOf(achievement.getPoints()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                matCard[0][centerPoints] = Color.getBackground(Color.YELLOW) + TuiColors.getColor(TuiColors.ANSI_BLACK) + achievement.getPoints() + TuiColors.getColor(TuiColors.ANSI_RESET);
                 switch(achievement.getColor()){
                     case RED -> {
                         matCard[0][centerObject] = Color.getBackground(Color.RED) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
@@ -458,7 +449,7 @@ public class Tui implements Ui{
                 }
             }
             case AchievementItem ignored1 -> {
-                matCard[0][centerPoints] = Color.getBackground(Color.YELLOW) + TuiColors.getColor(TuiColors.ANSI_BLACK) + String.valueOf(achievement.getPoints()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                matCard[0][centerPoints] = Color.getBackground(Color.YELLOW) + TuiColors.getColor(TuiColors.ANSI_BLACK) + achievement.getPoints() + TuiColors.getColor(TuiColors.ANSI_RESET);
                 matCard[2][centerObject - 1] = Color.getBackground(Color.YELLOW) + Symbols.getStringBlack(achievement.getSymbols().get(0)) + TuiColors.getColor(TuiColors.ANSI_RESET);
                 if (achievement.getSymbols().size() == 3) {
                     matCard[2][centerObject + 1] = Color.getBackground(Color.YELLOW) + Symbols.getStringBlack(achievement.getSymbols().get(1)) + TuiColors.getColor(TuiColors.ANSI_RESET);
@@ -466,7 +457,7 @@ public class Tui implements Ui{
                 }
             }
             case AchievementResources ignored -> {
-                matCard[0][centerPoints] = Color.getBackground(Color.YELLOW) + TuiColors.getColor(TuiColors.ANSI_BLACK) + String.valueOf(achievement.getPoints()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                matCard[0][centerPoints] = Color.getBackground(Color.YELLOW) + TuiColors.getColor(TuiColors.ANSI_BLACK) + achievement.getPoints() + TuiColors.getColor(TuiColors.ANSI_RESET);
                 matCard[1][centerObject] = Color.getBackground(Color.YELLOW) + Symbols.getStringBlack(achievement.getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
                 matCard[2][centerObject - 1] = Color.getBackground(Color.YELLOW) + Symbols.getStringBlack(achievement.getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
                 matCard[2][centerObject + 1] = Color.getBackground(Color.YELLOW) + Symbols.getStringBlack(achievement.getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
@@ -537,7 +528,7 @@ public class Tui implements Ui{
         //TODO: forse posso mettere le posizioni come costanti
         //CommonBoard label
         moveCursor(14,134);
-        System.out.println(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "common board" + TuiColors.getColor(TuiColors.ANSI_RESET));
+        AnsiConsole.out().println(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "common board" + TuiColors.getColor(TuiColors.ANSI_RESET));
 
         //print resource retro card
         printCardMatrix(resourceDeck, 16, 134);
@@ -560,7 +551,7 @@ public class Tui implements Ui{
         //Player's hand and private achievement
         //Player's hand label
         moveCursor(2, 134);
-        System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "your hand" + TuiColors.getColor(TuiColors.ANSI_RESET));
+        AnsiConsole.out().print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "your hand" + TuiColors.getColor(TuiColors.ANSI_RESET));
 
         printCardMatrix(hand1, 4, 134);
         printCardMatrix(hand2, 4, 146);
@@ -568,20 +559,20 @@ public class Tui implements Ui{
 
         moveCursor(8, 134);
         //Private achievement label
-        System.out.println(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "your personal achievement" + TuiColors.getColor(TuiColors.ANSI_RESET));
+        AnsiConsole.out().println(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "your personal achievement" + TuiColors.getColor(TuiColors.ANSI_RESET));
 
         printCardMatrix(privateAchievement, 10, 134);
 
         moveCursor(31, 155);
-        System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "legend" + TuiColors.getColor(TuiColors.ANSI_RESET));
+        AnsiConsole.out().print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "legend" + TuiColors.getColor(TuiColors.ANSI_RESET));
         moveCursor(31, 134);
-        System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "symbol's count" + TuiColors.getColor(TuiColors.ANSI_RESET));
+        AnsiConsole.out().print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "symbol's count" + TuiColors.getColor(TuiColors.ANSI_RESET));
         printLabel();
 
         printBoard(player);
 
         //Empty line to divide the commands from the view
-        System.out.println();
+        AnsiConsole.out().println();
     }
     @Override
     public void printViewWithCommands(PlayerBean player, GameBean game, ArrayList<PlayerBean> players) {
@@ -595,19 +586,19 @@ public class Tui implements Ui{
             this.printView();
             if (!error.isEmpty()){
                 moveCursor(37, 0);
-                System.out.println(TuiColors.getColor(TuiColors.ANSI_RED) + error + TuiColors.getColor(TuiColors.ANSI_RESET));
+                AnsiConsole.out().println(TuiColors.getColor(TuiColors.ANSI_RED) + error + TuiColors.getColor(TuiColors.ANSI_RESET));
                 error = "";
             }
             if(!message.isEmpty()){
                 moveCursor(37, 0);
-                System.out.println(message);
+                AnsiConsole.out().println(message);
                 message = "";
             }
             if (game.getState().equals(GameState.START)){
                 moveCursor(39, 0);
-                System.out.println("Waiting for all players to end their setup");
+                AnsiConsole.out().println("Waiting for all players to end their setup");
             } else if(game.getState().equals(GameState.END)){
-                System.out.println("\nGG to everyone");
+                AnsiConsole.out().println("\nGG to everyone");
                 this.running = false;
                 System.exit(1);
             }
@@ -615,11 +606,11 @@ public class Tui implements Ui{
                 if (player.getState().equals(PlayerState.PLAY_CARD)) {
                     playerInTurn = player;
                     moveCursor(39, 0);
-                    System.out.println("Play a card");
+                    AnsiConsole.out().println("Play a card");
                 } else if (player.getState().equals(PlayerState.DRAW_CARD)) {
                     playerInTurn = player;
                     moveCursor(39, 0);
-                    System.out.println("Draw a card");
+                    AnsiConsole.out().println("Draw a card");
                 } else {
                     for (PlayerBean p : players) {
                         if (!p.getState().equals(PlayerState.NOT_IN_TURN)) {
@@ -627,26 +618,26 @@ public class Tui implements Ui{
                         }
                     }
                     if (playerInTurn == null){
-                        System.out.println("only one player connected, the other players have one minute to reconnect.");
+                        AnsiConsole.out().println("only one player connected, the other players have one minute to reconnect.");
                     }
                     else {
                         moveCursor(39, 0);
-                        System.out.println(playerInTurn.getUsername() + "'s turn. Wait for your turn to play");
+                        AnsiConsole.out().println(playerInTurn.getUsername() + "'s turn. Wait for your turn to play");
                     }
                 }
                 moveCursor(41, 0);
-                System.out.println("Press [1] to view the score track");
-                System.out.println("Press [2] to view a card from your hand");
-                System.out.println("Press [3] to view a card from your board");
-                System.out.println("Press [4] to view another player's board");
+                AnsiConsole.out().println("Press [1] to view the score track");
+                AnsiConsole.out().println("Press [2] to view a card from your hand");
+                AnsiConsole.out().println("Press [3] to view a card from your board");
+                AnsiConsole.out().println("Press [4] to view another player's board");
                 if (playerInTurn != null) {
                     if (playerInTurn.getUsername().equals(username) && playerInTurn.getState().equals(PlayerState.PLAY_CARD)) {
-                        System.out.println("Press [5] to place a card");
+                        AnsiConsole.out().println("Press [5] to place a card");
                     } else if (playerInTurn.getUsername().equals(username) && playerInTurn.getState().equals(PlayerState.DRAW_CARD)) {
-                        System.out.println("Press [5] to draw a card");
+                        AnsiConsole.out().println("Press [5] to draw a card");
                     }
                 }
-                System.out.println("Press [c] anytime to send a message");
+                AnsiConsole.out().println("Press [c] anytime to send a message");
             }
         }
     }
@@ -676,7 +667,7 @@ public class Tui implements Ui{
                 String a;
                 do {
                     moveCursor(39, 0);
-                    System.out.println("Which card do you want to display? [1] [2] [3]");
+                    AnsiConsole.out().println("Which card do you want to display? [1] [2] [3]");
                     a = input.next();
                     clearConsole();
                     this.printView();
@@ -690,9 +681,9 @@ public class Tui implements Ui{
                     String[][] backHand = this.createPrintableCard(hand[Integer.parseInt(a) - 1]);
                     hand[Integer.parseInt(a) - 1].setCurrentSide();
                     moveCursor(39, 3);
-                    System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "front:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
+                    AnsiConsole.out().print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "front:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
                     moveCursor(39, 19);
-                    System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "back:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
+                    AnsiConsole.out().print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "back:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
                     printCardMatrix(frontHand, 41, 3);
                     printCardMatrix(backHand, 41, 19);
                 }
@@ -700,14 +691,14 @@ public class Tui implements Ui{
             case "3" -> {
                 //TODO: mettere controllo che posizione appartenga -> se no torno a menù
                 moveCursor(39, 0);
-                System.out.println("Which card do you want to display?");
-                System.out.println("Type row number");
+                AnsiConsole.out().println("Which card do you want to display?");
+                AnsiConsole.out().println("Type row number");
                 String a = input.next();
                 clearConsole();
                 this.printView();
                 while (!a.equals("c") && Integer.parseInt(a) > TuiCostants.PLAYERBOARD_DIM) {
                     moveCursor(39, 0);
-                    System.out.println("Retype row number");
+                    AnsiConsole.out().println("Retype row number");
                     a = input.next();
                     clearConsole();
                     this.printView();
@@ -717,13 +708,13 @@ public class Tui implements Ui{
                 } else {
                     coord[0] = Integer.parseInt(a);
                     moveCursor(39, 0);
-                    System.out.println("Type column number");
+                    AnsiConsole.out().println("Type column number");
                     a = input.next();
                     clearConsole();
                     this.printView();
                     while (!a.equals("c") && Integer.parseInt(a) > TuiCostants.PLAYERBOARD_DIM) {
                         moveCursor(39, 0);
-                        System.out.println("Retype column number");
+                        AnsiConsole.out().println("Retype column number");
                         a = input.next();
                         clearConsole();
                         this.printView();
@@ -744,9 +735,9 @@ public class Tui implements Ui{
                 this.printView();
                 do {
                     moveCursor(39, 0);
-                    System.out.println("Which player's do you want to display?");
+                    AnsiConsole.out().println("Which player's do you want to display?");
                     for (int i = 0; i < players.size(); i++) {
-                        System.out.println("\t Press " + (i + 1) + " to display " + players.get(i).getUsername() + "'s board");
+                        AnsiConsole.out().println("\t Press " + (i + 1) + " to display " + players.get(i).getUsername() + "'s board");
                     }
                     a = input.next();
                     clearConsole();
@@ -757,19 +748,19 @@ public class Tui implements Ui{
                 } else {
                     clearConsole();
                     moveCursor(1, 50);
-                    System.out.println(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + players.get(Integer.parseInt(a) - 1).getUsername() + "'s playerboard" + TuiColors.getColor(TuiColors.ANSI_RESET));
+                    AnsiConsole.out().println(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + players.get(Integer.parseInt(a) - 1).getUsername() + "'s playerboard" + TuiColors.getColor(TuiColors.ANSI_RESET));
                     this.printBoard(players.get(Integer.parseInt(a) - 1));
                 }
             }
             case "5" -> {
                 if (player.getState().equals(PlayerState.PLAY_CARD)) {
                     moveCursor(37, 0);
-                    System.out.println("Which card do you want to place? [1] [2] [3]");
+                    AnsiConsole.out().println("Which card do you want to place? [1] [2] [3]");
                     String a = input.next();
                     clearConsole();
                     this.printView();
                     while (!a.equals("1") && !a.equals("2") && !a.equals("3") && !a.equals("c")) {
-                        System.out.println("Which card do you want to place? [1] [2] [3]");
+                        AnsiConsole.out().println("Which card do you want to place? [1] [2] [3]");
                         a = input.next();
                         clearConsole();
                         this.printView();
@@ -784,18 +775,18 @@ public class Tui implements Ui{
                         do {
                             moveCursor(37, 0);
                              cardToPlace = hand[Integer.parseInt(a) - 1];
-                            System.out.println("Which side do you want to place? [f] for front [b] for back");
-                            System.out.println();
+                            AnsiConsole.out().println("Which side do you want to place? [f] for front [b] for back");
+                            AnsiConsole.out().println();
                             //TODO: 1162 - 1171 scrivere metodo che stampa fronte e retro
                             String[][] front = this.createPrintableCard(hand[Integer.parseInt(a) - 1]);
                             hand[Integer.parseInt(a) - 1].setCurrentSide();
                             String[][] back = this.createPrintableCard(hand[Integer.parseInt(a) - 1]);
                             hand[Integer.parseInt(a) - 1].setCurrentSide();
                             moveCursor(39, 0);
-                            System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "front:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
+                            AnsiConsole.out().print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "front:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
                             printCardMatrix(front, 39, 8);
                             moveCursor(39, 22);
-                            System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "back:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
+                            AnsiConsole.out().print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "back:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
                             printCardMatrix(back, 39, 29);
                             b = input.next();
                         } while (!b.equals("f") && !b.equals("b") && !b.equals("c"));
@@ -815,15 +806,15 @@ public class Tui implements Ui{
                             cardToPlace.setCurrentSide();
                             this.printCard(cardToPlace, 37, 0);
                         }
-                        System.out.println("Where do you want to place it?");
-                        System.out.println("Type row number");
+                        AnsiConsole.out().println("Where do you want to place it?");
+                        AnsiConsole.out().println("Type row number");
                         a = input.next();
                         //TODO: cambiare condizione
                         while (!a.equals("c") && Integer.parseInt(a) > TuiCostants.PLAYERBOARD_DIM) {
                             clearConsole();
                             this.printView();
                             moveCursor(39, 0);
-                            System.out.println("Retype row number");
+                            AnsiConsole.out().println("Retype row number");
                             a = input.next();
                         }
                         if (a.equals("c")) {
@@ -834,13 +825,13 @@ public class Tui implements Ui{
                             this.printCard(cardToPlace, 37, 0);
                             coord[0] = Integer.parseInt(a);
                             moveCursor(40, 0);
-                            System.out.println("Type column number");
+                            AnsiConsole.out().println("Type column number");
                             a = input.next();
                             while (!a.equals("c") && Integer.parseInt(a) > TuiCostants.PLAYERBOARD_DIM) {
                                 clearConsole();
                                 this.printView();
                                 moveCursor(40, 0);
-                                System.out.println("Retype column number");
+                                AnsiConsole.out().println("Retype column number");
                                 a = input.next();
                             }
                             if(a.equals("c")){
@@ -852,13 +843,13 @@ public class Tui implements Ui{
                         }
                         clearConsole();
                         client.placeCard(cardToPlace, coord);
-                        System.out.flush();
+                        AnsiConsole.out().flush();
                     }
                 } else {
                     String a;
                     do {
                         moveCursor(37, 0);
-                        System.out.println("Do you want to draw from decks or visible cards? [1] for decks [2] for visible cards");
+                        AnsiConsole.out().println("Do you want to draw from decks or visible cards? [1] for decks [2] for visible cards");
                         a = input.next();
                     } while (!a.equals("1") && !a.equals("2") && !a.equals("c"));
                     if (a.equals("c")) {
@@ -870,14 +861,14 @@ public class Tui implements Ui{
                         String[][] rDeck = this.createPrintableRetro(resourceBack);
                         String[][] gDeck = this.createPrintableRetro(goldBack);
                         do {
-                            System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "resource deck:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
-                            System.out.print("     ");
-                            System.out.println(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "gold deck:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
-                            System.out.println();
+                            AnsiConsole.out().print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "resource deck:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
+                            AnsiConsole.out().print("     ");
+                            AnsiConsole.out().println(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "gold deck:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
+                            AnsiConsole.out().println();
                             printCardMatrix(rDeck, 39, 0);
                             printCardMatrix(gDeck, 39, 21);
-                            System.out.println();
-                            System.out.println("Do you want to draw from resource deck or gold deck? [r] for resource [g] for gold");
+                            AnsiConsole.out().println();
+                            AnsiConsole.out().println("Do you want to draw from resource deck or gold deck? [r] for resource [g] for gold");
                             a = input.next();
                         } while (!a.equals("r") && !a.equals("g") && !a.equals("c"));
                             if (a.equals("c")) {
@@ -896,16 +887,16 @@ public class Tui implements Ui{
                             clearConsole();
                             printView();
                             moveCursor(37, 0);
-                            System.out.print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "resource cards:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
+                            AnsiConsole.out().print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "resource cards:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
                             moveCursor(37, 32);
-                            System.out.println(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "gold cards:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
-                            System.out.println();
+                            AnsiConsole.out().println(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "gold cards:" + TuiColors.getColor(TuiColors.ANSI_RESET) + " ");
+                            AnsiConsole.out().println();
                             printCardMatrix(r1, 39, 0);
                             printCardMatrix(r2, 39, 16);
                             printCardMatrix(g1, 39, 32);
                             printCardMatrix(g2, 39, 48);
-                            System.out.println();
-                            System.out.println("Which card do you want to draw? [1] for first resource [2] for second resource [3] for first gold [4] for second gold");
+                            AnsiConsole.out().println();
+                            AnsiConsole.out().println("Which card do you want to draw? [1] for first resource [2] for second resource [3] for first gold [4] for second gold");
                             a = input.next();
                         } while (!a.equals("1") && !a.equals("2") && !a.equals("3") && !a.equals("4") && !a.equals("c"));
                         if (a.equals("c")) {
@@ -917,10 +908,10 @@ public class Tui implements Ui{
                 }
             }
             case "c" -> this.printChat();
-            default -> System.out.print("");
+            default -> AnsiConsole.out().print("");
         }
         moveCursor(45, 70);
-        System.out.println("Press [q] to return to the main menu");
+        AnsiConsole.out().println("Press [q] to return to the main menu");
     }
 
     public void printChat(){
@@ -928,21 +919,21 @@ public class Tui implements Ui{
         int u;
         clearConsole();
         moveCursor(2, 2);
-        System.out.println(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "chat" + TuiColors.getColor(TuiColors.ANSI_RESET));
+        AnsiConsole.out().println(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "chat" + TuiColors.getColor(TuiColors.ANSI_RESET));
         //print chat
         moveCursor(3, 6);
         for (String message : player.getChat()){
-            System.out.println(message);
+            AnsiConsole.out().println(message);
         }
         //Select the receiver of the message
         do{
             moveCursor(37, 0);
-            System.out.println("Who do you want to send your message to?");
-            System.out.println("\t Press [0] to close chat");
+            AnsiConsole.out().println("Who do you want to send your message to?");
+            AnsiConsole.out().println("\t Press [0] to close chat");
             for (int i = 0; i < players.size(); i++) {
-                System.out.println("\t Press " + (i + 1) + " to send the message to " + players.get(i).getUsername());
+                AnsiConsole.out().println("\t Press " + (i + 1) + " to send the message to " + players.get(i).getUsername());
             }
-            System.out.println("\t Press " + (players.size() + 1) + " to send a global message");
+            AnsiConsole.out().println("\t Press " + (players.size() + 1) + " to send a global message");
             u = input.nextInt();
         } while (u < 0 || u > players.size() + 1);
         if (u == 0){
@@ -950,7 +941,7 @@ public class Tui implements Ui{
         }
         else {
             //Send the message
-            System.out.println("What's the content of your message?");
+            AnsiConsole.out().println("What's the content of your message?");
             //consume the newline
             input.nextLine();
             String m = input.nextLine();
@@ -962,13 +953,13 @@ public class Tui implements Ui{
             }
             //TODO: potrebbe dare problemi
             moveCursor(45, 50);
-            System.out.println("Press [q] to return to the main menu");
+            AnsiConsole.out().println("Press [q] to return to the main menu");
         }
     }
 
     public void printTitle(){
-        System.out.print("\n");
-        System.out.print(TuiColors.getColor(TuiColors.ANSI_YELLOW) +
+        AnsiConsole.out().print("\n");
+        AnsiConsole.out().print(TuiColors.getColor(TuiColors.ANSI_YELLOW) +
                 " ██████╗ ██████╗ ██████╗ ███████╗██╗  ██╗    ███╗   ██╗ █████╗ ████████╗██╗   ██╗██████╗  █████╗ ██╗     ██╗███████╗\n" +
                 "██╔════╝██╔═══██╗██╔══██╗██╔════╝╚██╗██╔╝    ████╗  ██║██╔══██╗╚══██╔══╝██║   ██║██╔══██╗██╔══██╗██║     ██║██╔════╝\n" +
                 "██║     ██║   ██║██║  ██║█████╗   ╚███╔╝     ██╔██╗ ██║███████║   ██║   ██║   ██║██████╔╝███████║██║     ██║███████╗\n" +
@@ -981,25 +972,25 @@ public class Tui implements Ui{
 
     public void printTrack(String[][][][] scoretrack){
         int padding = 75;
-        System.out.print(" ".repeat(padding));
-        System.out.println("─".repeat(26));
-        System.out.print(" ".repeat(padding));
+        AnsiConsole.out().print(" ".repeat(padding));
+        AnsiConsole.out().println("─".repeat(26));
+        AnsiConsole.out().print(" ".repeat(padding));
         for (int i = 0; i < TuiCostants.SCOREBOARD_ROW; i++){
             for (int j = 0; j < 3; j++) {
                 //print the scoretrack cell
                 for (int k = 0; k < TuiCostants.SCOREBOARD_COLUMN; k++) {
-                    System.out.print("|");
+                    AnsiConsole.out().print("|");
                     for (int l = 0; l < 3; l++) {
-                        System.out.print(scoretrack[l][j][i][k]);
+                        AnsiConsole.out().print(scoretrack[l][j][i][k]);
                     }
                 }
-                System.out.print("|");
-                System.out.println();
-                System.out.print(" ".repeat(padding));
+                AnsiConsole.out().print("|");
+                AnsiConsole.out().println();
+                AnsiConsole.out().print(" ".repeat(padding));
             }
-            System.out.print("─".repeat(26));
-            System.out.println();
-            System.out.print(" ".repeat(padding));
+            AnsiConsole.out().print("─".repeat(26));
+            AnsiConsole.out().println();
+            AnsiConsole.out().print(" ".repeat(padding));
         }
     }
 
@@ -1012,10 +1003,10 @@ public class Tui implements Ui{
         for (int i = 0; i < TuiCostants.ROW; i++) {
             moveCursor(row + i, column);
             for (int j = 0; j < TuiCostants.COLUMN; j++) {
-                System.out.print(template[i][j]);
+                AnsiConsole.out().print(template[i][j]);
             }
         }
-        System.out.print("\n");
+        AnsiConsole.out().print("\n");
     }
 
     public void printBoard(PlayerBean playerToShow){
@@ -1026,13 +1017,13 @@ public class Tui implements Ui{
         //Print the grid (TuiCostants.COLUMN)
         for (int i = 0; i < TuiCostants.BOARD_DIM; i++) {
             moveCursor(2 * i + 4, 0);
-            System.out.print((TuiCostants.BOARD_DIM/2) - i);
+            AnsiConsole.out().print((TuiCostants.BOARD_DIM/2) - i);
         }
 
         //Print the grid (TuiCostants.ROW)
         for (int i = 0; i < TuiCostants.BOARD_DIM; i++) {
             moveCursor(0, 8 * i + 8);
-            System.out.print(i - (TuiCostants.BOARD_DIM/2));
+            AnsiConsole.out().print(i - (TuiCostants.BOARD_DIM/2));
         }
 
         //Print the placed card
@@ -1047,9 +1038,9 @@ public class Tui implements Ui{
     public void printLabel() {
         for (int i = 0; i < 7; i++) {
             moveCursor(TuiCostants.COMMON_ROW + i, 134);
-            System.out.print(Symbols.getString(Symbols.values()[i]) + TuiColors.getColor(TuiColors.ANSI_WHITE) + " -> " + player.getBoard().getSymbolCount(Symbols.values()[i]) + TuiColors.getColor(TuiColors.ANSI_RESET));
+            AnsiConsole.out().print(Symbols.getString(Symbols.values()[i]) + TuiColors.getColor(TuiColors.ANSI_WHITE) + " -> " + player.getBoard().getSymbolCount(Symbols.values()[i]) + TuiColors.getColor(TuiColors.ANSI_RESET));
             moveCursor(TuiCostants.COMMON_ROW + i, 155);
-            System.out.print(Symbols.getString(Symbols.values()[i]) + TuiColors.getColor(TuiColors.ANSI_WHITE) + " -> " + Symbols.getLongString(Symbols.values()[i]) + TuiColors.getColor(TuiColors.ANSI_RESET));
+            AnsiConsole.out().print(Symbols.getString(Symbols.values()[i]) + TuiColors.getColor(TuiColors.ANSI_WHITE) + " -> " + Symbols.getLongString(Symbols.values()[i]) + TuiColors.getColor(TuiColors.ANSI_RESET));
         }
     }
 
@@ -1058,35 +1049,35 @@ public class Tui implements Ui{
 
         for (int i = 0; i < TuiCostants.ROW; i++) {
             for (int j = 0; j < TuiCostants.COLUMN; j++) {
-                System.out.print(mat[i][j]);
+                AnsiConsole.out().print(mat[i][j]);
             }
-            System.out.print("\n");
+            AnsiConsole.out().print("\n");
         }
-        System.out.print("\n");
+        AnsiConsole.out().print("\n");
     }
     @Override
     public Achievement chooseAchievement(Achievement[] choices) {
-        System.out.println("I)");
+        AnsiConsole.out().println("I)");
         this.printAchievement(choices[0]);
-        System.out.println("II)");
+        AnsiConsole.out().println("II)");
         this.printAchievement(choices[1]);
-        System.out.println("Choose one of the two Achievements");
+        AnsiConsole.out().println("Choose one of the two Achievements");
         int choice = scanner.nextInt();
         while (choice < 1 || choice > 2){
-            System.out.println("Wrong input.\nWrite 1 for the first achievement and 2 for the second");
+            AnsiConsole.out().println("Wrong input.\nWrite 1 for the first achievement and 2 for the second");
             choice = scanner.nextInt();
         }
         return choices[choice - 1];
     }
 
     public Color chooseColor(List<Color> colors){
-        System.out.println("Choose your color by typing the corresponding number:");
+        AnsiConsole.out().println("Choose your color by typing the corresponding number:");
         for (int i = 0; i < colors.size(); i++){
-            System.out.println("\t" + (1 + i) + ") " + colors.get(i));
+            AnsiConsole.out().println("\t" + (1 + i) + ") " + colors.get(i));
         }
         int c = scanner.nextInt();
         while(c > colors.size() || c < 0){
-            System.out.print("Invalid input. Retry: ");
+            AnsiConsole.out().print("Invalid input. Retry: ");
             c = scanner.nextInt();
         }
         inputThread.start();
@@ -1113,7 +1104,7 @@ public class Tui implements Ui{
                 message += "\t" + s + "\n";
             }
         }
-        System.out.println(message);
+        AnsiConsole.out().println(message);
     }
 
     public void moveCursor(int row, int column){
@@ -1122,7 +1113,7 @@ public class Tui implements Ui{
         console.printf("%c[%d;%df", escCode, row, column);
     }
     public static void clearConsole(){
-        System.out.println(TuiColors.getColor(TuiColors.ANSI_CLEAR));
-        System.out.flush();
+        AnsiConsole.out().println(TuiColors.getColor(TuiColors.ANSI_CLEAR));
+        AnsiConsole.out().flush();
     }
 }
