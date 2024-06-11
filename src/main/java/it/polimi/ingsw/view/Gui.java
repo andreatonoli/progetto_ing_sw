@@ -8,10 +8,7 @@ import it.polimi.ingsw.network.client.ClientInterface;
 import it.polimi.ingsw.network.client.GameBean;
 import it.polimi.ingsw.network.client.PlayerBean;
 import it.polimi.ingsw.network.server.Server;
-import it.polimi.ingsw.view.controllers.AchievementChoiceSceneController;
-import it.polimi.ingsw.view.controllers.ColorChoiceSceneController;
-import it.polimi.ingsw.view.controllers.LobbiesSceneController;
-import it.polimi.ingsw.view.controllers.StarterFlipSceneController;
+import it.polimi.ingsw.view.controllers.*;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -54,6 +51,15 @@ public class Gui extends Application implements Ui{
 
     @Override
     public void start(Stage s) throws Exception {
+
+        this.stage = s;
+
+        loader = new FXMLLoader(getClass().getResource(GuiScenes.getFxml(GuiScenes.START_SCENE)));
+        Parent root = loader.load();
+        stage.setScene(new Scene(root));
+
+        List<Integer> freelobbies = new ArrayList<>(List.of(3, 5, 7));
+
         //StarterCard s1 = new StarterCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}, 1, new CardBack(new ArrayList<>(List.of(Symbols.FUNGI, Symbols.PLANT, Symbols.ANIMAL)), Color.WHITE, new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY)}));
 
         Achievement a1 = new AchievementItem(3, new ArrayList<>(List.of(Symbols.QUILL, Symbols.INKWELL, Symbols.MANUSCRIPT)), 13);
@@ -62,19 +68,13 @@ public class Gui extends Application implements Ui{
 
         List<Color> colors = new ArrayList<>(List.of(Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW));
 
-        loadScene(GuiScenes.COLOR_CHOICE_SCENE);
-
-        //StarterFlipSceneController c = loader.getController();
-        //c.setFace(s1);
-
-        //AchievementChoiceSceneController c = loader.getController();
-        //c.setAchievements(a);
-
+        loader = new FXMLLoader(getClass().getResource(GuiScenes.getFxml(GuiScenes.COLOR_CHOICE_SCENE)));
+        root = loader.load();
         ColorChoiceSceneController c = loader.getController();
         c.setColors(colors);
-
-        stage.setScene(new Scene(root));
+        stage.getScene().setRoot(root);
         stage.show();
+
     }
 
     @Override
@@ -149,6 +149,7 @@ public class Gui extends Application implements Ui{
         LobbiesSceneController c = loader.getController();
         c.setLobbies(startingGamesId);
         stage.getScene().setRoot(root);
+        stage.show();
 
         try {
             while (returnValue.isEmpty()) {
