@@ -177,7 +177,8 @@ public class Controller extends Observable {
             deck = game.getGameBoard().getGoldDeck();
         }
         else {
-            //TODO: errore profondo
+            //TODO: errore profondo (fixato?)
+            user.sendMessage(new GenericMessage("\nThe deck selected do not exist.\n"));
             return;
         }
         try {
@@ -187,9 +188,7 @@ public class Controller extends Observable {
                 turnHandler.startEnd(this.getPlayerByClient(user));
             }
             turnHandler.changePlayerState(this.getPlayerByClient(user));
-            //notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState(), user.getUsername()));
             notifyAll(new UpdateDeckMessage(deck.getFirst().getColor(), isResource));
-            user.sendMessage(new UpdateCardMessage(drawedCard));
         } catch (EmptyException | NotInTurnException | FullHandException e) {
             user.sendMessage(new ErrorMessage(e.getMessage()));
         }
@@ -213,7 +212,8 @@ public class Controller extends Observable {
                 isGold = true;
             }
             else{
-                //TODO: errore profondo
+                user.sendMessage(new GenericMessage("\nThere is no card in this position.\n"));
+                //TODO: errore profondo(fixato?)
                 return;
             }
             Card drawedCard = this.getPlayerByClient(user).drawCardFromBoard(card);
@@ -224,7 +224,6 @@ public class Controller extends Observable {
                 notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_RESOURCE_UPDATE, game.getGameBoard().getCommonResource()[index], index));
             }
             turnHandler.changePlayerState(this.getPlayerByClient(user));
-            //notifyAll(new PlayerStateMessage(this.getPlayerByClient(user).getPlayerState(), user.getUsername()));
             user.sendMessage(new UpdateCardMessage(drawedCard));
         } catch (CardNotFoundException | NotInTurnException | FullHandException e) {
             user.sendMessage(new ErrorMessage(e.getMessage()));
@@ -247,8 +246,10 @@ public class Controller extends Observable {
                 }
             }
             if (!present){
-                //TODO: errore profondo
+                //TODO: errore profondo (fixato?)
                 //TODO rimanda mano???
+                user.sendMessage(new UpdateCardMessage(card));
+                user.sendMessage(new GenericMessage("\nThe card can't be placed there.\n"));
                 return;
             }
             //Place card and change player's state
@@ -259,7 +260,6 @@ public class Controller extends Observable {
             }
             turnHandler.changePlayerState(p);
             //notifies all players the changed made by user
-            //notifyAll(new PlayerStateMessage(p.getPlayerState(), p.getUsername()));
             notifyAll(new ScoreUpdateMessage(p.getPoints(), p.getUsername()));
             notifyAll(new PlayerBoardUpdateMessage(p.getPlayerBoard(), p.getUsername()));
         } catch (NotInTurnException | OccupiedCornerException | CostNotSatisfiedException |
@@ -273,7 +273,9 @@ public class Controller extends Observable {
     public void placeStarterCard(Connection user, Card starterCard){
         Player player = getPlayerByClient(user);
         if (!starterCard.equals(player.getPlayerBoard().getStarterCard())){
-            //TODO: errore profondo
+            //TODO: errore profondo(fixato?)
+            user.sendMessage(new StarterCardMessage(player.getPlayerBoard().getStarterCard()));
+            user.sendMessage(new GenericMessage("\nSome error occurred, please retry.\n"));
             return;
         }
         player.getPlayerBoard().setStarterCard(starterCard);
@@ -287,7 +289,9 @@ public class Controller extends Observable {
     public void chooseObj(Connection user, Achievement achievement){
         Player player = getPlayerByClient(user);
         if (!achievement.equals(player.getPersonalObj()[0]) && !achievement.equals(player.getPersonalObj()[1])){
-            //TODO: errore profondo
+            //TODO: errore profondo(fixato?)
+            user.sendMessage(new AchievementMessage(MessageType.PRIVATE_ACHIEVEMENT,player.getPersonalObj()));
+            user.sendMessage(new GenericMessage("\nSome error occurred, please retry.\n"));
             return;
         }
         player.setChosenObj(achievement);

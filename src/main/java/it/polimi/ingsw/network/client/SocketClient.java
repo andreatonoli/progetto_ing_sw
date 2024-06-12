@@ -339,6 +339,7 @@ public class SocketClient implements ClientInterface {
         }
         else{
             //TODO: errore profondo
+            update(new GenericMessage("\nThere's a time and place for everything! But not now.\n"));
         }
     }
 
@@ -349,6 +350,7 @@ public class SocketClient implements ClientInterface {
         }
         else {
             //TODO: errore profondo
+            update(new GenericMessage("\nThere's a time and place for everything! But not now.\n"));
         }
     }
 
@@ -359,6 +361,7 @@ public class SocketClient implements ClientInterface {
         }
         else{
             //TODO: errore profondo
+            update(new GenericMessage("\nThere's a time and place for everything! But not now.\n"));
         }
     }
 

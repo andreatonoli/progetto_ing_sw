@@ -348,6 +348,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
         }
         else{
             //TODO: errore profondo
+            update(new GenericMessage("\nThere's a time and place for everything! But not now.\n"));
         }
     }
 
@@ -362,6 +363,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
         }
         else{
             //TODO: errore profondo
+            update(new GenericMessage("\nThere's a time and place for everything! But not now.\n"));
         }
     }
 
@@ -376,6 +378,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
         }
         else{
             //TODO: errore profondo
+            update(new GenericMessage("\nThere's a time and place for everything! But not now.\n"));
         }
     }
 
