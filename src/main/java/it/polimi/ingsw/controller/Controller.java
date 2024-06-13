@@ -177,8 +177,7 @@ public class Controller extends Observable {
             deck = game.getGameBoard().getGoldDeck();
         }
         else {
-            //TODO: errore profondo (fixato?)
-            user.sendMessage(new GenericMessage("\nThe deck selected do not exist.\n"));
+            user.sendMessage(new GenericMessage("\nSelected deck does not exist.\n"));
             return;
         }
         try {
@@ -189,6 +188,7 @@ public class Controller extends Observable {
             }
             turnHandler.changePlayerState(this.getPlayerByClient(user));
             notifyAll(new UpdateDeckMessage(deck.getFirst().getColor(), isResource));
+            user.sendMessage(new UpdateCardMessage(drawedCard));
         } catch (EmptyException | NotInTurnException | FullHandException e) {
             user.sendMessage(new ErrorMessage(e.getMessage()));
         }
@@ -213,15 +213,16 @@ public class Controller extends Observable {
             }
             else{
                 user.sendMessage(new GenericMessage("\nThere is no card in this position.\n"));
-                //TODO: errore profondo(fixato?)
                 return;
             }
             Card drawedCard = this.getPlayerByClient(user).drawCardFromBoard(card);
             if (isGold){
                 notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_GOLD_UPDATE, game.getGameBoard().getCommonGold()[index-2], index-2));
+                notifyAll(new UpdateDeckMessage(game.getGameBoard().getGoldDeck().getFirst().getColor(), false));
             }
             else{
                 notifyAll(new CommonCardUpdateMessage(MessageType.COMMON_RESOURCE_UPDATE, game.getGameBoard().getCommonResource()[index], index));
+                notifyAll(new UpdateDeckMessage(game.getGameBoard().getResourceDeck().getFirst().getColor(), true));
             }
             turnHandler.changePlayerState(this.getPlayerByClient(user));
             user.sendMessage(new UpdateCardMessage(drawedCard));
@@ -239,17 +240,14 @@ public class Controller extends Observable {
         try {
             Player p = this.getPlayerByClient(user);
             boolean present = false;
-            //TODO: cercare algoritmo migliore
             for (Card c : p.getCardInHand()){
                 if (c.equals(card)){
                     present = true;
                 }
             }
             if (!present){
-                //TODO: errore profondo (fixato?)
-                //TODO rimanda mano???
-                user.sendMessage(new UpdateCardMessage(card));
-                user.sendMessage(new GenericMessage("\nThe card can't be placed there.\n"));
+                user.sendMessage(new CardInHandMessage(p.getCardInHand()));
+                user.sendMessage(new GenericMessage("\nThis card does not belong to your hand.\n"));
                 return;
             }
             //Place card and change player's state
@@ -273,7 +271,6 @@ public class Controller extends Observable {
     public void placeStarterCard(Connection user, Card starterCard){
         Player player = getPlayerByClient(user);
         if (!starterCard.equals(player.getPlayerBoard().getStarterCard())){
-            //TODO: errore profondo(fixato?)
             user.sendMessage(new StarterCardMessage(player.getPlayerBoard().getStarterCard()));
             user.sendMessage(new GenericMessage("\nSome error occurred, please retry.\n"));
             return;
@@ -289,14 +286,12 @@ public class Controller extends Observable {
     public void chooseObj(Connection user, Achievement achievement){
         Player player = getPlayerByClient(user);
         if (!achievement.equals(player.getPersonalObj()[0]) && !achievement.equals(player.getPersonalObj()[1])){
-            //TODO: errore profondo(fixato?)
             user.sendMessage(new AchievementMessage(MessageType.PRIVATE_ACHIEVEMENT,player.getPersonalObj()));
             user.sendMessage(new GenericMessage("\nSome error occurred, please retry.\n"));
             return;
         }
         player.setChosenObj(achievement);
         chooseColor(user);
-        notifyAll(new PlayerBoardUpdateMessage(player.getPlayerBoard(), user.getUsername()));
     }
 
     public void chooseColor(Connection user) {
@@ -304,6 +299,11 @@ public class Controller extends Observable {
     }
 
     public void setColor(Connection user, Color color){
+        if (!game.getAvailableColors().contains(color)){
+            this.chooseColor(user);
+            user.sendMessage(new ErrorMessage("\nChoose one color among these"));
+            return;
+        }
         this.game.getAvailableColors().remove(color);
         getPlayerByClient(user).setPionColor(color);
         notifyAll(new ColorResponseMessage(user.getUsername(), color));
@@ -360,7 +360,6 @@ public class Controller extends Observable {
                 this.addObserver(user);
                 this.turnHandler.removeObserver(c);
                 this.turnHandler.addObserver(user);
-                //TODO controllare se da linux va
                 reconnectedPlayer.setDisconnected(false);
             }
             else {
