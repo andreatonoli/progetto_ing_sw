@@ -80,7 +80,7 @@ public class Controller extends Observable {
         }
     }
 
-    private void pickQueue(){
+    public void pickQueue(){
         Timer t = new Timer();
         t.schedule(new TimerTask() {
             @Override
@@ -118,7 +118,7 @@ public class Controller extends Observable {
      * Notifies the clients of all the changes done from the model's method startGame. It sends the users their cards,
      * the scoreboard, their starter card, asks the color they want and selects the first player to play.
      */
-    private void startGame() {
+    public void startGame() {
         try {
             game.startGame();
         } catch (NotEnoughPlayersException e) {

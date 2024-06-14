@@ -5,23 +5,25 @@ import static org.mockito.Mockito.*;
 
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.controller.TurnHandler;
+import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.GameBoard;
 import it.polimi.ingsw.model.player.*;
 import it.polimi.ingsw.model.card.*;
 import it.polimi.ingsw.model.enums.*;
 import it.polimi.ingsw.model.exceptions.*;
-import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.network.messages.ErrorMessage;
 import it.polimi.ingsw.network.server.Connection;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.Spy;
+import org.mockito.ArgumentCaptor;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.lang.reflect.Array;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+
 
 @ExtendWith(MockitoExtension.class)
 public class ControllerTest {
@@ -57,7 +59,7 @@ public class ControllerTest {
 
     @Test
     @DisplayName("User chooses an invalid achievement")
-    public void testInvalidChooseObj(){
+    public void testInvalidChooseObj() {
         // Create local mocks
         Connection user = mock(Connection.class);
         Player player = mock(Player.class);
@@ -86,55 +88,37 @@ public class ControllerTest {
         verify(player, never()).setChosenObj(chosenAchievement);
     }
 
-    /*
     @Test
     public void testDrawCardFromResourceDeck() throws Exception {
         // Create local mocks
         Connection user = mock(Connection.class);
-        Game game = mock(Game.class);
-        GameBoard gameBoard = mock(GameBoard.class);
         Player player = mock(Player.class);
         TurnHandler turnHandler = mock(TurnHandler.class);
         LinkedList<Card> resourceDeck = new LinkedList<>();
-        Card drawedCard = new Card(
-                new ResourceCard(new Corner[]{new Corner(Symbols.NOCORNER), new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY)}, 1),
-                new CardBack(List.of(Symbols.FUNGI)),
-                "resource",
-                30,
-                Color.PURPLE
-        );
+        Card drawedCard = mock(Card.class);
 
         // Ensure the resourceDeck is mocked correctly
         resourceDeck.add(drawedCard);
 
         // Create an instance of the class under test
         Controller controller = spy(new Controller(4, 0));
-        when(controller.getGame()).thenReturn(game);
 
         // Using reflection to set the internal turnHandler since it's created in the constructor
         java.lang.reflect.Field field = Controller.class.getDeclaredField("turnHandler");
         field.setAccessible(true);
         field.set(controller, turnHandler);
 
-        // Set up the game board and decks
-        when(game.getGameBoard()).thenReturn(gameBoard);
-        when(gameBoard.getResourceDeck()).thenReturn(resourceDeck);
-
         // Stub the getPlayerByClient method to return the mocked player
         when(controller.getPlayerByClient(user)).thenReturn(player);
 
         // Stub the player's drawCard method to return the drawn card
-        // Ensure it uses the exact same resourceDeck instance
-        when(player.drawCard(same(resourceDeck))).thenReturn(drawedCard); // Use same() to match the exact reference
-
-        // Stub player state
-        when(player.getPlayerState()).thenReturn(PlayerState.DRAW_CARD);
+        when(player.drawCard(any())).thenReturn(drawedCard);
 
         // Call the method to be tested
         controller.drawCard(user, "resource");
 
         // Verify interactions
-        verify(player).drawCard(resourceDeck);
+        verify(player).drawCard(any(LinkedList.class));
         verify(turnHandler).changePlayerState(player);
         verify(user).sendMessage(any(UpdateCardMessage.class));
         verify(controller).notifyAll(any(UpdateDeckMessage.class));
@@ -144,33 +128,33 @@ public class ControllerTest {
     public void testDrawCardFromGoldDeck() throws Exception {
         // Create local mocks
         Connection user = mock(Connection.class);
-        Game game = mock(Game.class);
-        GameBoard gameBoard = mock(GameBoard.class);
         Player player = mock(Player.class);
         TurnHandler turnHandler = mock(TurnHandler.class);
         LinkedList<Card> goldDeck = new LinkedList<>();
         Card drawedCard = mock(Card.class);
 
         // Create an instance of the class under test
-        Controller controller = spy(new Controller(4, 0)); // Replace 'Controller' with the actual class name
-        when(controller.getGame()).thenReturn(game);
+        Controller controller = spy(new Controller(4, 0));
 
-        // Set up the game board and decks
-        when(game.getGameBoard()).thenReturn(gameBoard);
-        when(gameBoard.getGoldDeck()).thenReturn(goldDeck);
-        goldDeck.add(drawedCard); // Add a card to the deck
+        // Using reflection to set the internal turnHandler since it's created in the constructor
+        java.lang.reflect.Field field = Controller.class.getDeclaredField("turnHandler");
+        field.setAccessible(true);
+        field.set(controller, turnHandler);
+
+        // Add a card to the deck
+        goldDeck.add(drawedCard);
 
         // Stub the getPlayerByClient method to return the mocked player
         doReturn(player).when(controller).getPlayerByClient(user);
 
         // Stub the player's drawCard method to return the drawn card
-        when(player.drawCard(goldDeck)).thenReturn(drawedCard);
+        when(player.drawCard(any())).thenReturn(drawedCard);
 
         // Call the method to be tested
         controller.drawCard(user, "gold");
 
         // Verify interactions
-        verify(player).drawCard(goldDeck);
+        verify(player).drawCard(any());
         verify(turnHandler).changePlayerState(player);
         verify(user).sendMessage(any(UpdateCardMessage.class));
     }
@@ -179,25 +163,23 @@ public class ControllerTest {
     public void testDrawCardHandlesEmptyDeck() throws Exception {
         // Create local mocks
         Connection user = mock(Connection.class);
-        Game game = mock(Game.class);
-        GameBoard gameBoard = mock(GameBoard.class);
         Player player = mock(Player.class);
         TurnHandler turnHandler = mock(TurnHandler.class);
-        LinkedList<Card> resourceDeck = new LinkedList<>();
+        LinkedList<Card> goldDeck = new LinkedList<>();
 
         // Create an instance of the class under test
-        Controller controller = spy(new Controller(4, 0)); // Replace 'Controller' with the actual class name
-        when(controller.getGame()).thenReturn(game);
+        Controller controller = spy(new Controller(4, 0));
 
-        // Set up the game board and decks
-        when(game.getGameBoard()).thenReturn(gameBoard);
-        when(gameBoard.getResourceDeck()).thenReturn(resourceDeck);
+        // Using reflection to set the internal turnHandler since it's created in the constructor
+        java.lang.reflect.Field field = Controller.class.getDeclaredField("turnHandler");
+        field.setAccessible(true);
+        field.set(controller, turnHandler);
 
         // Stub the getPlayerByClient method to return the mocked player
         doReturn(player).when(controller).getPlayerByClient(user);
 
         // Stub the player's drawCard method to throw EmptyException
-        doThrow(new EmptyException()).when(player).drawCard(resourceDeck);
+        doThrow(new EmptyException()).when(player).drawCard(any());
 
         // Call the method to be tested
         controller.drawCard(user, "resource");
@@ -210,25 +192,22 @@ public class ControllerTest {
     public void testDrawCardHandlesNotInTurnException() throws Exception {
         // Create local mocks
         Connection user = mock(Connection.class);
-        Game game = mock(Game.class);
-        GameBoard gameBoard = mock(GameBoard.class);
         Player player = mock(Player.class);
         TurnHandler turnHandler = mock(TurnHandler.class);
-        LinkedList<Card> resourceDeck = new LinkedList<>();
 
         // Create an instance of the class under test
-        Controller controller = spy(new Controller(4, 0)); // Replace 'Controller' with the actual class name
-        when(controller.getGame()).thenReturn(game);
+        Controller controller = spy(new Controller(4, 0));
 
-        // Set up the game board and decks
-        when(game.getGameBoard()).thenReturn(gameBoard);
-        when(gameBoard.getResourceDeck()).thenReturn(resourceDeck);
+        // Using reflection to set the internal turnHandler since it's created in the constructor
+        java.lang.reflect.Field field = Controller.class.getDeclaredField("turnHandler");
+        field.setAccessible(true);
+        field.set(controller, turnHandler);
 
         // Stub the getPlayerByClient method to return the mocked player
         doReturn(player).when(controller).getPlayerByClient(user);
 
         // Stub the player's drawCard method to throw NotInTurnException
-        doThrow(new NotInTurnException()).when(player).drawCard(resourceDeck);
+        doThrow(new NotInTurnException()).when(player).drawCard(any());
 
         // Call the method to be tested
         controller.drawCard(user, "resource");
@@ -241,25 +220,22 @@ public class ControllerTest {
     public void testDrawCardHandlesFullHandException() throws Exception {
         // Create local mocks
         Connection user = mock(Connection.class);
-        Game game = mock(Game.class);
-        GameBoard gameBoard = mock(GameBoard.class);
         Player player = mock(Player.class);
         TurnHandler turnHandler = mock(TurnHandler.class);
-        LinkedList<Card> resourceDeck = new LinkedList<>();
 
         // Create an instance of the class under test
-        Controller controller = spy(new Controller(4, 0)); // Replace 'Controller' with the actual class name
-        when(controller.getGame()).thenReturn(game);
+        Controller controller = spy(new Controller(4, 0));
 
-        // Set up the game board and decks
-        when(game.getGameBoard()).thenReturn(gameBoard);
-        when(gameBoard.getResourceDeck()).thenReturn(resourceDeck);
+        // Using reflection to set the internal turnHandler since it's created in the constructor
+        java.lang.reflect.Field field = Controller.class.getDeclaredField("turnHandler");
+        field.setAccessible(true);
+        field.set(controller, turnHandler);
 
         // Stub the getPlayerByClient method to return the mocked player
         doReturn(player).when(controller).getPlayerByClient(user);
 
         // Stub the player's drawCard method to throw FullHandException
-        doThrow(new FullHandException()).when(player).drawCard(resourceDeck);
+        doThrow(new FullHandException()).when(player).drawCard(any());
 
         // Call the method to be tested
         controller.drawCard(user, "resource");
@@ -267,12 +243,636 @@ public class ControllerTest {
         // Verify that an error message was sent
         verify(user).sendMessage(any(ErrorMessage.class));
     }
-    */
+
+    @Test
+    public void testPlaceCardCardNotInHand() {
+        // Initialize mocks and game object
+        Connection user = mock(Connection.class);
+        Player player = mock(Player.class);
+        Card card = mock(Card.class);
+
+        // Create an instance of the class under test
+        Controller controller = spy(new Controller(4, 0));
+
+        // Stub method calls
+        when(controller.getPlayerByClient(user)).thenReturn(player);
+        when(player.getCardInHand()).thenReturn(new Card[]{mock(Card.class), mock(Card.class), mock(Card.class)});
+
+        // Invoke the method to be tested
+        controller.placeCard(user, card, new int[]{0, 0});
+
+        // Capture and verify messages sent to user
+        ArgumentCaptor<GenericMessage> genericMessageCaptor = ArgumentCaptor.forClass(GenericMessage.class);
+        verify(user).sendMessage(any(CardInHandMessage.class));
+        verify(user).sendMessage(genericMessageCaptor.capture());
+
+        // Assert the captured message
+        assertEquals("\nThis card does not belong to your hand.\n", genericMessageCaptor.getValue().toString());
+    }
+
+    @Test
+    public void testPlaceCardValidPlacement() throws Exception {
+        // Initialize mocks and game object
+        Connection user = mock(Connection.class);
+        Player player = mock(Player.class);
+        Card card = mock(Card.class);
+        TurnHandler turnHandler = mock(TurnHandler.class);
+        Card[] hand = new Card[]{mock(Card.class), mock(Card.class), mock(Card.class)};
+
+        // Create an instance of the class under test
+        Controller controller = spy(new Controller(4, 0));
+
+        // Using reflection to set the internal turnHandler since it's created in the constructor
+        java.lang.reflect.Field field = Controller.class.getDeclaredField("turnHandler");
+        field.setAccessible(true);
+        field.set(controller, turnHandler);
+
+        // Stub method calls
+        when(hand[0].equals(card)).thenReturn(true);
+        when(controller.getPlayerByClient(user)).thenReturn(player);
+        when(player.getCardInHand()).thenReturn(hand);
+
+        // Invoke the method to be tested
+        controller.placeCard(user, card, new int[]{0, 0});
+
+        // Verify interactions
+        verify(player).placeCard(card, new int[]{0, 0});
+        verify(turnHandler).changePlayerState(player);
+        verify(controller, times(2)).notifyAll(any());
+    }
+
+    @Test
+    public void testPlaceCardExceptionHandling() throws Exception {
+        // Initialize mocks and game object
+        Connection user = mock(Connection.class);
+        Player player = mock(Player.class);
+        Card card = mock(Card.class);
+        TurnHandler turnHandler = mock(TurnHandler.class);
+        Card[] hand = new Card[]{mock(Card.class), mock(Card.class), mock(Card.class)};
+
+        // Create an instance of the class under test
+        Controller controller = spy(new Controller(4, 0));
+
+        // Using reflection to set the internal turnHandler since it's created in the constructor
+        java.lang.reflect.Field field = Controller.class.getDeclaredField("turnHandler");
+        field.setAccessible(true);
+        field.set(controller, turnHandler);
+
+        // Stub method calls
+        when(hand[0].equals(card)).thenReturn(true);
+        when(controller.getPlayerByClient(user)).thenReturn(player);
+        when(player.getCardInHand()).thenReturn(hand);
+        doThrow(new InvalidCoordinatesException()).when(player).placeCard(card, new int[]{0, 0});
+
+        // Invoke the method to be tested
+        controller.placeCard(user, card, new int[]{0, 0});
+
+        // Verify interactions
+        verify(user).sendMessage(any(UpdateCardMessage.class));
+        verify(user).sendMessage(any(ErrorMessage.class));
+    }
+
+
+    @Test
+    public void testDrawCardFromBoardCommonResourceCard() throws Exception {
+        // Mocking dependencies
+        Connection user = mock(Connection.class);
+        Card card = mock(Card.class);
+        Player player = mock(Player.class);
+        TurnHandler turnHandler = mock(TurnHandler.class);
+
+        // Create an instance of the class under test
+        Controller controller = spy(new Controller(4, 0));
+
+        // Using reflection to set the internal turnHandler since it's created in the constructor
+        java.lang.reflect.Field field = Controller.class.getDeclaredField("turnHandler");
+        field.setAccessible(true);
+        field.set(controller, turnHandler);
+
+        // Stub method calls
+        when(controller.getPlayerByClient(user)).thenReturn(player);
+        when(player.drawCardFromBoard(any())).thenReturn(card);
+
+        // Call the method with index 0 (common resource)
+        controller.drawCardFromBoard(user, 0);
+
+        // Verify interactions and state changes
+        verify(player).drawCardFromBoard(any());
+        verify(user).sendMessage(any(UpdateCardMessage.class));
+        verify(controller).notifyAll(any(CommonCardUpdateMessage.class));
+        verify(controller).notifyAll(any(UpdateDeckMessage.class));
+        verify(turnHandler).changePlayerState(player);
+    }
+
+    @Test
+    public void testDrawCardFromBoardCommonGoldCard() throws Exception {
+        // Mocking dependencies
+        Connection user = mock(Connection.class);
+        Card card = mock(Card.class);
+        Player player = mock(Player.class);
+        TurnHandler turnHandler = mock(TurnHandler.class);
+
+        // Create an instance of the class under test
+        Controller controller = spy(new Controller(4, 0));
+
+        // Using reflection to set the internal turnHandler since it's created in the constructor
+        java.lang.reflect.Field field = Controller.class.getDeclaredField("turnHandler");
+        field.setAccessible(true);
+        field.set(controller, turnHandler);
+
+        // Stub method calls
+        when(controller.getPlayerByClient(user)).thenReturn(player);
+        when(player.drawCardFromBoard(any())).thenReturn(card);
+
+        // Call the method with index 2 (common gold)
+        controller.drawCardFromBoard(user, 2);
+
+        // Verify interactions and state changes
+        verify(player).drawCardFromBoard(any());
+        verify(user).sendMessage(any(UpdateCardMessage.class));
+        verify(controller).notifyAll(any(CommonCardUpdateMessage.class));
+        verify(controller).notifyAll(any(UpdateDeckMessage.class));
+        verify(turnHandler).changePlayerState(player);
+    }
+
+    @Test
+    public void testDrawCardFromBoardInvalidIndex() throws Exception {
+        // Mocking dependencies
+        Connection user = mock(Connection.class);
+        Player player = mock(Player.class);
+        TurnHandler turnHandler = mock(TurnHandler.class);
+
+        // Create an instance of the class under test
+        Controller controller = spy(new Controller(4, 0));
+
+        // Using reflection to set the internal turnHandler since it's created in the constructor
+        java.lang.reflect.Field field = Controller.class.getDeclaredField("turnHandler");
+        field.setAccessible(true);
+        field.set(controller, turnHandler);
+
+        // Call the method with an invalid index (greater than 3)
+        controller.drawCardFromBoard(user, 4);
+
+        // Verify the user is notified with an error message
+        verify(user).sendMessage(any(GenericMessage.class));
+        verify(player, never()).drawCardFromBoard(any(Card.class));
+        verify(turnHandler, never()).changePlayerState(any(Player.class));
+    }
+
+    @Test
+    public void testDrawCardFromBoardExceptionHandling() throws Exception {
+        // Mocking dependencies
+        Connection user = mock(Connection.class);
+        Player player = mock(Player.class);
+        TurnHandler turnHandler = mock(TurnHandler.class);
+
+        // Create an instance of the class under test
+        Controller controller = spy(new Controller(4, 0));
+
+        // Using reflection to set the internal turnHandler since it's created in the constructor
+        java.lang.reflect.Field field = Controller.class.getDeclaredField("turnHandler");
+        field.setAccessible(true);
+        field.set(controller, turnHandler);
+
+        // Stub method calls
+        when(controller.getPlayerByClient(user)).thenReturn(player);
+        when(player.drawCardFromBoard(any())).thenThrow(new CardNotFoundException());
+
+        // Call the method with index 0 (common resource)
+        controller.drawCardFromBoard(user, 0);
+
+        // Verify the user is notified with an error message
+        verify(user).sendMessage(any(ErrorMessage.class));
+    }
+
+    @Test
+    public void testJoinGameNotFull() throws Exception{
+        // Mocking dependencies
+        Connection user = mock(Connection.class);
+        Game game = mock(Game.class);
+        TurnHandler turnHandler = mock(TurnHandler.class);
+
+        // Create an instance of the class under test
+        Controller controller = spy(new Controller(4, 0));
+
+        // Using reflection to set the internal turnHandler since it's created in the constructor
+        java.lang.reflect.Field turnHandelerField = Controller.class.getDeclaredField("turnHandler");
+        turnHandelerField.setAccessible(true);
+        turnHandelerField.set(controller, turnHandler);
+
+        // Using reflection to set the internal game since it's created in the constructor
+        java.lang.reflect.Field gameField = Controller.class.getDeclaredField("game");
+        gameField.setAccessible(true);
+        gameField.set(controller, game);
+
+        // Stubbing methods
+        when(user.getUsername()).thenReturn("mario");
+
+        // Call the method
+        boolean result = controller.joinGame(user);
+
+        // Verify interactions and state changes
+        assertFalse(result);
+        verify(user).setLobby(controller);
+        verify(game).addPlayer(any(Player.class));
+        verify(controller).notifyAll(any(GenericMessage.class));
+        verify(controller, never()).startGame();
+        verify(controller, never()).notifyAll(any(GameStateMessage.class));
+    }
+
+    @Test
+    public void testJoinGameFull() throws Exception{
+        // Mocking dependencies
+        Connection user = mock(Connection.class);
+        Game game = mock(Game.class);
+        TurnHandler turnHandler = mock(TurnHandler.class);
+
+        // Create an instance of the class under test
+        Controller controller = spy(new Controller(4, 0));
+
+        // Using reflection to set the internal turnHandler since it's created in the constructor
+        java.lang.reflect.Field field = Controller.class.getDeclaredField("turnHandler");
+        field.setAccessible(true);
+        field.set(controller, turnHandler);
+
+        // Using reflection to set the internal game since it's created in the constructor
+        java.lang.reflect.Field gameField = Controller.class.getDeclaredField("game");
+        gameField.setAccessible(true);
+        gameField.set(controller, game);
+
+        // Stubbing methods
+        when(user.getUsername()).thenReturn("luigi");
+        when(game.isFull()).thenReturn(true);
+        doNothing().when(controller).startGame();
+
+        // Call the method
+        boolean result = controller.joinGame(user);
+
+        // Verify interactions and state changes
+        assertTrue(result);
+        verify(user).setLobby(controller);
+        verify(game).addPlayer(any(Player.class));
+        verify(controller).notifyAll(any(GenericMessage.class));
+        verify(controller).startGame();
+        verify(controller).notifyAll(any(GameStateMessage.class));
+        verify(game).setGameState(GameState.START);
+    }
+
+    @Test
+    public void testStartGameSuccess() throws Exception {
+        // Mocking dependencies
+        Game game = mock(Game.class);
+        GameBoard gameBoard = mock(GameBoard.class);
+        Card resourceCard1 = mock(Card.class);
+        Card resourceCard2 = mock(Card.class);
+        Card goldCard1 = mock(Card.class);
+        Card goldCard2 = mock(Card.class);
+        Achievement achievement1 = mock(Achievement.class);
+        Achievement achievement2 = mock(Achievement.class);
+        Card starterCard1 = mock(Card.class);
+        Card starterCard2 = mock(Card.class);
+        PlayerBoard playerBoard1 = mock(PlayerBoard.class);
+        PlayerBoard playerBoard2 = mock(PlayerBoard.class);
+        LinkedList<Card> resourceDeck = mock(LinkedList.class);
+        LinkedList<Card> goldDeck = mock(LinkedList.class);
+        Player firstPlayer = mock(Player.class);
+        TurnHandler turnHandler = mock(TurnHandler.class);
+
+        Connection user1 = mock(Connection.class);
+        Connection user2 = mock(Connection.class);
+        Player player1 = mock(Player.class);
+        Player player2 = mock(Player.class);
+
+        ConcurrentHashMap<Connection, Player> connectedPlayers = new ConcurrentHashMap<>();
+        connectedPlayers.put(user1, player1);
+        connectedPlayers.put(user2, player2);
+
+        // Creating the Controller instance and injecting mocks
+        Controller controller = spy(new Controller(4,0));
+
+        // Using reflection to set the internal turnHandler since it's created in the constructor
+        java.lang.reflect.Field field = Controller.class.getDeclaredField("turnHandler");
+        field.setAccessible(true);
+        field.set(controller, turnHandler);
+
+        // Using reflection to set the internal game since it's created in the constructor
+        java.lang.reflect.Field gameField = Controller.class.getDeclaredField("game");
+        gameField.setAccessible(true);
+        gameField.set(controller, game);
+
+        // Using reflection to set the internal connectedPlayers map since it's created in the constructor
+        java.lang.reflect.Field connectedPlayersField = Controller.class.getDeclaredField("connectedPlayers");
+        connectedPlayersField.setAccessible(true);
+        connectedPlayersField.set(controller, connectedPlayers);
+
+        // Stubbing methods
+        when(game.getGameBoard()).thenReturn(gameBoard);
+        when(gameBoard.getCommonResource()).thenReturn(new Card[]{resourceCard1, resourceCard2});
+        when(gameBoard.getCommonGold()).thenReturn(new Card[]{goldCard1, goldCard2});
+        when(gameBoard.getCommonAchievement()).thenReturn(new Achievement[]{achievement1, achievement2});
+        when(gameBoard.getResourceDeck()).thenReturn(resourceDeck);
+        when(gameBoard.getGoldDeck()).thenReturn(goldDeck);
+        when(resourceDeck.getFirst()).thenReturn(resourceCard1);
+        when(goldDeck.getFirst()).thenReturn(goldCard1);
+        when(resourceCard1.getColor()).thenReturn(Color.BLUE);
+        when(goldCard1.getColor()).thenReturn(Color.PURPLE);
+        when(game.getFirstPlayer()).thenReturn(firstPlayer);
+        when(firstPlayer.getUsername()).thenReturn("Player1");
+        when(user1.getUsername()).thenReturn("Player1");
+        when(user2.getUsername()).thenReturn("Player2");
+        when(player1.getPlayerBoard()).thenReturn(playerBoard1);
+        when(player2.getPlayerBoard()).thenReturn(playerBoard2);
+        when(playerBoard1.getStarterCard()).thenReturn(starterCard1);
+        when(playerBoard2.getStarterCard()).thenReturn(starterCard2);
+        when(player1.getCardInHand()).thenReturn(new Card[]{mock(Card.class), mock(Card.class), mock(Card.class)});
+        when(player2.getCardInHand()).thenReturn(new Card[]{mock(Card.class), mock(Card.class), mock(Card.class)});
+        when(player1.getPersonalObj()).thenReturn(new Achievement[]{mock(Achievement.class), mock(Achievement.class)});
+        when(player2.getPersonalObj()).thenReturn(new Achievement[]{mock(Achievement.class), mock(Achievement.class)});
+
+        // Mocking player-specific methods
+        when(controller.getPlayerByClient(user1)).thenReturn(player1);
+        when(controller.getPlayerByClient(user2)).thenReturn(player2);
+
+        // Call the method
+        controller.startGame();
+
+        // Verify that game.startGame() was called
+        verify(game).startGame();
+
+        // Verify that the notifyAll methods were called with correct messages
+        verify(controller).notifyAll(any(OpponentsMessage.class));
+        verify(controller, times(4)).notifyAll(any(CommonCardUpdateMessage.class));
+        verify(controller).notifyAll(any(AchievementMessage.class));
+        verify(controller, times(2)).notifyAll(any(UpdateDeckMessage.class));
+
+        // Verify player-specific messages
+        verify(user1).sendMessage(any(StarterCardMessage.class));
+        verify(user1).sendMessage(any(CardInHandMessage.class));
+        verify(user1).sendMessage(any(AchievementMessage.class));
+        verify(user2).sendMessage(any(StarterCardMessage.class));
+        verify(user2).sendMessage(any(CardInHandMessage.class));
+        verify(user2).sendMessage(any(AchievementMessage.class));
+
+        // Verify player state messages
+        verify(controller, times(2)).notifyAll(any(PlayerStateMessage.class));
+
+        // Verify pickQueue is called
+        verify(controller).pickQueue();
+    }
+
+    @Test
+    public void testStartGameNotEnoughPlayersException() throws Exception {
+        // Mocking dependencies
+        Game game = mock(Game.class);
+
+        // Creating the Controller instance and injecting mocks
+        Controller controller = spy(new Controller(4,0));
+
+        // Using reflection to set the internal game since it's created in the constructor
+        java.lang.reflect.Field gameField = Controller.class.getDeclaredField("game");
+        gameField.setAccessible(true);
+        gameField.set(controller, game);
+
+        // Stubbing methods to throw NotEnoughPlayersException
+        doThrow(new NotEnoughPlayersException()).when(game).startGame();
+
+        // Call the method
+        controller.startGame();
+
+        // Verify that game.startGame() was called and exception was caught
+        verify(game).startGame();
+    }
+
+    @Test
+    public void testPlaceStarterCardSuccess() throws Exception{
+        // Mocking dependencies
+        Connection user = mock(Connection.class);
+        Card starterCard = mock(Card.class);
+        Player player = mock(Player.class);
+        PlayerBoard playerBoard = mock(PlayerBoard.class);
+        Game game = mock(Game.class);
+        TurnHandler turnHandler = mock(TurnHandler.class);
+
+        // Creating the Controller instance and injecting mocks
+        Controller controller = spy(new Controller(4,0));
+
+        // Using reflection to set the internal turnHandler since it's created in the constructor
+        java.lang.reflect.Field field = Controller.class.getDeclaredField("turnHandler");
+        field.setAccessible(true);
+        field.set(controller, turnHandler);
+
+        // Using reflection to set the internal game since it's created in the constructor
+        java.lang.reflect.Field gameField = Controller.class.getDeclaredField("game");
+        gameField.setAccessible(true);
+        gameField.set(controller, game);
+
+        // Stubbing methods
+        when(controller.getPlayerByClient(user)).thenReturn(player);
+        when(player.getPlayerBoard()).thenReturn(playerBoard);
+        when(playerBoard.getStarterCard()).thenReturn(starterCard);
+        when(starterCard.equals(any())).thenReturn(true);
+
+        // Call the method
+        controller.placeStarterCard(user, starterCard);
+
+        // Verify that the starter card was set correctly
+        verify(playerBoard).setStarterCard(any(Card.class));
+        // Verify that no error messages were sent
+        verify(user, never()).sendMessage(any(GenericMessage.class));
+        verify(user, never()).sendMessage(any(StarterCardMessage.class));
+    }
+
+    @Test
+    public void testPlaceStarterCardFailure() throws Exception{
+        // Mocking dependencies
+        Connection user = mock(Connection.class);
+        Card starterCard = mock(Card.class);
+        Card incorrectCard = mock(Card.class);
+        Player player = mock(Player.class);
+        PlayerBoard playerBoard = mock(PlayerBoard.class);
+        Game game = mock(Game.class);
+        TurnHandler turnHandler = mock(TurnHandler.class);
+
+        // Creating the Controller instance and injecting mocks
+        Controller controller = spy(new Controller(4, 0));
+
+        // Using reflection to set the internal turnHandler since it's created in the constructor
+        java.lang.reflect.Field field = Controller.class.getDeclaredField("turnHandler");
+        field.setAccessible(true);
+        field.set(controller, turnHandler);
+
+        // Using reflection to set the internal game since it's created in the constructor
+        java.lang.reflect.Field gameField = Controller.class.getDeclaredField("game");
+        gameField.setAccessible(true);
+        gameField.set(controller, game);
+
+        // Stubbing methods
+        when(controller.getPlayerByClient(user)).thenReturn(player);
+        when(player.getPlayerBoard()).thenReturn(playerBoard);
+        when(playerBoard.getStarterCard()).thenReturn(incorrectCard);
+
+        // Call the method with an incorrect starter card
+        controller.placeStarterCard(user, starterCard);
+
+        // Verify that the starter card was not set
+        verify(playerBoard, never()).setStarterCard(starterCard);
+        // Verify that error messages were sent
+        verify(user).sendMessage(any(StarterCardMessage.class));
+        verify(user).sendMessage(any(GenericMessage.class));
+    }
+
+
+    @Test
+    public void testSetColorValidColor() throws Exception{
+        // Mocking dependencies
+        Connection user = mock(Connection.class);
+        Player player = mock(Player.class);
+        PlayerBoard playerBoard = mock(PlayerBoard.class);
+        TurnHandler turnHandler = mock(TurnHandler.class);
+        Game game = mock(Game.class);
+
+        // Creating the Controller instance and injecting mocks
+        Controller controller = spy(new Controller(4, 0));
+
+        // Using reflection to set the internal turnHandler since it's created in the constructor
+        java.lang.reflect.Field field = Controller.class.getDeclaredField("turnHandler");
+        field.setAccessible(true);
+        field.set(controller, turnHandler);
+
+        // Using reflection to set the internal game since it's created in the constructor
+        java.lang.reflect.Field gameField = Controller.class.getDeclaredField("game");
+        gameField.setAccessible(true);
+        gameField.set(controller, game);
+
+        // Stubbing methods
+        when(game.getAvailableColors()).thenReturn(new ArrayList<>(List.of(Color.RED, Color.BLUE, Color.GREEN)));
+        when(controller.getPlayerByClient(user)).thenReturn(player);
+        when(player.getPlayerBoard()).thenReturn(playerBoard);
+        when(turnHandler.changeSetupPlayer()).thenReturn("NextPlayer"); // Simulate changing setup player
+
+        // Call the method with a valid color
+        controller.setColor(user, Color.RED);
+
+        // Verify interactions and state changes
+        verify(player).setPionColor(any(Color.class));
+        verify(controller).notifyAll(any(ColorResponseMessage.class));
+        verify(controller).notifyAll(any(PlayerBoardUpdateMessage.class));
+        verify(turnHandler).changeSetupPlayer(); // Ensure turn handler was called
+
+        // Verify game state changes when setup is finished
+        verify(game, never()).setGameState(GameState.IN_GAME);
+        verify(controller, never()).notifyAll(new GameStateMessage(GameState.IN_GAME));
+    }
+
+    @Test
+    public void testSetColorInvalidColor() throws Exception{
+        // Mocking dependencies
+        Connection user = mock(Connection.class);
+        Player player = mock(Player.class);
+        TurnHandler turnHandler = mock(TurnHandler.class);
+        Game game = mock(Game.class);
+
+        // Creating the Controller instance and injecting mocks
+        Controller controller = spy(new Controller(4, 0));
+
+        // Using reflection to set the internal turnHandler since it's created in the constructor
+        java.lang.reflect.Field field = Controller.class.getDeclaredField("turnHandler");
+        field.setAccessible(true);
+        field.set(controller, turnHandler);
+
+        // Using reflection to set the internal game since it's created in the constructor
+        java.lang.reflect.Field gameField = Controller.class.getDeclaredField("game");
+        gameField.setAccessible(true);
+        gameField.set(controller, game);
+
+        // Call the method with an invalid color
+        controller.setColor(user, Color.YELLOW);
+
+        // Verify interactions and state changes
+        verify(player, never()).setPionColor(any(Color.class)); // Player color not set
+        verify(controller).chooseColor(user); // Choose color method called
+        verify(user).sendMessage(any(ErrorMessage.class));
+        verify(controller, never()).notifyAll(any(ColorResponseMessage.class)); // No color response sent
+        verify(controller, never()).notifyAll(any(PlayerBoardUpdateMessage.class)); // No player board update sent
+        verify(turnHandler, never()).changeSetupPlayer(); // Turn handler not called
+    }
+
+    @Test
+    public void testReconnectBackup() throws Exception{
+        // Mocking dependencies
+        Connection user = mock(Connection.class);
+        Connection opponentConnection1 = mock(Connection.class);
+        Connection opponentConnection2 = mock(Connection.class);
+        Player reconnectedPlayer = mock(Player.class);
+        Player opponent1 = mock(Player.class);
+        Player opponent2 = mock(Player.class);
+        TurnHandler turnHandler = mock(TurnHandler.class);
+        Game game = mock(Game.class);
+        GameBoard gameBoard = mock(GameBoard.class);
+        PlayerBoard playerBoard1 = mock(PlayerBoard.class);
+        LinkedList<Card> resourceDeck = mock(LinkedList.class);
+        LinkedList<Card> goldDeck = mock(LinkedList.class);
+        Card resourceCard1 = mock(Card.class);
+        Card goldCard1 = mock(Card.class);
+        Card starterCard1 = mock(Card.class);
+
+        // Creating the Controller instance and injecting mocks
+        Controller controller = spy(new Controller(4, 0));
+
+        // Using reflection to set the internal turnHandler since it's created in the constructor
+        java.lang.reflect.Field field = Controller.class.getDeclaredField("turnHandler");
+        field.setAccessible(true);
+        field.set(controller, turnHandler);
+
+        // Using reflection to set the internal game since it's created in the constructor
+        java.lang.reflect.Field gameField = Controller.class.getDeclaredField("game");
+        gameField.setAccessible(true);
+        gameField.set(controller, game);
+
+        // Mocking connectedPlayers map
+        ConcurrentHashMap<Connection, Player> connectedPlayers = new ConcurrentHashMap<>();
+        connectedPlayers.put(opponentConnection1, opponent1);
+        connectedPlayers.put(user, reconnectedPlayer);
+        connectedPlayers.put(opponentConnection2, opponent2);
+
+        // Using reflection to set the internal connectedPlayers map since it's created in the constructor
+        java.lang.reflect.Field connectedPlayersField = Controller.class.getDeclaredField("connectedPlayers");
+        connectedPlayersField.setAccessible(true);
+        connectedPlayersField.set(controller, connectedPlayers);
+
+        // Stubbing methods
+        when(user.getUsername()).thenReturn("ReconnectedPlayer");
+        when(game.getGameBoard()).thenReturn(gameBoard);
+        when(controller.getPlayerByClient(user)).thenReturn(reconnectedPlayer);
+        when(controller.getPlayerByClient(opponentConnection1)).thenReturn(opponent1);
+        when(controller.getPlayerByClient(opponentConnection2)).thenReturn(opponent2);
+        when(opponentConnection1.getUsername()).thenReturn("mario");
+        when(opponentConnection2.getUsername()).thenReturn("luigi");
+        //Stubbing model to allow controller to send the message
+        when(gameBoard.getCommonResource()).thenReturn(new Card[]{mock(Card.class), mock(Card.class)});
+        when(gameBoard.getCommonGold()).thenReturn(new Card[]{mock(Card.class), mock(Card.class)});
+        when(gameBoard.getCommonAchievement()).thenReturn(new Achievement[]{mock(Achievement.class), mock(Achievement.class)});
+        when(gameBoard.getResourceDeck()).thenReturn(resourceDeck);
+        when(gameBoard.getGoldDeck()).thenReturn(goldDeck);
+        when(resourceDeck.getFirst()).thenReturn(resourceCard1);
+        when(goldDeck.getFirst()).thenReturn(goldCard1);
+        when(resourceCard1.getColor()).thenReturn(Color.BLUE);
+        when(goldCard1.getColor()).thenReturn(Color.PURPLE);
+        when(user.getUsername()).thenReturn("Player1");
+        when(reconnectedPlayer.getPlayerBoard()).thenReturn(playerBoard1);
+        when(reconnectedPlayer.getCardInHand()).thenReturn(new Card[]{mock(Card.class), mock(Card.class), mock(Card.class)});
+
+        // Call the method
+        controller.reconnectBackup(user);
+
+        // Verify interactions and state changes
+        verify(controller).removeObserver(any(Connection.class)); // Verify removeObserver called for old connection
+        verify(controller).addObserver(user); // Verify addObserver called for new connection
+        verify(turnHandler).removeObserver(any(Connection.class)); // Verify turnHandler removeObserver called for old connection
+        verify(turnHandler).addObserver(user); // Verify turnHandler addObserver called for new connection
+        verify(reconnectedPlayer).setDisconnected(false); // Verify player's disconnected status set to false
+
+        // Verify reconnection message sent to user
+        verify(user).sendMessage(any(ReconnectionMessage.class));
+    }
 }
-//StarterCard s = new StarterCard(new Corner[]{new Corner(Symbols.PLANT), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}, 2, new CardBack(new ArrayList<>(List.of(Symbols.FUNGI)), Color.WHITE, new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY)}));
-//ResourceCard a = new ResourceCard(new Corner[]{new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.FUNGI) }, 1, 1);
-//GoldCard b = new GoldCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.NOCORNER), new Corner(Symbols.NOCORNER), new Corner(Symbols.QUILL)}, 3, Condition.NOTHING, 17, new Integer[]{1, 0, 0, 0}, null);
-//ResourceCard d = new ResourceCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.EMPTY), new Corner(Symbols.PLANT), new Corner(Symbols.NOCORNER) }, 19, 1);
-//pp1.addInHand(a);
-//pp1.addInHand(d);
-//pp1.addInHand(b);

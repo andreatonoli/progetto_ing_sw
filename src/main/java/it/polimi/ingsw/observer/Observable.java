@@ -19,7 +19,4 @@ public class Observable {
             obs.update(message);
         }
     }
-    public void notify(Observer obs, Message message){
-        obs.update(message);
-    }
 }
