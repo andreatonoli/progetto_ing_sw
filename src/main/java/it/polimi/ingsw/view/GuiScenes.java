@@ -12,7 +12,8 @@ public enum GuiScenes {
     LOGIN_SCENE("/fxml/loginScene.fxml"),
     STARTER_FLIP_SCENE("/fxml/starterFlipScene.fxml"),
     ACHIEVEMENT_CHOICE_SCENE("/fxml/achievementChoiceScene.fxml"),
-    COLOR_CHOICE_SCENE("/fxml/colorChoiceScene.fxml");
+    COLOR_CHOICE_SCENE("/fxml/colorChoiceScene.fxml"),
+    MAIN_SCENE("/fxml/mainScene.fxml");
 
     private final String fxml;
 

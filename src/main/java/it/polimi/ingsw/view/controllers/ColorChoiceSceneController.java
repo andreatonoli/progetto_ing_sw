@@ -11,6 +11,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -68,6 +69,7 @@ public class ColorChoiceSceneController {
         this.miniViews = new ImageView[]{miniRedView, miniBlueView, miniGreenView, miniYellowView};
 
         for (int i = 0; i < colors.size(); i++){
+            StackPane s = new StackPane();
             Button b = new Button ();
             b.setStyle("-fx-background-radius: 5em;" +
                        "-fx-background-color: transparent;" +
@@ -75,17 +77,39 @@ public class ColorChoiceSceneController {
             );
             b.setPrefSize(150, 150);
             switch (colors.get(i)) {
-                case RED -> b.setGraphic(views[0]);
-                case BLUE -> b.setGraphic(views[1]);
-                case GREEN -> b.setGraphic(views[2]);
-                case YELLOW -> b.setGraphic(views[3]);
+                case RED -> s.getChildren().add(views[0]);
+                case BLUE -> s.getChildren().add(views[1]);
+                case GREEN -> s.getChildren().add(views[2]);
+                case YELLOW -> s.getChildren().add(views[3]);
             }
             int finalI = i;
             b.setOnAction(event -> {
-                ColorButtonClicked(colors.get(finalI));
+                Alert a = new Alert(Alert.AlertType.CONFIRMATION);
+                ButtonType yes = new ButtonType("Confirm");
+                ButtonType no = new ButtonType("Cancel");
+                a.setTitle("Choosing color");
+                a.setHeaderText("Do you want to choose this color?");
+                switch (colors.get(finalI)) {
+                    case RED -> a.setGraphic(miniViews[0]);
+                    case BLUE -> a.setGraphic(miniViews[1]);
+                    case GREEN -> a.setGraphic(miniViews[2]);
+                    case YELLOW -> a.setGraphic(miniViews[3]);
+                }
+                a.getButtonTypes().clear();
+                a.getButtonTypes().addAll(no, yes);
+                Optional<ButtonType> result = a.showAndWait();
+                if(result.isEmpty()){
+                    a.close();
+                }
+                else if(result.get().getText().equals("Confirm")){
+                    Gui.addReturnValue(String.valueOf(finalI));
+                }
+                else if(result.get().getText().equals("Cancel")){
+                    a.close();
+                }
             });
-
-            h.getChildren().add(b);
+            s.getChildren().add(b);
+            h.getChildren().add(s);
             //add padding to the top only for the first row
             if(i == 0){
                 h.setPadding(new Insets(30, 0, 0, 0));
@@ -94,32 +118,5 @@ public class ColorChoiceSceneController {
             h.setSpacing(50);
         }
     }
-
-    private void ColorButtonClicked(Color colorClicked){
-        Alert a = new Alert(Alert.AlertType.CONFIRMATION);
-        ButtonType yes = new ButtonType("Confirm");
-        ButtonType no = new ButtonType("Cancel");
-        a.setTitle("Choosing color");
-        a.setHeaderText("Do you want to choose this color?");
-        switch (colorClicked) {
-            case RED -> a.setGraphic(miniViews[0]);
-            case BLUE -> a.setGraphic(miniViews[1]);
-            case GREEN -> a.setGraphic(miniViews[2]);
-            case YELLOW -> a.setGraphic(miniViews[3]);
-        }
-        a.getButtonTypes().clear();
-        a.getButtonTypes().addAll(no, yes);
-        Optional<ButtonType> result = a.showAndWait();
-        if(result.isEmpty()){
-            a.close();
-        }
-        else if(result.get().getText().equals("Confirm")){
-            Gui.addReturnValue(String.valueOf(colorClicked));
-        }
-        else if(result.get().getText().equals("Cancel")){
-            a.close();
-        }
-    }
-
 }
 

@@ -19,7 +19,7 @@
                   <Font size="100.0" />
                </font>
             </Text>
-            <TextField prefWidth="500">
+            <TextField fx:id="text" prefWidth="500">
                <font>
                   <Font size="60.0" />
                </font>

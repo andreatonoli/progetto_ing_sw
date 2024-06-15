@@ -19,14 +19,16 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Gui extends Application implements Ui{
 
-    static Stage stage;
-    static FXMLLoader loader;
-    static Parent root;
+    Stage stage;
+    FXMLLoader loader;
+    Parent root;
     static String address;
     static int port;
     static String connection;
@@ -43,10 +45,8 @@ public class Gui extends Application implements Ui{
         launch(args);
     }
 
-    public static void setAddress(String a) { address = a; }
     public static void setConnection(String c) { connection = c; }
     public static String getConnection() { return connection; }
-    public static void setPort(int p) { port = p; }
 
     public void loadScene(GuiScenes s) {
         this.loader = new FXMLLoader(getClass().getResource(GuiScenes.getFxml(s)));
@@ -63,63 +63,34 @@ public class Gui extends Application implements Ui{
 
         this.stage = s;
 
-        try{
-            loader = new FXMLLoader(getClass().getResource(GuiScenes.getFxml(GuiScenes.START_SCENE)));
-            Parent root = loader.load();
-            stage.setScene(new Scene(root, 1280, 720));
-            stage.show();
-            System.out.println("v");
-        }
-        catch(IOException e){
-            e.printStackTrace();
-        }
+        loader = new FXMLLoader(getClass().getResource(GuiScenes.getFxml(GuiScenes.START_SCENE)));
+        Parent root = loader.load();
+        stage.setScene(new Scene(root));
+        stage.show();
 
-
-        try{
-            while(!returnValue.equals("ready")){
-                Thread.sleep(200);
+        Timer t = new Timer();
+        t.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if(!returnValue.isEmpty()){
+                    t.cancel();
+                    returnValue.poll();
+                    address = askServerAddress();
+                    connection =  askConnection();
+                    port =  askServerPort(connection);
+                }
             }
-        }
-        catch (InterruptedException e){
-            System.err.println(e.getMessage());
-        }
-
-        System.out.println("v");
-
-        //address = askServerAddress();
-        //connection =  askConnection();
-        //port =  askServerPort(connection);
-
-        //List<Integer> freelobbies = new ArrayList<>(List.of(3, 5, 7));
-//
-        ////StarterCard s1 = new StarterCard(new Corner[]{new Corner(Symbols.EMPTY), new Corner(Symbols.ANIMAL), new Corner(Symbols.INSECT), new Corner(Symbols.FUNGI)}, 1, new CardBack(new ArrayList<>(List.of(Symbols.FUNGI, Symbols.PLANT, Symbols.ANIMAL)), Color.WHITE, new Corner[]{new Corner(Symbols.ANIMAL), new Corner(Symbols.EMPTY), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY)}));
-//
-        //Achievement a1 = new AchievementItem(3, new ArrayList<>(List.of(Symbols.QUILL, Symbols.INKWELL, Symbols.MANUSCRIPT)), 13);
-        //Achievement a2 = new AchievementDiagonal(Color.PURPLE, 4);
-        //Achievement[] a = new Achievement[]{a1, a2};
-//
-        //List<Color> colors = new ArrayList<>(List.of(Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW));
-//
-        //loader = new FXMLLoader(getClass().getResource(GuiScenes.getFxml(GuiScenes.COLOR_CHOICE_SCENE)));
-        //root = loader.load();
-        //ColorChoiceSceneController c = loader.getController();
-        //c.setColors(colors);
-        //stage.getScene().setRoot(root);
+        }, 0, 500);
 
     }
-
-    public void setup(Gui g){
-        address = askServerAddress();
-        connection =  askConnection();
-        port =  askServerPort(connection);
-    }
-
 
     @Override
     public String askNickname(){
         String result = null;
-        loadScene(GuiScenes.LOGIN_SCENE);
-        stage.getScene().setRoot(root);
+        Platform.runLater(() -> {
+            loadScene(GuiScenes.LOGIN_SCENE);
+            stage.getScene().setRoot(root);
+        });
         try{
             while(returnValue.isEmpty()){
                 Thread.sleep(200);
@@ -136,9 +107,10 @@ public class Gui extends Application implements Ui{
     @Override
     public String askServerAddress() {
         String result = null;
-        loadScene(GuiScenes.SERVER_ADDRESS_SCENE);
-        Platform.runLater(() -> stage.getScene().setRoot(root));
-        stage.show();
+        Platform.runLater(() -> {
+            loadScene(GuiScenes.SERVER_ADDRESS_SCENE);
+            stage.getScene().setRoot(root);
+        });
 
         try {
             while (returnValue.isEmpty()) {
@@ -155,9 +127,10 @@ public class Gui extends Application implements Ui{
 
     public String askConnection() {
         String result = null;
-        loadScene(GuiScenes.CONNECTION_SCENE);
-        Platform.runLater(() -> stage.getScene().setRoot(root));
-        stage.show();
+        Platform.runLater(() -> {
+            loadScene(GuiScenes.CONNECTION_SCENE);
+            stage.getScene().setRoot(root);
+        });
 
         try {
             while (returnValue.isEmpty()) {
@@ -175,9 +148,10 @@ public class Gui extends Application implements Ui{
     @Override
     public int askServerPort(String connectionType) {
         String result = null;
-        loadScene(GuiScenes.SERVER_PORT_SCENE);
-        Platform.runLater(() -> stage.getScene().setRoot(root));
-        stage.show();
+        Platform.runLater(() -> {
+            loadScene(GuiScenes.SERVER_PORT_SCENE);
+            stage.getScene().setRoot(root);
+        });
 
         try {
             while (returnValue.isEmpty()) {
@@ -189,40 +163,46 @@ public class Gui extends Application implements Ui{
             System.err.println(e.getMessage());
         }
 
-        try {
-            if (connectionType.equalsIgnoreCase("rmi")) {
-                this.client = new RMIClient(address, port, this);
-            }
-            else {
-                this.client = new SocketClient(address, port, this);
-            }
-        }
-        catch (RemoteException e) {
-            System.err.println(e.getMessage());
-        }
-
         if (result.equals("default")) {
             if (connectionType.equalsIgnoreCase("rmi")) {
+                try {
+                    this.client = new RMIClient(address, Server.rmiPort, this);
+                }
+                catch(RemoteException e){
+                    System.err.println(e.getMessage());
+                }
                 return Server.rmiPort;
             }
             else {
+                this.client = new SocketClient(address, Server.socketPort, this);
                 return Server.socketPort;
             }
         }
         else {
+            if (connectionType.equalsIgnoreCase("rmi")) {
+                try {
+                    this.client = new RMIClient(address, Integer.parseInt(result), this);
+                }
+                catch(RemoteException e){
+                    System.err.println(e.getMessage());
+                }
+            }
+            else {
+                this.client = new SocketClient(address, Integer.parseInt(result), this);
+            }
             return Integer.parseInt(result);
         }
-
     }
 
     @Override
     public int selectGame(List<Integer> startingGamesId, List<Integer> gamesWhitDisconnectionsId) {
         String result = null;
-        loadScene(GuiScenes.LOBBIES_SCENE);
-        LobbiesSceneController c = loader.getController();
-        c.setLobbies(startingGamesId);
-        stage.getScene().setRoot(root);
-        stage.show();
+        Platform.runLater(() -> {
+            loadScene(GuiScenes.LOBBIES_SCENE);
+            LobbiesSceneController c = loader.getController();
+            c.setLobbies(startingGamesId);
+            stage.getScene().setRoot(root);
+        });
 
         try {
             while (returnValue.isEmpty()) {
@@ -238,6 +218,7 @@ public class Gui extends Application implements Ui{
             return -1;
         }
         else{
+            System.out.println(result);
             return Integer.parseInt(result);
         }
     }
@@ -245,8 +226,10 @@ public class Gui extends Application implements Ui{
     @Override
     public int setLobbySize() {
         int result = 0;
-        loadScene(GuiScenes.LOBBY_SIZE_SCENE);
-        stage.getScene().setRoot(root);
+        Platform.runLater(() -> {
+            loadScene(GuiScenes.LOBBY_SIZE_SCENE);
+            stage.getScene().setRoot(root);
+        });
 
         try {
             while (returnValue.isEmpty()) {
@@ -257,16 +240,24 @@ public class Gui extends Application implements Ui{
         catch (InterruptedException e){
             System.err.println(e.getMessage());
         }
+
+        Platform.runLater(() -> {
+            loadScene(GuiScenes.WAITING_SCENE);
+            stage.getScene().setRoot(root);
+        });
+
         return result;
     }
 
     @Override
     public boolean askSide(Card starterCard) {
         String result = null;
-        loadScene(GuiScenes.STARTER_FLIP_SCENE);
-        StarterFlipSceneController c = loader.getController();
-        //c.setFace(starter);
-        stage.getScene().setRoot(root);
+        Platform.runLater(() -> {
+            loadScene(GuiScenes.STARTER_FLIP_SCENE);
+            StarterFlipSceneController c = loader.getController();
+            c.setFace(starterCard);
+            stage.getScene().setRoot(root);
+        });
 
         try {
             while (returnValue.isEmpty()) {
@@ -288,16 +279,53 @@ public class Gui extends Application implements Ui{
 
     @Override
     public void printViewWithCommands(PlayerBean player, GameBean game, ArrayList<PlayerBean> players) {
+        String result = null;
+        Platform.runLater(() -> {
+            loadScene(GuiScenes.MAIN_SCENE);
+            MainSceneController c = loader.getController();
+            c.setBoard(player, game, players);
+            stage.getScene().setRoot(root);
+            stage.setMaximized(true);
+        });
+
+        try {
+            while (returnValue.isEmpty()) {
+                Thread.sleep(200);
+            }
+            result = returnValue.poll();
+            String[] splittedResult = result.split("§");
+            switch(splittedResult[0]){
+                //place card
+                case "1" -> {
+                    client.placeCard(player.getHand()[Integer.parseInt(splittedResult[1])], new int[]{Integer.parseInt(splittedResult[2]), Integer.parseInt(splittedResult[3])});
+                }
+                case "2" -> {
+                    client.drawCard(splittedResult[1]);
+                }
+                case "3" -> {
+                    client.drawCardFromBoard(Integer.parseInt(splittedResult[1]));
+                }
+                case "4" -> {
+                    if(splittedResult[1].equals("global")){ client.sendChatMessage(splittedResult[2]); }
+                    else { client.sendChatMessage(splittedResult[1], splittedResult[2]); }
+                }
+            }
+        }
+        catch (InterruptedException e){
+            System.err.println(e.getMessage());
+        }
 
     }
 
     @Override
     public Achievement chooseAchievement(Achievement[] choices) {
         String result = null;
-        loadScene(GuiScenes.ACHIEVEMENT_CHOICE_SCENE);
-        AchievementChoiceSceneController c = loader.getController();
-        c.setAchievements(choices);
-        stage.getScene().setRoot(root);
+        Platform.runLater(() -> {
+            loadScene(GuiScenes.ACHIEVEMENT_CHOICE_SCENE);
+            AchievementChoiceSceneController c = loader.getController();
+            c.setAchievements(choices);
+            stage.getScene().setRoot(root);
+        });
 
         try {
             while (returnValue.isEmpty()) {
@@ -320,10 +348,12 @@ public class Gui extends Application implements Ui{
     @Override
     public Color chooseColor(List<Color> colors) {
         String result = null;
-        loadScene(GuiScenes.COLOR_CHOICE_SCENE);
-        ColorChoiceSceneController c = loader.getController();
-        c.setColors(colors);
-        stage.getScene().setRoot(root);
+        Platform.runLater(() -> {
+            loadScene(GuiScenes.COLOR_CHOICE_SCENE);
+            ColorChoiceSceneController c = loader.getController();
+            c.setColors(colors);
+            stage.getScene().setRoot(root);
+        });
 
         try {
             while (returnValue.isEmpty()) {
@@ -334,6 +364,11 @@ public class Gui extends Application implements Ui{
         catch (InterruptedException e){
             System.err.println(e.getMessage());
         }
+
+        Platform.runLater(() -> {
+            loadScene(GuiScenes.WAITING_SCENE);
+            stage.getScene().setRoot(root);
+        });
 
         return colors.get(Integer.parseInt(result));
     }

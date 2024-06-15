@@ -1,7 +1,8 @@
 package it.polimi.ingsw.view.controllers;
 
 import it.polimi.ingsw.model.card.Card;
-import it.polimi.ingsw.model.card.Corner;
+import it.polimi.ingsw.model.card.GoldCard;
+import it.polimi.ingsw.model.card.StarterCard;
 import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.CornerEnum;
 import it.polimi.ingsw.model.enums.CornerState;
@@ -12,16 +13,16 @@ import it.polimi.ingsw.view.Gui;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.Text;
 
 import java.util.ArrayList;
-import java.util.Optional;
 
 public class MainSceneController {
 
@@ -55,45 +56,69 @@ public class MainSceneController {
     private GridPane buttonBoard;
     @FXML
     private AnchorPane scoreBoard;
+    @FXML
+    private AnchorPane messages;
+    @FXML
+    private ChoiceBox receiver;
+    @FXML
+    private TextField textMessage;
+    @FXML
+    private ChoiceBox otherPlayers;
 
     //this matrix has the x and y position of the zero point for alle the 4 pions
     private int[][] scoretrackZero = {new int[] {65, 115, 65, 115}, new int[] {670, 670, 715, 715}};
     //this matrix has the x and y values of the first pion based on points
     private int[][] scoretrackFirstPion = {new int[]{65, 155, 245, 290, 200, 110, 20, 20, 110, 200, 290, 290, 200, 110, 20, 20, 110, 200, 290, 290, 135, 40, 40, 40, 95, 175, 260, 310, 310, 175}, new int[]{670, 670, 670, 590, 590, 590, 590, 510, 510, 510, 505, 425, 425, 425, 425, 345, 345, 345, 345, 260, 220, 265, 180, 100, 20, 5, 20, 90, 170, 105}};
 
-    //{new int[]{0, 90, 90, 45, -90, -90, -90, 0, 90, 90, 90, 0, -90, -90, -90, 0, 90, 90, 90, 0, -155, -95, 0, 0, 55, 80, 85, 50, 0, -135}, new int[]{0, 0, 0, -80, 0, 0, 0, -80, 0, 0, -5, -80, 0, 0, 0, -80, 0, 0, 0, -85, -40, 45, -85, -80, -80, -15, 15, 70, 80, -65}};
-
     private int cardToPlace;
 
-    public void setScene(PlayerBean player, GameBean game, ArrayList<PlayerBean> players){
-        //hand
-        int h1 = player.getHand()[0].getCardNumber();
-        int h2 = player.getHand()[1].getCardNumber();
-        int h3 = player.getHand()[2].getCardNumber();
+    private ArrayList<ImageView> pions = new ArrayList<>();
 
-        Image imageHand1 = new Image(getClass().getResourceAsStream("/cards/fronts/" + String.valueOf(h1) + ".png"));
-        ImageView viewHand1 = new ImageView(imageHand1);
-        viewHand1.setFitHeight(42*3);
-        viewHand1.setFitWidth(63*3);
-        Image imageHand2 = new Image(getClass().getResourceAsStream("/cards/fronts/" + String.valueOf(h2) + ".png"));
-        ImageView viewHand2 = new ImageView(imageHand2);
-        viewHand2.setFitHeight(42*3);
-        viewHand2.setFitWidth(63*3);
-        Image imageHand3 = new Image(getClass().getResourceAsStream("/cards/fronts/" + String.valueOf(h3) + ".png"));
-        ImageView viewHand3 = new ImageView(imageHand3);
-        viewHand3.setFitHeight(42*3);
-        viewHand3.setFitWidth(63*3);
-        hand1.setGraphic(viewHand1);
-        hand2.setGraphic(viewHand2);
-        hand3.setGraphic(viewHand3);
+    int h1;
+    int h2;
+    int h3;
+
+    public void setBoard(PlayerBean player, GameBean game, ArrayList<PlayerBean> opponents){
+        //hand
+        //sostituire con for
+        if(player.getHand()[0] != null){
+            h1 = player.getHand()[0].getCardNumber();
+            if(player.getHand()[0].getType().equals("gold")){
+                h1 = h1 + 40;
+            }
+            Image imageHand1 = new Image(getClass().getResourceAsStream("/cards/fronts/" + String.valueOf(h1) + ".png"));
+            ImageView viewHand1 = new ImageView(imageHand1);
+            viewHand1.setFitHeight(42*3);
+            viewHand1.setFitWidth(63*3);
+            hand1.setGraphic(viewHand1);
+        }
+        if(player.getHand()[1] != null){
+            h2 = player.getHand()[1].getCardNumber();
+            if(player.getHand()[1].getType().equals("gold")){
+                h2 = h2 + 40;
+            }
+            Image imageHand2 = new Image(getClass().getResourceAsStream("/cards/fronts/" + String.valueOf(h2) + ".png"));
+            ImageView viewHand2 = new ImageView(imageHand2);
+            viewHand2.setFitHeight(42*3);
+            viewHand2.setFitWidth(63*3);
+            hand2.setGraphic(viewHand2);
+        }
+        if(player.getHand()[2] != null){
+            h3 = player.getHand()[2].getCardNumber();
+            if(player.getHand()[2].getType().equals("gold")){
+                h3 = h3 + 40;
+            }
+            Image imageHand3 = new Image(getClass().getResourceAsStream("/cards/fronts/" + String.valueOf(h3) + ".png"));
+            ImageView viewHand3 = new ImageView(imageHand3);
+            viewHand3.setFitHeight(42*3);
+            viewHand3.setFitWidth(63*3);
+            hand3.setGraphic(viewHand3);
+        }
 
         //personal achievement
-        int pa = player.getAchievement().getId();
-
+        int pa = player.getAchievement().getId() + 86;
         Image imagePersonalAch = new Image(getClass().getResourceAsStream("/cards/fronts/" + String.valueOf(pa) + ".png"));
-        personalAch = new ImageView(imagePersonalAch);
-        personalAch.setFitHeight(42*3);
-        personalAch.setFitWidth(63*3);
+        personalAch.setImage(imagePersonalAch);
 
         //common board
         Color rDeck = game.getResourceDeckRetro();
@@ -151,14 +176,14 @@ public class MainSceneController {
         viewInsectGoldRetro.setFitHeight(42*2.5);
         viewInsectGoldRetro.setFitWidth(64*2.5);
         switch (gDeck){
-            case RED -> resourceDeck.setGraphic(viewFungiGoldRetro);
-            case BLUE -> resourceDeck.setGraphic(viewAnimalGoldRetro);
-            case GREEN -> resourceDeck.setGraphic(viewPlantGoldRetro);
-            case PURPLE -> resourceDeck.setGraphic(viewInsectGoldRetro);
+            case RED -> goldDeck.setGraphic(viewFungiGoldRetro);
+            case BLUE -> goldDeck.setGraphic(viewAnimalGoldRetro);
+            case GREEN -> goldDeck.setGraphic(viewPlantGoldRetro);
+            case PURPLE -> goldDeck.setGraphic(viewInsectGoldRetro);
         }
 
-        int g1 = game.getCommonGold()[0].getCardNumber();
-        int g2 = game.getCommonGold()[1].getCardNumber();
+        int g1 = game.getCommonGold()[0].getCardNumber() + 40;
+        int g2 = game.getCommonGold()[1].getCardNumber() + 40;
         Image imageGold1 = new Image(getClass().getResourceAsStream("/cards/fronts/" + String.valueOf(g1) + ".png"));
         ImageView viewGold1 = new ImageView(imageGold1);
         viewGold1.setFitHeight(42*2.5);
@@ -170,12 +195,12 @@ public class MainSceneController {
         gold1.setGraphic(viewGold1);
         gold2.setGraphic(viewGold2);
 
-        int a1 = game.getCommonAchievement()[0].getId();
-        int a2 = game.getCommonAchievement()[1].getId();
+        int a1 = game.getCommonAchievement()[0].getId() + 86;
+        int a2 = game.getCommonAchievement()[1].getId() + 86;
         Image imageAchievement1 = new Image(getClass().getResourceAsStream("/cards/fronts/" + String.valueOf(a1) + ".png"));
-        achievement1 = new ImageView(imageAchievement1);
+        achievement1.setImage(imageAchievement1);
         Image imageAchievement2 = new Image(getClass().getResourceAsStream("/cards/fronts/" + String.valueOf(a2) + ".png"));
-        achievement2 = new ImageView(imageAchievement2);
+        achievement2.setImage(imageAchievement2);
 
         //player board
         for (Integer i : player.getBoard().getPositionCardKeys()){
@@ -183,6 +208,12 @@ public class MainSceneController {
             coord[0] = (i / 1024) - PlayerBoard.OFFSET;
             coord[1] = (i % 1024) - PlayerBoard.OFFSET;
             int card = player.getBoard().getCard(coord).getCardNumber();
+            if(player.getBoard().getCard(coord).getType().equals("starter")){
+                card = card + 80;
+            }
+            if(player.getBoard().getCard(coord).getType().equals("gold")){
+                card = card + 40;
+            }
             Image imageCard = new Image(getClass().getResourceAsStream("/cards/fronts/" + String.valueOf(card) + ".png"));
             ImageView viewCard = new ImageView(imageCard);
             viewCard.setFitHeight(42*4);
@@ -190,92 +221,135 @@ public class MainSceneController {
             viewCard.setLayoutX(1013 + coord[1]*150);
             viewCard.setLayoutY(532 + coord[0]*77);
             board.getChildren().add(viewCard);
-            int[][] buttonCornerCenter = {new int[]{6, 7, 7, 7}, new int[]{6, 6, 6, 7}};
+            int[][] buttonCornerCenter = {new int[]{6, 6, 7, 7}, new int[]{6, 7, 7, 6}};
+            int[][] cornerCenter = {new int[]{-1, 1, -1, 1}, new int[]{1, 1, -1, -1}};
+            int j = 0;
             for (CornerEnum c : CornerEnum.values()){
                 if (player.getBoard().getCard(coord).getCorner(c).getState().equals(CornerState.VISIBLE)){
                     Button b = new Button();
                     b.setPrefSize(58, 52);
-                    b.setStyle("-fx-background-color: transparent");
+                    //b.setStyle("-fx-background-color: transparent");
+                    int finalJ = j;
                     b.setOnAction(event -> {
-                        placeCard(cardToPlace, coord, new int[]{c.getX(), c.getY()});
+                        placeCard(cardToPlace, new int[]{cornerCenter[0][finalJ], cornerCenter[1][finalJ]});
                     });
-                    buttonBoard.add(b, (buttonCornerCenter[c.getX()][0] + coord[0]), (buttonCornerCenter[c.getY()][1] + coord[1]));
-                    b.setVisible(false);
+                    buttonBoard.add(b, (buttonCornerCenter[0][j] + coord[0]), (buttonCornerCenter[1][j] + coord[1]));
+                    //b.setVisible(false);
                 }
+                j++;
             }
         }
 
         //score track
-        Image imageRed = new Image(getClass().getResourceAsStream("/images/red.png"));
-        ImageView viewRed = new ImageView(imageRed);
-        viewRed.setFitHeight(40);
-        viewRed.setFitWidth(40);
-        viewRed.setLayoutX(scoretrackZero[0][0]);
-        viewRed.setLayoutY(scoretrackZero[0][1]);
-        Image imageGreen = new Image(getClass().getResourceAsStream("/images/green.png"));
-        ImageView viewGreen = new ImageView(imageGreen);
-        viewGreen.setFitHeight(40);
-        viewGreen.setFitWidth(40);
-        viewGreen.setLayoutX(scoretrackZero[1][0]);
-        viewGreen.setLayoutY(scoretrackZero[1][1]);
-        Image imageBlue = new Image(getClass().getResourceAsStream("/images/blue.png"));
-        ImageView viewBlue = new ImageView(imageBlue);
-        viewBlue.setFitHeight(40);
-        viewBlue.setFitWidth(40);
-        viewBlue.setLayoutX(scoretrackZero[2][0]);
-        viewBlue.setLayoutY(scoretrackZero[2][1]);
-        Image imageYellow = new Image(getClass().getResourceAsStream("/images/yellow.png"));
-        ImageView viewYellow = new ImageView(imageYellow);
-        viewYellow.setFitHeight(40);
-        viewYellow.setFitWidth(40);
-        viewYellow.setLayoutX(scoretrackZero[3][0]);
-        viewYellow.setLayoutY(scoretrackZero[3][1]);
-        ImageView[] pions = {viewRed, viewGreen, viewBlue, viewYellow};
-        for (int i = 0; i < players.size(); i++){
-            if(players.get(i).getPoints() == 0){
-                scoreBoard.getChildren().add(pions[i]);
-            }
-            else{
-                pions[i].setLayoutX(scoretrackFirstPion[players.get(i).getPoints()][0] + (scoretrackZero[0][0] - scoretrackZero[i][0]));
-                pions[i].setLayoutX(scoretrackFirstPion[players.get(i).getPoints()][1] + (scoretrackZero[0][1] - scoretrackZero[i][1]));
+        ArrayList<PlayerBean> allPlayers = new ArrayList<>(opponents);
+        allPlayers.add(player);
+        for(PlayerBean p : allPlayers){
+            switch(p.getPionColor()){
+                case RED -> {
+                    Image imageRed = new Image(getClass().getResourceAsStream("/images/red.png"));
+                    ImageView viewRed = new ImageView(imageRed);
+                    viewRed.setFitHeight(40);
+                    viewRed.setFitWidth(40);
+                    scoreBoard.getChildren().add(viewRed);
+                    viewRed.setLayoutX(scoretrackZero[0][0]);
+                    viewRed.setLayoutY(scoretrackZero[1][0]);
+                    pions.add(viewRed);
+                }
+                case BLUE -> {
+                    Image imageBlue = new Image(getClass().getResourceAsStream("/images/blue.png"));
+                    ImageView viewBlue = new ImageView(imageBlue);
+                    scoreBoard.getChildren().add(viewBlue);
+                    viewBlue.setFitHeight(40);
+                    viewBlue.setFitWidth(40);
+                    viewBlue.setLayoutX(scoretrackZero[0][2]);
+                    viewBlue.setLayoutY(scoretrackZero[1][2]);
+                    pions.add(viewBlue);
+                }
+                case GREEN -> {
+                    Image imageGreen = new Image(getClass().getResourceAsStream("/images/green.png"));
+                    ImageView viewGreen = new ImageView(imageGreen);
+                    scoreBoard.getChildren().add(viewGreen);
+                    viewGreen.setFitHeight(40);
+                    viewGreen.setFitWidth(40);
+                    viewGreen.setLayoutX(scoretrackZero[0][1]);
+                    viewGreen.setLayoutY(scoretrackZero[1][1]);
+                    pions.add(viewGreen);
+                }
+                case YELLOW -> {
+                    Image imageYellow = new Image(getClass().getResourceAsStream("/images/yellow.png"));
+                    ImageView viewYellow = new ImageView(imageYellow);
+                    scoreBoard.getChildren().add(viewYellow);
+                    viewYellow.setFitHeight(40);
+                    viewYellow.setFitWidth(40);
+                    viewYellow.setLayoutX(scoretrackZero[0][3]);
+                    viewYellow.setLayoutY(scoretrackZero[1][3]);
+                    pions.add(viewYellow);
+                }
+                case null, default -> {}
             }
         }
+        for (int i = 0; i < pions.size(); i++){
+            pions.get(i).setLayoutX(scoretrackFirstPion[0][allPlayers.get(i).getPoints()] + (scoretrackZero[0][0] - scoretrackZero[i][0]));
+            pions.get(i).setLayoutY(scoretrackFirstPion[1][allPlayers.get(i).getPoints()] + (scoretrackZero[0][1] - scoretrackZero[i][1]));
+        }
+
+        //chat
+        for(String s : player.getChat()){
+            Text t = new Text(s);
+            messages.getChildren().add(t);
+        }
+        receiver.getItems().add("global");
+        for(PlayerBean p : opponents){
+            if(!p.getUsername().equals(player.getUsername())){
+                receiver.getItems().add(p.getUsername());
+            }
+        }
+        receiver.getSelectionModel().selectFirst();
+
+        //other players' playerboard
+        for(PlayerBean p : opponents){
+            if(!p.getUsername().equals(player.getUsername())){
+                otherPlayers.getItems().add(p.getUsername());
+            }
+        }
+        otherPlayers.getSelectionModel().selectFirst();
+
 
     }
 
     @FXML
     public void drawResourceDeck(ActionEvent e) {
-        Gui.addReturnValue("RDeck");
+        Gui.addReturnValue("2" + "§" + "resource");
     }
 
     @FXML
     public void drawResource1(ActionEvent e) {
-        Gui.addReturnValue("R1");
+        Gui.addReturnValue("3" + "§" + "1");
     }
 
     @FXML
     public void drawResource2(ActionEvent e) {
-        Gui.addReturnValue("R2");
+        Gui.addReturnValue("3" + "§" + "2");
     }
 
     @FXML
     public void drawGoldDeck(ActionEvent e) {
-        Gui.addReturnValue("GDeck");
+        Gui.addReturnValue("2" + "§" + "gold");
     }
 
     @FXML
     public void drawGold1(ActionEvent e) {
-        Gui.addReturnValue("G1");
+        Gui.addReturnValue("3" + "§" + "3");
     }
 
     @FXML
     public void drawGold2(ActionEvent e) {
-        Gui.addReturnValue("G2");
+        Gui.addReturnValue("3" + "§" + "4");
     }
 
     @FXML
     public void wantToPlaceHand1(ActionEvent e) {
-        cardToPlace = 1;
+        cardToPlace = 0;
         for (Node b : buttonBoard.getChildren()){
             b.setVisible(true);
         }
@@ -283,7 +357,7 @@ public class MainSceneController {
 
     @FXML
     public void wantToPlaceHand2(ActionEvent e) {
-        cardToPlace = 2;
+        cardToPlace = 1;
         for (Node b : buttonBoard.getChildren()){
             b.setVisible(true);
         }
@@ -291,14 +365,48 @@ public class MainSceneController {
 
     @FXML
     public void wantToPlaceHand3(ActionEvent e) {
-        cardToPlace = 3;
+        cardToPlace = 2;
         for (Node b : buttonBoard.getChildren()){
             b.setVisible(true);
         }
     }
-    
-    @FXML void placeCard(int cardToPlace, int[] cardToCover, int[] cornerToCover){
-        Gui.addReturnValue("hand" + cardToPlace + "OnTopOf" + cardToCover[0] + cardToCover[1] + "CardOnCorner" + cornerToCover[0] + cardToCover[1]);
+
+    @FXML void placeCard(int cardToPlace, int[] newCardCoord){
+        //"hand" + cardToPlace + "in" + newCardCoord
+        Gui.addReturnValue("1" + "§" + String.valueOf(cardToPlace) + "§" + String.valueOf(newCardCoord[0]) + "§" + String.valueOf(newCardCoord[1]));
     }
 
+    public void flipHand1(ActionEvent e) {
+        Image imageRetroHand1 = new Image(getClass().getResourceAsStream("/cards/backs/" + String.valueOf(h1) + ".png"));
+        ImageView viewRetroHand1 = new ImageView(imageRetroHand1);
+        viewRetroHand1.setFitHeight(42*3);
+        viewRetroHand1.setFitWidth(63*3);
+        hand1.setGraphic(viewRetroHand1);
+    }
+
+    public void flipHand2(ActionEvent e) {
+        Image imageRetroHand2 = new Image(getClass().getResourceAsStream("/cards/backs/" + String.valueOf(h2) + ".png"));
+        ImageView viewRetroHand2 = new ImageView(imageRetroHand2);
+        viewRetroHand2.setFitHeight(42*3);
+        viewRetroHand2.setFitWidth(63*3);
+        hand2.setGraphic(viewRetroHand2);
+    }
+
+    public void flipHand3(ActionEvent e) {
+        Image imageRetroHand3 = new Image(getClass().getResourceAsStream("/cards/backs/" + String.valueOf(h3) + ".png"));
+        ImageView viewRetroHand3 = new ImageView(imageRetroHand3);
+        viewRetroHand3.setFitHeight(42*3);
+        viewRetroHand3.setFitWidth(63*3);
+        hand1.setGraphic(viewRetroHand3);
+    }
+
+    public void sendMessage(ActionEvent e) {
+        if(!textMessage.getText().isEmpty()){
+            Gui.addReturnValue("4" + receiver.getSelectionModel().getSelectedItem() + "§" + textMessage.getText());
+        }
+    }
+
+    public void viewPlayerboard(ActionEvent e) {
+        Gui.addReturnValue("view" + otherPlayers.getSelectionModel().getSelectedItem());
+    }
 }

@@ -16,35 +16,29 @@ import java.util.Optional;
 public class AchievementChoiceSceneController {
 
     @FXML
-    private Button b1;
+    private ImageView a1;
 
     @FXML
-    private Button b2;
+    private ImageView a2;
 
-    ImageView achievement1View;
-    ImageView achievement2View;
+    Image achievement1;
+    Image achievement2;
     ImageView miniAchievement1View;
     ImageView miniAchievement2View;
 
     public void setAchievements(Achievement[] achievements){
         int number1 = achievements[0].getId() + 86;
         int number2 = achievements[1].getId() + 86;
-        Image a1 = new Image(getClass().getResourceAsStream("/cards/fronts/" + String.valueOf(number1) + ".png"));
-        achievement1View = new ImageView(a1);
-        achievement1View.setFitHeight(42*6);
-        achievement1View.setFitWidth(63*6);
-        miniAchievement1View = new ImageView(a1);
+        achievement1 = new Image(getClass().getResourceAsStream("/cards/fronts/" + String.valueOf(number1) + ".png"));
+        miniAchievement1View = new ImageView(achievement1);
         miniAchievement1View.setFitHeight(42*3);
         miniAchievement1View.setFitWidth(63*3);
-        Image a2 = new Image(getClass().getResourceAsStream("/cards/fronts/" + String.valueOf(number2) + ".png"));
-        achievement2View = new ImageView(a2);
-        achievement2View.setFitHeight(42*6);
-        achievement2View.setFitWidth(63*6);
-        miniAchievement2View = new ImageView(a2);
+        achievement2 = new Image(getClass().getResourceAsStream("/cards/fronts/" + String.valueOf(number2) + ".png"));
+        miniAchievement2View = new ImageView(achievement2);
         miniAchievement2View.setFitHeight(42*3);
         miniAchievement2View.setFitWidth(63*3);
-        b1.setGraphic(achievement1View);
-        b2.setGraphic(achievement2View);
+        a1.setImage(achievement1);
+        a2.setImage(achievement2);
     }
 
     @FXML
