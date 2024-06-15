@@ -4,7 +4,7 @@ import it.polimi.ingsw.network.server.Connection;
 import it.polimi.ingsw.network.server.Server;
 
 public class ServerController {
-    private transient Server server;
+    private final transient Server server;
     public ServerController(Server server){
         this.server = server;
     }
