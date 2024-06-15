@@ -23,26 +23,36 @@ public class Tui implements Ui{
     private ArrayList<PlayerBean> players;
     private final Scanner scanner;
     private final Object lock = new Object();
-    private boolean running = true;
-    private final Thread inputThread = new Thread(() -> {
-        Scanner input = new Scanner(System.in);
-        while (running) {
-            String choice = input.nextLine();
-            synchronized (lock) {
-                if (choice.equals("q")){
-                    printViewWithCommands(player, game, players);
-                }
-                else{
-                    handleInput(choice);
-                }
-            }
-        }
-        input.close();
-    });
+    private boolean running;
+    private Thread inputThread;
 
     public Tui(){
         AnsiConsole.systemInstall();
         scanner = new Scanner(System.in);
+        spawnThread();
+        this.running = true;
+    }
+
+    public void spawnThread(){
+        inputThread = new Thread(() -> {
+            Scanner input = new Scanner(System.in);
+            while (running) {
+                String choice = input.nextLine();
+                synchronized (lock) {
+                    if (choice.equals("q")){
+                        printViewWithCommands(player, game, players);
+                    }
+                    else{
+                        handleInput(choice);
+                    }
+                }
+            }
+            input.close();
+        });
+    }
+
+    public void handleReconnection(){
+        this.inputThread.start();
     }
 
     /**
@@ -189,7 +199,7 @@ public class Tui implements Ui{
         String choice;
         do {
             AnsiConsole.out().println("Which side you want to play?\nPress [f] for front and [b] for back");
-            choice = scanner.nextLine();
+            choice = scanner.next();
         } while (!choice.equalsIgnoreCase("b") && !choice.equalsIgnoreCase("f"));
         return choice.equalsIgnoreCase("f");
     }
@@ -223,9 +233,9 @@ public class Tui implements Ui{
         }
     }
 
-    public String[][] createPrintableCardToPlace(int[] coord) {
+    public String[][] createPrintableCardToPlace(int[] coord, PlayerBean p) {
         String[][] matCard = new String[TuiCostants.ROW][TuiCostants.COLUMN];
-        PlayerBoard playerBoard = player.getBoard();
+        PlayerBoard playerBoard = p.getBoard();
         Card card = playerBoard.getCard(coord);
         //Create a 3x5 matrix with the same color of the card //TODO: commenta bene
         for (int i = 0; i < TuiCostants.ROW; i++) {
@@ -314,7 +324,6 @@ public class Tui implements Ui{
 
     public String[][] createPrintableRetro(Color color){
         String[][] matCard = new String[TuiCostants.ROW][TuiCostants.COLUMN];
-        //creazione matrice vuota e bordi a destra e sinistra
         for (int i = 0; i < TuiCostants.ROW; i++) {
             for (int j = 0; j < TuiCostants.COLUMN; j++) {
                 matCard[i][j] = Color.getBackground(color) + Symbols.getString(Symbols.EMPTY_SPACE) + TuiColors.getColor(TuiColors.ANSI_RESET);
@@ -401,14 +410,14 @@ public class Tui implements Ui{
                 matCard[0][centerPoints] = Color.getBackground(Color.YELLOW) + TuiColors.getColor(TuiColors.ANSI_BLACK) + achievement.getPoints() + TuiColors.getColor(TuiColors.ANSI_RESET);
                 switch(achievement.getColor()){
                     case RED -> {
-                        matCard[0][centerObject - 1] = Color.getBackground(Color.RED) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matCard[0][centerObject + 1] = Color.getBackground(Color.RED) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
                         matCard[1][centerObject] = Color.getBackground(Color.RED) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                        matCard[2][centerObject + 1] = Color.getBackground(Color.RED) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matCard[2][centerObject - 1] = Color.getBackground(Color.RED) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
                     }
                     case BLUE -> {
-                        matCard[0][centerObject - 1] = Color.getBackground(Color.BLUE) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matCard[0][centerObject + 1] = Color.getBackground(Color.BLUE) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
                         matCard[1][centerObject] = Color.getBackground(Color.BLUE) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                        matCard[2][centerObject + 1] = Color.getBackground(Color.BLUE) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matCard[2][centerObject - 1] = Color.getBackground(Color.BLUE) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
                     }
                     case GREEN -> {
                         matCard[0][centerObject - 1] = Color.getBackground(Color.GREEN) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
@@ -432,26 +441,29 @@ public class Tui implements Ui{
                         matCard[2][centerObject + 1] = Color.getBackground(Color.GREEN) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
                     }
                     case BLUE -> {
-                        matCard[0][centerObject] = Color.getBackground(Color.BLUE) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matCard[0][centerObject + 1] = Color.getBackground(Color.RED) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
                         matCard[1][centerObject] = Color.getBackground(Color.BLUE) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                        matCard[2][centerObject + 1] = Color.getBackground(Color.RED) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matCard[2][centerObject] = Color.getBackground(Color.BLUE) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
                     }
                     case GREEN -> {
                         matCard[0][centerObject] = Color.getBackground(Color.GREEN) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
                         matCard[1][centerObject] = Color.getBackground(Color.GREEN) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                        matCard[2][centerObject + 1] = Color.getBackground(Color.PURPLE) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matCard[2][centerObject - 1] = Color.getBackground(Color.PURPLE) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
                     }
                     case PURPLE -> {
-                        matCard[0][centerObject] = Color.getBackground(Color.PURPLE) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matCard[0][centerObject - 1] = Color.getBackground(Color.BLUE) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
                         matCard[1][centerObject] = Color.getBackground(Color.PURPLE) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                        matCard[2][centerObject + 1] = Color.getBackground(Color.BLUE) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matCard[2][centerObject] = Color.getBackground(Color.PURPLE) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
                     }
                 }
             }
             case AchievementItem ignored1 -> {
                 matCard[0][centerPoints] = Color.getBackground(Color.YELLOW) + TuiColors.getColor(TuiColors.ANSI_BLACK) + achievement.getPoints() + TuiColors.getColor(TuiColors.ANSI_RESET);
-                matCard[2][centerObject - 1] = Color.getBackground(Color.YELLOW) + Symbols.getStringBlack(achievement.getSymbols().get(0)) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                if (achievement.getSymbols().size() == 3) {
+                matCard[2][centerObject - 1] = Color.getBackground(Color.YELLOW) + Symbols.getStringBlack(achievement.getSymbols().getFirst()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                if (achievement.getSymbols().size() < 3) {
+                    matCard[2][centerObject + 1] = Color.getBackground(Color.YELLOW) + Symbols.getStringBlack(achievement.getSymbols().getFirst()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                }
+                else {
                     matCard[2][centerObject + 1] = Color.getBackground(Color.YELLOW) + Symbols.getStringBlack(achievement.getSymbols().get(1)) + TuiColors.getColor(TuiColors.ANSI_RESET);
                     matCard[1][centerObject] = Color.getBackground(Color.YELLOW) + Symbols.getStringBlack(achievement.getSymbols().get(2)) + TuiColors.getColor(TuiColors.ANSI_RESET);
                 }
@@ -509,7 +521,7 @@ public class Tui implements Ui{
         }
         return matScoreBoard;
     }
-    
+
     public void printView(){
         clearConsole();
         String [][] resourceDeck = createPrintableRetro(game.getResourceDeckRetro());
@@ -618,6 +630,7 @@ public class Tui implements Ui{
                         }
                     }
                     if (playerInTurn == null){
+                        moveCursor(39, 0);
                         AnsiConsole.out().println("only one player connected, the other players have one minute to reconnect.");
                     }
                     else {
@@ -642,7 +655,6 @@ public class Tui implements Ui{
         }
     }
     //TODO: Refactor di questa funzione
-    //TODO: altezza circa 50 -> larghezza guesso 120/150
     //TODO: togli il q per chiudere dal fondo e mettilo nei vari case
     public void handleInput(String choice){
         Card[] hand = player.getHand();
@@ -657,7 +669,6 @@ public class Tui implements Ui{
         switch (choice) {
             case "1" -> {
                 clearConsole();
-                //TODO: stampa scoreTrack meglio
                 ArrayList<PlayerBean> allPlayers = new ArrayList<>(players);
                 allPlayers.add(player);
                 String [][][][] scoreTrack = createPrintableScoreBoard(allPlayers);
@@ -741,13 +752,12 @@ public class Tui implements Ui{
                     }
                     a = input.next();
                     clearConsole();
-                    this.printView();
                 } while (!a.equals("c") && (Integer.parseInt(a) <= 0 || Integer.parseInt(a) > players.size()));
-                    if (a.equals("c")) {
+                if (a.equals("c")) {
                     this.printChat();
                 } else {
                     clearConsole();
-                    moveCursor(1, 50);
+                    moveCursor(39, 50);
                     AnsiConsole.out().println(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + players.get(Integer.parseInt(a) - 1).getUsername() + "'s playerboard" + TuiColors.getColor(TuiColors.ANSI_RESET));
                     this.printBoard(players.get(Integer.parseInt(a) - 1));
                 }
@@ -774,7 +784,7 @@ public class Tui implements Ui{
                         String b;
                         do {
                             moveCursor(37, 0);
-                             cardToPlace = hand[Integer.parseInt(a) - 1];
+                            cardToPlace = hand[Integer.parseInt(a) - 1];
                             AnsiConsole.out().println("Which side do you want to place? [f] for front [b] for back");
                             AnsiConsole.out().println();
                             //TODO: 1162 - 1171 scrivere metodo che stampa fronte e retro
@@ -871,7 +881,7 @@ public class Tui implements Ui{
                             AnsiConsole.out().println("Do you want to draw from resource deck or gold deck? [r] for resource [g] for gold");
                             a = input.next();
                         } while (!a.equals("r") && !a.equals("g") && !a.equals("c"));
-                            if (a.equals("c")) {
+                        if (a.equals("c")) {
                             this.printChat();
                         } else if (a.equals("r")) {
                             client.drawCard("resource");
@@ -1009,18 +1019,19 @@ public class Tui implements Ui{
         AnsiConsole.out().print("\n");
     }
 
+    //TODO: per qualche motivo playerToShow è sempre il giocatore in gioco
     public void printBoard(PlayerBean playerToShow){
         PlayerBoard pBoard = playerToShow.getBoard();
         int[] coord = new int[2];
         String [][] printableCard;
 
-        //Print the grid (TuiCostants.COLUMN)
+        //Print the grid (COLUMN)
         for (int i = 0; i < TuiCostants.BOARD_DIM; i++) {
             moveCursor(2 * i + 4, 0);
             AnsiConsole.out().print((TuiCostants.BOARD_DIM/2) - i);
         }
 
-        //Print the grid (TuiCostants.ROW)
+        //Print the grid (ROW)
         for (int i = 0; i < TuiCostants.BOARD_DIM; i++) {
             moveCursor(0, 8 * i + 8);
             AnsiConsole.out().print(i - (TuiCostants.BOARD_DIM/2));
@@ -1031,7 +1042,7 @@ public class Tui implements Ui{
             //TODO: limitare da -7 a +7 su x e y
             coord[0] = (i / 1024) - PlayerBoard.OFFSET;
             coord[1] = (i % 1024) - PlayerBoard.OFFSET;
-            printableCard = createPrintableCardToPlace(coord);
+            printableCard = createPrintableCardToPlace(coord, playerToShow);
             printCardMatrix(printableCard, TuiCostants.STARTER_ROW - (coord[1] * 2), TuiCostants.STARTER_COLUMN + (coord[0] * 8));
         }
     }
@@ -1096,7 +1107,7 @@ public class Tui implements Ui{
     @Override //TODO: occhio al warning
     public void declareWinners(ArrayList<String> winners){
         if (winners.size() == 1){
-           message = "\nThe winner is: " + winners.getFirst();
+            message = "\nThe winner is: " + winners.getFirst();
         }
         else{
             message = "\nThe winners are: \n";

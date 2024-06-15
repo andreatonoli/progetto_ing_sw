@@ -6,7 +6,6 @@ import it.polimi.ingsw.model.enums.Symbols;
 import java.io.Serializable;
 
 public class Corner implements Serializable {
-    //Bisogna anche pensare a come gestire i "non angoli"
     /**
      * indicates the symbol (from the symbols enumeration) contained in the corner
      */
@@ -37,14 +36,6 @@ public class Corner implements Serializable {
      */
     public Symbols getSymbol(){
         return this.symbol;
-    }
-
-    /**
-     * setter to set the symbol value
-     * @param symbol is the symbol to set in the corner
-     */
-    public void setSymbol(Symbols symbol){
-        this.symbol = symbol;
     }
 
     /**

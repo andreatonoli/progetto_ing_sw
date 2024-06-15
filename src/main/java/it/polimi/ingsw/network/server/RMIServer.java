@@ -12,6 +12,7 @@ import it.polimi.ingsw.model.card.Achievement;
 import it.polimi.ingsw.model.card.Card;
 import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.network.client.RMIClientHandler;
+import it.polimi.ingsw.network.messages.Message;
 
 public class RMIServer implements VirtualServer {
     private final BlockingQueue<Action> actionQueue;
@@ -43,8 +44,11 @@ public class RMIServer implements VirtualServer {
 
     @Override
     public void login(RMIClientHandler client) throws RemoteException {
-        RMIConnection c = new RMIConnection(server, client);
-        String username = server.login(c);
+        RMIConnection c = new RMIConnection(server, client, this);
+        server.login(c);
+    }
+
+    public void setEntry(String username, RMIConnection c){
         connections.put(username, c);
     }
 

@@ -117,6 +117,8 @@ public class SocketClient implements ClientInterface {
                 this.game = ((ReconnectionMessage) message).getGameBean();
                 //TODO cerca di passare copia della lista
                 this.opponents = ((ReconnectionMessage) message).getOpponents();
+                this.view.handleReconnection();
+                this.view.printViewWithCommands(player, game, opponents);
                 break;
             case USERNAME_REQUEST:
                 System.out.println("Username is already taken, please choose another: ");
@@ -337,6 +339,7 @@ public class SocketClient implements ClientInterface {
         }
         else{
             //TODO: errore profondo
+            update(new GenericMessage("\nThere's a time and place for everything! But not now.\n"));
         }
     }
 
@@ -347,6 +350,7 @@ public class SocketClient implements ClientInterface {
         }
         else {
             //TODO: errore profondo
+            update(new GenericMessage("\nThere's a time and place for everything! But not now.\n"));
         }
     }
 
@@ -357,6 +361,7 @@ public class SocketClient implements ClientInterface {
         }
         else{
             //TODO: errore profondo
+            update(new GenericMessage("\nThere's a time and place for everything! But not now.\n"));
         }
     }
 

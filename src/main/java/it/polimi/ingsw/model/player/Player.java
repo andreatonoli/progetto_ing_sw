@@ -283,11 +283,11 @@ public class Player implements Serializable {
         if (deck.isEmpty()){
             throw new EmptyException();
         }
-        if (this.getPlayerState().equals(PlayerState.NOT_IN_TURN) || this.getPlayerState().equals(PlayerState.PLAY_CARD)){
+        if (this.playerState.equals(PlayerState.NOT_IN_TURN) || this.playerState.equals(PlayerState.PLAY_CARD)){
             throw new NotInTurnException();
         }
         for (int i = 0; i < 3; i++) {
-            if (this.getCardInHand()[i] == null){
+            if (this.cardInHand[i] == null){
                 return;
             }
         }

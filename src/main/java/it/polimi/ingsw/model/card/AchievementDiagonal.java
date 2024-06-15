@@ -51,7 +51,7 @@ public class AchievementDiagonal implements Achievement{
         int[] coord = new int[2];
         int[] offset = new int [2]; //distance between two elements of the diagonal
         ArrayList<int[]> marked = new ArrayList<>();
-        int len = 0; //INUTILE
+        int len = 0;
         for (Integer i : sortedKeySet)
         {
             coord[0] = (i / 1024) - PlayerBoard.OFFSET;

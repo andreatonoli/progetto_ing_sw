@@ -33,7 +33,6 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
     private VirtualServer server;
     private PlayerBean player;
     private ArrayList<PlayerBean> opponents;
-    private int playersRemaining;
 
     public RMIClient(String host, int port, Ui view) throws RemoteException{
         this.view = view;
@@ -64,11 +63,12 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
 
     public String askUsername(int lobby) throws RemoteException{
         this.username = view.askNickname();
-        if (!server.userNotDisconnected(username, lobby)) {
-            System.out.println("there is no player disconnected in game "+ lobby + " with that name.");
-            server.login(this);
+        if(!server.userNotDisconnected(username, lobby)) {
+            System.out.println("there is no player disconnected in game " + lobby + " with that name.");
         }
-        this.player = new PlayerBean(username);
+        else {
+            this.player = new PlayerBean(username);
+        }
         return username;
     }
 
@@ -138,7 +138,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                 this.game = ((ReconnectionMessage) message).getGameBean();
                 //TODO: Controlla come viene passato il parametro e cerca di passare una copia
                 this.opponents = ((ReconnectionMessage) message).getOpponents();
-                System.out.println(game.getGoldDeckRetro());
+                this.view.handleReconnection();
                 this.view.printViewWithCommands(this.player, this.game, this.opponents);
                 break;
             case GAME_STATE:
@@ -150,7 +150,6 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                 break;
             case OPPONENTS:
                 ArrayList<String> playersName = ((OpponentsMessage) message).getPlayers();
-                playersRemaining = playersName.size()+1;
                 for (String s : playersName){
                     if(!s.equalsIgnoreCase(username)){
                         opponents.add(new PlayerBean(s));
@@ -349,6 +348,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
         }
         else{
             //TODO: errore profondo
+            update(new GenericMessage("\nThere's a time and place for everything! But not now.\n"));
         }
     }
 
@@ -363,6 +363,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
         }
         else{
             //TODO: errore profondo
+            update(new GenericMessage("\nThere's a time and place for everything! But not now.\n"));
         }
     }
 
@@ -377,6 +378,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
         }
         else{
             //TODO: errore profondo
+            update(new GenericMessage("\nThere's a time and place for everything! But not now.\n"));
         }
     }
 

@@ -55,11 +55,14 @@ public class TurnHandler extends Observable {
                 i=2;
             }
             if (player.isDisconnected() && PlayerState.values()[i].equals(PlayerState.DRAW_CARD)) {
+                player.setPlayerState(PlayerState.values()[i]);
                 try {
                     player.drawCard(game.getGameBoard().getResourceDeck());
+                    notifyAll(new UpdateDeckMessage(game.getGameBoard().getResourceDeck().getFirst().getColor(), true));
                 } catch (NotInTurnException | FullHandException | EmptyException e1) {
                     try {
                         player.drawCard(game.getGameBoard().getGoldDeck());
+                        notifyAll(new UpdateDeckMessage(game.getGameBoard().getGoldDeck().getFirst().getColor(), false));
                     } catch (NotInTurnException | FullHandException | EmptyException ignored){}
                 }
                 i=2;
@@ -100,7 +103,6 @@ public class TurnHandler extends Observable {
             notifyAll(new WaitingReconnectionMessage(player.getUsername()));
             Timer t = new Timer();
             Timer rec = new Timer();
-            CountDownLatch latch = new CountDownLatch(1);
             t.schedule(new TimerTask() {
                 @Override
                 public void run() {
@@ -110,30 +112,26 @@ public class TurnHandler extends Observable {
                     t.cancel();
                 }
             }, 120000, 2000);
-            //TODO fixare
+
             rec.schedule(new TimerTask() {
                 @Override
                 public void run() {
                     if (game.getDisconnections()+1 < game.getLobbySize()){
-                        latch.countDown();
+                        TurnHandler th = TurnHandler.this;
                         t.cancel();
+                        th.changePlayerState(player);
+                        th.notifyAll(new PlayerBoardUpdateMessage(player.getPlayerBoard(), player.getUsername()));
                         rec.cancel();
                     }
                 }
             }, 1000, 2000);
-
-            try {
-                latch.await();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-
-            this.changePlayerState(player);
         }
     }
 
     private void declareWinnerByDisconnection(Player p){
         notifyAll(new WinnerMessage(List.of(p)));
+        notifyAll(new GameStateMessage(GameState.END));
+        game.setGameState(GameState.END);
     }
     public String changeSetupPlayer(){
         j++;

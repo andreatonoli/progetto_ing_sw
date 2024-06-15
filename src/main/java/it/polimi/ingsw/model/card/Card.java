@@ -123,13 +123,6 @@ public class Card implements Serializable {
         return currentSide.corners[corner.ordinal()];
     }
 
-    /**
-     * getter of the corners array
-     * @return all the card's corners.
-     */
-    public Corner[] getCorners(){
-        return currentSide.getCorners();
-    }
 
     /**
      * getter to get the symbol in the card's corner
