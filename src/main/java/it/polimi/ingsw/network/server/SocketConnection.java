@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -222,22 +223,22 @@ public class SocketConnection extends Connection implements Runnable {
 
     public void onMessage(Message message){
         switch (message.getType()){
-            case REMOVE_FROM_SERVER:
-                this.cancelPing();
-                int playersToDelete = lobby.getGame().getLobbySize()-1;
-                lobby.getGame().setLobbySize(playersToDelete);
-                server.removePlayers(username);
-                if (playersToDelete == 0){
-                    server.removeGame(lobby);
-                }
-                try {
-                    in.close();
-                    out.close();
-                    socket.close();
-                } catch (IOException e) {
-                    System.err.println(e.getMessage());
-                }
-                break;
+            //case REMOVE_FROM_SERVER:
+            //    this.cancelPing();
+            //    int playersToDelete = lobby.getGame().getLobbySize()-1;
+            //    lobby.getGame().setLobbySize(playersToDelete);
+            //    server.removePlayers(username);
+            //    if (playersToDelete == 0){
+            //        server.removeGame(lobby);
+            //    }
+            //    try {
+            //        in.close();
+            //        out.close();
+            //        socket.close();
+            //    } catch (IOException e) {
+            //        System.err.println(e.getMessage());
+            //    }
+            //    break;
             case ADD_TO_CHAT:
                 String receiver = ((AddToChatMessage) message).getReceiver();
                 if (receiver == null) {
@@ -323,5 +324,22 @@ public class SocketConnection extends Connection implements Runnable {
     @Override
     public void update(Message message) {
         sendMessage(message);
+    }
+
+    @Override
+    public void removeFromServer(boolean last) {
+        cancelPing();
+        server.removePlayers(username);
+        if (last){
+            server.removeGame(lobby);
+        }
+        System.err.println(username + " got disconnected");
+        try {
+            in.close();
+            out.close();
+            socket.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

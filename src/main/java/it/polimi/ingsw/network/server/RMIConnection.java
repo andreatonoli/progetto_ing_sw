@@ -200,6 +200,23 @@ public class RMIConnection extends Connection {
     public void sendChatMessage(String message) {
         this.lobby.addAction(new ActionMessage(this, () -> lobby.sendChatMessage(this, message)));
     }
+
+    @Override
+    public void removeFromServer(boolean last) {
+        cancelPing();
+        onDisconnect();
+        System.err.println(username + " got disconnected");
+        server.removePlayers(username);
+        if (last){
+            server.removeGame(lobby);
+        }
+        try {
+            serverHandler.removeConnections(username);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public void update(Message message) {
         this.sendMessage(message);

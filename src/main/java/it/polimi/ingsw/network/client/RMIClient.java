@@ -288,11 +288,11 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
             case DECLARE_WINNER:
                 ArrayList<String> winners = ((WinnerMessage) message).getWinners();
                 this.view.declareWinners(winners);
-                try {
-                    server.removeFromServer(username);
-                } catch (RemoteException e) {
-                    System.out.println(e.getMessage() + " in removeFromServer");
-                }
+                //try {
+                //    server.removeFromServer(username);
+                //} catch (RemoteException e) {
+                //    System.out.println(e.getMessage() + " in removeFromServer");
+                //}
                 break;
             case GENERIC_MESSAGE:
                 if (game.getState().ordinal() > 1) {
