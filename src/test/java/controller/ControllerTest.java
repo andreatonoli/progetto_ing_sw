@@ -29,21 +29,19 @@ public class ControllerTest {
     @Test
     @DisplayName("ChooseObj test")
     public void testValidChooseObj() {
-        // Create local mocks
+        // Mocking dependencies
         Connection user = mock(Connection.class);
         Achievement chosenAchievement = new AchievementDiagonal(Color.RED, 1);
         Player player = mock(Player.class);
-
-        // Create an instance of Controller
-        Controller controller = spy(new Controller(4, 7));
-
-        // Stub the getPlayerByClient method to return the mocked player
-        doReturn(player).when(controller).getPlayerByClient(user);
-
-        // Creating array of achievement from which choose from //TODO: commentare bene
         Achievement[] personalObj = new Achievement[2];
         personalObj[0] = new AchievementDiagonal(Color.RED, 1);
         personalObj[1] = new AchievementDiagonal(Color.PURPLE, 4);
+
+        // Create an instance of Controller
+        Controller controller = spy(new Controller(4, 0));
+
+        // Stubbing methods
+        doReturn(player).when(controller).getPlayerByClient(user);
         when(player.getPersonalObj()).thenReturn(personalObj);
 
         // Ensure that the achievement is one of the player's personal objectives
@@ -59,22 +57,21 @@ public class ControllerTest {
     @Test
     @DisplayName("User chooses an invalid achievement")
     public void testInvalidChooseObj() {
-        // Create local mocks
+        // Mocking dependencies
         Connection user = mock(Connection.class);
         Player player = mock(Player.class);
+        Achievement[] personalObj = new Achievement[2];
+        personalObj[0] = new AchievementDiagonal(Color.RED, 1);
+        personalObj[1] = new AchievementDiagonal(Color.PURPLE, 4);
+
         //Creating achievement with same id but different color
         Achievement chosenAchievement = new AchievementDiagonal(Color.BLUE, 1);
 
         // Create an instance of Controller
         Controller controller = spy(new Controller(4, 7));
 
-        // Stub the getPlayerByClient method to return the mocked player
+        // Stubbing methods
         doReturn(player).when(controller).getPlayerByClient(user);
-
-        // Creating array of achievement from which choose from //TODO: commentare bene
-        Achievement[] personalObj = new Achievement[2];
-        personalObj[0] = new AchievementDiagonal(Color.RED, 1);
-        personalObj[1] = new AchievementDiagonal(Color.PURPLE, 4);
         when(player.getPersonalObj()).thenReturn(personalObj);
 
         // Ensure that the achievement is not one of the player's personal objectives
@@ -89,7 +86,7 @@ public class ControllerTest {
 
     @Test
     public void testDrawCardFromResourceDeck() throws Exception {
-        // Create local mocks
+        // Mocking dependencies
         Connection user = mock(Connection.class);
         Player player = mock(Player.class);
         TurnHandler turnHandler = mock(TurnHandler.class);
@@ -99,7 +96,7 @@ public class ControllerTest {
         // Ensure the resourceDeck is mocked correctly
         resourceDeck.add(drawedCard);
 
-        // Create an instance of the class under test
+        // Create an instance of Controller
         Controller controller = spy(new Controller(4, 0));
 
         // Using reflection to set the internal turnHandler since it's created in the constructor
@@ -107,10 +104,8 @@ public class ControllerTest {
         field.setAccessible(true);
         field.set(controller, turnHandler);
 
-        // Stub the getPlayerByClient method to return the mocked player
+        // Stubbing methods
         when(controller.getPlayerByClient(user)).thenReturn(player);
-
-        // Stub the player's drawCard method to return the drawn card
         when(player.drawCard(any())).thenReturn(drawedCard);
 
         // Call the method to be tested
@@ -125,14 +120,14 @@ public class ControllerTest {
 
     @Test
     public void testDrawCardFromGoldDeck() throws Exception {
-        // Create local mocks
+        // Mocking dependencies
         Connection user = mock(Connection.class);
         Player player = mock(Player.class);
         TurnHandler turnHandler = mock(TurnHandler.class);
         LinkedList<Card> goldDeck = new LinkedList<>();
         Card drawedCard = mock(Card.class);
 
-        // Create an instance of the class under test
+        // Create an instance of Controller
         Controller controller = spy(new Controller(4, 0));
 
         // Using reflection to set the internal turnHandler since it's created in the constructor
@@ -143,10 +138,8 @@ public class ControllerTest {
         // Add a card to the deck
         goldDeck.add(drawedCard);
 
-        // Stub the getPlayerByClient method to return the mocked player
+        // Stubbing methods
         doReturn(player).when(controller).getPlayerByClient(user);
-
-        // Stub the player's drawCard method to return the drawn card
         when(player.drawCard(any())).thenReturn(drawedCard);
 
         // Call the method to be tested
@@ -160,13 +153,12 @@ public class ControllerTest {
 
     @Test
     public void testDrawCardHandlesEmptyDeck() throws Exception {
-        // Create local mocks
+        // Mocking dependencies
         Connection user = mock(Connection.class);
         Player player = mock(Player.class);
         TurnHandler turnHandler = mock(TurnHandler.class);
-        LinkedList<Card> goldDeck = new LinkedList<>();
 
-        // Create an instance of the class under test
+        // Create an instance of Controller
         Controller controller = spy(new Controller(4, 0));
 
         // Using reflection to set the internal turnHandler since it's created in the constructor
@@ -174,10 +166,8 @@ public class ControllerTest {
         field.setAccessible(true);
         field.set(controller, turnHandler);
 
-        // Stub the getPlayerByClient method to return the mocked player
+        // Stubbing methods
         doReturn(player).when(controller).getPlayerByClient(user);
-
-        // Stub the player's drawCard method to throw EmptyException
         doThrow(new EmptyException()).when(player).drawCard(any());
 
         // Call the method to be tested
@@ -189,12 +179,12 @@ public class ControllerTest {
 
     @Test
     public void testDrawCardHandlesNotInTurnException() throws Exception {
-        // Create local mocks
+        // Mocking dependencies
         Connection user = mock(Connection.class);
         Player player = mock(Player.class);
         TurnHandler turnHandler = mock(TurnHandler.class);
 
-        // Create an instance of the class under test
+        // Create an instance of Controller
         Controller controller = spy(new Controller(4, 0));
 
         // Using reflection to set the internal turnHandler since it's created in the constructor
@@ -202,10 +192,8 @@ public class ControllerTest {
         field.setAccessible(true);
         field.set(controller, turnHandler);
 
-        // Stub the getPlayerByClient method to return the mocked player
+        // Stubbing methods
         doReturn(player).when(controller).getPlayerByClient(user);
-
-        // Stub the player's drawCard method to throw NotInTurnException
         doThrow(new NotInTurnException()).when(player).drawCard(any());
 
         // Call the method to be tested
@@ -217,12 +205,12 @@ public class ControllerTest {
 
     @Test
     public void testDrawCardHandlesFullHandException() throws Exception {
-        // Create local mocks
+        // Mocking dependencies
         Connection user = mock(Connection.class);
         Player player = mock(Player.class);
         TurnHandler turnHandler = mock(TurnHandler.class);
 
-        // Create an instance of the class under test
+        // Create an instance of Controller
         Controller controller = spy(new Controller(4, 0));
 
         // Using reflection to set the internal turnHandler since it's created in the constructor
@@ -230,10 +218,8 @@ public class ControllerTest {
         field.setAccessible(true);
         field.set(controller, turnHandler);
 
-        // Stub the getPlayerByClient method to return the mocked player
+        // Stubbing methods
         doReturn(player).when(controller).getPlayerByClient(user);
-
-        // Stub the player's drawCard method to throw FullHandException
         doThrow(new FullHandException()).when(player).drawCard(any());
 
         // Call the method to be tested
@@ -245,15 +231,15 @@ public class ControllerTest {
 
     @Test
     public void testPlaceCardCardNotInHand() {
-        // Initialize mocks and game object
+        // Mocking dependencies
         Connection user = mock(Connection.class);
         Player player = mock(Player.class);
         Card card = mock(Card.class);
 
-        // Create an instance of the class under test
+        // Create an instance of Controller
         Controller controller = spy(new Controller(4, 0));
 
-        // Stub method calls
+        // Stubbing methods
         when(controller.getPlayerByClient(user)).thenReturn(player);
         when(player.getCardInHand()).thenReturn(new Card[]{mock(Card.class), mock(Card.class), mock(Card.class)});
 
@@ -271,14 +257,14 @@ public class ControllerTest {
 
     @Test
     public void testPlaceCardValidPlacement() throws Exception {
-        // Initialize mocks and game object
+        // Mocking dependencies
         Connection user = mock(Connection.class);
         Player player = mock(Player.class);
         Card card = mock(Card.class);
         TurnHandler turnHandler = mock(TurnHandler.class);
         Card[] hand = new Card[]{mock(Card.class), mock(Card.class), mock(Card.class)};
 
-        // Create an instance of the class under test
+        // Create an instance of Controller
         Controller controller = spy(new Controller(4, 0));
 
         // Using reflection to set the internal turnHandler since it's created in the constructor
@@ -286,7 +272,7 @@ public class ControllerTest {
         field.setAccessible(true);
         field.set(controller, turnHandler);
 
-        // Stub method calls
+        // Stubbing methods
         when(hand[0].equals(card)).thenReturn(true);
         when(controller.getPlayerByClient(user)).thenReturn(player);
         when(player.getCardInHand()).thenReturn(hand);
@@ -302,14 +288,14 @@ public class ControllerTest {
 
     @Test
     public void testPlaceCardExceptionHandling() throws Exception {
-        // Initialize mocks and game object
+        // Mocking dependencies
         Connection user = mock(Connection.class);
         Player player = mock(Player.class);
         Card card = mock(Card.class);
         TurnHandler turnHandler = mock(TurnHandler.class);
         Card[] hand = new Card[]{mock(Card.class), mock(Card.class), mock(Card.class)};
 
-        // Create an instance of the class under test
+        // Create an instance of Controller
         Controller controller = spy(new Controller(4, 0));
 
         // Using reflection to set the internal turnHandler since it's created in the constructor
@@ -317,7 +303,7 @@ public class ControllerTest {
         field.setAccessible(true);
         field.set(controller, turnHandler);
 
-        // Stub method calls
+        // Stubbing methods
         when(hand[0].equals(card)).thenReturn(true);
         when(controller.getPlayerByClient(user)).thenReturn(player);
         when(player.getCardInHand()).thenReturn(hand);
@@ -340,7 +326,7 @@ public class ControllerTest {
         Player player = mock(Player.class);
         TurnHandler turnHandler = mock(TurnHandler.class);
 
-        // Create an instance of the class under test
+        // Create an instance of Controller
         Controller controller = spy(new Controller(4, 0));
 
         // Using reflection to set the internal turnHandler since it's created in the constructor
@@ -348,7 +334,7 @@ public class ControllerTest {
         field.setAccessible(true);
         field.set(controller, turnHandler);
 
-        // Stub method calls
+        // Stubbing methods
         when(controller.getPlayerByClient(user)).thenReturn(player);
         when(player.drawCardFromBoard(any())).thenReturn(card);
 
@@ -371,7 +357,7 @@ public class ControllerTest {
         Player player = mock(Player.class);
         TurnHandler turnHandler = mock(TurnHandler.class);
 
-        // Create an instance of the class under test
+        // Create an instance of Controller
         Controller controller = spy(new Controller(4, 0));
 
         // Using reflection to set the internal turnHandler since it's created in the constructor
@@ -379,7 +365,7 @@ public class ControllerTest {
         field.setAccessible(true);
         field.set(controller, turnHandler);
 
-        // Stub method calls
+        // Stubbing methods
         when(controller.getPlayerByClient(user)).thenReturn(player);
         when(player.drawCardFromBoard(any())).thenReturn(card);
 
@@ -401,7 +387,7 @@ public class ControllerTest {
         Player player = mock(Player.class);
         TurnHandler turnHandler = mock(TurnHandler.class);
 
-        // Create an instance of the class under test
+        // Create an instance of Controller
         Controller controller = spy(new Controller(4, 0));
 
         // Using reflection to set the internal turnHandler since it's created in the constructor
@@ -425,7 +411,7 @@ public class ControllerTest {
         Player player = mock(Player.class);
         TurnHandler turnHandler = mock(TurnHandler.class);
 
-        // Create an instance of the class under test
+        // Create an instance of Controller
         Controller controller = spy(new Controller(4, 0));
 
         // Using reflection to set the internal turnHandler since it's created in the constructor
@@ -433,7 +419,7 @@ public class ControllerTest {
         field.setAccessible(true);
         field.set(controller, turnHandler);
 
-        // Stub method calls
+        // Stubbing methods
         when(controller.getPlayerByClient(user)).thenReturn(player);
         when(player.drawCardFromBoard(any())).thenThrow(new CardNotFoundException());
 
@@ -451,7 +437,7 @@ public class ControllerTest {
         Game game = mock(Game.class);
         TurnHandler turnHandler = mock(TurnHandler.class);
 
-        // Create an instance of the class under test
+        // Create an instance of Controller
         Controller controller = spy(new Controller(4, 0));
 
         // Using reflection to set the internal turnHandler since it's created in the constructor
@@ -464,7 +450,7 @@ public class ControllerTest {
         gameField.setAccessible(true);
         gameField.set(controller, game);
 
-        // Stubbing methods
+        // Stubbing method
         when(user.getUsername()).thenReturn("mario");
 
         // Call the method
@@ -486,7 +472,7 @@ public class ControllerTest {
         Game game = mock(Game.class);
         TurnHandler turnHandler = mock(TurnHandler.class);
 
-        // Create an instance of the class under test
+        // Create an instance of Controller
         Controller controller = spy(new Controller(4, 0));
 
         // Using reflection to set the internal turnHandler since it's created in the constructor
@@ -546,7 +532,7 @@ public class ControllerTest {
         connectedPlayers.put(user1, player1);
         connectedPlayers.put(user2, player2);
 
-        // Creating the Controller instance and injecting mocks
+        // Create an instance of Controller
         Controller controller = spy(new Controller(4,0));
 
         // Using reflection to set the internal turnHandler since it's created in the constructor
@@ -588,7 +574,7 @@ public class ControllerTest {
         when(player1.getPersonalObj()).thenReturn(new Achievement[]{mock(Achievement.class), mock(Achievement.class)});
         when(player2.getPersonalObj()).thenReturn(new Achievement[]{mock(Achievement.class), mock(Achievement.class)});
 
-        // Mocking player-specific methods
+        // Mocking player methods
         when(controller.getPlayerByClient(user1)).thenReturn(player1);
         when(controller.getPlayerByClient(user2)).thenReturn(player2);
 
@@ -624,7 +610,7 @@ public class ControllerTest {
         // Mocking dependencies
         Game game = mock(Game.class);
 
-        // Creating the Controller instance and injecting mocks
+        // Create an instance of Controller
         Controller controller = spy(new Controller(4,0));
 
         // Using reflection to set the internal game since it's created in the constructor
@@ -632,7 +618,7 @@ public class ControllerTest {
         gameField.setAccessible(true);
         gameField.set(controller, game);
 
-        // Stubbing methods to throw NotEnoughPlayersException
+        // Stubbing method to throw NotEnoughPlayersException
         doThrow(new NotEnoughPlayersException()).when(game).startGame();
 
         // Call the method
@@ -652,7 +638,7 @@ public class ControllerTest {
         Game game = mock(Game.class);
         TurnHandler turnHandler = mock(TurnHandler.class);
 
-        // Creating the Controller instance and injecting mocks
+        // Create an instance of Controller
         Controller controller = spy(new Controller(4,0));
 
         // Using reflection to set the internal turnHandler since it's created in the constructor
@@ -692,7 +678,7 @@ public class ControllerTest {
         Game game = mock(Game.class);
         TurnHandler turnHandler = mock(TurnHandler.class);
 
-        // Creating the Controller instance and injecting mocks
+        // Create an instance of Controller
         Controller controller = spy(new Controller(4, 0));
 
         // Using reflection to set the internal turnHandler since it's created in the constructor
@@ -730,7 +716,7 @@ public class ControllerTest {
         TurnHandler turnHandler = mock(TurnHandler.class);
         Game game = mock(Game.class);
 
-        // Creating the Controller instance and injecting mocks
+        // Create an instance of Controller
         Controller controller = spy(new Controller(4, 0));
 
         // Using reflection to set the internal turnHandler since it's created in the constructor
@@ -771,7 +757,7 @@ public class ControllerTest {
         TurnHandler turnHandler = mock(TurnHandler.class);
         Game game = mock(Game.class);
 
-        // Creating the Controller instance and injecting mocks
+        // Create an instance of Controller
         Controller controller = spy(new Controller(4, 0));
 
         // Using reflection to set the internal turnHandler since it's created in the constructor
@@ -813,9 +799,8 @@ public class ControllerTest {
         LinkedList<Card> goldDeck = mock(LinkedList.class);
         Card resourceCard1 = mock(Card.class);
         Card goldCard1 = mock(Card.class);
-        Card starterCard1 = mock(Card.class);
 
-        // Creating the Controller instance and injecting mocks
+        // Create an instance of Controller
         Controller controller = spy(new Controller(4, 0));
 
         // Using reflection to set the internal turnHandler since it's created in the constructor

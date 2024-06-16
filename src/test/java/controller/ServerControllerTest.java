@@ -16,7 +16,7 @@ public class ServerControllerTest {
 
     @Test
     public void testCreateLobby() {
-        String username = "testUser";
+        String username = "mario";
         int numPlayers = 4;
         int id = 123;
 
@@ -38,7 +38,7 @@ public class ServerControllerTest {
 
     @Test
     public void testJoinLobby() {
-        String username = "testUser";
+        String username = "luigi";
 
         // Mock dependencies
         Server serverMock = mock(Server.class);
