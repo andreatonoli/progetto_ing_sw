@@ -104,7 +104,7 @@ public class Controller extends Observable {
         this.turnHandler.addObserver(user);
         user.setLobby(this);
         game.addPlayer(player);
-        notifyAll(new GenericMessage("Players: " + this.connectedPlayers.keySet().size() + "/" + this.game.getLobbySize()));
+        getConnectedPlayersMessage();
         if (game.isFull()){
             game.setGameState(GameState.START);
             notifyAll(new GameStateMessage(game.getGameState()));
@@ -371,6 +371,10 @@ public class Controller extends Observable {
 
     public Game getGame(){
         return this.game;
+    }
+
+    public void getConnectedPlayersMessage(){
+        notifyAll(new GenericMessage("Players: " + this.connectedPlayers.keySet().size() + "/" + this.game.getLobbySize()));
     }
 
     public void removeFromServer(){

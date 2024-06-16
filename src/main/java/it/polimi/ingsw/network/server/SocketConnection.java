@@ -1,6 +1,7 @@
 package it.polimi.ingsw.network.server;
 
 import it.polimi.ingsw.controller.Controller;
+import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.card.Achievement;
 import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.GameState;
@@ -137,13 +138,24 @@ public class SocketConnection extends Connection implements Runnable {
 
     public void onDisconnect() throws NullPointerException{
         try {
-            if (!lobby.getGame().getGameState().equals(GameState.END)) {
+            Game game = lobby.getGame();
+            if (game.getGameState().equals(GameState.WAIT_PLAYERS)){
+                server.removePlayers(username);
+                game.removePlayer(username);
+                if (game.getPlayers().isEmpty()){
+                    server.removeStartingGame(lobby);
+                }
+                else {
+                    lobby.getConnectedPlayersMessage();
+                }
+            }
+            else if (!game.getGameState().equals(GameState.END)) {
                 try {
                     this.disconnected = true;
-                    lobby.getGame().getPlayerByUsername(username).setDisconnected(true);
+                    game.getPlayerByUsername(username).setDisconnected(true);
                     server.addDisconnectedPlayer(username, lobby);
                     setConnectionStatus(false);
-                    if (lobby.getGame().getPlayerInTurn().getUsername().equals(username)) {
+                    if (game.getPlayerInTurn().getUsername().equals(username)) {
                         lobby.disconnectedWhileInTurn(username);
                     }
                     System.err.println(username + " got disconnected");
