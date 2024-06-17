@@ -107,16 +107,15 @@ public class Server {
     }
 
     public void joinLobby(String username, int indexGame){
-        Controller controller = this.startingGames.get(indexGame);
-        if (controller != null) {
+        try {
+            Controller controller = this.startingGames.get(indexGame);
             boolean full = this.controller.joinLobby(username, controller);
             if (full) {
                 this.activeGames.add(controller);
                 this.startingGames.remove(controller);
                 this.startingGamesId.remove((Integer) controller.getId());
             }
-        }
-        else{
+        } catch (Exception e){
             client.get(username).sendMessage(new GenericMessage("an error as occurred, please try again."));
             client.get(username).sendMessage(new FreeLobbyMessage(startingGamesId, gamesWithDisconnectionsId));
             client.remove(username);
