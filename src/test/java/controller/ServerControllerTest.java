@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.controller.ServerController;
+import it.polimi.ingsw.model.exceptions.FullLobbyExeption;
 import it.polimi.ingsw.network.server.Connection;
 import it.polimi.ingsw.network.server.Server;
 import org.junit.jupiter.api.DisplayName;
@@ -40,7 +41,7 @@ public class ServerControllerTest {
 
     @Test
     @DisplayName("Join lobby")
-    public void joinLobbyTest() {
+    public void joinLobbyTest() throws Exception{
         String username = "luigi";
 
         // Mock dependencies

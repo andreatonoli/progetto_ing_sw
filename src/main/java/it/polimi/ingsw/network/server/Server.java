@@ -42,19 +42,13 @@ public class Server {
         new SocketServer(this, socketPort);
     }
 
-    public void login(Connection client){
-        if (locked) {
-            client.waiting();
+    public void login(Connection client) {
+        locked = true;
+        if (this.startingGames.isEmpty() && this.gamesWithDisconnections.isEmpty()) {
+            client.createGame();
+        } else {
+            client.joinGame(startingGamesId, gamesWithDisconnectionsId);
         }
-        synchronized (gameSelectionLock) {
-            locked = true;
-            if (this.startingGames.isEmpty() && this.gamesWithDisconnections.isEmpty()) {
-                client.createGame();
-            } else {
-                client.joinGame(startingGamesId, gamesWithDisconnectionsId);
-            }
-        }
-        locked = false;
     }
 
     public void startPing(Connection client){

@@ -501,7 +501,7 @@ public class ControllerTest {
 
         // Stubbing methods
         when(user.getUsername()).thenReturn("luigi");
-        when(game.isFull()).thenReturn(true);
+        when(game.isFull()).thenReturn(false).thenReturn(true);
         doNothing().when(controller).startGame();
 
         // Call the method

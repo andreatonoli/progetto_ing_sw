@@ -97,7 +97,11 @@ public class Controller extends Observable {
      * @return {@code true} if the game is full, {@code false} otherwise
      */
     //TODO: controlla che quando faccio disconnessione non rifaccio più il setup
-    public boolean joinGame(Connection user){
+    public boolean joinGame(Connection user) throws FullLobbyExeption {
+        if (game.isFull()) {
+            user.sendMessage(new GenericMessage("\nthe game is full, please retry.\n"));
+            throw new FullLobbyExeption();
+        }
         Player player = new Player(user.getUsername(), game);
         this.connectedPlayers.put(user, player);
         this.addObserver(user);
