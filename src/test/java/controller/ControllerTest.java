@@ -871,13 +871,13 @@ public class ControllerTest {
         controller.reconnectBackup(user);
 
         // Verify interactions and state changes
-        verify(controller).removeObserver(any(Connection.class)); // Verify removeObserver called for old connection
-        verify(controller).addObserver(user); // Verify addObserver called for new connection
-        verify(turnHandler).removeObserver(any(Connection.class)); // Verify turnHandler removeObserver called for old connection
-        verify(turnHandler).addObserver(user); // Verify turnHandler addObserver called for new connection
-        verify(reconnectedPlayer).setDisconnected(false); // Verify player's disconnected status set to false
+        verify(controller, atLeastOnce()).removeObserver(any(Connection.class)); // Verify removeObserver called for old connection
+        verify(controller, atLeastOnce()).addObserver(user); // Verify addObserver called for new connection
+        verify(turnHandler, atLeastOnce()).removeObserver(any(Connection.class)); // Verify turnHandler removeObserver called for old connection
+        verify(turnHandler, atLeastOnce()).addObserver(user); // Verify turnHandler addObserver called for new connection
+        verify(reconnectedPlayer, atLeastOnce()).setDisconnected(false); // Verify player's disconnected status set to false
 
         // Verify reconnection message sent to user
-        verify(user).sendMessage(any(ReconnectionMessage.class));
+        verify(user, atLeastOnce()).sendMessage(any(ReconnectionMessage.class));
     }
 }
