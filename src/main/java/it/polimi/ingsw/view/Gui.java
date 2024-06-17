@@ -310,7 +310,6 @@ public class Gui extends Application implements Ui{
             MainSceneController c = loader.getController();
             c.setBoard(player, game, players);
             stage.getScene().setRoot(root);
-            stage.setMaximized(true);
         });
 
         try {
@@ -319,6 +318,9 @@ public class Gui extends Application implements Ui{
             }
             result = returnValue.poll();
             String[] splittedResult = result.split("§");
+            for(int i = 0; i < splittedResult.length; i++){
+                System.out.println(splittedResult[i]);
+            }
             switch(splittedResult[0]){
                 case "1" -> {
                     client.placeCard(player.getHand()[Integer.parseInt(splittedResult[1])], new int[]{Integer.parseInt(splittedResult[2]), Integer.parseInt(splittedResult[3])});
