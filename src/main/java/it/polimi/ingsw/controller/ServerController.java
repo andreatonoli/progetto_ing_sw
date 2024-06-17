@@ -1,6 +1,7 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.model.exceptions.FullLobbyExeption;
+import it.polimi.ingsw.network.messages.FreeLobbyMessage;
 import it.polimi.ingsw.network.server.Connection;
 import it.polimi.ingsw.network.server.Server;
 
@@ -23,6 +24,7 @@ public class ServerController {
         try {
             check = controller.joinGame(user);
         } catch (FullLobbyExeption e) {
+            server.removePlayers(username);
             server.login(user);
         }
         return check;

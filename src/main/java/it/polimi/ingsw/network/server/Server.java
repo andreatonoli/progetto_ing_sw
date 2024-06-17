@@ -3,6 +3,8 @@ package it.polimi.ingsw.network.server;
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.controller.ServerController;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.network.messages.FreeLobbyMessage;
+import it.polimi.ingsw.network.messages.GenericMessage;
 
 import java.util.*;
 
@@ -21,8 +23,6 @@ public class Server {
     private final Map<String, Connection> client;
     private final ServerController controller;
     private List<String> disconnectedPlayers;
-    private final Object gameSelectionLock = new Object();
-    private boolean locked = false;
     public Server(){
         this.controller = new ServerController(this);
         this.client = Collections.synchronizedMap(new HashMap<>());
@@ -43,7 +43,6 @@ public class Server {
     }
 
     public void login(Connection client) {
-        locked = true;
         if (this.startingGames.isEmpty() && this.gamesWithDisconnections.isEmpty()) {
             client.createGame();
         } else {
@@ -109,11 +108,18 @@ public class Server {
 
     public void joinLobby(String username, int indexGame){
         Controller controller = this.startingGames.get(indexGame);
-        boolean full = this.controller.joinLobby(username, controller);
-        if (full){
-            this.activeGames.add(controller);
-            this.startingGames.remove(controller);
-            this.startingGamesId.remove((Integer) controller.getId());
+        if (controller != null) {
+            boolean full = this.controller.joinLobby(username, controller);
+            if (full) {
+                this.activeGames.add(controller);
+                this.startingGames.remove(controller);
+                this.startingGamesId.remove((Integer) controller.getId());
+            }
+        }
+        else{
+            client.get(username).sendMessage(new GenericMessage("an error as occurred, please try again."));
+            client.get(username).sendMessage(new FreeLobbyMessage(startingGamesId, gamesWithDisconnectionsId));
+            client.remove(username);
         }
     }
 
