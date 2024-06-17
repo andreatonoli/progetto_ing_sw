@@ -10,8 +10,8 @@ public class Server {
     public static final int MAX_PLAYERS_PER_LOBBY = 4; /** sets max number of players */
     public static final int MIN_PLAYERS_PER_LOBBY = 2; /** sets min number of players */
     public final static String serverName = "GameServer";
-    public final static int rmiPort = 1234;
-    public final static int socketPort = 1235;
+    public final static int rmiPort = 50678;
+    public final static int socketPort = 50679;
     private List<Integer> idTaken;
     private List<Controller> activeGames;
     private List<Controller> gamesWithDisconnections;
