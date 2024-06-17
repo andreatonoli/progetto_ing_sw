@@ -31,16 +31,23 @@ public class RMIServer implements VirtualServer {
         this.startServer();
     }
 
-    public void removeFromServer(String username) throws RemoteException {
-        connections.get(username).cancelPing();
-        int playersToDelete = connections.get(username).getLobby().getGame().getLobbySize()-1;
-        addToQueue(() -> connections.get(username).getLobby().getGame().setLobbySize(playersToDelete));
-        if (playersToDelete == 0) {
-            server.removeGame(connections.get(username).getLobby());
-        }
-        addToQueue(() -> connections.remove(username));
-        addToQueue(() -> server.removePlayers(username));
+    @Override
+    public void removeConnections(String username) throws RemoteException {
+        connections.remove(username);
     }
+
+    //public void removeFromServer(String username) throws RemoteException {
+    //    connections.get(username).cancelPing();
+    //    connections.get(username).onDisconnect();
+    //    int playersToDelete = connections.get(username).getLobby().getGame().getLobbySize()-1;
+    //    connections.get(username).getLobby().getGame().setLobbySize(playersToDelete);
+    //    System.out.println("                              "+playersToDelete);
+    //    if (playersToDelete == 0) {
+    //        server.removeGame(connections.get(username).getLobby());
+    //    }
+    //    connections.remove(username);
+    //    server.removePlayers(username);
+    //}
 
     @Override
     public void login(RMIClientHandler client) throws RemoteException {

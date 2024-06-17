@@ -35,5 +35,7 @@ public interface VirtualServer extends Remote {
 
     void sendChatMessage(String message, String sender) throws RemoteException;
 
-    void removeFromServer(String username) throws RemoteException;
+    void removeConnections(String username) throws RemoteException;
+
+    //void removeFromServer(String username) throws RemoteException;
 }

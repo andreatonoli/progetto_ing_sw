@@ -16,7 +16,7 @@ import java.util.List;
 
 public class GameTest {
 
-/**
+    /**
      * Checks if the game class constructor correctly initializes all the variables
      */
 

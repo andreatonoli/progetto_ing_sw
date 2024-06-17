@@ -47,7 +47,6 @@ public class Server {
         } else {
             client.joinGame(startingGamesId, gamesWithDisconnectionsId);
         }
-        //TODO spostare il ping sopra e fare eslpodere tutto se uno si scollega nella selezione del game (e mettere setup automatico se serve
     }
 
     public void startPing(Connection client){
@@ -152,5 +151,11 @@ public class Server {
         this.gamesWithDisconnections.remove(game);
         this.gamesWithDisconnectionsId.remove((Integer) game.getId());
         idTaken.set(game.getId(),-1);
+        System.out.println("the game [" + game.getId() + "] ended");
+    }
+    public void removeStartingGame(Controller game){
+        this.startingGames.remove(game);
+        idTaken.set(game.getId(),-1);
+        System.out.println("the game [" + game.getId() + "] got cancelled due to lack of players");
     }
 }

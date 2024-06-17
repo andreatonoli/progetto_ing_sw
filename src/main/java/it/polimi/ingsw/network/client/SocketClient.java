@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -141,7 +140,10 @@ public class SocketClient implements ClientInterface {
             case FREE_LOBBY:
                 List<Integer> startingGamesId = ((FreeLobbyMessage) message).getstartingGamesId();
                 List<Integer> gamesWhitDisconnectionsId = ((FreeLobbyMessage) message).getgamesWhitDisconnectionsId();
-                int response = this.view.selectGame(startingGamesId, gamesWhitDisconnectionsId);
+                int response;
+                do{
+                    response = this.view.selectGame(startingGamesId, gamesWhitDisconnectionsId);
+                } while (response == -2);
                 this.username = this.view.askNickname();
                 this.player = new PlayerBean(username);
                 if (response == -1){
@@ -158,7 +160,7 @@ public class SocketClient implements ClientInterface {
             case GAME_STATE:
                 GameState state = ((GameStateMessage) message).getState();
                 game.setState(state);
-                if (state.ordinal() >= 2){
+                if (state.equals(GameState.IN_GAME)){
                     this.view.printViewWithCommands(player, game, opponents);
                 }
                 break;

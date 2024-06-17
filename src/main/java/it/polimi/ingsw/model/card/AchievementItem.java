@@ -82,7 +82,10 @@ public class AchievementItem implements Achievement{
         if (this.basePoint != achievementToCompare.getPoints()){
             return false;
         }
-        if (this.symbol.size() != achievementToCompare.getSymbols().size() && !this.symbol.containsAll(achievementToCompare.getSymbols())){
+        if (this.symbol.size() != achievementToCompare.getSymbols().size()){
+            return false;
+        }
+        if (!this.symbol.containsAll(achievementToCompare.getSymbols())){
             return false;
         }
         return true;

@@ -1,6 +1,7 @@
 package it.polimi.ingsw.network.server;
 
 import it.polimi.ingsw.controller.Controller;
+import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.card.Achievement;
 import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.GameState;
@@ -10,6 +11,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -136,13 +138,24 @@ public class SocketConnection extends Connection implements Runnable {
 
     public void onDisconnect() throws NullPointerException{
         try {
-            if (!lobby.getGame().getGameState().equals(GameState.END)) {
+            Game game = lobby.getGame();
+            if (game.getGameState().equals(GameState.WAIT_PLAYERS)){
+                server.removePlayers(username);
+                game.removePlayer(username);
+                if (game.getPlayers().isEmpty()){
+                    server.removeStartingGame(lobby);
+                }
+                else {
+                    lobby.getConnectedPlayersMessage();
+                }
+            }
+            else if (!game.getGameState().equals(GameState.END)) {
                 try {
                     this.disconnected = true;
-                    lobby.getGame().getPlayerByUsername(username).setDisconnected(true);
+                    game.getPlayerByUsername(username).setDisconnected(true);
                     server.addDisconnectedPlayer(username, lobby);
                     setConnectionStatus(false);
-                    if (lobby.getGame().getPlayerInTurn().getUsername().equals(username)) {
+                    if (game.getPlayerInTurn().getUsername().equals(username)) {
                         lobby.disconnectedWhileInTurn(username);
                     }
                     System.err.println(username + " got disconnected");
@@ -222,22 +235,22 @@ public class SocketConnection extends Connection implements Runnable {
 
     public void onMessage(Message message){
         switch (message.getType()){
-            case REMOVE_FROM_SERVER:
-                this.cancelPing();
-                int playersToDelete = lobby.getGame().getLobbySize()-1;
-                lobby.getGame().setLobbySize(playersToDelete);
-                server.removePlayers(username);
-                if (playersToDelete == 0){
-                    server.removeGame(lobby);
-                }
-                try {
-                    in.close();
-                    out.close();
-                    socket.close();
-                } catch (IOException e) {
-                    System.err.println(e.getMessage());
-                }
-                break;
+            //case REMOVE_FROM_SERVER:
+            //    this.cancelPing();
+            //    int playersToDelete = lobby.getGame().getLobbySize()-1;
+            //    lobby.getGame().setLobbySize(playersToDelete);
+            //    server.removePlayers(username);
+            //    if (playersToDelete == 0){
+            //        server.removeGame(lobby);
+            //    }
+            //    try {
+            //        in.close();
+            //        out.close();
+            //        socket.close();
+            //    } catch (IOException e) {
+            //        System.err.println(e.getMessage());
+            //    }
+            //    break;
             case ADD_TO_CHAT:
                 String receiver = ((AddToChatMessage) message).getReceiver();
                 if (receiver == null) {
@@ -323,5 +336,22 @@ public class SocketConnection extends Connection implements Runnable {
     @Override
     public void update(Message message) {
         sendMessage(message);
+    }
+
+    @Override
+    public void removeFromServer(boolean last) {
+        cancelPing();
+        server.removePlayers(username);
+        if (last){
+            server.removeGame(lobby);
+        }
+        System.err.println(username + " got disconnected");
+        try {
+            in.close();
+            out.close();
+            socket.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

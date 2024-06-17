@@ -1,4 +1,4 @@
-package it.polimi.ingsw.view;
+package it.polimi.ingsw.view.tui;
 
 import it.polimi.ingsw.model.card.*;
 import it.polimi.ingsw.model.enums.*;
@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.player.PlayerBoard;
 import it.polimi.ingsw.network.client.*;
 import it.polimi.ingsw.network.server.Server;
+import it.polimi.ingsw.view.Ui;
 import org.fusesource.jansi.AnsiConsole;
 
 import java.io.Console;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.*;
 
-public class Tui implements Ui{
+public class Tui implements Ui {
     private ClientInterface client;
     private String error = "";
     private String message = "";
@@ -25,6 +26,7 @@ public class Tui implements Ui{
     private final Object lock = new Object();
     private boolean running;
     private Thread inputThread;
+    private boolean end = false;
 
     public Tui(){
         AnsiConsole.systemInstall();
@@ -136,19 +138,20 @@ public class Tui implements Ui{
 
     @Override
     public int selectGame(List<Integer> startingGamesId, List<Integer> gamesWhitDisconnectionsId){
-        int lobby = -1;
+        int lobby = -2;
         int choice;
         do {
             AnsiConsole.out().println("Select one of the following options by writing the respective number:\n[1] create a game\n[2] join a game\n[3] reconnect to a game");
             choice = scanner.nextInt();
         } while (choice > 3 || choice <= 0);
         switch (choice){
-            case 1 -> AnsiConsole.out().println("Creating a new game...");
+            case 1 -> {
+                AnsiConsole.out().println("Creating a new game...");
+                lobby = -1;
+            }
             case 2 -> {
                 if(startingGamesId.isEmpty()){
-                    //TODO: forse ricorsione non è la scelta migliore
                     AnsiConsole.out().println("There are no lobbies yet");
-                    lobby = selectGame(startingGamesId, gamesWhitDisconnectionsId);
                 }
                 else{
                     lobby = getLobby(startingGamesId);
@@ -157,7 +160,6 @@ public class Tui implements Ui{
             case 3 -> {
                 if (gamesWhitDisconnectionsId.isEmpty()) {
                     AnsiConsole.out().println("There are no lobbies with disconnected players");
-                    lobby = selectGame(startingGamesId, gamesWhitDisconnectionsId);
                 }
                 else{
                     lobby = getLobby(gamesWhitDisconnectionsId);
@@ -195,7 +197,6 @@ public class Tui implements Ui{
     public boolean askSide(Card starterCard){
         clearConsole();
         this.printStarterCard(starterCard);
-        //scanner.skip("\n");
         String choice;
         do {
             AnsiConsole.out().println("Which side you want to play?\nPress [f] for front and [b] for back");
@@ -237,7 +238,7 @@ public class Tui implements Ui{
         String[][] matCard = new String[TuiCostants.ROW][TuiCostants.COLUMN];
         PlayerBoard playerBoard = p.getBoard();
         Card card = playerBoard.getCard(coord);
-        //Create a 3x5 matrix with the same color of the card //TODO: commenta bene
+        //Create a 3x5 rectangle coloured like the card
         for (int i = 0; i < TuiCostants.ROW; i++) {
             for (int j = 0; j < TuiCostants.COLUMN; j++) {
                 matCard[i][j] = Color.getBackground(card.getColor()) + Symbols.getString(Symbols.EMPTY_SPACE) + TuiColors.getColor(TuiColors.ANSI_RESET);
@@ -246,7 +247,6 @@ public class Tui implements Ui{
 
         for(CornerEnum corner : CornerEnum.values()){
             if(card.getCornerState(corner).equals(CornerState.NOT_VISIBLE)){
-                //TODO: sistemare e controllare
                 if(card.getCorner(corner).getSymbol().equals(Symbols.NOCORNER)){
                     matCard[2*(corner.getY() - 1)/(-2)][8*(corner.getX() + 1)/2] = Color.getBackground(card.getColor()) + Symbols.getString(Symbols.EMPTY_SPACE) + TuiColors.getColor(TuiColors.ANSI_RESET);
                 }
@@ -536,48 +536,47 @@ public class Tui implements Ui{
         String [][] hand2 = createPrintableCard(player.getHand()[1]);
         String [][] hand3 = createPrintableCard(player.getHand()[2]);
         String [][] privateAchievement = createPrintableAchievement(player.getAchievement());
-        //TODO: mettere label più specifiche
-        //TODO: forse posso mettere le posizioni come costanti
+        //TODO: DOVREI METTERE LABEL PER COMMON GOLD E PER COMMON RESOURCE?
         //CommonBoard label
-        moveCursor(14,134);
+        moveCursor(14,TuiCostants.FIRST_COMMONBOARD_COLUMN);
         AnsiConsole.out().println(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "common board" + TuiColors.getColor(TuiColors.ANSI_RESET));
 
         //print resource retro card
-        printCardMatrix(resourceDeck, 16, 134);
+        printCardMatrix(resourceDeck, 16, TuiCostants.FIRST_COMMONBOARD_COLUMN);
 
         //print gold deck retro
-        printCardMatrix(goldDeck,21, 134);
+        printCardMatrix(goldDeck,21, TuiCostants.FIRST_COMMONBOARD_COLUMN);
 
         //print common resources
-        printCardMatrix(commonResource1, 16, 146);
-        printCardMatrix(commonResource2, 16, 158);
+        printCardMatrix(commonResource1, 16, TuiCostants.SECOND_COMMONBOARD_COLUMN);
+        printCardMatrix(commonResource2, 16, TuiCostants.THIRD_COMMONBOARD_COLUMN);
 
         //print common golds
-        printCardMatrix(commonGold1, 21, 146);
-        printCardMatrix(commonGold2, 21, 158);
+        printCardMatrix(commonGold1, 21, TuiCostants.SECOND_COMMONBOARD_COLUMN);
+        printCardMatrix(commonGold2, 21, TuiCostants.THIRD_COMMONBOARD_COLUMN);
 
         //print common achievement
-        printCardMatrix(commonAchievement1, 26, 134);
-        printCardMatrix(commonAchievement2, 26, 146);
+        printCardMatrix(commonAchievement1, 26, TuiCostants.FIRST_COMMONBOARD_COLUMN);
+        printCardMatrix(commonAchievement2, 26, TuiCostants.SECOND_COMMONBOARD_COLUMN);
 
         //Player's hand and private achievement
         //Player's hand label
-        moveCursor(2, 134);
+        moveCursor(2, TuiCostants.FIRST_COMMONBOARD_COLUMN);
         AnsiConsole.out().print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "your hand" + TuiColors.getColor(TuiColors.ANSI_RESET));
 
-        printCardMatrix(hand1, 4, 134);
-        printCardMatrix(hand2, 4, 146);
-        printCardMatrix(hand3, 4, 158);
+        printCardMatrix(hand1, 4, TuiCostants.FIRST_COMMONBOARD_COLUMN);
+        printCardMatrix(hand2, 4, TuiCostants.SECOND_COMMONBOARD_COLUMN);
+        printCardMatrix(hand3, 4, TuiCostants.THIRD_COMMONBOARD_COLUMN);
 
-        moveCursor(8, 134);
+        moveCursor(8, TuiCostants.FIRST_COMMONBOARD_COLUMN);
         //Private achievement label
         AnsiConsole.out().println(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "your personal achievement" + TuiColors.getColor(TuiColors.ANSI_RESET));
 
-        printCardMatrix(privateAchievement, 10, 134);
+        printCardMatrix(privateAchievement, 10, TuiCostants.FIRST_COMMONBOARD_COLUMN);
 
         moveCursor(31, 155);
         AnsiConsole.out().print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "legend" + TuiColors.getColor(TuiColors.ANSI_RESET));
-        moveCursor(31, 134);
+        moveCursor(31, TuiCostants.FIRST_COMMONBOARD_COLUMN);
         AnsiConsole.out().print(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "symbol's count" + TuiColors.getColor(TuiColors.ANSI_RESET));
         printLabel();
 
@@ -601,7 +600,7 @@ public class Tui implements Ui{
                 AnsiConsole.out().println(TuiColors.getColor(TuiColors.ANSI_RED) + error + TuiColors.getColor(TuiColors.ANSI_RESET));
                 error = "";
             }
-            if(!message.isEmpty()){
+            if(!message.isEmpty() && !end){
                 moveCursor(37, 0);
                 AnsiConsole.out().println(message);
                 message = "";
@@ -610,6 +609,13 @@ public class Tui implements Ui{
                 moveCursor(39, 0);
                 AnsiConsole.out().println("Waiting for all players to end their setup");
             } else if(game.getState().equals(GameState.END)){
+                clearConsole();
+                ArrayList<PlayerBean> allPlayers = new ArrayList<>(players);
+                allPlayers.add(player);
+                String [][][][] scoreTrack = createPrintableScoreBoard(allPlayers);
+                printTrack(scoreTrack);
+                moveCursor(38, 0);
+                AnsiConsole.out().println(message);
                 AnsiConsole.out().println("\nGG to everyone");
                 this.running = false;
                 System.exit(1);
@@ -629,12 +635,11 @@ public class Tui implements Ui{
                             playerInTurn = p;
                         }
                     }
+                    moveCursor(39, 0);
                     if (playerInTurn == null){
-                        moveCursor(39, 0);
-                        AnsiConsole.out().println("only one player connected, the other players have one minute to reconnect.");
+                        AnsiConsole.out().println("only one player connected, the other players have two minutes to reconnect.");
                     }
                     else {
-                        moveCursor(39, 0);
                         AnsiConsole.out().println(playerInTurn.getUsername() + "'s turn. Wait for your turn to play");
                     }
                 }
@@ -654,8 +659,6 @@ public class Tui implements Ui{
             }
         }
     }
-    //TODO: Refactor di questa funzione
-    //TODO: togli il q per chiudere dal fondo e mettilo nei vari case
     public void handleInput(String choice){
         Card[] hand = player.getHand();
         Card[] commonResource = game.getCommonResources();
@@ -700,14 +703,13 @@ public class Tui implements Ui{
                 }
             }
             case "3" -> {
-                //TODO: mettere controllo che posizione appartenga -> se no torno a menù
                 moveCursor(39, 0);
                 AnsiConsole.out().println("Which card do you want to display?");
                 AnsiConsole.out().println("Type row number");
                 String a = input.next();
                 clearConsole();
                 this.printView();
-                while (!a.equals("c") && Integer.parseInt(a) > TuiCostants.PLAYERBOARD_DIM) {
+                while (!a.equals("c") && !input.hasNextInt()) {
                     moveCursor(39, 0);
                     AnsiConsole.out().println("Retype row number");
                     a = input.next();
@@ -717,13 +719,13 @@ public class Tui implements Ui{
                 if (a.equals("c")) {
                     this.printChat();
                 } else {
-                    coord[0] = Integer.parseInt(a);
+                    coord[1] = Integer.parseInt(a);
                     moveCursor(39, 0);
                     AnsiConsole.out().println("Type column number");
                     a = input.next();
                     clearConsole();
                     this.printView();
-                    while (!a.equals("c") && Integer.parseInt(a) > TuiCostants.PLAYERBOARD_DIM) {
+                    while (!a.equals("c") && !input.hasNextInt()) {
                         moveCursor(39, 0);
                         AnsiConsole.out().println("Retype column number");
                         a = input.next();
@@ -733,10 +735,15 @@ public class Tui implements Ui{
                     if (a.equals("c")) {
                         this.printChat();
                     } else {
-                        coord[1] = Integer.parseInt(a);
-                        clearConsole();
-                        this.printView();
-                        this.printCardMatrix(createPrintableCard(player.getBoard().getCard(coord)), 40, 15);
+                        coord[0] = Integer.parseInt(a);
+                        if (player.getBoard().getCard(coord) != null){
+                            clearConsole();
+                            this.printView();
+                            this.printCardMatrix(createPrintableCard(player.getBoard().getCard(coord)), 40, 15);
+                        }
+                        else{
+                            error = "There is no card at " + coord[0] + " " + coord[1];
+                        }
                     }
                 }
             }
@@ -764,17 +771,14 @@ public class Tui implements Ui{
             }
             case "5" -> {
                 if (player.getState().equals(PlayerState.PLAY_CARD)) {
-                    moveCursor(37, 0);
-                    AnsiConsole.out().println("Which card do you want to place? [1] [2] [3]");
-                    String a = input.next();
-                    clearConsole();
-                    this.printView();
-                    while (!a.equals("1") && !a.equals("2") && !a.equals("3") && !a.equals("c")) {
-                        AnsiConsole.out().println("Which card do you want to place? [1] [2] [3]");
-                        a = input.next();
+                    String a;
+                    do {
                         clearConsole();
                         this.printView();
-                    }
+                        moveCursor(37, 0);
+                        AnsiConsole.out().println("Which card do you want to place? [1] [2] [3]");
+                        a = input.next();
+                    } while (!a.equals("1") && !a.equals("2") && !a.equals("3") && !a.equals("c"));
                     if (a.equals("c")) {
                         this.printChat();
                     } else {
@@ -787,7 +791,6 @@ public class Tui implements Ui{
                             cardToPlace = hand[Integer.parseInt(a) - 1];
                             AnsiConsole.out().println("Which side do you want to place? [f] for front [b] for back");
                             AnsiConsole.out().println();
-                            //TODO: 1162 - 1171 scrivere metodo che stampa fronte e retro
                             String[][] front = this.createPrintableCard(hand[Integer.parseInt(a) - 1]);
                             hand[Integer.parseInt(a) - 1].setCurrentSide();
                             String[][] back = this.createPrintableCard(hand[Integer.parseInt(a) - 1]);
@@ -800,27 +803,19 @@ public class Tui implements Ui{
                             printCardMatrix(back, 39, 29);
                             b = input.next();
                         } while (!b.equals("f") && !b.equals("b") && !b.equals("c"));
-
                         if (b.equals("c")) {
                             this.printChat();
                         }
-                        else if (b.equals("f")) {
-                            clearConsole();
-                            printView();
-                            this.printCard(hand[Integer.parseInt(a) - 1], 37, 0);
-                        }
-                        else {
-                            //TODO: pensare a come rimuovere printCard
-                            clearConsole();
-                            printView();
+                        else if (b.equals("b")) {
                             cardToPlace.setCurrentSide();
-                            this.printCard(cardToPlace, 37, 0);
                         }
+                        clearConsole();
+                        printView();
+                        this.printCardMatrix(createPrintableCard(cardToPlace), 37, 0);
                         AnsiConsole.out().println("Where do you want to place it?");
                         AnsiConsole.out().println("Type row number");
                         a = input.next();
-                        //TODO: cambiare condizione
-                        while (!a.equals("c") && Integer.parseInt(a) > TuiCostants.PLAYERBOARD_DIM) {
+                        while (!a.equals("c") && !input.hasNextInt()) {
                             clearConsole();
                             this.printView();
                             moveCursor(39, 0);
@@ -832,12 +827,12 @@ public class Tui implements Ui{
                         } else {
                             clearConsole();
                             printView();
-                            this.printCard(cardToPlace, 37, 0);
-                            coord[0] = Integer.parseInt(a);
+                            this.printCardMatrix(createPrintableCard(cardToPlace), 37, 0);
+                            coord[1] = Integer.parseInt(a);
                             moveCursor(40, 0);
                             AnsiConsole.out().println("Type column number");
                             a = input.next();
-                            while (!a.equals("c") && Integer.parseInt(a) > TuiCostants.PLAYERBOARD_DIM) {
+                            while (!a.equals("c") && !input.hasNextInt()) {
                                 clearConsole();
                                 this.printView();
                                 moveCursor(40, 0);
@@ -845,10 +840,10 @@ public class Tui implements Ui{
                                 a = input.next();
                             }
                             if(a.equals("c")){
-                                this.printView();
+                                this.printChat();
                             }
                             else{
-                                coord[1] = Integer.parseInt(a);
+                                coord[0] = Integer.parseInt(a);
                             }
                         }
                         clearConsole();
@@ -938,13 +933,18 @@ public class Tui implements Ui{
         //Select the receiver of the message
         do{
             moveCursor(37, 0);
-            AnsiConsole.out().println("Who do you want to send your message to?");
+            AnsiConsole.out().println("Select the addressee of the message");
             AnsiConsole.out().println("\t Press [0] to close chat");
             for (int i = 0; i < players.size(); i++) {
                 AnsiConsole.out().println("\t Press " + (i + 1) + " to send the message to " + players.get(i).getUsername());
             }
             AnsiConsole.out().println("\t Press " + (players.size() + 1) + " to send a global message");
-            u = input.nextInt();
+            String addressee = input.next();
+            try {
+                u = Integer.parseInt(addressee);
+            } catch (NumberFormatException e) {
+                u = -1;
+            }
         } while (u < 0 || u > players.size() + 1);
         if (u == 0){
             printView();
@@ -961,7 +961,6 @@ public class Tui implements Ui{
             else {
                 client.sendChatMessage(players.get(u - 1).getUsername(), m);
             }
-            //TODO: potrebbe dare problemi
             moveCursor(45, 50);
             AnsiConsole.out().println("Press [q] to return to the main menu");
         }
@@ -1004,11 +1003,6 @@ public class Tui implements Ui{
         }
     }
 
-    public void printCard(Card card, int row, int column){
-        String[][] mat = this.createPrintableCard(card);
-        printCardMatrix(mat, row, column);
-    }
-
     public void printCardMatrix(String[][] template, int row, int column){
         for (int i = 0; i < TuiCostants.ROW; i++) {
             moveCursor(row + i, column);
@@ -1019,7 +1013,6 @@ public class Tui implements Ui{
         AnsiConsole.out().print("\n");
     }
 
-    //TODO: per qualche motivo playerToShow è sempre il giocatore in gioco
     public void printBoard(PlayerBean playerToShow){
         PlayerBoard pBoard = playerToShow.getBoard();
         int[] coord = new int[2];
@@ -1039,16 +1032,17 @@ public class Tui implements Ui{
 
         //Print the placed card
         for (Integer i : pBoard.getPositionCardKeys()){
-            //TODO: limitare da -7 a +7 su x e y
             coord[0] = (i / 1024) - PlayerBoard.OFFSET;
             coord[1] = (i % 1024) - PlayerBoard.OFFSET;
-            printableCard = createPrintableCardToPlace(coord, playerToShow);
-            printCardMatrix(printableCard, TuiCostants.STARTER_ROW - (coord[1] * 2), TuiCostants.STARTER_COLUMN + (coord[0] * 8));
+            if (coord[0] < 8 && coord[0] > -8  && coord[1] < 8 && coord[1] > -8){
+                printableCard = createPrintableCardToPlace(coord, playerToShow);
+                printCardMatrix(printableCard, TuiCostants.STARTER_ROW - (coord[1] * 2), TuiCostants.STARTER_COLUMN + (coord[0] * 8));
+            }
         }
     }
     public void printLabel() {
         for (int i = 0; i < 7; i++) {
-            moveCursor(TuiCostants.COMMON_ROW + i, 134);
+            moveCursor(TuiCostants.COMMON_ROW + i, TuiCostants.FIRST_COMMONBOARD_COLUMN);
             AnsiConsole.out().print(Symbols.getString(Symbols.values()[i]) + TuiColors.getColor(TuiColors.ANSI_WHITE) + " -> " + player.getBoard().getSymbolCount(Symbols.values()[i]) + TuiColors.getColor(TuiColors.ANSI_RESET));
             moveCursor(TuiCostants.COMMON_ROW + i, 155);
             AnsiConsole.out().print(Symbols.getString(Symbols.values()[i]) + TuiColors.getColor(TuiColors.ANSI_WHITE) + " -> " + Symbols.getLongString(Symbols.values()[i]) + TuiColors.getColor(TuiColors.ANSI_RESET));
@@ -1104,18 +1098,19 @@ public class Tui implements Ui{
         }
     }
 
-    @Override //TODO: occhio al warning
+    @Override
     public void declareWinners(ArrayList<String> winners){
+        this.end = true;
+        StringBuilder sb = new StringBuilder();
         if (winners.size() == 1){
             message = "\nThe winner is: " + winners.getFirst();
         }
         else{
             message = "\nThe winners are: \n";
             for (String s : winners){
-                message += "\t" + s + "\n";
+                message = sb.append("\t").append(s).append("\n").toString();
             }
         }
-        AnsiConsole.out().println(message);
     }
 
     public void moveCursor(int row, int column){

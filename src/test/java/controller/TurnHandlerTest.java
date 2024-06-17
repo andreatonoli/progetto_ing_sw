@@ -1,5 +1,6 @@
 package controller;
 
+import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.controller.TurnHandler;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.enums.PlayerState;
@@ -17,7 +18,8 @@ TurnHandlerTest {
     @DisplayName("changing player state and player turn")
     void changePlayerState() {
         Game game = new Game(2);
-        TurnHandler turn = new TurnHandler(game);
+        Controller controller = new Controller(2,1);
+        TurnHandler turn = new TurnHandler(game, controller);
         Player p1 = new Player("paolo", game);
         Player p2 = new Player("giovanna", game);
         game.addPlayer(p1);
