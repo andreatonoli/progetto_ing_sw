@@ -27,8 +27,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @ExtendWith(MockitoExtension.class)
 public class ControllerTest {
     @Test
-    @DisplayName("ChooseObj test")
-    public void testValidChooseObj() {
+    @DisplayName("Choose valid Objective")
+    public void validChooseObjTest() {
         // Mocking dependencies
         Connection user = mock(Connection.class);
         Achievement chosenAchievement = new AchievementDiagonal(Color.RED, 1);
@@ -56,7 +56,7 @@ public class ControllerTest {
 
     @Test
     @DisplayName("User chooses an invalid achievement")
-    public void testInvalidChooseObj() {
+    public void invalidChooseObjTest() {
         // Mocking dependencies
         Connection user = mock(Connection.class);
         Player player = mock(Player.class);
@@ -85,7 +85,8 @@ public class ControllerTest {
     }
 
     @Test
-    public void testDrawCardFromResourceDeck() throws Exception {
+    @DisplayName("Draw from resource deck")
+    public void drawFromResourceTest() throws Exception {
         // Mocking dependencies
         Connection user = mock(Connection.class);
         Player player = mock(Player.class);
@@ -119,7 +120,8 @@ public class ControllerTest {
     }
 
     @Test
-    public void testDrawCardFromGoldDeck() throws Exception {
+    @DisplayName("Draw from gold deck")
+    public void drawFromGoldDeckTest() throws Exception {
         // Mocking dependencies
         Connection user = mock(Connection.class);
         Player player = mock(Player.class);
@@ -152,7 +154,8 @@ public class ControllerTest {
     }
 
     @Test
-    public void testDrawCardHandlesEmptyDeck() throws Exception {
+    @DisplayName("Draw from empty deck")
+    public void drawCardFromEmptyDeck() throws Exception {
         // Mocking dependencies
         Connection user = mock(Connection.class);
         Player player = mock(Player.class);
@@ -178,7 +181,8 @@ public class ControllerTest {
     }
 
     @Test
-    public void testDrawCardHandlesNotInTurnException() throws Exception {
+    @DisplayName("Draw card when not in turn")
+    public void drawCardWhenNotInTurnTest() throws Exception {
         // Mocking dependencies
         Connection user = mock(Connection.class);
         Player player = mock(Player.class);
@@ -204,7 +208,8 @@ public class ControllerTest {
     }
 
     @Test
-    public void testDrawCardHandlesFullHandException() throws Exception {
+    @DisplayName("Draw card when hand is full")
+    public void drawCardWhenFullHandTest() throws Exception {
         // Mocking dependencies
         Connection user = mock(Connection.class);
         Player player = mock(Player.class);
@@ -230,7 +235,8 @@ public class ControllerTest {
     }
 
     @Test
-    public void testPlaceCardCardNotInHand() {
+    @DisplayName("Place a card that does not belong to player")
+    public void placeCardCardNotInHandTest() {
         // Mocking dependencies
         Connection user = mock(Connection.class);
         Player player = mock(Player.class);
@@ -256,7 +262,8 @@ public class ControllerTest {
     }
 
     @Test
-    public void testPlaceCardValidPlacement() throws Exception {
+    @DisplayName("Place a card")
+    public void placeCardTest() throws Exception {
         // Mocking dependencies
         Connection user = mock(Connection.class);
         Player player = mock(Player.class);
@@ -287,7 +294,8 @@ public class ControllerTest {
     }
 
     @Test
-    public void testPlaceCardExceptionHandling() throws Exception {
+    @DisplayName("Invalid placement")
+    public void invalidPlacementTest() throws Exception {
         // Mocking dependencies
         Connection user = mock(Connection.class);
         Player player = mock(Player.class);
@@ -319,7 +327,8 @@ public class ControllerTest {
 
 
     @Test
-    public void testDrawCardFromBoardCommonResourceCard() throws Exception {
+    @DisplayName("Draw from common resources")
+    public void drawCardFromCommonResourceTest() throws Exception {
         // Mocking dependencies
         Connection user = mock(Connection.class);
         Card card = mock(Card.class);
@@ -350,7 +359,8 @@ public class ControllerTest {
     }
 
     @Test
-    public void testDrawCardFromBoardCommonGoldCard() throws Exception {
+    @DisplayName("Draw from common gold")
+    public void drawCardFromCommonGoldTest() throws Exception {
         // Mocking dependencies
         Connection user = mock(Connection.class);
         Card card = mock(Card.class);
@@ -381,7 +391,8 @@ public class ControllerTest {
     }
 
     @Test
-    public void testDrawCardFromBoardInvalidIndex() throws Exception {
+    @DisplayName("Trying to draw from invalid index")
+    public void drawCardFromBoardInvalidIndexTest() throws Exception {
         // Mocking dependencies
         Connection user = mock(Connection.class);
         Player player = mock(Player.class);
@@ -405,7 +416,8 @@ public class ControllerTest {
     }
 
     @Test
-    public void testDrawCardFromBoardExceptionHandling() throws Exception {
+    @DisplayName("Exception in drawCardFromBoard")
+    public void drawCardFromBoardExceptionTest() throws Exception {
         // Mocking dependencies
         Connection user = mock(Connection.class);
         Player player = mock(Player.class);
@@ -431,7 +443,8 @@ public class ControllerTest {
     }
 
     @Test
-    public void testJoinGameNotFull() throws Exception{
+    @DisplayName("Join a not full game")
+    public void joinGameNotFullTest() throws Exception{
         // Mocking dependencies
         Connection user = mock(Connection.class);
         Game game = mock(Game.class);
@@ -466,7 +479,8 @@ public class ControllerTest {
     }
 
     @Test
-    public void testJoinGameFull() throws Exception{
+    @DisplayName("Join a full game")
+    public void joinGameFullTest() throws Exception{
         // Mocking dependencies
         Connection user = mock(Connection.class);
         Game game = mock(Game.class);
@@ -504,7 +518,8 @@ public class ControllerTest {
     }
 
     @Test
-    public void testStartGameSuccess() throws Exception {
+    @DisplayName("Start game")
+    public void startGameTest() throws Exception {
         // Mocking dependencies
         Game game = mock(Game.class);
         GameBoard gameBoard = mock(GameBoard.class);
@@ -606,7 +621,8 @@ public class ControllerTest {
     }
 
     @Test
-    public void testStartGameNotEnoughPlayersException() throws Exception {
+    @DisplayName("Trying to start a game without enough players")
+    public void startGameNotEnoughPlayersTest() throws Exception {
         // Mocking dependencies
         Game game = mock(Game.class);
 
@@ -629,7 +645,8 @@ public class ControllerTest {
     }
 
     @Test
-    public void testPlaceStarterCardSuccess() throws Exception{
+    @DisplayName("Place starter card")
+    public void placeStarterCardTest() throws Exception{
         // Mocking dependencies
         Connection user = mock(Connection.class);
         Card starterCard = mock(Card.class);
@@ -668,7 +685,8 @@ public class ControllerTest {
     }
 
     @Test
-    public void testPlaceStarterCardFailure() throws Exception{
+    @DisplayName("Trying to place a starter card that does not belong to player")
+    public void placeStarterCardExceptionTest() throws Exception{
         // Mocking dependencies
         Connection user = mock(Connection.class);
         Card starterCard = mock(Card.class);
@@ -708,7 +726,8 @@ public class ControllerTest {
 
 
     @Test
-    public void testSetColorValidColor() throws Exception{
+    @DisplayName("Set color")
+    public void setColorTest() throws Exception{
         // Mocking dependencies
         Connection user = mock(Connection.class);
         Player player = mock(Player.class);
@@ -750,7 +769,8 @@ public class ControllerTest {
     }
 
     @Test
-    public void testSetColorInvalidColor() throws Exception{
+    @DisplayName("Set color - invalid color")
+    public void setColorExceptionTest() throws Exception{
         // Mocking dependencies
         Connection user = mock(Connection.class);
         Player player = mock(Player.class);
@@ -783,7 +803,8 @@ public class ControllerTest {
     }
 
     @Test
-    public void testReconnectBackup() throws Exception{
+    @DisplayName("Reconnect")
+    public void reconnectTest() throws Exception{
         // Mocking dependencies
         Connection user = mock(Connection.class);
         Connection opponentConnection1 = mock(Connection.class);

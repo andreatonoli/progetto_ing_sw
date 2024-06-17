@@ -16,6 +16,104 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 
 public class AchievementTest {
+
+    @Test
+    @DisplayName("Checking card info")
+    public void getterTest(){
+        Achievement a = new AchievementDiagonal(Color.RED, 1);
+        Achievement b = new AchievementL(Color.BLUE, 2);
+        Achievement c = new AchievementResources(Symbols.PLANT, 3);
+        Achievement d = new AchievementItem(2, new ArrayList<>(List.of(Symbols.INKWELL)), 4);
+
+        //Checking a's infos
+        assertEquals(1, a.getId());
+        assertEquals(Color.RED, a.getColor());
+        assertEquals(2, a.getPoints());
+        assertNull(a.getSymbols());
+        assertNull(a.getSymbol());
+
+        //Checking b's infos
+        assertEquals(2, b.getId());
+        assertEquals(Color.BLUE, b.getColor());
+        assertEquals(3, b.getPoints());
+        assertNull(b.getSymbols());
+        assertNull(b.getSymbol());
+
+        //Checking c's infos
+        assertEquals(3, c.getId());
+        assertNull(c.getColor());
+        assertEquals(2, c.getPoints());
+        assertNull(c.getSymbols());
+        assertEquals(Symbols.PLANT, c.getSymbol());
+
+        //Checking d's infos
+        assertEquals(4, d.getId());
+        assertNull(d.getColor());
+        assertEquals(2, d.getPoints());
+        assertEquals(1, d.getSymbols().size());
+        assertEquals(Symbols.INKWELL, d.getSymbols().getFirst());
+        assertNull(d.getSymbol());
+
+    }
+
+    @Test
+    @DisplayName("Equals")
+    public void equalsTest(){
+        Achievement a1 = new AchievementDiagonal(Color.RED, 1);
+        Achievement a2 = new AchievementDiagonal(Color.BLUE, 1);
+        Achievement a3 = new AchievementDiagonal(Color.RED, 10);
+        Achievement a4 = new AchievementDiagonal(Color.RED, 1);
+
+        Achievement b1 = new AchievementL(Color.BLUE, 2);
+        Achievement b2 = new AchievementL(Color.GREEN, 2);
+        Achievement b3 = new AchievementL(Color.BLUE, 20);
+        Achievement b4 = new AchievementL(Color.BLUE, 2);
+
+        Achievement c1 = new AchievementResources(Symbols.PLANT, 3);
+        Achievement c2 = new AchievementResources(Symbols.FUNGI, 3);
+        Achievement c3 = new AchievementResources(Symbols.PLANT, 30);
+        Achievement c4 = new AchievementResources(Symbols.PLANT, 3);
+
+        Achievement d1 = new AchievementItem(2, new ArrayList<>(List.of(Symbols.INKWELL)), 4);
+        Achievement d2 = new AchievementItem(3, new ArrayList<>(List.of(Symbols.INKWELL)), 4);
+        Achievement d3 = new AchievementItem(2, new ArrayList<>(List.of(Symbols.QUILL)), 4);
+        Achievement d4 = new AchievementItem(2, new ArrayList<>(List.of(Symbols.INKWELL, Symbols.MANUSCRIPT)), 4);
+        Achievement d5 = new AchievementItem(2, new ArrayList<>(List.of(Symbols.INKWELL)), 40);
+        Achievement d6 = new AchievementItem(2, new ArrayList<>(List.of(Symbols.INKWELL)), 4);
+
+        //Every type of achievement is different
+        assertFalse(a1.equals(b1));
+        assertFalse(a1.equals(c1));
+        assertFalse(a1.equals(d1));
+        assertFalse(b1.equals(a1));
+        assertFalse(b1.equals(c1));
+        assertFalse(b1.equals(d1));
+        assertFalse(c1.equals(a1));
+        assertFalse(c1.equals(b1));
+        assertFalse(c1.equals(d1));
+        assertFalse(d1.equals(a1));
+        assertFalse(d1.equals(b1));
+        assertFalse(d1.equals(c1));
+
+        //Different cards are different
+        assertFalse(a1.equals(a2));
+        assertFalse(a1.equals(a3));
+        assertFalse(b1.equals(b2));
+        assertFalse(b1.equals(b3));
+        assertFalse(c1.equals(c2));
+        assertFalse(c1.equals(c3));
+        assertFalse(d1.equals(d2));
+        assertFalse(d1.equals(d3));
+        assertFalse(d1.equals(d4));
+        assertFalse(d1.equals(d5));
+
+        //same card are equals
+        assertTrue(a1.equals(a4));
+        assertTrue(b1.equals(b4));
+        assertTrue(c1.equals(c4));
+        assertTrue(d1.equals(d6));
+
+    }
     @Test
     @DisplayName("Diagonal Achievement")
     public void diagonalTest() {
