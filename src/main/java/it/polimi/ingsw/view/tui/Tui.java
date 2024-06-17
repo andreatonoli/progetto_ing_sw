@@ -170,26 +170,36 @@ public class Tui implements Ui {
     }
 
     public int getLobby(List<Integer> lobbyList) {
-        int lobby;
+        int lobby = -1;
         AnsiConsole.out().println("Select one of the following game's lobby by writing the respective number:");
         for (Integer i : lobbyList){
             AnsiConsole.out().println("Lobby [" + i + "]");
         }
-        lobby = scanner.nextInt();
-        while (!lobbyList.contains(lobby)){
-            AnsiConsole.out().print("Invalid input.\nInsert the lobby number:");
-            lobby = scanner.nextInt();
-        }
+        do{
+            try{
+                lobby = scanner.nextInt();
+            }
+            catch (NumberFormatException e) {
+                AnsiConsole.out().print("Invalid input.\nInsert the lobby number:");
+            }
+        } while (!lobbyList.contains(lobby));
         return lobby;
     }
 
+
+
     public int setLobbySize(){
+        int lobbySize = -1;
         AnsiConsole.out().println("Select the lobby's capacity (min is " + Server.MIN_PLAYERS_PER_LOBBY + " and max is " + Server.MAX_PLAYERS_PER_LOBBY + " players)");
-        int lobbySize = scanner.nextInt();
-        while (lobbySize < Server.MIN_PLAYERS_PER_LOBBY || lobbySize > Server.MAX_PLAYERS_PER_LOBBY){
-            AnsiConsole.out().println("Invalid input.\n Insert a valid number");
-            lobbySize = scanner.nextInt();
-        }
+        do{
+            try{
+                lobbySize = scanner.nextInt();
+            } catch (NumberFormatException e){
+                {
+                    AnsiConsole.out().println("Invalid input.\n Insert a valid number");
+                }
+            }
+        } while (lobbySize < Server.MIN_PLAYERS_PER_LOBBY || lobbySize > Server.MAX_PLAYERS_PER_LOBBY);
         return lobbySize;
     }
 
@@ -703,39 +713,49 @@ public class Tui implements Ui {
                 }
             }
             case "3" -> {
+                String a;
                 moveCursor(39, 0);
                 AnsiConsole.out().println("Which card do you want to display?");
                 AnsiConsole.out().println("Type row number");
-                String a = input.next();
+                a = input.next();
                 clearConsole();
                 this.printView();
-                while (!a.equals("c") && !input.hasNextInt()) {
-                    moveCursor(39, 0);
-                    AnsiConsole.out().println("Retype row number");
-                    a = input.next();
-                    clearConsole();
-                    this.printView();
-                }
                 if (a.equals("c")) {
                     this.printChat();
-                } else {
-                    coord[1] = Integer.parseInt(a);
+                }
+                else {
+                    do{
+                        try {
+                            coord[1] = Integer.parseInt(a);
+                            break;
+                        } catch (NumberFormatException e) {
+                            moveCursor(39, 0);
+                            AnsiConsole.out().println("Retype row number");
+                            a = input.next();
+                            clearConsole();
+                            this.printView();
+                        }
+                    } while (true);
                     moveCursor(39, 0);
                     AnsiConsole.out().println("Type column number");
                     a = input.next();
                     clearConsole();
                     this.printView();
-                    while (!a.equals("c") && !input.hasNextInt()) {
-                        moveCursor(39, 0);
-                        AnsiConsole.out().println("Retype column number");
-                        a = input.next();
-                        clearConsole();
-                        this.printView();
-                    }
                     if (a.equals("c")) {
                         this.printChat();
                     } else {
-                        coord[0] = Integer.parseInt(a);
+                        do{
+                            try {
+                                coord[0] = Integer.parseInt(a);
+                                break;
+                            } catch (NumberFormatException e) {
+                                moveCursor(39, 0);
+                                AnsiConsole.out().println("Retype column number");
+                                a = input.next();
+                                clearConsole();
+                                this.printView();
+                            }
+                        } while (true);
                         if (player.getBoard().getCard(coord) != null){
                             clearConsole();
                             this.printView();
@@ -815,35 +835,43 @@ public class Tui implements Ui {
                         AnsiConsole.out().println("Where do you want to place it?");
                         AnsiConsole.out().println("Type row number");
                         a = input.next();
-                        while (!a.equals("c") && !input.hasNextInt()) {
-                            clearConsole();
-                            this.printView();
-                            moveCursor(39, 0);
-                            AnsiConsole.out().println("Retype row number");
-                            a = input.next();
-                        }
                         if (a.equals("c")) {
                             this.printChat();
                         } else {
                             clearConsole();
                             printView();
                             this.printCardMatrix(createPrintableCard(cardToPlace), 37, 0);
-                            coord[1] = Integer.parseInt(a);
+                            do{
+                                try {
+                                    coord[1] = Integer.parseInt(a);
+                                    break;
+                                } catch (NumberFormatException e) {
+                                    clearConsole();
+                                    this.printView();
+                                    moveCursor(39, 0);
+                                    AnsiConsole.out().println("Retype row number");
+                                    a = input.next();
+                                }
+                            } while(true);
                             moveCursor(40, 0);
                             AnsiConsole.out().println("Type column number");
                             a = input.next();
-                            while (!a.equals("c") && !input.hasNextInt()) {
-                                clearConsole();
-                                this.printView();
-                                moveCursor(40, 0);
-                                AnsiConsole.out().println("Retype column number");
-                                a = input.next();
-                            }
                             if(a.equals("c")){
                                 this.printChat();
                             }
                             else{
-                                coord[0] = Integer.parseInt(a);
+                                do{
+                                    try {
+                                        coord[0] = Integer.parseInt(a);
+                                        break;
+                                    } catch (NumberFormatException e) {
+                                        clearConsole();
+                                        this.printView();
+                                        moveCursor(40, 0);
+                                        AnsiConsole.out().println("Retype column number");
+                                        a = input.next();
+                                    }
+                                } while(true);
                             }
                         }
                         clearConsole();

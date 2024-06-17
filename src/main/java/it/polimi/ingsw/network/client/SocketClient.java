@@ -262,6 +262,9 @@ public class SocketClient implements ClientInterface {
             case CARD_UPDATE:
                 Card drawedCard = ((UpdateCardMessage) message).getCard();
                 player.setCardinHand(drawedCard);
+                if (!drawedCard.isNotBack()){
+                    drawedCard.setCurrentSide();
+                }
                 this.view.printViewWithCommands(this.player, this.game, this.opponents);
                 break;
             case SCORE_UPDATE:

@@ -346,5 +346,47 @@ public class GameTest {
         assertEquals(0, player2.getPoints());
         assertEquals(0, player3.getPoints());
     }
+
+    @Test
+    @DisplayName("Disconnection Test")
+    public void disconnectionTest() {
+        Game game = new Game(4);
+        Player a = new Player("Paolo", game);
+        Player b = new Player("Andrea", game);
+        Player c = new Player("Carlo", game);
+        Player d = new Player("Matteo", game);
+
+        //Add player to game
+        game.addPlayer(a);
+        game.addPlayer(b);
+        game.addPlayer(c);
+        game.addPlayer(d);
+
+        //Check if the lobby is full
+        assertEquals(4, game.getPlayers().size());
+        assertTrue(game.isFull());
+
+        //Remove the first player
+        game.removePlayer("Paolo");
+        game.addDisconnections(1);
+        assertEquals(3, game.getPlayers().size());
+        assertEquals(1, game.getDisconnections());
+        //Check if the player was removed
+        for (Player p : game.getPlayers()){
+            assertNotEquals(a.getUsername(), p.getUsername());
+        }
+
+        //Remove other 2 players
+        game.removePlayer("Andrea");
+        game.removePlayer("Carlo");
+        game.addDisconnections(2);
+        assertEquals(1, game.getPlayers().size());
+        assertEquals(3, game.getDisconnections());
+
+        //One player remained -> end game by disconnection
+        game.endGameByDisconnection();
+
+        assertEquals(GameState.END, game.getGameState());
+    }
 }
 

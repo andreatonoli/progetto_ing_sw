@@ -42,6 +42,14 @@ public class FlipTest {
         for (CornerEnum co : CornerEnum.values()) {
             assertEquals(Symbols.EMPTY, player.getCardInHand()[0].getCornerSymbol(co));
         }
+
+        //flip the card again
+        player.getCardInHand()[0].setCurrentSide();
+        assertEquals(a.getColor(), player.getCardInHand()[0].getColor());
+        assertNull(player.getCardInHand()[0].getSymbols());
+        for (CornerEnum co : CornerEnum.values()) {
+            assertEquals(a.getCornerSymbol(co), player.getCardInHand()[0].getCornerSymbol(co));
+        }
     }
 
     @Test

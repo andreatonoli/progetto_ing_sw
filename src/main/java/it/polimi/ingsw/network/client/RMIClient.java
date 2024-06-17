@@ -256,6 +256,9 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                 break;
             case CARD_UPDATE:
                 Card drawedCard = ((UpdateCardMessage) message).getCard();
+                if (!drawedCard.isNotBack()){
+                    drawedCard.setCurrentSide();
+                }
                 player.setCardinHand(drawedCard);
                 this.view.printViewWithCommands(this.player, this.game, this.opponents);
                 break;

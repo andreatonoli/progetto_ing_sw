@@ -108,8 +108,8 @@ public class TurnHandler extends Observable {
             t.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    Player winner = game.endGameByDisconnection(player);
-                    declareWinnerByDisconnection(winner);
+                    game.endGameByDisconnection();
+                    declareWinnerByDisconnection(player);
                     rec.cancel();
                     t.cancel();
                 }

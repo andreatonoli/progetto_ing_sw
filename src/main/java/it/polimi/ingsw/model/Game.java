@@ -133,10 +133,9 @@ public class Game extends Observable implements Serializable {
         return winners;
     }
 
-    public Player endGameByDisconnection(Player lastManStanding){
+    public void endGameByDisconnection(){
         notifyAll(new GenericMessage("\ngame ended due to lack of players"));
         this.gameState = GameState.END;
-        return lastManStanding;
     }
 
     private void setFirstPlayer()
