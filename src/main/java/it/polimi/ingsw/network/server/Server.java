@@ -162,6 +162,7 @@ public class Server {
     }
     public void removeStartingGame(Controller game){
         this.startingGames.remove(game);
+        this.startingGamesId.remove((Integer) game.getId());
         idTaken.set(game.getId(),-1);
         System.out.println("the game [" + game.getId() + "] got cancelled due to lack of players");
     }
