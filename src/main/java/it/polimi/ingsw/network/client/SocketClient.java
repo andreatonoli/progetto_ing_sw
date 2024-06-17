@@ -154,7 +154,7 @@ public class SocketClient implements ClientInterface {
                     sendMessage(new LobbyIndexMessage(this.username, response));
                 }
                 else if (gamesWhitDisconnectionsId.contains(response)){
-                    sendMessage(new ReconnectLobbyIndexMessage(this.username, response));
+                    sendMessage(new ReconnectLobbyIndexMessage(this.username, response, startingGamesId, gamesWhitDisconnectionsId));
                 }
                 break;
             case GAME_STATE:

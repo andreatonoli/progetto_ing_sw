@@ -25,5 +25,6 @@ public abstract class Connection implements Observer {
     public abstract void sendChatMessage(String message, Connection receiver);
     public abstract void sendChatMessage(String message);
     public abstract void removeFromServer(boolean last);
+    public abstract void waiting();
 
 }

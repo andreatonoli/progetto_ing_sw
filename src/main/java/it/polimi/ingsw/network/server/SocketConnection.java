@@ -169,18 +169,18 @@ public class SocketConnection extends Connection implements Runnable {
         } catch (NullPointerException ignored){} //TODO
     }
 
-    private void reconnectLobbyIndex(Message message){
-        String user = message.getSender();
-        int room = ((ReconnectLobbyIndexMessage) message).getChoice();
-        if (!server.userNotDisconnected(user, room)) {
-            sendMessage(new GenericMessage("there is no player disconnected in game "+ room + " with that name.\n"));
-            server.login(this);
-        }
-        else {
-            this.username = message.getSender();
-            server.reconnectPlayer(this, message.getSender());
-        }
-    }
+    //private void reconnectLobbyIndex(Message message){
+    //    String user = message.getSender();
+    //    int room = ((ReconnectLobbyIndexMessage) message).getChoice();
+    //    if (!server.userNotDisconnected(user, room)) {
+    //        sendMessage(new GenericMessage("there is no player disconnected in game "+ room + " with that name.\n"));
+    //        server.login(this);
+    //    }
+    //    else {
+    //        this.username = message.getSender();
+    //        server.reconnectPlayer(this, message.getSender());
+    //    }
+    //}
 
     @Override
     public void reconnect(Connection oldConnection) {
@@ -289,8 +289,10 @@ public class SocketConnection extends Connection implements Runnable {
                 String user = message.getSender();
                 int room = ((ReconnectLobbyIndexMessage) message).getChoice();
                 if (!server.userNotDisconnected(user, room)) {
+                    List<Integer> startingGamesId = ((ReconnectLobbyIndexMessage) message).getstartingGamesId();
+                    List<Integer> gamesWhitDisconnectionsId = ((ReconnectLobbyIndexMessage) message).getgamesWhitDisconnectionsId();
                     sendMessage(new GenericMessage("there is no player disconnected in game "+ room + " with that name.\n"));
-                    server.login(this);
+                    sendMessage(new FreeLobbyMessage(startingGamesId, gamesWhitDisconnectionsId));
                 }
                 else {
                     this.username = user;
@@ -353,5 +355,9 @@ public class SocketConnection extends Connection implements Runnable {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+    @Override
+    public void waiting() {
+        sendMessage(new GenericMessage("someone else is joining a game, please wait..."));
     }
 }

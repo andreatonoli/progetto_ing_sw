@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.card.Achievement;
 import it.polimi.ingsw.model.card.Card;
 import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.GameState;
+import it.polimi.ingsw.network.messages.GenericMessage;
 import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.client.RMIClientHandler;
 
@@ -227,6 +228,11 @@ public class RMIConnection extends Connection {
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public void waiting() {
+        sendMessage(new GenericMessage("someone else is joining a game, please wait..."));
     }
 
     @Override

@@ -22,6 +22,7 @@ public class Server {
     private final ServerController controller;
     private List<String> disconnectedPlayers;
     private final Object gameSelectionLock = new Object();
+    private boolean locked = false;
     public Server(){
         this.controller = new ServerController(this);
         this.client = Collections.synchronizedMap(new HashMap<>());
@@ -42,11 +43,18 @@ public class Server {
     }
 
     public void login(Connection client){
-        if (this.startingGames.isEmpty() && this.gamesWithDisconnections.isEmpty()) {
-            client.createGame();
-        } else {
-            client.joinGame(startingGamesId, gamesWithDisconnectionsId);
+        if (locked) {
+            client.waiting();
         }
+        synchronized (gameSelectionLock) {
+            locked = true;
+            if (this.startingGames.isEmpty() && this.gamesWithDisconnections.isEmpty()) {
+                client.createGame();
+            } else {
+                client.joinGame(startingGamesId, gamesWithDisconnectionsId);
+            }
+        }
+        locked = false;
     }
 
     public void startPing(Connection client){
