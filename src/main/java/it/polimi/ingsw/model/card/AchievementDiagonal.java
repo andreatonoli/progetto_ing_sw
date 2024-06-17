@@ -10,33 +10,34 @@ import java.util.*;
 public class AchievementDiagonal implements Achievement{
 
     /**
-     * Unique number to identify the card
+     * Unique number to identify the card.
      */
     private final int id;
     /**
-     * points given upon completion of the achievement
+     * points given upon completion of the achievement.
      */
     private final int basePoint;
     /**
-     * the needed color (from the color enumeration) of the cards in a diagonal-shaped pattern have to be
+     * the needed color (from the color enumeration) of the cards in a diagonal-shaped pattern have to be.
      */
     private final Color color;
     /**
      * Builds cards which achievement is creating a diagonal with cards of the same color.
-     * They've all the same base points (2)
-     * @param color color of the diagonal
+     * They've all the same base points (2).
+     * @param color color of the diagonal.
      */
     public AchievementDiagonal(Color color, int id){
         this.basePoint = 2;
         this.color = color;
         this.id = id;
     }
-    //TODO: Riscrivere commento e spiegare correttamente l'algoritmo
+
     /**
-     * This method calculates the points made by a player with the diagonal achievement. It exploits an ArrayList to mark
-     * the elements already visited. For each card it takes also its predecessor and it successor on the diagonal and checks
-     * if they've all the same color. In that case it adds their position in the marked list
-     * @param player to calculate the points
+     * This method calculates the points made by a player. One diagonal is formed by three card of the same colour placed
+     * diagonally.
+     * For each card it takes also its predecessor and it successor on the diagonal and checks if they've all the same
+     * color, then they are marked in one arrayList to avoid them to be counted twice.
+     * @param player to calculate the points.
      */
     @Override
     public void calcPoints(Player player) {

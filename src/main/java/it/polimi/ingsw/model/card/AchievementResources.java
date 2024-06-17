@@ -9,11 +9,11 @@ import java.util.ArrayList;
 public class AchievementResources implements Achievement{
 
     /**
-     * Unique number to identify the card
+     * Unique number to identify the card.
      */
     private final int id;
     /**
-     * points given upon completion of the achievement
+     * points given upon completion of the achievement.
      */
     private final int basePoint;
     /**
@@ -23,6 +23,7 @@ public class AchievementResources implements Achievement{
     /**
      * Builds card which achievement is "Collect 3 symbols of the same type"
      * @param symbol symbol to collect
+     * @param id unique number to identify the card.
      */
     public AchievementResources(Symbols symbol, int id){
         this.basePoint = 2;

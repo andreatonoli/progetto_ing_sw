@@ -9,22 +9,23 @@ import java.util.ArrayList;
 public class AchievementItem implements Achievement{
 
     /**
-     * Unique number to identify the card
+     * Unique number to identify the card.
      */
     private final int id;
     /**
-     * points given upon completion of the achievement
+     * points given upon completion of the achievement.
      */
     private final int basePoint;
     /**
-     * indicates the symbols (from the symbols enumeration) to collect
+     * indicates the symbols (from the symbols enumeration) to collect.
      */
     private final ArrayList<Symbols> symbol;
 
     /**
-     * Builds cards which achievement is getting some uncovered symbol
-     * @param basePoint are the points that the player will get each time it completes the achievement
-     * @param symbols are the needed symbols to get to complete the achievement
+     * Builds cards which achievement is getting some uncovered symbol.
+     * @param basePoint are the points that the player will get each time it completes the achievement.
+     * @param symbols are the needed symbols to get to complete the achievement.
+     * @param id unique number to identify the card.
      */
     public AchievementItem(int basePoint, ArrayList<Symbols> symbols, int id){
         this.basePoint = basePoint;
@@ -33,6 +34,7 @@ public class AchievementItem implements Achievement{
     }
 
     /**
+     * Calculates the player's points based on the number of uncovered symbols on the player's board.
      * if (basePoint == 3) then point = basePoint * min(Item_symbolCount)
      * if (basePoint == 2) then point = basePoint * (item_count / 2)
      * @param player on which calculate the score
@@ -40,7 +42,7 @@ public class AchievementItem implements Achievement{
     @Override
     public void calcPoints(Player player) {
         int point = 0;
-        int min_val = 0;
+        int min_val;
         if (this.basePoint == 3){
             if (player.getPlayerBoard().getSymbolCount(symbol.getFirst()) <= player.getPlayerBoard().getSymbolCount(symbol.get(1))){
                 min_val = player.getPlayerBoard().getSymbolCount(symbol.getFirst());

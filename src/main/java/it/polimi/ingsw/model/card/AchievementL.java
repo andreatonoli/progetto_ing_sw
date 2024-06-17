@@ -11,21 +11,22 @@ import java.util.Set;
 public class AchievementL implements Achievement{
 
     /**
-     * Unique number to identify the card
+     * Unique number to identify the card.
      */
     private final int id;
     /**
-     * points given upon completion of the achievement
+     * points given upon completion of the achievement.
      */
     private final int basePoint;
     /**
-     * the needed color ((from the color enumeration)) 2/3 of the cards in an L-shaped pattern have to be
+     * the needed color ((from the color enumeration)) 2/3 of the cards in an L-shaped pattern have to be.
      */
     private final Color color;
     /**
-     * Builds cards which achievement is "create a L with two cards of the same color, and one different".
-     * They've all the same base points (3)
-     * @param color color of 2/3 of the cards
+     * Builds cards which achievement is "create an L with two cards of the same color, and one different".
+     * They've all the same base points (3).
+     * @param color color of 2/3 of the cards.
+     * @param id the unique number of the achievement card.
      */
     public AchievementL(Color color, int id){
         this.basePoint = 3;
@@ -33,11 +34,11 @@ public class AchievementL implements Achievement{
         this.id = id;
     }
     /**
-     * This method calculates the points made by a player with the L achievement. It exploits an ArrayList to mark
-     * the elements already visited. For each card it takes also the card over and under and checks
-     * if they correctly reproduce the L form showed on the achievement card.
-     * In that case it adds their position in the marked list and the points to the point variable
-     * @param player to calculate the points
+     * This method calculates the points made by a player with the L achievement. For each we check its color and the
+     * color of the card under and laterally (to form an L shape) to see if they match with the achievement colour.
+     * In that case it adds their position in the marked list, avoiding them to be considered more than once,
+     * and the points to the point variable.
+     * @param player to calculate the points.
      */
     @Override
     public void calcPoints(Player player) {

@@ -20,7 +20,7 @@ public interface Achievement extends Serializable {
     void calcPoints(Player player);
     /**
      * getter for the basePoint value
-     * @return the achievement's point that the player will receive each time it completes the achievement.
+     * @return the minimum points that the player will receive when it completes the achievement.
      */
     int getPoints();
     /**
@@ -39,6 +39,11 @@ public interface Achievement extends Serializable {
      */
     Symbols getSymbol();
 
+    /**
+     * Compares two cards to see if there is any difference
+     * @param achievementToCompare card we want to compare with {@code this}
+     * @return true if the two cards are the same
+     */
     boolean equals(Achievement achievementToCompare);
 
 }

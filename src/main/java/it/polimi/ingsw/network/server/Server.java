@@ -14,15 +14,15 @@ public class Server {
     public final static String serverName = "GameServer";
     public final static int rmiPort = 50678;
     public final static int socketPort = 50679;
-    private List<Integer> idTaken;
-    private List<Controller> activeGames;
-    private List<Controller> gamesWithDisconnections;
-    private List<Integer> gamesWithDisconnectionsId;
-    private List<Controller> startingGames;
-    private List<Integer> startingGamesId;
+    private final List<Integer> idTaken;
+    private final List<Controller> activeGames;
+    private final List<Controller> gamesWithDisconnections;
+    private final List<Integer> gamesWithDisconnectionsId;
+    private final List<Controller> startingGames;
+    private final List<Integer> startingGamesId;
     private final Map<String, Connection> client;
     private final ServerController controller;
-    private List<String> disconnectedPlayers;
+    private final List<String> disconnectedPlayers;
     public Server(){
         this.controller = new ServerController(this);
         this.client = Collections.synchronizedMap(new HashMap<>());

@@ -8,12 +8,39 @@ import java.util.List;
 
 
 public class Card implements Serializable {
+    /**
+     * Card's front face.
+     */
     private final Face front;
+
+    /**
+     * Card's retro face.
+     */
     private final Face retro;
+
+    /**
+     * Card's type (e.g. Resource, gold or starter).
+     */
     private final String type;
+
+    /**
+     * Unique number to identify the card.
+     */
     private final int cardNumber;
+
+    /**
+     * Card's color.
+     */
     private final Color color;
+
+    /**
+     * Face of the card currently shown.
+     */
     private Face currentSide;
+
+    /**
+     * Boolean attribute indicating whether the card is turned over.
+     */
     private boolean isBack = false;
     public Card (Face front, Face retro, String type, int cardNumber, Color color){
         this.front = front;
