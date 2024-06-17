@@ -1068,7 +1068,7 @@ public class Tui implements Ui {
         this.printAchievement(choices[1]);
         AnsiConsole.out().println("Choose one of the two Achievements");
         int choice = scanner.nextInt();
-        while ((choice < 1 || choice > 2) || !scanner.hasNextInt()){
+        while (choice < 1 || choice > 2){
             AnsiConsole.out().println("Wrong input.\nWrite 1 for the first achievement and 2 for the second");
             choice = scanner.nextInt();
         }
