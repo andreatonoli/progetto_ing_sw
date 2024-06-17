@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.card.StarterCard;
 import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.CornerEnum;
 import it.polimi.ingsw.model.enums.CornerState;
+import it.polimi.ingsw.model.enums.PlayerState;
 import it.polimi.ingsw.model.player.PlayerBoard;
 import it.polimi.ingsw.network.client.GameBean;
 import it.polimi.ingsw.network.client.PlayerBean;
@@ -20,6 +21,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 
 import java.util.ArrayList;
@@ -64,6 +66,8 @@ public class MainSceneController {
     private TextField textMessage;
     @FXML
     private ChoiceBox otherPlayers;
+    @FXML
+    private Text playerState;
 
     //this matrix has the x and y position of the zero point for alle the 4 pions
     private int[][] scoretrackZero = {new int[] {65, 115, 65, 115}, new int[] {670, 670, 715, 715}};
@@ -78,16 +82,39 @@ public class MainSceneController {
     int h2;
     int h3;
 
+    ImageView viewHand1;
+    ImageView viewHand2;
+    ImageView viewHand3;
+
+    ImageView viewFungiRetro;
+    ImageView viewAnimalRetro;
+    ImageView viewPlantRetro;
+    ImageView viewInsectRetro;
+    ImageView viewFungiGoldRetro;
+    ImageView viewAnimalGoldRetro;
+    ImageView viewPlantGoldRetro;
+    ImageView viewInsectGoldRetro;
+
     public void setBoard(PlayerBean player, GameBean game, ArrayList<PlayerBean> opponents){
+
+        if(player.getState().equals(PlayerState.DRAW_CARD)){
+            playerState.setText("Your turn, draw a card");
+        }
+        else if(player.getState().equals(PlayerState.PLAY_CARD)){
+            playerState.setText("Your turn, place a card!");
+        }
+        else{
+            playerState.setText("Wait for your turn!");
+        }
+
         //hand
-        //sostituire con for
         if(player.getHand()[0] != null){
             h1 = player.getHand()[0].getCardNumber();
             if(player.getHand()[0].getType().equals("gold")){
                 h1 = h1 + 40;
             }
             Image imageHand1 = new Image(getClass().getResourceAsStream("/cards/fronts/" + String.valueOf(h1) + ".png"));
-            ImageView viewHand1 = new ImageView(imageHand1);
+            viewHand1 = new ImageView(imageHand1);
             viewHand1.setFitHeight(42*3);
             viewHand1.setFitWidth(63*3);
             hand1.setGraphic(viewHand1);
@@ -98,7 +125,7 @@ public class MainSceneController {
                 h2 = h2 + 40;
             }
             Image imageHand2 = new Image(getClass().getResourceAsStream("/cards/fronts/" + String.valueOf(h2) + ".png"));
-            ImageView viewHand2 = new ImageView(imageHand2);
+            viewHand2 = new ImageView(imageHand2);
             viewHand2.setFitHeight(42*3);
             viewHand2.setFitWidth(63*3);
             hand2.setGraphic(viewHand2);
@@ -109,7 +136,7 @@ public class MainSceneController {
                 h3 = h3 + 40;
             }
             Image imageHand3 = new Image(getClass().getResourceAsStream("/cards/fronts/" + String.valueOf(h3) + ".png"));
-            ImageView viewHand3 = new ImageView(imageHand3);
+            viewHand3 = new ImageView(imageHand3);
             viewHand3.setFitHeight(42*3);
             viewHand3.setFitWidth(63*3);
             hand3.setGraphic(viewHand3);
@@ -123,26 +150,38 @@ public class MainSceneController {
         //common board
         Color rDeck = game.getResourceDeckRetro();
         Image imageFungiRetro = new Image(getClass().getResourceAsStream("/cards/backs/1.png"));
-        ImageView viewFungiRetro = new ImageView(imageFungiRetro);
-        viewFungiRetro.setFitHeight(42*2.5);
-        viewFungiRetro.setFitWidth(64*2.5);
+        viewFungiRetro = new ImageView(imageFungiRetro);
+        viewFungiRetro.setFitHeight(42*3);
+        viewFungiRetro.setFitWidth(63*3);
+        ImageView viewFungiRetroBoard = new ImageView(imageFungiRetro);
+        viewFungiRetroBoard.setFitHeight(42*2.5);
+        viewFungiRetroBoard.setFitWidth(64*2.5);
         Image imageAnimalRetro = new Image(getClass().getResourceAsStream("/cards/backs/21.png"));
-        ImageView viewAnimalRetro = new ImageView(imageAnimalRetro);
-        viewAnimalRetro.setFitHeight(42*2.5);
-        viewAnimalRetro.setFitWidth(64*2.5);
+        viewAnimalRetro = new ImageView(imageAnimalRetro);
+        viewAnimalRetro.setFitHeight(42*3);
+        viewAnimalRetro.setFitWidth(63*3);
+        ImageView viewAnimalRetroBoard = new ImageView(imageAnimalRetro);
+        viewAnimalRetroBoard.setFitHeight(42*2.5);
+        viewAnimalRetroBoard.setFitWidth(64*2.5);
         Image imagePlantRetro = new Image(getClass().getResourceAsStream("/cards/backs/11.png"));
-        ImageView viewPlantRetro = new ImageView(imagePlantRetro);
-        viewPlantRetro.setFitHeight(42*2.5);
-        viewPlantRetro.setFitWidth(64*2.5);
+        viewPlantRetro = new ImageView(imagePlantRetro);
+        viewPlantRetro.setFitHeight(42*3);
+        viewPlantRetro.setFitWidth(63*3);
+        ImageView viewPlantRetroBoard = new ImageView(imagePlantRetro);
+        viewPlantRetroBoard.setFitHeight(42*2.5);
+        viewPlantRetroBoard.setFitWidth(64*2.5);
         Image imageInsectRetro = new Image(getClass().getResourceAsStream("/cards/backs/31.png"));
-        ImageView viewInsectRetro = new ImageView(imageInsectRetro);
-        viewInsectRetro.setFitHeight(42*2.5);
-        viewInsectRetro.setFitWidth(64*2.5);
+        viewInsectRetro = new ImageView(imageInsectRetro);
+        viewInsectRetro.setFitHeight(42*3);
+        viewInsectRetro.setFitWidth(63*3);
+        ImageView viewInsectRetroBoard = new ImageView(imageInsectRetro);
+        viewInsectRetroBoard.setFitHeight(42*2.5);
+        viewInsectRetroBoard.setFitWidth(64*2.5);
         switch (rDeck){
-            case RED -> resourceDeck.setGraphic(viewFungiRetro);
-            case BLUE -> resourceDeck.setGraphic(viewAnimalRetro);
-            case GREEN -> resourceDeck.setGraphic(viewPlantRetro);
-            case PURPLE -> resourceDeck.setGraphic(viewInsectRetro);
+            case RED -> resourceDeck.setGraphic(viewFungiRetroBoard);
+            case BLUE -> resourceDeck.setGraphic(viewAnimalRetroBoard);
+            case GREEN -> resourceDeck.setGraphic(viewPlantRetroBoard);
+            case PURPLE -> resourceDeck.setGraphic(viewInsectRetroBoard);
         }
 
         int r1 = game.getCommonResources()[0].getCardNumber();
@@ -160,26 +199,38 @@ public class MainSceneController {
 
         Color gDeck = game.getGoldDeckRetro();
         Image imageFungiGoldRetro = new Image(getClass().getResourceAsStream("/cards/backs/41.png"));
-        ImageView viewFungiGoldRetro = new ImageView(imageFungiGoldRetro);
-        viewFungiGoldRetro.setFitHeight(42*2.5);
-        viewFungiGoldRetro.setFitWidth(64*2.5);
+        viewFungiGoldRetro = new ImageView(imageFungiGoldRetro);
+        viewFungiGoldRetro.setFitHeight(42*3);
+        viewFungiGoldRetro.setFitWidth(63*3);
+        ImageView viewFungiGoldRetroBoard = new ImageView(imageFungiGoldRetro);
+        viewFungiGoldRetroBoard.setFitHeight(42*2.5);
+        viewFungiGoldRetroBoard.setFitWidth(64*2.5);
         Image imageAnimalGoldRetro = new Image(getClass().getResourceAsStream("/cards/backs/66.png"));
-        ImageView viewAnimalGoldRetro = new ImageView(imageAnimalGoldRetro);
-        viewAnimalGoldRetro.setFitHeight(42*2.5);
-        viewAnimalGoldRetro.setFitWidth(64*2.5);
+        viewAnimalGoldRetro = new ImageView(imageAnimalGoldRetro);
+        viewAnimalGoldRetro.setFitHeight(42*3);
+        viewAnimalGoldRetro.setFitWidth(63*3);
+        ImageView viewAnimalGoldRetroBoard = new ImageView(imageAnimalGoldRetro);
+        viewAnimalGoldRetroBoard.setFitHeight(42*2.5);
+        viewAnimalGoldRetroBoard.setFitWidth(64*2.5);
         Image imagePlantGoldRetro = new Image(getClass().getResourceAsStream("/cards/backs/51.png"));
-        ImageView viewPlantGoldRetro = new ImageView(imagePlantGoldRetro);
-        viewPlantGoldRetro.setFitHeight(42*2.5);
-        viewPlantGoldRetro.setFitWidth(64*2.5);
+        viewPlantGoldRetro = new ImageView(imagePlantGoldRetro);
+        viewPlantGoldRetro.setFitHeight(42*3);
+        viewPlantGoldRetro.setFitWidth(63*3);
+        ImageView viewPlantGoldRetroBoard = new ImageView(imagePlantGoldRetro);
+        viewPlantGoldRetroBoard.setFitHeight(42*2.5);
+        viewPlantGoldRetroBoard.setFitWidth(64*2.5);
         Image imageInsectGoldRetro = new Image(getClass().getResourceAsStream("/cards/backs/73.png"));
-        ImageView viewInsectGoldRetro = new ImageView(imageInsectGoldRetro);
-        viewInsectGoldRetro.setFitHeight(42*2.5);
-        viewInsectGoldRetro.setFitWidth(64*2.5);
+        viewInsectGoldRetro = new ImageView(imageInsectGoldRetro);
+        viewInsectGoldRetro.setFitHeight(42*3);
+        viewInsectGoldRetro.setFitWidth(63*3);
+        ImageView viewInsectGoldRetroBoard = new ImageView(imageInsectGoldRetro);
+        viewInsectGoldRetroBoard.setFitHeight(42*2.5);
+        viewInsectGoldRetroBoard.setFitWidth(64*2.5);
         switch (gDeck){
-            case RED -> goldDeck.setGraphic(viewFungiGoldRetro);
-            case BLUE -> goldDeck.setGraphic(viewAnimalGoldRetro);
-            case GREEN -> goldDeck.setGraphic(viewPlantGoldRetro);
-            case PURPLE -> goldDeck.setGraphic(viewInsectGoldRetro);
+            case RED -> goldDeck.setGraphic(viewFungiGoldRetroBoard);
+            case BLUE -> goldDeck.setGraphic(viewAnimalGoldRetroBoard);
+            case GREEN -> goldDeck.setGraphic(viewPlantGoldRetroBoard);
+            case PURPLE -> goldDeck.setGraphic(viewInsectGoldRetroBoard);
         }
 
         int g1 = game.getCommonGold()[0].getCardNumber() + 40;
@@ -204,9 +255,7 @@ public class MainSceneController {
 
         //player board
         for (Integer i : player.getBoard().getPositionCardKeys()){
-            int[] coord = new int[2];
-            coord[0] = (i / 1024) - PlayerBoard.OFFSET;
-            coord[1] = (i % 1024) - PlayerBoard.OFFSET;
+            int[] coord = player.getBoard().getCardCoordinates(player.getBoard().getCardPosition().get(i));
             int card = player.getBoard().getCard(coord).getCardNumber();
             if(player.getBoard().getCard(coord).getType().equals("starter")){
                 card = card + 80;
@@ -215,28 +264,45 @@ public class MainSceneController {
                 card = card + 40;
             }
             Image imageCard = new Image(getClass().getResourceAsStream("/cards/fronts/" + String.valueOf(card) + ".png"));
+            if(!player.getBoard().getCard(coord).isNotBack()){
+                imageCard = new Image(getClass().getResourceAsStream("/cards/backs/" + String.valueOf(card) + ".png"));
+            }
             ImageView viewCard = new ImageView(imageCard);
-            viewCard.setFitHeight(42*4);
-            viewCard.setFitWidth(63*4);
-            viewCard.setLayoutX(1013 + coord[1]*150);
-            viewCard.setLayoutY(532 + coord[0]*77);
-            board.getChildren().add(viewCard);
+            viewCard.setFitHeight(42*3);
+            viewCard.setFitWidth(64*3);
+            viewCard.setLayoutX(996 + coord[1]*150);
+            viewCard.setLayoutY(524 + coord[0]*77);
+            board.getChildren().addFirst(viewCard);
             int[][] buttonCornerCenter = {new int[]{6, 6, 7, 7}, new int[]{6, 7, 7, 6}};
-            int[][] cornerCenter = {new int[]{-1, 1, -1, 1}, new int[]{1, 1, -1, -1}};
+            int[][] cornerCenter = {new int[]{-1, 1, 1, -1}, new int[]{1, 1, -1, -1}};
             int j = 0;
             for (CornerEnum c : CornerEnum.values()){
                 if (player.getBoard().getCard(coord).getCorner(c).getState().equals(CornerState.VISIBLE)){
                     Button b = new Button();
                     b.setPrefSize(58, 52);
                     //b.setStyle("-fx-background-color: transparent");
-                    int finalJ = j;
                     b.setOnAction(event -> {
-                        placeCard(cardToPlace, new int[]{cornerCenter[0][finalJ], cornerCenter[1][finalJ]});
+                        System.out.println(GridPane.getRowIndex(b) + " " + GridPane.getColumnIndex(b));
+                        if(GridPane.getRowIndex(b) < GridPane.getColumnIndex(b)){
+                            placeCard(cardToPlace, new int[]{cornerCenter[0][1], cornerCenter[1][1]});
+                        }
+                        else if(GridPane.getRowIndex(b) > GridPane.getColumnIndex(b)){
+                            placeCard(cardToPlace, new int[]{cornerCenter[0][3], cornerCenter[1][3]});
+                        }
+                        else{
+                            if(GridPane.getRowIndex(b) % 2 == 0){
+                                placeCard(cardToPlace, new int[]{cornerCenter[0][0], cornerCenter[1][0]});
+                            }
+                            else{
+                                placeCard(cardToPlace, new int[]{cornerCenter[0][2], cornerCenter[1][2]});
+                            }
+                        }
                     });
+                    System.out.println((buttonCornerCenter[0][j] + coord[0]) + " " + (buttonCornerCenter[1][j] + coord[1]));
                     buttonBoard.add(b, (buttonCornerCenter[0][j] + coord[0]), (buttonCornerCenter[1][j] + coord[1]));
                     //b.setVisible(false);
                 }
-                j++;
+                j = j + 1;
             }
         }
 
@@ -289,8 +355,8 @@ public class MainSceneController {
             }
         }
         for (int i = 0; i < pions.size(); i++){
-            pions.get(i).setLayoutX(scoretrackFirstPion[0][allPlayers.get(i).getPoints()] + (scoretrackZero[0][0] - scoretrackZero[i][0]));
-            pions.get(i).setLayoutY(scoretrackFirstPion[1][allPlayers.get(i).getPoints()] + (scoretrackZero[0][1] - scoretrackZero[i][1]));
+            pions.get(i).setLayoutX(scoretrackFirstPion[0][allPlayers.get(i).getPoints()] + (scoretrackZero[0][i] - scoretrackZero[0][0]));
+            pions.get(i).setLayoutY(scoretrackFirstPion[1][allPlayers.get(i).getPoints()] + (scoretrackZero[1][i] - scoretrackZero[1][0]));
         }
 
         //chat
@@ -300,17 +366,13 @@ public class MainSceneController {
         }
         receiver.getItems().add("global");
         for(PlayerBean p : opponents){
-            if(!p.getUsername().equals(player.getUsername())){
-                receiver.getItems().add(p.getUsername());
-            }
+            receiver.getItems().add(p.getUsername());
         }
         receiver.getSelectionModel().selectFirst();
 
         //other players' playerboard
         for(PlayerBean p : opponents){
-            if(!p.getUsername().equals(player.getUsername())){
-                otherPlayers.getItems().add(p.getUsername());
-            }
+            otherPlayers.getItems().add(p.getUsername());
         }
         otherPlayers.getSelectionModel().selectFirst();
 
@@ -372,32 +434,111 @@ public class MainSceneController {
     }
 
     @FXML void placeCard(int cardToPlace, int[] newCardCoord){
-        //"hand" + cardToPlace + "in" + newCardCoord
+        //take the card in hand based on the number saved in cardToPlace (0 means the first card in hand) and place it
+        //in the coordinates saved in newCardCoord
         Gui.addReturnValue("1" + "§" + String.valueOf(cardToPlace) + "§" + String.valueOf(newCardCoord[0]) + "§" + String.valueOf(newCardCoord[1]));
+        for (Node b : buttonBoard.getChildren()){
+            b.setVisible(false);
+        }
     }
 
     public void flipHand1(ActionEvent e) {
-        Image imageRetroHand1 = new Image(getClass().getResourceAsStream("/cards/backs/" + String.valueOf(h1) + ".png"));
-        ImageView viewRetroHand1 = new ImageView(imageRetroHand1);
-        viewRetroHand1.setFitHeight(42*3);
-        viewRetroHand1.setFitWidth(63*3);
-        hand1.setGraphic(viewRetroHand1);
+        if(hand1.getGraphic().equals(viewHand1)){
+            if(h1 > 0 && h1 < 11){
+                hand1.setGraphic(viewFungiRetro);
+            }
+            else if(h1 > 10 && h1 < 21){
+                hand1.setGraphic(viewPlantRetro);
+            }
+            else if(h1 > 20 && h1 < 31){
+                hand1.setGraphic(viewAnimalRetro);
+            }
+            else if(h1 > 30 && h1 < 41){
+                hand1.setGraphic(viewInsectRetro);
+            }
+            else if(h1 > 40 && h1 < 51){
+                hand1.setGraphic(viewFungiGoldRetro);
+            }
+            else if(h1 > 50 && h1 < 61){
+                hand1.setGraphic(viewPlantGoldRetro);
+            }
+            else if(h1 > 60 && h1 < 71){
+                hand1.setGraphic(viewAnimalGoldRetro);
+            }
+            else{
+                hand1.setGraphic(viewInsectGoldRetro);
+            }
+        }
+        else{
+            hand1.setGraphic(viewHand1);
+        }
+
     }
 
     public void flipHand2(ActionEvent e) {
-        Image imageRetroHand2 = new Image(getClass().getResourceAsStream("/cards/backs/" + String.valueOf(h2) + ".png"));
-        ImageView viewRetroHand2 = new ImageView(imageRetroHand2);
-        viewRetroHand2.setFitHeight(42*3);
-        viewRetroHand2.setFitWidth(63*3);
-        hand2.setGraphic(viewRetroHand2);
+        if(hand2.getGraphic().equals(viewHand2)){
+            if(h2 > 0 && h2 < 11){
+                hand2.setGraphic(viewFungiRetro);
+            }
+            else if(h2 > 10 && h2 < 21){
+                hand2.setGraphic(viewPlantRetro);
+            }
+            else if(h2 > 20 && h2 < 31){
+                hand2.setGraphic(viewAnimalRetro);
+            }
+            else if(h2 > 30 && h2 < 41){
+                hand2.setGraphic(viewInsectRetro);
+            }
+            else if(h2 > 40 && h2 < 51){
+                hand2.setGraphic(viewFungiGoldRetro);
+            }
+            else if(h2 > 50 && h2 < 61){
+                hand2.setGraphic(viewPlantGoldRetro);
+            }
+            else if(h2 > 60 && h2 < 71){
+                hand2.setGraphic(viewAnimalGoldRetro);
+            }
+            else{
+                hand2.setGraphic(viewInsectGoldRetro);
+            }
+        }
+        else{
+            hand2.setGraphic(viewHand2);
+        }
+
     }
 
     public void flipHand3(ActionEvent e) {
-        Image imageRetroHand3 = new Image(getClass().getResourceAsStream("/cards/backs/" + String.valueOf(h3) + ".png"));
-        ImageView viewRetroHand3 = new ImageView(imageRetroHand3);
-        viewRetroHand3.setFitHeight(42*3);
-        viewRetroHand3.setFitWidth(63*3);
-        hand1.setGraphic(viewRetroHand3);
+        if(hand3.getGraphic().equals(viewHand3)){
+            if(h3 > 0 && h3 < 11){
+                hand3.setGraphic(viewFungiRetro);
+            }
+            else if(h3 > 10 && h3 < 21){
+                hand3.setGraphic(viewPlantRetro);
+            }
+            else if(h3 > 20 && h3 < 31){
+                hand3.setGraphic(viewAnimalRetro);
+            }
+            else if(h3 > 30 && h3 < 41){
+                hand3.setGraphic(viewInsectRetro);
+            }
+            else if(h3 > 40 && h3 < 51){
+                hand3.setGraphic(viewFungiGoldRetro);
+            }
+            else if(h3 > 50 && h3 < 61){
+                hand3.setGraphic(viewPlantGoldRetro);
+            }
+            else if(h3 > 60 && h3 < 71){
+                hand3.setGraphic(viewAnimalGoldRetro);
+            }
+            else{
+                hand3.setGraphic(viewInsectGoldRetro);
+            }
+        }
+        else{
+            hand3.setGraphic(viewHand3);
+        }
+
     }
 
     public void sendMessage(ActionEvent e) {
@@ -407,6 +548,6 @@ public class MainSceneController {
     }
 
     public void viewPlayerboard(ActionEvent e) {
-        Gui.addReturnValue("view" + otherPlayers.getSelectionModel().getSelectedItem());
+        Gui.addReturnValue("5" + "§" + otherPlayers.getSelectionModel().getSelectedItem());
     }
 }

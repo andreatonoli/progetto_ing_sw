@@ -300,7 +300,6 @@ public class Gui extends Application implements Ui{
             result = returnValue.poll();
             String[] splittedResult = result.split("§");
             switch(splittedResult[0]){
-                //place card
                 case "1" -> {
                     client.placeCard(player.getHand()[Integer.parseInt(splittedResult[1])], new int[]{Integer.parseInt(splittedResult[2]), Integer.parseInt(splittedResult[3])});
                 }
@@ -314,12 +313,42 @@ public class Gui extends Application implements Ui{
                     if(splittedResult[1].equals("global")){ client.sendChatMessage(splittedResult[2]); }
                     else { client.sendChatMessage(splittedResult[1], splittedResult[2]); }
                 }
+                case "5" -> {
+                    for(PlayerBean p : players){
+                        if(p.getUsername().equals(splittedResult[1]));{
+                            otherPlayerBoards(player, game, players, p);
+                        }
+                    }
+                }
             }
         }
         catch (InterruptedException e){
             System.err.println(e.getMessage());
         }
+    }
 
+    public void otherPlayerBoards(PlayerBean player, GameBean game, ArrayList<PlayerBean> players, PlayerBean other){
+        String result = null;
+        Platform.runLater(() -> {
+            loadScene(GuiScenes.OTHER_PLAYER_BOARDS_SCENE);
+            OtherPlayerBoardsSceneController c = loader.getController();
+            c.setBoard(other);
+            stage.getScene().setRoot(root);
+        });
+
+        try {
+            while (returnValue.isEmpty()) {
+                Thread.sleep(200);
+            }
+            result = returnValue.poll();
+        }
+        catch (InterruptedException e){
+            System.err.println(e.getMessage());
+        }
+
+        if(result.equals("backToMain")){
+            printViewWithCommands(player, game, players);
+        }
     }
 
     @Override
@@ -343,9 +372,17 @@ public class Gui extends Application implements Ui{
         }
 
         if(result.equals("chosenFirst")){
+            Platform.runLater(() -> {
+                loadScene(GuiScenes.WAITING_SETUP_SCENE);
+                stage.getScene().setRoot(root);
+            });
             return choices[0];
         }
         else{
+            Platform.runLater(() -> {
+                loadScene(GuiScenes.WAITING_SETUP_SCENE);
+                stage.getScene().setRoot(root);
+            });
             return choices[1];
         }
     }
@@ -371,7 +408,7 @@ public class Gui extends Application implements Ui{
         }
 
         Platform.runLater(() -> {
-            loadScene(GuiScenes.WAITING_SCENE);
+            loadScene(GuiScenes.WAITING_COLOR_SCENE);
             stage.getScene().setRoot(root);
         });
 
