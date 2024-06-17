@@ -138,6 +138,7 @@ public class SocketConnection extends Connection implements Runnable {
 
     public void onDisconnect() throws NullPointerException{
         try {
+            cancelPing();
             Game game = lobby.getGame();
             if (game.getGameState().equals(GameState.WAIT_PLAYERS)){
                 server.removePlayers(username);

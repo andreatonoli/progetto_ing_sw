@@ -117,7 +117,7 @@ public class Server {
             }
         } catch (Exception e){
             client.get(username).sendMessage(new GenericMessage("an error as occurred, please try again."));
-            client.get(username).sendMessage(new FreeLobbyMessage(startingGamesId, gamesWithDisconnectionsId));
+            login(client.get(username));
             client.remove(username);
         }
     }

@@ -81,6 +81,7 @@ public class RMIConnection extends Connection {
 
     //TODO: potrebbe conflittare con le operazioni del controller
     public void onDisconnect(){
+        cancelPing();
         Game game = lobby.getGame();
         if (game.getGameState().equals(GameState.WAIT_PLAYERS)){
             server.removePlayers(username);
