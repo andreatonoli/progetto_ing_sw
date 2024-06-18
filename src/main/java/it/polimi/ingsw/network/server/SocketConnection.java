@@ -138,6 +138,7 @@ public class SocketConnection extends Connection implements Runnable {
 
     public void onDisconnect() throws NullPointerException{
         try {
+            try {
             cancelPing();
             Game game = lobby.getGame();
             if (game.getGameState().equals(GameState.WAIT_PLAYERS)){
@@ -151,7 +152,6 @@ public class SocketConnection extends Connection implements Runnable {
                 }
             }
             else if (!game.getGameState().equals(GameState.END)) {
-                try {
                     this.disconnected = true;
                     game.getPlayerByUsername(username).setDisconnected(true);
                     server.addDisconnectedPlayer(username, lobby);
@@ -160,14 +160,17 @@ public class SocketConnection extends Connection implements Runnable {
                         lobby.disconnectedWhileInTurn(username);
                     }
                     System.err.println(username + " got disconnected");
-                    in.close();
-                    out.close();
-                    socket.close();
-                } catch (IOException e) {
-                    System.err.println(e.getMessage());
+                    if (game.getGameState().equals(GameState.START)){
+                        lobby.disconnectedWhileSetupping(this, username.equals(lobby.getPlayerInTurn()));
+                    }
                 }
+            in.close();
+            out.close();
+            socket.close();
+            } catch (IOException e) {
+                System.err.println(e.getMessage());
             }
-        } catch (NullPointerException ignored){} //TODO
+        } catch (NullPointerException ignored){} //TODO controlla la chisura
     }
 
     //private void reconnectLobbyIndex(Message message){

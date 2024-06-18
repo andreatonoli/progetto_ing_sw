@@ -8,6 +8,7 @@ import it.polimi.ingsw.model.enums.GameState;
 import it.polimi.ingsw.model.enums.PlayerState;
 import it.polimi.ingsw.model.exceptions.*;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.player.PlayerBoard;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.network.server.ActionMessage;
 import it.polimi.ingsw.network.server.Connection;
@@ -320,6 +321,10 @@ public class Controller extends Observable {
         }
     }
 
+    public String getPlayerInTurn(){
+        return playerInTurn;
+    }
+
     public void sendChatMessage(Connection sender, Connection receiver, String message){
         getPlayerByClient(sender).sendChatMessage(getPlayerByClient(receiver), message);
         sender.sendMessage(new ChatMessage(getPlayerByClient(sender).getChat()));
@@ -337,6 +342,34 @@ public class Controller extends Observable {
     public void disconnectedWhileInTurn(String username){
         Player player = game.getPlayerByUsername(username);
         turnHandler.disconnectedWhileInTurn(player);
+    }
+
+    public void disconnectedWhileSetupping(Connection user, Boolean inTurn){
+        Player player = game.getPlayerByUsername(user.getUsername());
+        PlayerBoard pb = player.getPlayerBoard();
+        Color color = game.getAvailableColors().get(0);
+        this.game.getAvailableColors().remove(color);
+        if (pb.getCardPosition().isEmpty()){
+            pb.setStarterCard(pb.getStarterCard());
+            player.setChosenObj(player.getPersonalObj()[0]);
+            player.setPionColor(color);
+        }
+        else if (player.getChosenObj() == null){
+            player.setChosenObj(player.getPersonalObj()[0]);
+            player.setPionColor(color);
+        }
+        else {
+            player.setPionColor(color);
+        }
+        notifyAll(new PlayerBoardUpdateMessage(getPlayerByClient(user).getPlayerBoard(), user.getUsername()));
+        if (inTurn){
+            playerInTurn = turnHandler.changeSetupPlayer();
+            if (playerInTurn == null){
+                setupFinished = true;
+                game.setGameState(GameState.IN_GAME);
+                notifyAll(new GameStateMessage(game.getGameState()));
+            }
+        }
     }
 
     /**

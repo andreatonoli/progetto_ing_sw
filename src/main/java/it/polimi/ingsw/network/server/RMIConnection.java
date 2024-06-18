@@ -101,6 +101,9 @@ public class RMIConnection extends Connection {
             if (game.getPlayerInTurn().getUsername().equals(username)){
                 lobby.disconnectedWhileInTurn(username);
             }
+            if (game.getGameState().equals(GameState.START)){
+                lobby.disconnectedWhileSetupping(this, username.equals(lobby.getPlayerInTurn()));
+            }
         }
     }
 

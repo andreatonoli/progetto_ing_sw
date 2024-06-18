@@ -138,6 +138,9 @@ public class TurnHandler extends Observable {
     }
     public String changeSetupPlayer(){
         j++;
+        if (j != game.getLobbySize() && game.getPlayers().get(j).isDisconnected() ){
+            j++;
+        }
         if (j == game.getLobbySize()){
             return null;
         }
