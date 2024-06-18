@@ -42,6 +42,7 @@ public class Card implements Serializable {
      * Boolean attribute indicating whether the card is turned over.
      */
     private boolean isBack = false;
+    
     public Card (Face front, Face retro, String type, int cardNumber, Color color){
         this.front = front;
         this.retro = retro;

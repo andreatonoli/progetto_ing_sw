@@ -3,7 +3,6 @@ package it.polimi.ingsw.network.server;
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.controller.ServerController;
 import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.network.messages.FreeLobbyMessage;
 import it.polimi.ingsw.network.messages.GenericMessage;
 
 import java.util.*;
@@ -140,9 +139,7 @@ public class Server {
             gamesWithDisconnectionsId.add(game.getId());
         }
     }
-    //TODO finire
-    //TODO: riscrivere meglio
-    //TODO: per ogni nuovo game salvarsi il suo id e usarlo per riconnettersi. se no bisogna cercare l'username per tutti i game iniziati
+
     public void reconnectPlayer(Connection client, String username){
         Connection oldConnection = this.client.replace(username, client);
         this.disconnectedPlayers.remove(username);
