@@ -22,7 +22,7 @@ public class Tui implements Ui {
     private PlayerBean player;
     private GameBean game;
     private ArrayList<PlayerBean> players;
-    private final Scanner scanner;
+    private Scanner scanner;
     private final Object lock = new Object();
     private boolean running;
     private Thread inputThread;
@@ -66,10 +66,10 @@ public class Tui implements Ui {
             String choice;
             AnsiConsole.out().println("Please specify the following settings. The default value is shown between brackets.");
             String address = askServerAddress();
-            AnsiConsole.out().println("Choose your connection method: Write:\n\tI)RMI\n\tII)Socket");
+            AnsiConsole.out().println("Choose your connection method: Write:\n\t[1] RMI\n\t[2] Socket");
             choice = scanner.nextLine();
             while(!choice.equalsIgnoreCase("RMI") && !choice.equalsIgnoreCase("Socket")){
-                AnsiConsole.out().println("Wrong input.\nPlease, choose your connection method. Write:\n\tI)RMI\n\tII)Socket");
+                AnsiConsole.out().println("Wrong input.\nPlease, choose your connection method. Write:\n\t[1] RMI\n\t[2]Socket");
                 choice = scanner.nextLine();
             }
             int port = askServerPort(choice);
@@ -140,17 +140,17 @@ public class Tui implements Ui {
     @Override
     public int selectGame(List<Integer> startingGamesId, List<Integer> gamesWhitDisconnectionsId){
         int lobby = -2;
-        int choice;
+        String choice;
         do {
             AnsiConsole.out().println("Select one of the following options by writing the respective number:\n[1] create a game\n[2] join a game\n[3] reconnect to a game");
-            choice = scanner.nextInt();
-        } while (choice > 3 || choice <= 0);
+            choice = scanner.next();
+        } while (!choice.equals("3") && !choice.equals("2") && !choice.equals("1"));
         switch (choice){
-            case 1 -> {
+            case "1" -> {
                 AnsiConsole.out().println("Creating a new game...");
                 lobby = -1;
             }
-            case 2 -> {
+            case "2" -> {
                 if(startingGamesId.isEmpty()){
                     AnsiConsole.out().println("There are no lobbies yet");
                 }
@@ -158,7 +158,7 @@ public class Tui implements Ui {
                     lobby = getLobby(startingGamesId);
                 }
             }
-            case 3 -> {
+            case "3" -> {
                 if (gamesWhitDisconnectionsId.isEmpty()) {
                     AnsiConsole.out().println("There are no lobbies with disconnected players");
                 }
@@ -171,7 +171,7 @@ public class Tui implements Ui {
     }
 
     public int getLobby(List<Integer> lobbyList) {
-        int lobby = -1;
+        int lobby;
         AnsiConsole.out().println("Select one of the following game's lobby by writing the respective number:");
         for (Integer i : lobbyList){
             AnsiConsole.out().println("Lobby [" + i + "]");
@@ -179,9 +179,10 @@ public class Tui implements Ui {
         do{
             try{
                 lobby = scanner.nextInt();
-            }
-            catch (NumberFormatException e) {
-                AnsiConsole.out().print("Invalid input.\nInsert the lobby number:");
+            } catch (NumberFormatException | InputMismatchException e){
+                AnsiConsole.out().println("Invalid input.\n Insert a valid number");
+                lobby = -1;
+                scanner = new Scanner(System.in);
             }
         } while (!lobbyList.contains(lobby));
         return lobby;
@@ -190,15 +191,15 @@ public class Tui implements Ui {
 
 
     public int setLobbySize(){
-        int lobbySize = -1;
+        int lobbySize;
         AnsiConsole.out().println("Select the lobby's capacity (min is " + Server.MIN_PLAYERS_PER_LOBBY + " and max is " + Server.MAX_PLAYERS_PER_LOBBY + " players)");
         do{
             try{
                 lobbySize = scanner.nextInt();
-            } catch (NumberFormatException e){
-                {
+            } catch (NumberFormatException | InputMismatchException e){
                     AnsiConsole.out().println("Invalid input.\n Insert a valid number");
-                }
+                    lobbySize = 0;
+                    scanner = new Scanner(System.in);
             }
         } while (lobbySize < Server.MIN_PLAYERS_PER_LOBBY || lobbySize > Server.MAX_PLAYERS_PER_LOBBY);
         return lobbySize;
@@ -1091,15 +1092,26 @@ public class Tui implements Ui {
     }
     @Override
     public Achievement chooseAchievement(Achievement[] choices) {
-        AnsiConsole.out().println("I)");
+        AnsiConsole.out().println("[1]");
         this.printAchievement(choices[0]);
-        AnsiConsole.out().println("II)");
+        AnsiConsole.out().println("[2]");
         this.printAchievement(choices[1]);
         AnsiConsole.out().println("Choose one of the two Achievements");
-        int choice = scanner.nextInt();
-        while (choice < 1 || choice > 2){
-            AnsiConsole.out().println("Wrong input.\nWrite 1 for the first achievement and 2 for the second");
+        int choice;
+        try {
             choice = scanner.nextInt();
+        } catch (NumberFormatException | InputMismatchException e){
+            choice = 0;
+            scanner = new Scanner(System.in);
+        }
+        while (choice < 1 || choice > 2){
+            AnsiConsole.out().println("Wrong input.\nWrite [1] for the first achievement and [2] for the second");
+            try {
+                choice = scanner.nextInt();
+            } catch (NumberFormatException | InputMismatchException e){
+                choice = 0;
+                scanner = new Scanner(System.in);
+            }
         }
         return choices[choice - 1];
     }
@@ -1109,10 +1121,21 @@ public class Tui implements Ui {
         for (int i = 0; i < colors.size(); i++){
             AnsiConsole.out().println("\t" + (1 + i) + ") " + colors.get(i));
         }
-        int c = scanner.nextInt();
+        int c;
+        try {
+            c = scanner.nextInt();
+        } catch (NumberFormatException | InputMismatchException e){
+            c = -1;
+            scanner = new Scanner(System.in);
+        }
         while(c > colors.size() || c < 0){
             AnsiConsole.out().print("Invalid input. Retry: ");
-            c = scanner.nextInt();
+            try {
+                c = scanner.nextInt();
+            } catch (NumberFormatException | InputMismatchException e){
+                c = -1;
+                scanner = new Scanner(System.in);
+            }
         }
         inputThread.start();
         return colors.get(c - 1);
