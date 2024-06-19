@@ -52,10 +52,10 @@ public class TurnHandler extends Observable {
     public void changePlayerState(Player player){
         if (game.getDisconnections()+1 < game.getLobbySize() || disconnectedWhileInTurn) {
             int i = (player.getPlayerState().ordinal() + 1) % 3;
-            if (endingCycle && endCountDown==0 && PlayerState.values()[i].equals(PlayerState.DRAW_CARD)){
+            if (endingCycle && endCountDown==0 && i==1){
                 i=2;
             }
-            if (player.isDisconnected() && PlayerState.values()[i].equals(PlayerState.DRAW_CARD)) {
+            if (player.isDisconnected() && i==1) {
                 player.setPlayerState(PlayerState.values()[i]);
                 try {
                     player.drawCard(game.getGameBoard().getResourceDeck());

@@ -409,6 +409,9 @@ public class Controller extends Observable {
     public Game getGame(){
         return this.game;
     }
+    public TurnHandler getTurnHandler() {
+        return this.turnHandler;
+    }
 
     public void getConnectedPlayersMessage(){
         notifyAll(new GenericMessage("Players: " + this.connectedPlayers.keySet().size() + "/" + this.game.getLobbySize()));
