@@ -10,6 +10,7 @@ public enum TuiColors {
     ANSI_BLACK("\033[30;1m"),
     ANSI_WHITE("\033[37;1m"),
     ANSI_YELLOW("\033[48;2;255;170;0m"),
+    ANSI_GRAY("\033[48;5;247m"),
     ANSI_CLEAR("\033[H\033[2J");
 
     private final String color;

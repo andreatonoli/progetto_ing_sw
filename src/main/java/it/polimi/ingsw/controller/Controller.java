@@ -326,9 +326,13 @@ public class Controller extends Observable {
     }
 
     public void sendChatMessage(Connection sender, Connection receiver, String message){
-        getPlayerByClient(sender).sendChatMessage(getPlayerByClient(receiver), message);
-        sender.sendMessage(new ChatMessage(getPlayerByClient(sender).getChat()));
-        receiver.sendMessage(new ChatMessage(getPlayerByClient(receiver).getChat()));
+        try {
+            getPlayerByClient(sender).sendChatMessage(getPlayerByClient(receiver), message);
+            sender.sendMessage(new ChatMessage(getPlayerByClient(sender).getChat()));
+            receiver.sendMessage(new ChatMessage(getPlayerByClient(receiver).getChat()));
+        } catch (PlayerNotFoundException e) {
+            sender.sendMessage(new ErrorMessage(e.getMessage()));
+        }
     }
     public void sendChatMessage(Connection sender, String message){
         getPlayerByClient(sender).sendChatMessage(message);

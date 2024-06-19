@@ -2,9 +2,9 @@ package model;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import it.polimi.ingsw.model.exceptions.PlayerNotFoundException;
 import it.polimi.ingsw.model.player.*;
 import it.polimi.ingsw.model.*;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 
@@ -80,7 +80,7 @@ public class PlayerChatTest {
         game1.addPlayer(player1);
         game1.addPlayer(player2);
         game1.addPlayer(player3);
-        player1.sendChatMessage(player2, message);
+        assertDoesNotThrow(() -> player1.sendChatMessage(player2, message));
 
         assertEquals(player1.getUsername() + ": " + message, player1.getChat().getFirst());
         assertEquals(player1.getUsername() + ": " + message, player2.getChat().getFirst());
@@ -115,9 +115,9 @@ public class PlayerChatTest {
         }
         //fulling array chat for player2
         for (int i = 0; i < Chat.CHATDIM - 5; i++){
-            player1.sendChatMessage(player2, message2);
+            assertDoesNotThrow(() -> player1.sendChatMessage(player2, message2));
         }
-        player1.sendChatMessage(player2, message3);
+        assertDoesNotThrow(() -> player1.sendChatMessage(player2, message3));
 
         assertEquals(player1.getUsername() + ": " + message3, player1.getChat().get(0));
         assertEquals(player1.getUsername() + ": " + message2, player1.getChat().get(1));
@@ -148,7 +148,7 @@ public class PlayerChatTest {
         //player temporary added until fix
         game1.addPlayer(player1);
         game1.addPlayer(player2);
-        player1.sendChatMessage(player3, message);
+        assertThrows(PlayerNotFoundException.class, () -> player1.sendChatMessage(player3, message));
 
         assertTrue(player1.getChat().isEmpty());
         assertTrue(player2.getChat().isEmpty());
@@ -175,9 +175,9 @@ public class PlayerChatTest {
         game1.addPlayer(player2);
         //fulling array chat for player1 and player2
         for (int i = 0; i < Chat.CHATDIM - 2; i++){
-            player1.sendChatMessage(player2, message1);
+            assertDoesNotThrow(() -> player1.sendChatMessage(player2, message1));
         }
-        player1.sendChatMessage(player3, message2);
+        assertThrows(PlayerNotFoundException.class, () -> player1.sendChatMessage(player3, message2));
 
         for (int i = 0; i < Chat.CHATDIM - 2; i++){
             assertEquals(player1.getUsername() + ": " + message1, player1.getChat().getFirst());

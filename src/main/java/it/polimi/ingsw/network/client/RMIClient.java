@@ -24,6 +24,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
     private boolean processingAction;
     private static final String serverName = "GameServer";
     private String username;
+    private int selector = -2;
     private GameBean game;
     private final Ui view;
     private VirtualServer server;
@@ -41,24 +42,30 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
         try {
             Registry registry = LocateRegistry.getRegistry(host, port);
             server = (VirtualServer) registry.lookup(serverName);
-            server.login(this);
         } catch (RemoteException | NotBoundException e){
             System.out.println(e.getMessage());
         }
     }
 
+    public void login(){
+        try {
+            server.login(this);
+        } catch (RemoteException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     public String askUsername() throws RemoteException{
-        this.username = view.askNickname();
+        this.view.askNickname();
         while (server.usernameTaken(this.username)) {
             System.out.println("Username is already taken, please choose another: ");
-            this.username = view.askNickname();
+            this.view.askNickname();
         }
-        this.player = new PlayerBean(username);
         return username;
     }
 
     public String askUsername(int lobby) throws RemoteException{
-        this.username = view.askNickname();
+        view.askNickname();
         if(!server.userNotDisconnected(username, lobby)) {
             System.out.println("there is no player disconnected in game " + lobby + " with that name.");
         }
@@ -69,15 +76,15 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
     }
 
     public int joinGame(List<Integer> startingGamesId, List<Integer> gamesWhitDisconnectionsId) throws RemoteException{
-        int response;
         do{
-            response = this.view.selectGame(startingGamesId, gamesWhitDisconnectionsId);
-        } while (response == -2);
-        return response;
+            this.view.selectGame(startingGamesId, gamesWhitDisconnectionsId);
+        } while (selector == -2);
+        return selector;
     }
 
     public int setLobbySize() throws RemoteException{
-        return this.view.setLobbySize();
+        this.view.askLobbySize();
+        return selector;
     }
 
     public void placeStarterCard(Card card) throws RemoteException{
@@ -178,28 +185,14 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                 break;
             case STARTER_CARD:
                 Card starterCard = ((StarterCardMessage) message).getCard();
-                boolean choice = this.view.askSide(starterCard);
-                if (!choice) {
-                    starterCard.setCurrentSide();
-                }
-                player.setStarterCard(starterCard);
-                try {
-                    this.placeStarterCard(starterCard);
-                } catch (RemoteException e) {
-                    System.out.println(e.getMessage());
-                }
+                this.view.askSide(starterCard);
                 break;
             case CARD_HAND:
                 //Copied the message body into the player's cards
                 System.arraycopy(((CardInHandMessage) message).getHand(), 0, this.player.getHand(), 0, 3);
                 break;
             case PRIVATE_ACHIEVEMENT:
-                this.player.setAchievement(this.view.chooseAchievement(((AchievementMessage) message).getAchievements()));
-                try {
-                    this.setPrivateAchievement(player.getAchievement());
-                } catch (RemoteException e) {
-                    System.err.println(e.getMessage() + " in RMIClient.update");
-                }
+                this.view.askAchievement(((AchievementMessage) message).getAchievements());
                 break;
             case PLAYER_STATE:
                 PlayerState playerState = ((PlayerStateMessage) message).getState();
@@ -216,13 +209,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                 }
                 break;
             case COLOR_REQUEST:
-                Color chosenColor = this.view.chooseColor(((ColorRequestMessage) message).getColors());
-                player.setPionColor(chosenColor);
-                try {
-                    this.setColor(chosenColor);
-                } catch (RemoteException e) {
-                    System.err.println(e.getMessage());
-                }
+                this.view.askColor(((ColorRequestMessage) message).getColors());
                 break;
             case COLOR_RESPONSE:
                 Color setColor = ((ColorResponseMessage) message).getColor();
@@ -312,11 +299,58 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
         }
     }
 
+    @Override
+    public void setNickname(String nickname) {
+        this.username = nickname;
+        if (this.player != null) {
+            player.setUsername(nickname);
+        }
+        else {
+            this.player = new PlayerBean(this.username);
+        }
+    }
 
     @Override
-    public Ui getView(){
-    //    return view;
-        return null;
+    public void setOnConnectionAction(int response, List<Integer> startingGamesId, List<Integer> gamesWithDisconnectionsId) {
+        selector = response;
+    }
+
+    @Override
+    public void setLobbySize(int size) {
+        selector = size;
+    }
+
+    @Override
+    public void placeStarterCard(boolean side, Card starterCard) {
+        if (!side) {
+            starterCard.setCurrentSide();
+        }
+        player.setStarterCard(starterCard);
+        try {
+            this.placeStarterCard(starterCard);
+        } catch (RemoteException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    @Override
+    public void chooseAchievement(Achievement achievement) {
+        this.player.setAchievement(achievement);
+        try {
+            this.setPrivateAchievement(player.getAchievement());
+        } catch (RemoteException e) {
+            System.err.println(e.getMessage() + " in RMIClient.update");
+        }
+    }
+
+    @Override
+    public void chooseColor(Color chosenColor) {
+        player.setPionColor(chosenColor);
+        try {
+            this.setColor(chosenColor);
+        } catch (RemoteException e) {
+            System.err.println(e.getMessage());
+        }
     }
 
     @Override
@@ -378,10 +412,5 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
         else{
             update(new GenericMessage("\nThere's a time and place for everything! But not now.\n"));
         }
-    }
-
-    @Override
-    public ArrayList<PlayerBean> getPlayers() {
-        return null;
     }
 }

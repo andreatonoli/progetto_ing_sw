@@ -1,5 +1,8 @@
 package it.polimi.ingsw.model.exceptions;
 
+/**
+ * This exception is thrown when the user tries to place a gold card without fulfilling its cost.
+ */
 public class CostNotSatisfiedException extends Exception{
     public CostNotSatisfiedException(){
         super();

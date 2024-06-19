@@ -40,7 +40,7 @@ public class RMIServer implements VirtualServer {
     //    connections.get(username).cancelPing();
     //    connections.get(username).onDisconnect();
     //    int playersToDelete = connections.get(username).getLobby().getGame().getLobbySize()-1;
-    //    connections.get(username).getLobby().getGame().setLobbySize(playersToDelete);
+    //    connections.get(username).getLobby().getGame().askLobbySize(playersToDelete);
     //    System.out.println("                              "+playersToDelete);
     //    if (playersToDelete == 0) {
     //        server.removeGame(connections.get(username).getLobby());

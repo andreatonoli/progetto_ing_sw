@@ -1,7 +1,9 @@
 package it.polimi.ingsw.model.exceptions;
 
+/**
+ * This exception is thrown when a player tries to perform an action, such as place a card or draw one, without being in turn
+ */
 public class NotInTurnException extends Exception{
-    //TODO: scrivere messaggi diversi in base a dove viene lanciata
     public NotInTurnException(){
         super();
     }

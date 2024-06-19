@@ -90,7 +90,7 @@ public class Gui extends Application implements Ui{
     }
 
     @Override
-    public String askNickname(){
+    public void askNickname(){
         String result = null;
         Platform.runLater(() -> {
             loadScene(GuiScenes.LOGIN_SCENE);
@@ -105,11 +105,8 @@ public class Gui extends Application implements Ui{
         catch (InterruptedException e){
             System.err.println(e.getMessage());
         }
-
-        return result;
     }
 
-    @Override
     public String askServerAddress() {
         String result = null;
         Platform.runLater(() -> {
@@ -150,7 +147,6 @@ public class Gui extends Application implements Ui{
         return result;
     }
 
-    @Override
     public int askServerPort(String connectionType) {
         String result = null;
         Platform.runLater(() -> {
@@ -200,7 +196,7 @@ public class Gui extends Application implements Ui{
     }
 
     @Override
-    public int selectGame(List<Integer> startingGamesId, List<Integer> gamesWhitDisconnectionsId) {
+    public void selectGame(List<Integer> startingGamesId, List<Integer> gamesWhitDisconnectionsId) {
         String result = null;
         Platform.runLater(() -> {
             loadScene(GuiScenes.LOBBIES_SCENE);
@@ -220,16 +216,16 @@ public class Gui extends Application implements Ui{
         }
 
         if(result.equals("newLobby")){
-            return -1;
+            //return -1;
         }
         else{
             System.out.println(result);
-            return Integer.parseInt(result);
+            //return Integer.parseInt(result);
         }
     }
 
     @Override
-    public int setLobbySize() {
+    public void askLobbySize() {
         int result = 0;
         Platform.runLater(() -> {
             loadScene(GuiScenes.LOBBY_SIZE_SCENE);
@@ -251,11 +247,11 @@ public class Gui extends Application implements Ui{
             stage.getScene().setRoot(root);
         });
 
-        return result;
+        //return result;
     }
 
     @Override
-    public boolean askSide(Card starterCard) {
+    public void askSide(Card starterCard) {
         String result = null;
         Platform.runLater(() -> {
             loadScene(GuiScenes.STARTER_FLIP_SCENE);
@@ -275,10 +271,10 @@ public class Gui extends Application implements Ui{
         }
 
         if(result.equals("front")){
-            return true;
+            //return true;
         }
         else{
-            return false;
+            //return false;
         }
     }
 
@@ -327,6 +323,16 @@ public class Gui extends Application implements Ui{
         }
     }
 
+    @Override
+    public void askAchievement(Achievement[] choices) {
+
+    }
+
+    @Override
+    public void askColor(List<Color> colors) {
+
+    }
+
     public void otherPlayerBoards(PlayerBean player, GameBean game, ArrayList<PlayerBean> players, PlayerBean other){
         String result = null;
         Platform.runLater(() -> {
@@ -352,70 +358,6 @@ public class Gui extends Application implements Ui{
     }
 
     @Override
-    public Achievement chooseAchievement(Achievement[] choices) {
-        String result = null;
-        Platform.runLater(() -> {
-            loadScene(GuiScenes.ACHIEVEMENT_CHOICE_SCENE);
-            AchievementChoiceSceneController c = loader.getController();
-            c.setAchievements(choices);
-            stage.getScene().setRoot(root);
-        });
-
-        try {
-            while (returnValue.isEmpty()) {
-                Thread.sleep(200);
-            }
-            result = returnValue.poll();
-        }
-        catch (InterruptedException e){
-            System.err.println(e.getMessage());
-        }
-
-        if(result.equals("chosenFirst")){
-            Platform.runLater(() -> {
-                loadScene(GuiScenes.WAITING_SETUP_SCENE);
-                stage.getScene().setRoot(root);
-            });
-            return choices[0];
-        }
-        else{
-            Platform.runLater(() -> {
-                loadScene(GuiScenes.WAITING_SETUP_SCENE);
-                stage.getScene().setRoot(root);
-            });
-            return choices[1];
-        }
-    }
-
-    @Override
-    public Color chooseColor(List<Color> colors) {
-        String result = null;
-        Platform.runLater(() -> {
-            loadScene(GuiScenes.COLOR_CHOICE_SCENE);
-            ColorChoiceSceneController c = loader.getController();
-            c.setColors(colors);
-            stage.getScene().setRoot(root);
-        });
-
-        try {
-            while (returnValue.isEmpty()) {
-                Thread.sleep(200);
-            }
-            result = returnValue.poll();
-        }
-        catch (InterruptedException e){
-            System.err.println(e.getMessage());
-        }
-
-        Platform.runLater(() -> {
-            loadScene(GuiScenes.WAITING_COLOR_SCENE);
-            stage.getScene().setRoot(root);
-        });
-
-        return colors.get(Integer.parseInt(result));
-    }
-
-    @Override
     public void setMessage(String message, boolean isError) {
 
     }
@@ -424,5 +366,5 @@ public class Gui extends Application implements Ui{
     public void declareWinners(ArrayList<String> winners) {
 
     }
-    
+
 }
