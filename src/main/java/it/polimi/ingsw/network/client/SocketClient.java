@@ -145,8 +145,8 @@ public class SocketClient implements ClientInterface {
                 resumeConnection(number, creation);
                 break;
             case NUM_PLAYER_REQUEST:
+                this.view.askNickname();
                 this.view.askLobbySize();
-                view.askNickname();
                 break;
             case FREE_LOBBY:
                 List<Integer> startingGamesId = ((FreeLobbyMessage) message).getstartingGamesId();
@@ -315,7 +315,7 @@ public class SocketClient implements ClientInterface {
     }
 
     @Override
-    public void setNickname(String nickname){
+    public void setNickname(String nickname) {
         this.username = nickname;
         if (this.player != null) {
             player.setUsername(nickname);
@@ -415,7 +415,7 @@ public class SocketClient implements ClientInterface {
 
     public void resumeConnection(int number, boolean creation){
         if (creation){
-            sendMessage(new NumPlayerResponseMessage(username, number));
+            sendMessage(new NumPlayerResponseMessage(this.username, number));
         }
         else {
             sendMessage(new LobbyIndexMessage(this.username, number));

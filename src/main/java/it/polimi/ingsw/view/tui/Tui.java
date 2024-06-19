@@ -79,6 +79,7 @@ public class Tui implements Ui {
             }
             else{
                 client = new SocketClient(address, port, this);
+                client.login();
             }
         } catch (RemoteException e) {
             System.err.println(e.getMessage());
@@ -1163,6 +1164,7 @@ public class Tui implements Ui {
                 message = sb.append("\t").append(s).append("\n").toString();
             }
         }
+        this.printViewWithCommands(player, game, players);
     }
 
     public void moveCursor(int row, int column){
