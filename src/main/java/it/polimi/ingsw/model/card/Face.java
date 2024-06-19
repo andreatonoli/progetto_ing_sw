@@ -9,69 +9,71 @@ import java.util.List;
 public abstract class Face implements Serializable {
 
     /**
-     * array containing the current side card's corners
+     * array containing the face's corners.
      */
     protected Corner[] corners;
 
     /**
-     * getter of the symbols list
-     * @return all the symbol in the center of the card
+     * get the list of symbols present in the middle of the face.
+     * @return all the symbols in the center of the face.
      */
     public List<Symbols> getSymbols(){
         return null;
     }
 
     /**
-     * @param player in the one to check
-     * @return if the player could handle the cost of the gold card
+     * Checks if a player could afford the potential cost to place a card on this face. //TODO: tradurre decentemente piazzare la carta su questa faccia
+     * @param player player to be checked.
+     * @return  true if the face has no cost or the player can afford it.
      */
     public boolean checkCost(Player player) {
         return true;
     }
 
     /**
-     * used to check if the player has completed the card condition to get the points
-     * @param player is the one to check
+     * Calculates the points given by the face, and adds them to the player score.
+     * @param player player whose score is being calculated.
+     * @param card card which points are calculated.
      */
     public void calcPoints(Player player, Card card){
 
     }
 
     /**
-     * getter to get the cost array
-     * @return the cost, in terms of symbols, necessary to place the card
+     * Getter of the potential face's cost.
+     * @return the cost, in terms of symbols, necessary to place the card //TODO: on this face.
      */
     public Integer[] getCost() {
         return null;
     }
 
     /**
-     * getter to get the points value
-     * @return the point number written on the card
+     * getter of the points attribute.
+     * @return the face's base points.
      */
     public int getPoints() {
         return 0;
     }
 
     /**
-     * getter tp get the condition value
-     * @return the condition (if present) to calc points. For example 1 point for every visible quill
+     * Gets the condition to calculate the points when the card is placed //TODO: on this face.
+     * @return the condition (if present) to calculates points. For example 1 point for every visible quill.
      */
     public Condition getCondition() {
         return Condition.NOTHING;
     }
 
     /**
-     * getter to get the requiredItem value
-     * @return (if present) the item needed for the Condition.ITEM
+     * getter of the requiredItem value.
+     * @return (if present) the item needed in the ITEM condition.
      */
     public Symbols getRequiredItem() {
         return null;
     }
 
     /**
-     * getter to get one of the card's corner
-     * @param corner is the corner's position
+     * Gets the corner in {@param corner} position.
+     * @param corner corner position (e.g. Top-Right).
      * @return the corner in the wanted position.
      */
     public Corner getCorner(CornerEnum corner){
@@ -79,35 +81,27 @@ public abstract class Face implements Serializable {
     }
 
     /**
-     * getter of the corners array
-     * @return all the card's corners.
-     */
-    public Corner[] getCorners(){
-        return this.corners;
-    }
-
-    /**
-     * getter to get the symbol in the card's corner
-     * @param corner is the corner's position
-     * @return the symbol in the corner position.
+     * getter of the symbol in one specified card's corner.
+     * @param corner the position of the corner we want to get the symbol.
+     * @return the symbol contained in that corner.
      */
     public Symbols getCornerSymbol(CornerEnum corner){
         return corners[corner.ordinal()].getSymbol();
     }
 
     /**
-     * getter to get the state of the card's corner
-     * @param corner is the corner's position
-     * @return the corner's state
+     * getter of one corner's state.
+     * @param corner the position of the corner we want to get the state.
+     * @return the corner's state.
      */
     public CornerState getCornerState(CornerEnum corner){
         return corners[corner.ordinal()].getState();
     }
 
     /**
-     * setter to set the state of the card's corner
-     * @param corner is the corner's position
-     * @param state is the corner's state
+     * set the card's corner state.
+     * @param corner position of the corner we want to set the state.
+     * @param state the corner's state we want to set.
      */
     public void setCornerState(CornerEnum corner, CornerState state){
         corners[corner.ordinal()].setState(state);

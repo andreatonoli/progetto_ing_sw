@@ -6,19 +6,21 @@ import it.polimi.ingsw.model.enums.Symbols;
 import java.io.Serializable;
 
 public class Corner implements Serializable {
+
     /**
-     * indicates the symbol (from the symbols enumeration) contained in the corner
+     * indicates the symbol contained in the corner.
      */
-    private Symbols symbol;
+    private final Symbols symbol;
+
     /**
-     * indicate the state of the corner
+     * indicate the state of the corner.
      */
     private CornerState state;
 
     /**
-     * Corner constructor
-     * @param symbol is contained in the corner
-     * corner's initial state set to visible
+     * Corner constructor. If the symbol is a NOCORNER it sets the state to NOT_VISIBLE to hide the corner. In every other
+     * case the state is VISIBLE.
+     * @param symbol symbol contained in the corner.
      */
     public Corner(Symbols symbol){
         this.symbol = symbol;
@@ -31,24 +33,24 @@ public class Corner implements Serializable {
     }
 
     /**
-     * getter to get the symbol value
-     * @return the symbol contained in the corner
+     * getter of the symbol inside the corner.
+     * @return the symbol contained in the corner.
      */
     public Symbols getSymbol(){
         return this.symbol;
     }
 
     /**
-     * getter to get the state of the corner
-     * @return the state the corner is currently in
+     * getter of the corner state.
+     * @return the current state of the corner.
      */
     public CornerState getState(){
         return this.state;
     }
 
     /**
-     * setter to set the state value
-     * @param state is the state the corner is currently in
+     * Sets the state of the corner.
+     * @param state current state of the corner.
      */
     public void setState(CornerState state){
         this.state = state;

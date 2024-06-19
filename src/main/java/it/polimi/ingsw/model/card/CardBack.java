@@ -6,15 +6,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CardBack extends Face {
+
     /**
-     * list of one or more symbols (from the symbols enumeration) which appear in the center of the card
+     * list of one or more symbols which appear in the middle of the card.
      */
     private final List<Symbols> centerSymbols;
+
     /**
-     * Builds the back of the cards, even the empty corners
-     *
-     * @param centerSymbols one or more symbols which appear in the center of the card
-     * @param corners       Array of corners, corners[0] = top-left, corner[1] = top-right, corner[2] = bottom-right, corner[3] = bottom-left
+     * Builds the back of the cards, and sets the corners copying the corners array.
+     * @param centerSymbols one or more symbols which appear in the middle of the card.
+     * @param corners array of corners.
      */
     public CardBack(List<Symbols> centerSymbols, Corner[] corners) {
         this.corners = new Corner[4];
@@ -22,10 +23,10 @@ public class CardBack extends Face {
         this.centerSymbols.addAll(centerSymbols);
         System.arraycopy(corners, 0, this.corners, 0, 4);
     }
+
     /**
-     * Builds the back of the cards (in case all corner ar empty)
-     *
-     * @param centerSymbols one or more symbols which appear in the center of the card
+     * Builds the back of the cards, and sets all the corners to empty.
+     * @param centerSymbols one or more symbols which appear in the middle of the card.
      */
     public CardBack(List<Symbols> centerSymbols) {
         this.centerSymbols = new ArrayList<>();

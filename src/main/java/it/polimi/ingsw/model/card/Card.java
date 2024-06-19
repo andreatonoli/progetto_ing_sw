@@ -42,7 +42,15 @@ public class Card implements Serializable {
      * Boolean attribute indicating whether the card is turned over.
      */
     private boolean isBack = false;
-    
+
+    /**
+     * Card constructor that sets the class attributes, the face to be firstly shown is the front face.
+     * @param front front face of the card.
+     * @param retro retro face of the card.
+     * @param type type of the card (e.g. resource, gold or starter).
+     * @param cardNumber unique card's identifier.
+     * @param color color of the card.
+     */
     public Card (Face front, Face retro, String type, int cardNumber, Color color){
         this.front = front;
         this.retro = retro;
@@ -52,28 +60,40 @@ public class Card implements Serializable {
         this.currentSide = front;
     }
 
+    /**
+     * Getter of the type attribute.
+     * @return the type of the card.
+     */
     public String getType(){
         return this.type;
     }
 
+    /**
+     * Getter of the cardNumber attribute.
+     * @return the card's id.
+     */
     public int getCardNumber(){
         return this.cardNumber;
     }
 
     /**
-     * getter to get the color value
-     * @return the color of the card
+     * getter of the color attribute.
+     * @return the color of the card.
      */
     public Color getColor() {
         return this.color;
     }
-    
+
+    /**
+     * Return whether the card is flipped or not.
+     * @return true if card is showing its front face.
+     */
     public boolean isNotBack(){
         return !isBack;
     }
 
     /**
-     * setter to set side of the card
+     * This method flips the card showing the opposite face. It changes the currentSide attribute.
      */
     public void setCurrentSide(){
         if (this.isBack){
@@ -87,102 +107,103 @@ public class Card implements Serializable {
     }
 
     /**
-     * getter of the symbols list
-     * @return all the symbol in the center of the card
+     * getter of the symbols list.
+     * @return all the symbols in the middle of the card (if present).
      */
     public List<Symbols> getSymbols(){
         return currentSide.getSymbols();
     }
 
     /**
-     * @param player in the one to check
-     * @return if the player could handle the cost of the gold card
+     * Checks if a player could afford the potential cost to place a card.
+     * @param player player to be checked.
+     * @return true only if the player can place the card.
      */
     public boolean checkCost(Player player){
         return currentSide.checkCost(player);
     }
 
     /**
-     * used to check if the player has completed the card condition to get the points
-     * @param player is the one to check
+     * Calculates the points given by the card, and adds them to the player score.
+     * @param player player whose score is being calculated.
      */
     public void calcPoints(Player player){
         currentSide.calcPoints(player, this);
     }
 
     /**
-     * getter to get the cost array
-     * @return the cost, in terms of symbols, necessary to place the card
+     * Getter of the potential card's cost.
+     * @return the cost, in terms of symbols, necessary to place the card.
      */
     public Integer[] getCost(){
         return currentSide.getCost();
     }
 
     /**
-     * getter to get the points value
-     * @return the point number written on the card
+     * getter of the points attribute.
+     * @return the card's base points.
      */
     public int getPoints(){
         return currentSide.getPoints();
     }
 
     /**
-     * getter tp get the condition value
-     * @return the condition (if present) to calc points. For example 1 point for every visible quill
+     * Gets the condition to calculate the points when the card is placed.
+     * @return the condition (if present) to calculates points. For example 1 point for every visible quill.
      */
     public Condition getCondition(){
         return currentSide.getCondition();
     }
 
     /**
-     * getter to get the requiredItem value
-     * @return (if present) the item needed for the condition.ITEM
+     * getter of the requiredItem value.
+     * @return (if present) the item needed in the ITEM condition.
      */
     public Symbols getRequiredItem() {
         return currentSide.getRequiredItem();
     }
 
     /**
-     * getter to get one of the card's corner
-     * @param corner is the corner's position
+     * Gets the corner in {@param corner} position.
+     * @param corner corner position (e.g. Top-Right).
      * @return the corner in the wanted position.
      */
     public Corner getCorner(CornerEnum corner){
-        return currentSide.corners[corner.ordinal()];
+        return currentSide.getCorner(corner);
     }
 
 
     /**
-     * getter to get the symbol in the card's corner
-     * @param corner is the corner's position
-     * @return the symbol in the corner position.
+     * getter of the symbol in one specified card's corner.
+     * @param corner the position of the corner we want to get the symbol.
+     * @return the symbol contained in that corner.
      */
     public Symbols getCornerSymbol(CornerEnum corner){
         return currentSide.getCornerSymbol(corner);
     }
 
     /**
-     * getter to get the state of the card's corner
-     * @param corner is the corner's position
-     * @return the corner's state
+     * getter of one corner's state.
+     * @param corner the position of the corner we want to get the state.
+     * @return the corner's state.
      */
     public CornerState getCornerState(CornerEnum corner){
         return currentSide.getCornerState(corner);
     }
 
     /**
-     * setter to set the state of the card's corner
-     * @param corner is the corner's position
-     * @param state is the corner's state
+     * set the card's corner state.
+     * @param corner position of the corner we want to set the state.
+     * @param state the corner's state we want to set.
      */
     public void setCornerState(CornerEnum corner, CornerState state){
         currentSide.setCornerState(corner, state);
     }
 
     /**
-     * Checks if two cards are equals
-     * @param card which we want to compare with {@code this}
-     * @return true if the cards are equals
+     * Checks if two cards are equals.
+     * @param card which we want to compare with {@code this}.
+     * @return true if the cards are equals.
      */
     public boolean equals(Card card) {
         return card.getType().equalsIgnoreCase(this.type) && (card.getCardNumber() == this.cardNumber);

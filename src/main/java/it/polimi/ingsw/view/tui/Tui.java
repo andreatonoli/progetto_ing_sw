@@ -273,7 +273,7 @@ public class Tui implements Ui {
                 }
             }
             else{
-                matCard[2*(corner.getY() - 1)/(-2)][8*(corner.getX() + 1)/2] = Color.getBackground(Color.WHITE) + Symbols.getStringBlack(card.getCorner(corner).getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                matCard[2*(corner.getY() - 1)/(-2)][8*(corner.getX() + 1)/2] = Color.getBackground(Color.WHITE) + Symbols.getString(card.getCorner(corner).getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
             }
         }
 
@@ -281,7 +281,7 @@ public class Tui implements Ui {
         int center = 4;
         if (card.getSymbols() != null) {
             for (int i = 0; i < card.getSymbols().size(); i++) {
-                matCard[1][center] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(card.getSymbols().get(i)) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                matCard[1][center] = Color.getBackground(card.getColor()) + Symbols.getString(card.getSymbols().get(i)) + TuiColors.getColor(TuiColors.ANSI_RESET);
                 center += 1;
             }
         }
@@ -303,10 +303,10 @@ public class Tui implements Ui {
         for (int i = 0; i < card.getCost().length; i++) {
             for (int j = 0; j < card.getCost()[i]; j++) {
                 switch (i) {
-                    case 0 -> matCard[2][bottomCenter] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.FUNGI) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                    case 1 -> matCard[2][bottomCenter] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.PLANT) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                    case 2 -> matCard[2][bottomCenter] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.ANIMAL) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                    case 3 -> matCard[2][bottomCenter] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.INSECT) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                    case 0 -> matCard[2][bottomCenter] = Color.getBackground(card.getColor()) + Symbols.getString(Symbols.FUNGI) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                    case 1 -> matCard[2][bottomCenter] = Color.getBackground(card.getColor()) + Symbols.getString(Symbols.PLANT) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                    case 2 -> matCard[2][bottomCenter] = Color.getBackground(card.getColor()) + Symbols.getString(Symbols.ANIMAL) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                    case 3 -> matCard[2][bottomCenter] = Color.getBackground(card.getColor()) + Symbols.getString(Symbols.INSECT) + TuiColors.getColor(TuiColors.ANSI_RESET);
                 }
                 bottomCenter += 1;
             }
@@ -324,12 +324,12 @@ public class Tui implements Ui {
             case CORNER -> {
                 matCard[0][topCenter - 1] = Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_BLACK) + card.getPoints() + TuiColors.getColor(TuiColors.ANSI_RESET);
                 matCard[0][topCenter] = Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "|" + TuiColors.getColor(TuiColors.ANSI_RESET);
-                matCard[0][topCenter + 1] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(Symbols.CORNER) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                matCard[0][topCenter + 1] = Color.getBackground(card.getColor()) + Symbols.getString(Symbols.CORNER) + TuiColors.getColor(TuiColors.ANSI_RESET);
             }
             case ITEM -> {
                 matCard[0][topCenter - 1] = Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_BLACK) + card.getPoints() + TuiColors.getColor(TuiColors.ANSI_RESET);
                 matCard[0][topCenter] = Color.getBackground(card.getColor()) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "|" + TuiColors.getColor(TuiColors.ANSI_RESET);
-                matCard[0][topCenter + 1] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(card.getRequiredItem()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                matCard[0][topCenter + 1] = Color.getBackground(card.getColor()) + Symbols.getString(card.getRequiredItem()) + TuiColors.getColor(TuiColors.ANSI_RESET);
             }
         }
     }
@@ -355,10 +355,10 @@ public class Tui implements Ui {
             //aggiungi angoli della carta
             for(CornerEnum corner : CornerEnum.values()){
                 if(card.getCorner(corner).getSymbol().equals(Symbols.NOCORNER)){
-                    matCard[2*(corner.getY() - 1)/(-2)][8*(corner.getX() + 1)/2] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(card.getCorner(corner).getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                    matCard[2*(corner.getY() - 1)/(-2)][8*(corner.getX() + 1)/2] = Color.getBackground(card.getColor()) + Symbols.getString(card.getCorner(corner).getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
                 }
                 else{
-                    matCard[2*(corner.getY() - 1)/(-2)][8*(corner.getX() + 1)/2] = Color.getBackground(Color.WHITE) + Symbols.getStringBlack(card.getCorner(corner).getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                    matCard[2*(corner.getY() - 1)/(-2)][8*(corner.getX() + 1)/2] = Color.getBackground(Color.WHITE) + Symbols.getString(card.getCorner(corner).getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
                 }
             }
 
@@ -367,14 +367,14 @@ public class Tui implements Ui {
             if (card.getSymbols() != null) {
                 if(card.getSymbols().size() <= 2){
                     for (int i = 0; i < card.getSymbols().size(); i++) {
-                        matCard[1][center] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(card.getSymbols().get(i)) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matCard[1][center] = Color.getBackground(card.getColor()) + Symbols.getString(card.getSymbols().get(i)) + TuiColors.getColor(TuiColors.ANSI_RESET);
                         center += 1;
                     }
                 }
                 else{
                     center -= 1;
                     for (int i = 0; i < card.getSymbols().size(); i++) {
-                        matCard[1][center] = Color.getBackground(card.getColor()) + Symbols.getStringBlack(card.getSymbols().get(i)) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matCard[1][center] = Color.getBackground(card.getColor()) + Symbols.getString(card.getSymbols().get(i)) + TuiColors.getColor(TuiColors.ANSI_RESET);
                         center += 1;
                     }
                 }
@@ -411,7 +411,7 @@ public class Tui implements Ui {
         //creazione matrice vuota e bordi a destra e sinistra
         for (int i = 0; i < TuiCostants.ROW; i++) {
             for (int j = 0; j < TuiCostants.COLUMN; j++) {
-                matCard[i][j] = Color.getBackground(Color.YELLOW) + Symbols.getString(Symbols.EMPTY_SPACE) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                matCard[i][j] = TuiColors.getColor(TuiColors.ANSI_YELLOW) + Symbols.getString(Symbols.EMPTY_SPACE) + TuiColors.getColor(TuiColors.ANSI_RESET);
             }
         }
 
@@ -419,72 +419,72 @@ public class Tui implements Ui {
         int centerObject = 6;
         switch (achievement) {
             case AchievementDiagonal ignored3 -> {
-                matCard[0][centerPoints] = Color.getBackground(Color.YELLOW) + TuiColors.getColor(TuiColors.ANSI_BLACK) + achievement.getPoints() + TuiColors.getColor(TuiColors.ANSI_RESET);
+                matCard[0][centerPoints] = TuiColors.getColor(TuiColors.ANSI_YELLOW) + TuiColors.getColor(TuiColors.ANSI_BLACK) + achievement.getPoints() + TuiColors.getColor(TuiColors.ANSI_RESET);
                 switch(achievement.getColor()){
                     case RED -> {
-                        matCard[0][centerObject + 1] = Color.getBackground(Color.RED) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                        matCard[1][centerObject] = Color.getBackground(Color.RED) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                        matCard[2][centerObject - 1] = Color.getBackground(Color.RED) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matCard[0][centerObject + 1] = Color.getBackground(Color.RED) + Symbols.getString(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matCard[1][centerObject] = Color.getBackground(Color.RED) + Symbols.getString(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matCard[2][centerObject - 1] = Color.getBackground(Color.RED) + Symbols.getString(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
                     }
                     case BLUE -> {
-                        matCard[0][centerObject + 1] = Color.getBackground(Color.BLUE) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                        matCard[1][centerObject] = Color.getBackground(Color.BLUE) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                        matCard[2][centerObject - 1] = Color.getBackground(Color.BLUE) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matCard[0][centerObject + 1] = Color.getBackground(Color.BLUE) + Symbols.getString(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matCard[1][centerObject] = Color.getBackground(Color.BLUE) + Symbols.getString(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matCard[2][centerObject - 1] = Color.getBackground(Color.BLUE) + Symbols.getString(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
                     }
                     case GREEN -> {
-                        matCard[0][centerObject - 1] = Color.getBackground(Color.GREEN) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                        matCard[1][centerObject] = Color.getBackground(Color.GREEN) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                        matCard[2][centerObject + 1] = Color.getBackground(Color.GREEN) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matCard[0][centerObject - 1] = Color.getBackground(Color.GREEN) + Symbols.getString(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matCard[1][centerObject] = Color.getBackground(Color.GREEN) + Symbols.getString(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matCard[2][centerObject + 1] = Color.getBackground(Color.GREEN) + Symbols.getString(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
                     }
                     case PURPLE -> {
-                        matCard[0][centerObject - 1] = Color.getBackground(Color.PURPLE) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                        matCard[1][centerObject] = Color.getBackground(Color.PURPLE) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                        matCard[2][centerObject + 1] = Color.getBackground(Color.PURPLE)+ Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matCard[0][centerObject - 1] = Color.getBackground(Color.PURPLE) + Symbols.getString(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matCard[1][centerObject] = Color.getBackground(Color.PURPLE) + Symbols.getString(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matCard[2][centerObject + 1] = Color.getBackground(Color.PURPLE)+ Symbols.getString(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
                     }
                 }
 
             }
             case AchievementL ignored2 -> {
-                matCard[0][centerPoints] = Color.getBackground(Color.YELLOW) + TuiColors.getColor(TuiColors.ANSI_BLACK) + achievement.getPoints() + TuiColors.getColor(TuiColors.ANSI_RESET);
+                matCard[0][centerPoints] = TuiColors.getColor(TuiColors.ANSI_YELLOW) + TuiColors.getColor(TuiColors.ANSI_BLACK) + achievement.getPoints() + TuiColors.getColor(TuiColors.ANSI_RESET);
                 switch(achievement.getColor()){
                     case RED -> {
-                        matCard[0][centerObject] = Color.getBackground(Color.RED) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                        matCard[1][centerObject] = Color.getBackground(Color.RED) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                        matCard[2][centerObject + 1] = Color.getBackground(Color.GREEN) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matCard[0][centerObject] = Color.getBackground(Color.RED) + Symbols.getString(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matCard[1][centerObject] = Color.getBackground(Color.RED) + Symbols.getString(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matCard[2][centerObject + 1] = Color.getBackground(Color.GREEN) + Symbols.getString(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
                     }
                     case BLUE -> {
-                        matCard[0][centerObject + 1] = Color.getBackground(Color.RED) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                        matCard[1][centerObject] = Color.getBackground(Color.BLUE) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                        matCard[2][centerObject] = Color.getBackground(Color.BLUE) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matCard[0][centerObject + 1] = Color.getBackground(Color.RED) + Symbols.getString(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matCard[1][centerObject] = Color.getBackground(Color.BLUE) + Symbols.getString(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matCard[2][centerObject] = Color.getBackground(Color.BLUE) + Symbols.getString(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
                     }
                     case GREEN -> {
-                        matCard[0][centerObject] = Color.getBackground(Color.GREEN) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                        matCard[1][centerObject] = Color.getBackground(Color.GREEN) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                        matCard[2][centerObject - 1] = Color.getBackground(Color.PURPLE) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matCard[0][centerObject] = Color.getBackground(Color.GREEN) + Symbols.getString(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matCard[1][centerObject] = Color.getBackground(Color.GREEN) + Symbols.getString(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matCard[2][centerObject - 1] = Color.getBackground(Color.PURPLE) + Symbols.getString(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
                     }
                     case PURPLE -> {
-                        matCard[0][centerObject - 1] = Color.getBackground(Color.BLUE) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                        matCard[1][centerObject] = Color.getBackground(Color.PURPLE) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                        matCard[2][centerObject] = Color.getBackground(Color.PURPLE) + Symbols.getStringBlack(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matCard[0][centerObject - 1] = Color.getBackground(Color.BLUE) + Symbols.getString(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matCard[1][centerObject] = Color.getBackground(Color.PURPLE) + Symbols.getString(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matCard[2][centerObject] = Color.getBackground(Color.PURPLE) + Symbols.getString(Symbols.CARD) + TuiColors.getColor(TuiColors.ANSI_RESET);
                     }
                 }
             }
             case AchievementItem ignored1 -> {
-                matCard[0][centerPoints] = Color.getBackground(Color.YELLOW) + TuiColors.getColor(TuiColors.ANSI_BLACK) + achievement.getPoints() + TuiColors.getColor(TuiColors.ANSI_RESET);
-                matCard[2][centerObject - 1] = Color.getBackground(Color.YELLOW) + Symbols.getStringBlack(achievement.getSymbols().getFirst()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                matCard[0][centerPoints] = TuiColors.getColor(TuiColors.ANSI_YELLOW) + TuiColors.getColor(TuiColors.ANSI_BLACK) + achievement.getPoints() + TuiColors.getColor(TuiColors.ANSI_RESET);
+                matCard[2][centerObject - 1] = TuiColors.getColor(TuiColors.ANSI_YELLOW) + Symbols.getString(achievement.getSymbols().getFirst()) + TuiColors.getColor(TuiColors.ANSI_RESET);
                 if (achievement.getSymbols().size() < 3) {
-                    matCard[2][centerObject + 1] = Color.getBackground(Color.YELLOW) + Symbols.getStringBlack(achievement.getSymbols().getFirst()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                    matCard[2][centerObject + 1] = TuiColors.getColor(TuiColors.ANSI_YELLOW) + Symbols.getString(achievement.getSymbols().getFirst()) + TuiColors.getColor(TuiColors.ANSI_RESET);
                 }
                 else {
-                    matCard[2][centerObject + 1] = Color.getBackground(Color.YELLOW) + Symbols.getStringBlack(achievement.getSymbols().get(1)) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                    matCard[1][centerObject] = Color.getBackground(Color.YELLOW) + Symbols.getStringBlack(achievement.getSymbols().get(2)) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                    matCard[2][centerObject + 1] = TuiColors.getColor(TuiColors.ANSI_YELLOW) + Symbols.getString(achievement.getSymbols().get(1)) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                    matCard[1][centerObject] = TuiColors.getColor(TuiColors.ANSI_YELLOW) + Symbols.getString(achievement.getSymbols().get(2)) + TuiColors.getColor(TuiColors.ANSI_RESET);
                 }
             }
             case AchievementResources ignored -> {
-                matCard[0][centerPoints] = Color.getBackground(Color.YELLOW) + TuiColors.getColor(TuiColors.ANSI_BLACK) + achievement.getPoints() + TuiColors.getColor(TuiColors.ANSI_RESET);
-                matCard[1][centerObject] = Color.getBackground(Color.YELLOW) + Symbols.getStringBlack(achievement.getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                matCard[2][centerObject - 1] = Color.getBackground(Color.YELLOW) + Symbols.getStringBlack(achievement.getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
-                matCard[2][centerObject + 1] = Color.getBackground(Color.YELLOW) + Symbols.getStringBlack(achievement.getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                matCard[0][centerPoints] = TuiColors.getColor(TuiColors.ANSI_YELLOW) + TuiColors.getColor(TuiColors.ANSI_BLACK) + achievement.getPoints() + TuiColors.getColor(TuiColors.ANSI_RESET);
+                matCard[1][centerObject] = TuiColors.getColor(TuiColors.ANSI_YELLOW) + Symbols.getString(achievement.getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                matCard[2][centerObject - 1] = TuiColors.getColor(TuiColors.ANSI_YELLOW) + Symbols.getString(achievement.getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                matCard[2][centerObject + 1] = TuiColors.getColor(TuiColors.ANSI_YELLOW) + Symbols.getString(achievement.getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
             }
             case null, default -> {
             }
@@ -518,7 +518,7 @@ public class Tui implements Ui {
 
 
         for(int i = 0; i < scoreBoardPoints.length; i++){
-            matScoreBoard[1][1][scoreBoardPoints[i][0]][scoreBoardPoints[i][1]] = TuiColors.getColor(TuiColors.ANSI_YELLOW) + i / 10 + ((i) - ((i) / 10) * 10) + TuiColors.getColor(TuiColors.ANSI_RESET);
+            matScoreBoard[1][1][scoreBoardPoints[i][0]][scoreBoardPoints[i][1]] = TuiColors.getColor(TuiColors.ANSI_GOLD) + i / 10 + ((i) - ((i) / 10) * 10) + TuiColors.getColor(TuiColors.ANSI_RESET);
         }
 
         for(int i = 0; i < players.size(); i++){
@@ -998,7 +998,7 @@ public class Tui implements Ui {
 
     public void printTitle(){
         AnsiConsole.out().print("\n");
-        AnsiConsole.out().print(TuiColors.getColor(TuiColors.ANSI_YELLOW) +
+        AnsiConsole.out().print(TuiColors.getColor(TuiColors.ANSI_GOLD) +
                 " ██████╗ ██████╗ ██████╗ ███████╗██╗  ██╗    ███╗   ██╗ █████╗ ████████╗██╗   ██╗██████╗  █████╗ ██╗     ██╗███████╗\n" +
                 "██╔════╝██╔═══██╗██╔══██╗██╔════╝╚██╗██╔╝    ████╗  ██║██╔══██╗╚══██╔══╝██║   ██║██╔══██╗██╔══██╗██║     ██║██╔════╝\n" +
                 "██║     ██║   ██║██║  ██║█████╗   ╚███╔╝     ██╔██╗ ██║███████║   ██║   ██║   ██║██████╔╝███████║██║     ██║███████╗\n" +
@@ -1075,7 +1075,7 @@ public class Tui implements Ui {
             moveCursor(TuiCostants.COMMON_ROW + i, TuiCostants.FIRST_COMMONBOARD_COLUMN);
             AnsiConsole.out().print(Symbols.getString(Symbols.values()[i]) + TuiColors.getColor(TuiColors.ANSI_WHITE) + " -> " + player.getBoard().getSymbolCount(Symbols.values()[i]) + TuiColors.getColor(TuiColors.ANSI_RESET));
             moveCursor(TuiCostants.COMMON_ROW + i, 155);
-            AnsiConsole.out().print(Symbols.getString(Symbols.values()[i]) + TuiColors.getColor(TuiColors.ANSI_WHITE) + " -> " + Symbols.getLongString(Symbols.values()[i]) + TuiColors.getColor(TuiColors.ANSI_RESET));
+            AnsiConsole.out().print(Symbols.getString(Symbols.values()[i]) + TuiColors.getColor(TuiColors.ANSI_WHITE) + " -> " + Symbols.getNameString(Symbols.values()[i]) + TuiColors.getColor(TuiColors.ANSI_RESET));
         }
     }
 
