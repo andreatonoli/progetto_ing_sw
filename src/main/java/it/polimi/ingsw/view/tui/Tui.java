@@ -75,9 +75,11 @@ public class Tui implements Ui {
             int port = askServerPort(choice);
             if (choice.equalsIgnoreCase("RMI")){
                 client = new RMIClient(address, port, this);
+                client.login();
             }
             else{
                 client = new SocketClient(address, port, this);
+                client.login();
             }
         } catch (RemoteException e) {
             System.err.println(e.getMessage());
@@ -86,21 +88,19 @@ public class Tui implements Ui {
 
     /**
      * Asks the player's nickname
-     * @return the name chosen by the player
      */
     @Override
-    public String askNickname(){
+    public void askNickname(){
         String nickname;
         AnsiConsole.out().print("Please insert your username: ");
         nickname = scanner.next();
-        return nickname;
+        client.setNickname(nickname);
     }
 
     /**
      * Asks the server address the player wants to connect to
      * @return the chosen server address
      */
-    @Override
     public String askServerAddress() {
         String defaultAddress = "localhost";
         String host;
@@ -119,7 +119,6 @@ public class Tui implements Ui {
      * Asks the player the port of the server he wants to connect to
      * @return the chosen server port
      */
-    @Override
     public int askServerPort(String connection) {
         String port;
         String defaultPort;
@@ -138,7 +137,7 @@ public class Tui implements Ui {
     }
 
     @Override
-    public int selectGame(List<Integer> startingGamesId, List<Integer> gamesWhitDisconnectionsId){
+    public void selectGame(List<Integer> startingGamesId, List<Integer> gamesWithDisconnectionsId){
         int lobby = -2;
         String choice;
         do {
@@ -159,15 +158,15 @@ public class Tui implements Ui {
                 }
             }
             case "3" -> {
-                if (gamesWhitDisconnectionsId.isEmpty()) {
+                if (gamesWithDisconnectionsId.isEmpty()) {
                     AnsiConsole.out().println("There are no lobbies with disconnected players");
                 }
                 else{
-                    lobby = getLobby(gamesWhitDisconnectionsId);
+                    lobby = getLobby(gamesWithDisconnectionsId);
                 }
             }
         }
-        return lobby;
+        client.setOnConnectionAction(lobby, startingGamesId, gamesWithDisconnectionsId);
     }
 
     public int getLobby(List<Integer> lobbyList) {
@@ -189,8 +188,8 @@ public class Tui implements Ui {
     }
 
 
-
-    public int setLobbySize(){
+    @Override
+    public void askLobbySize(){
         int lobbySize;
         AnsiConsole.out().println("Select the lobby's capacity (min is " + Server.MIN_PLAYERS_PER_LOBBY + " and max is " + Server.MAX_PLAYERS_PER_LOBBY + " players)");
         do{
@@ -202,11 +201,11 @@ public class Tui implements Ui {
                     scanner = new Scanner(System.in);
             }
         } while (lobbySize < Server.MIN_PLAYERS_PER_LOBBY || lobbySize > Server.MAX_PLAYERS_PER_LOBBY);
-        return lobbySize;
+        client.setLobbySize(lobbySize);
     }
 
     @Override
-    public boolean askSide(Card starterCard){
+    public void askSide(Card starterCard){
         clearConsole();
         this.printStarterCard(starterCard);
         String choice;
@@ -214,7 +213,8 @@ public class Tui implements Ui {
             AnsiConsole.out().println("Which side you want to play?\nPress [f] for front and [b] for back");
             choice = scanner.next();
         } while (!choice.equalsIgnoreCase("b") && !choice.equalsIgnoreCase("f"));
-        return choice.equalsIgnoreCase("f");
+        boolean side = choice.equalsIgnoreCase("f");
+        client.placeStarterCard(side, starterCard);
     }
 
     private void printStarterCard(Card card) {
@@ -253,27 +253,27 @@ public class Tui implements Ui {
         //Create a 3x5 rectangle coloured like the card
         for (int i = 0; i < TuiCostants.ROW; i++) {
             for (int j = 0; j < TuiCostants.COLUMN; j++) {
-                matCard[i][j] = Color.getBackground(card.getColor()) + Symbols.getString(Symbols.EMPTY_SPACE) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                matCard[i][j] = Color.getBackground(card.getColor()) + " " + TuiColors.getColor(TuiColors.ANSI_RESET);
             }
         }
 
         for(CornerEnum corner : CornerEnum.values()){
             if(card.getCornerState(corner).equals(CornerState.NOT_VISIBLE)){
                 if(card.getCorner(corner).getSymbol().equals(Symbols.NOCORNER)){
-                    matCard[2*(corner.getY() - 1)/(-2)][8*(corner.getX() + 1)/2] = Color.getBackground(card.getColor()) + Symbols.getString(Symbols.EMPTY_SPACE) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                    matCard[2*(corner.getY() - 1)/(-2)][8*(corner.getX() + 1)/2] = Color.getBackground(card.getColor()) + Symbols.getString(Symbols.NOCORNER) + TuiColors.getColor(TuiColors.ANSI_RESET);
                 }
                 else{
                     Card overCard = playerBoard.getCard(new int[] {coord[0] + corner.getX(), coord[1] + corner.getY()});
                     if (overCard.getCornerSymbol(corner.getOppositePosition()).equals(Symbols.NOCORNER)){
-                        matCard[2*(corner.getY() - 1)/(-2)][8*(corner.getX() + 1)/2] = Color.getBackground(overCard.getColor()) + Symbols.getString(Symbols.EMPTY_SPACE) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matCard[2*(corner.getY() - 1)/(-2)][8*(corner.getX() + 1)/2] = Color.getBackground(overCard.getColor()) + Symbols.getString(Symbols.NOCORNER) + TuiColors.getColor(TuiColors.ANSI_RESET);
                     }
                     else {
-                        matCard[2*(corner.getY() - 1)/(-2)][8*(corner.getX() + 1)/2] = Color.getBackground(Color.WHITE) + Symbols.getString(overCard.getCornerSymbol(corner.getOppositePosition())) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                        matCard[2*(corner.getY() - 1)/(-2)][8*(corner.getX() + 1)/2] = TuiColors.getColor(TuiColors.ANSI_GRAY) + Symbols.getString(overCard.getCornerSymbol(corner.getOppositePosition())) + TuiColors.getColor(TuiColors.ANSI_RESET);
                     }
                 }
             }
             else{
-                matCard[2*(corner.getY() - 1)/(-2)][8*(corner.getX() + 1)/2] = Color.getBackground(Color.WHITE) + Symbols.getString(card.getCorner(corner).getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                matCard[2*(corner.getY() - 1)/(-2)][8*(corner.getX() + 1)/2] = TuiColors.getColor(TuiColors.ANSI_GRAY) + Symbols.getString(card.getCorner(corner).getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
             }
         }
 
@@ -338,7 +338,7 @@ public class Tui implements Ui {
         String[][] matCard = new String[TuiCostants.ROW][TuiCostants.COLUMN];
         for (int i = 0; i < TuiCostants.ROW; i++) {
             for (int j = 0; j < TuiCostants.COLUMN; j++) {
-                matCard[i][j] = Color.getBackground(color) + Symbols.getString(Symbols.EMPTY_SPACE) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                matCard[i][j] = Color.getBackground(color) + " " + TuiColors.getColor(TuiColors.ANSI_RESET);
             }
         }
         return matCard;
@@ -349,7 +349,7 @@ public class Tui implements Ui {
         if (card != null) {
             for (int i = 0; i < TuiCostants.ROW; i++) {
                 for (int j = 0; j < TuiCostants.COLUMN; j++) {
-                    matCard[i][j] = Color.getBackground(card.getColor()) + Symbols.getString(Symbols.EMPTY_SPACE) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                    matCard[i][j] = Color.getBackground(card.getColor()) + " " + TuiColors.getColor(TuiColors.ANSI_RESET);
                 }
             }
             //aggiungi angoli della carta
@@ -358,7 +358,7 @@ public class Tui implements Ui {
                     matCard[2*(corner.getY() - 1)/(-2)][8*(corner.getX() + 1)/2] = Color.getBackground(card.getColor()) + Symbols.getString(card.getCorner(corner).getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
                 }
                 else{
-                    matCard[2*(corner.getY() - 1)/(-2)][8*(corner.getX() + 1)/2] = Color.getBackground(Color.WHITE) + Symbols.getString(card.getCorner(corner).getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                    matCard[2*(corner.getY() - 1)/(-2)][8*(corner.getX() + 1)/2] = TuiColors.getColor(TuiColors.ANSI_GRAY) + Symbols.getString(card.getCorner(corner).getSymbol()) + TuiColors.getColor(TuiColors.ANSI_RESET);
                 }
             }
 
@@ -411,7 +411,7 @@ public class Tui implements Ui {
         //creazione matrice vuota e bordi a destra e sinistra
         for (int i = 0; i < TuiCostants.ROW; i++) {
             for (int j = 0; j < TuiCostants.COLUMN; j++) {
-                matCard[i][j] = TuiColors.getColor(TuiColors.ANSI_YELLOW) + Symbols.getString(Symbols.EMPTY_SPACE) + TuiColors.getColor(TuiColors.ANSI_RESET);
+                matCard[i][j] = TuiColors.getColor(TuiColors.ANSI_YELLOW) + " " + TuiColors.getColor(TuiColors.ANSI_RESET);
             }
         }
 
@@ -502,10 +502,10 @@ public class Tui implements Ui {
                 for(int t = 0; t < 3; t++){
                     for(int s = 0; s < 3;  s++){
                         if(s == 1){
-                            matScoreBoard[s][t][i][j] = Symbols.getString(Symbols.EMPTY_SPACE) + Symbols.getString(Symbols.EMPTY_SPACE);
+                            matScoreBoard[s][t][i][j] = "  ";
                         }
                         else{
-                            matScoreBoard[s][t][i][j] = Symbols.getString(Symbols.EMPTY_SPACE);
+                            matScoreBoard[s][t][i][j] = " ";
                         }
                     }
                 }
@@ -1091,7 +1091,7 @@ public class Tui implements Ui {
         AnsiConsole.out().print("\n");
     }
     @Override
-    public Achievement chooseAchievement(Achievement[] choices) {
+    public void askAchievement(Achievement[] choices) {
         AnsiConsole.out().println("[1]");
         this.printAchievement(choices[0]);
         AnsiConsole.out().println("[2]");
@@ -1113,10 +1113,11 @@ public class Tui implements Ui {
                 scanner = new Scanner(System.in);
             }
         }
-        return choices[choice - 1];
+        client.chooseAchievement(choices[choice - 1]);
     }
 
-    public Color chooseColor(List<Color> colors){
+    @Override
+    public void askColor(List<Color> colors){
         AnsiConsole.out().println("Choose your color by typing the corresponding number:");
         for (int i = 0; i < colors.size(); i++){
             AnsiConsole.out().println("\t" + (1 + i) + ") " + colors.get(i));
@@ -1138,7 +1139,7 @@ public class Tui implements Ui {
             }
         }
         inputThread.start();
-        return colors.get(c - 1);
+        client.chooseColor(colors.get(c - 1));
     }
     @Override
     public void setMessage(String message, boolean isError){
@@ -1163,6 +1164,7 @@ public class Tui implements Ui {
                 message = sb.append("\t").append(s).append("\n").toString();
             }
         }
+        this.printViewWithCommands(player, game, players);
     }
 
     public void moveCursor(int row, int column){

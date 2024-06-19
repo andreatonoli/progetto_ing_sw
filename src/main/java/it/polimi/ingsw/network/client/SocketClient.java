@@ -1,5 +1,6 @@
 package it.polimi.ingsw.network.client;
 
+import it.polimi.ingsw.model.card.Achievement;
 import it.polimi.ingsw.model.card.Card;
 import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.GameState;
@@ -18,8 +19,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-
+//TODO: timer sul ping -> quando salta chiamo reconnectAttempt -> a fine reconnect deve morire
 public class SocketClient implements ClientInterface {
+    private String address;
+    private int port;
     private Socket socket;
     private String username;
     private final Ui view;
@@ -32,16 +35,33 @@ public class SocketClient implements ClientInterface {
     private final BlockingQueue<Message> messageQueue;
     private boolean processingAction;
     private final Object outputLock = new Object();
+
+    private Thread reconnectionThread;
     public SocketClient(String address, int port, Ui view){
         this.view = view;
         this.opponents = new ArrayList<>();
         this.game = new GameBean();
         messageQueue = new LinkedBlockingQueue<>();
+        this.address = address;
+        this.port = port;
+    }
+
+    @Override
+    public void login() {
+        reconnectionThread = new Thread(() -> {
+            Timer reconnectionTimer = new Timer();
+            reconnectionTimer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    startClient(address, port);
+                }
+            }, 0, 1000);
+        });
         processingAction = false;
         pickQueue();
         new Thread(() -> this.startClient(address, port)).start();
     }
-    //TODO: mi collego con username null e non lo setto mai più
+
     public void startClient(String address, int port){
         try {
             socket = new Socket(address, port);
@@ -52,8 +72,8 @@ public class SocketClient implements ClientInterface {
                 readMessage();
             }
         } catch (IOException e) {
+            System.out.println(e.getMessage());
             this.onDisconnect();
-            System.err.println(e.getMessage());
             System.out.println("Connection successfully ended");
         }
     }
@@ -107,55 +127,31 @@ public class SocketClient implements ClientInterface {
         }
     }
 
-    //TODO: stampare view con comandi al passaggio del turno
     public void update(Message message){
         String name;
         switch (message.getType()){
             case RECONNECTION:
                 this.player = ((ReconnectionMessage) message).getPlayerBean();
                 this.game = ((ReconnectionMessage) message).getGameBean();
-                //TODO cerca di passare copia della lista
                 this.opponents = ((ReconnectionMessage) message).getOpponents();
                 this.view.handleReconnection();
                 this.view.printViewWithCommands(player, game, opponents);
                 break;
             case USERNAME_REQUEST:
-                System.out.println("Username is already taken, please choose another: ");
-                this.username = this.view.askNickname();
-                player.setUsername(this.username);
                 int number = ((UsernameRequestMessage) message).getNumber();
-                if (((UsernameRequestMessage) message).isCreation()){
-                    sendMessage(new NumPlayerResponseMessage(username, number));
-                }
-                else {
-                    sendMessage(new LobbyIndexMessage(this.username, number));
-                }
+                boolean creation = ((UsernameRequestMessage) message).isCreation();
+                System.out.println("Username is already taken, please choose another: ");
+                this.view.askNickname();
+                resumeConnection(number, creation);
                 break;
             case NUM_PLAYER_REQUEST:
-                int lobbySize = this.view.setLobbySize();
-                this.username = view.askNickname();
-                this.player = new PlayerBean(this.username);
-                sendMessage(new NumPlayerResponseMessage(this.username, lobbySize));
+                this.view.askNickname();
+                this.view.askLobbySize();
                 break;
             case FREE_LOBBY:
                 List<Integer> startingGamesId = ((FreeLobbyMessage) message).getstartingGamesId();
                 List<Integer> gamesWhitDisconnectionsId = ((FreeLobbyMessage) message).getgamesWhitDisconnectionsId();
-                int response;
-                do{
-                    response = this.view.selectGame(startingGamesId, gamesWhitDisconnectionsId);
-                } while (response == -2);
-                this.username = this.view.askNickname();
-                this.player = new PlayerBean(username);
-                if (response == -1){
-                    int numOfPlayers = this.view.setLobbySize();
-                    sendMessage(new NumPlayerResponseMessage(username, numOfPlayers));
-                }
-                else if (startingGamesId.contains(response)){
-                    sendMessage(new LobbyIndexMessage(this.username, response));
-                }
-                else if (gamesWhitDisconnectionsId.contains(response)){
-                    sendMessage(new ReconnectLobbyIndexMessage(this.username, response, startingGamesId, gamesWhitDisconnectionsId));
-                }
+                this.view.selectGame(startingGamesId, gamesWhitDisconnectionsId);
                 break;
             case GAME_STATE:
                 GameState state = ((GameStateMessage) message).getState();
@@ -195,20 +191,14 @@ public class SocketClient implements ClientInterface {
                 break;
             case STARTER_CARD:
                 Card starterCard = ((StarterCardMessage) message).getCard();
-                boolean choice = this.view.askSide(starterCard);
-                if (!choice) {
-                    starterCard.setCurrentSide();
-                }
-                player.setStarterCard(starterCard);
-                sendMessage(new PlaceStarterRequestMessage(username, starterCard));
+                this.view.askSide(starterCard);
                 break;
             case CARD_HAND:
                 //Copied the message body into the player's cards
                 System.arraycopy(((CardInHandMessage) message).getHand(), 0, player.getHand(), 0, 3);
                 break;
             case PRIVATE_ACHIEVEMENT:
-                this.player.setAchievement(this.view.chooseAchievement(((AchievementMessage) message).getAchievements()));
-                sendMessage(new SetPrivateAchievementMessage(this.username, this.player.getAchievement()));
+                this.view.askAchievement(((AchievementMessage) message).getAchievements());
                 break;
             case PLAYER_STATE:
                 PlayerState playerState = ((PlayerStateMessage) message).getState();
@@ -225,9 +215,7 @@ public class SocketClient implements ClientInterface {
                 }
                 break;
             case COLOR_REQUEST:
-                Color chosenColor = this.view.chooseColor(((ColorRequestMessage) message).getColors());
-                player.setPionColor(chosenColor);
-                sendMessage(new ColorResponseMessage(username, chosenColor));
+                this.view.askColor(((ColorRequestMessage) message).getColors());
                 break;
             case COLOR_RESPONSE:
                 Color setColor = ((ColorResponseMessage) message).getColor();
@@ -327,6 +315,60 @@ public class SocketClient implements ClientInterface {
     }
 
     @Override
+    public void setNickname(String nickname) {
+        this.username = nickname;
+        if (this.player != null) {
+            player.setUsername(nickname);
+        }
+        else {
+            this.player = new PlayerBean(this.username);
+        }
+    }
+
+    @Override
+    public void setOnConnectionAction(int response, List<Integer> startingGamesId, List<Integer> gamesWithDisconnectionsId){
+        if (response == -2) {
+           this.view.selectGame(startingGamesId, gamesWithDisconnectionsId);
+        }
+        this.view.askNickname();
+        if (response == -1){
+            this.view.askLobbySize();
+        }
+        else if (startingGamesId.contains(response)){
+            sendMessage(new LobbyIndexMessage(this.username, response));
+        }
+        else if (gamesWithDisconnectionsId.contains(response)){
+            sendMessage(new ReconnectLobbyIndexMessage(this.username, response, startingGamesId, gamesWithDisconnectionsId));
+        }
+    }
+
+    @Override
+    public void setLobbySize(int size){
+        sendMessage(new NumPlayerResponseMessage(this.username, size));
+    }
+
+    @Override
+    public void placeStarterCard(boolean side, Card starterCard){
+        if (!side) {
+            starterCard.setCurrentSide();
+        }
+        player.setStarterCard(starterCard);
+        sendMessage(new PlaceStarterRequestMessage(username, starterCard));
+    }
+
+    @Override
+    public void chooseAchievement(Achievement achievement){
+        this.player.setAchievement(achievement);
+        sendMessage(new SetPrivateAchievementMessage(this.username, achievement));
+    }
+
+    @Override
+    public void chooseColor(Color chosenColor){
+        player.setPionColor(chosenColor);
+        sendMessage(new ColorResponseMessage(username, chosenColor));
+    }
+
+    @Override
     public void sendChatMessage(String message) {
         sendMessage(new AddToChatMessage(username, message));
     }
@@ -338,12 +380,11 @@ public class SocketClient implements ClientInterface {
 
     @Override
     public void placeCard(Card card, int[] placingCoordinates) {
-        if (this.player.getState().equals(PlayerState.PLAY_CARD)){ //TODO: imparare a leggere una griglia per capire se così traspongo giuste le coordinate
+        if (this.player.getState().equals(PlayerState.PLAY_CARD)){
             sendMessage(new PlaceMessage(username, card, placingCoordinates));
             player.removeCardFromHand(card);
         }
         else{
-            //TODO: errore profondo
             update(new GenericMessage("\nThere's a time and place for everything! But not now.\n"));
         }
     }
@@ -354,7 +395,6 @@ public class SocketClient implements ClientInterface {
             sendMessage(new DrawMessage(username, chosenDeck));
         }
         else {
-            //TODO: errore profondo
             update(new GenericMessage("\nThere's a time and place for everything! But not now.\n"));
         }
     }
@@ -365,13 +405,20 @@ public class SocketClient implements ClientInterface {
             sendMessage(new DrawFromBoardMessage(username, index - 1));
         }
         else{
-            //TODO: errore profondo
             update(new GenericMessage("\nThere's a time and place for everything! But not now.\n"));
         }
     }
 
-    @Override
-    public ArrayList<PlayerBean> getPlayers() {
-        return null;
+    public void reconnectAttempt(){
+
+    }
+
+    public void resumeConnection(int number, boolean creation){
+        if (creation){
+            sendMessage(new NumPlayerResponseMessage(this.username, number));
+        }
+        else {
+            sendMessage(new LobbyIndexMessage(this.username, number));
+        }
     }
 }

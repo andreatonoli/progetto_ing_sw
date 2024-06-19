@@ -93,6 +93,8 @@ public class TurnHandler extends Observable {
                         } catch (GameNotStartedException e) {
                             System.out.println(e.getMessage());
                         }
+                        //Interrupts the flow and avoid sending useless data
+                        return;
                     }
                 }
                 notifyAll(new PlayerStateMessage(playerInTurn.getPlayerState(), playerInTurn.getUsername()));

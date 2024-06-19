@@ -242,7 +242,7 @@ public class SocketConnection extends Connection implements Runnable {
             //case REMOVE_FROM_SERVER:
             //    this.cancelPing();
             //    int playersToDelete = lobby.getGame().getLobbySize()-1;
-            //    lobby.getGame().setLobbySize(playersToDelete);
+            //    lobby.getGame().askLobbySize(playersToDelete);
             //    server.removePlayers(username);
             //    if (playersToDelete == 0){
             //        server.removeGame(lobby);

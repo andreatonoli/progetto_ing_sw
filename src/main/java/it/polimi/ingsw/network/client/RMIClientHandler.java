@@ -13,7 +13,6 @@ public interface RMIClientHandler extends Remote {
     String askUsername(int lobby) throws RemoteException;
     int joinGame(List<Integer> startingGamesId, List<Integer> gamesWhitDisconnectionsId) throws RemoteException;
     int setLobbySize() throws RemoteException;
-    Ui getView() throws RemoteException;
     void update(Message message) throws RemoteException;
     void pingNetwork() throws RemoteException;
 }
