@@ -6,7 +6,7 @@ import it.polimi.ingsw.model.player.Player;
 public class ResourceCard extends Face {
 
     /**
-     * points given by the card when placed.
+     * Points given by the card when placed.
      */
     private final int point;
 

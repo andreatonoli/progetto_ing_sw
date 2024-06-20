@@ -20,6 +20,8 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, ClientInterface {
+    private final String address;
+    private final int port;
     private final BlockingQueue<Message> messageQueue;
     private boolean processingAction;
     private static final String serverName = "GameServer";
@@ -30,29 +32,55 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
     private VirtualServer server;
     private PlayerBean player;
     private ArrayList<PlayerBean> opponents;
+    private Timer catchPing;
+    private final Thread reconnectionThread;
 
     public RMIClient(String host, int port, Ui view) throws RemoteException{
         this.view = view;
+        this.address = host;
+        this.port = port;
         //Initialization of player's attributes
         this.game = new GameBean();
         this.opponents = new ArrayList<>();
         messageQueue = new LinkedBlockingQueue<>();
         processingAction = false;
-        pickQueue();
+        catchPing = new Timer();
+        reconnectionThread = new Thread(() -> {
+            Timer reconnectionTimer = new Timer();
+            reconnectionTimer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    login();
+                }
+            }, 0, 1000);
+        });
+    }
+
+    public void login(){
         try {
-            Registry registry = LocateRegistry.getRegistry(host, port);
+            Registry registry = LocateRegistry.getRegistry(address, port);
             server = (VirtualServer) registry.lookup(serverName);
+            server.login(this);
+            pickQueue();
         } catch (RemoteException | NotBoundException e){
             System.out.println(e.getMessage());
         }
     }
 
-    public void login(){
-        try {
-            server.login(this);
-        } catch (RemoteException e) {
-            System.out.println(e.getMessage());
-        }
+    public void reconnectAttempt(){
+        reconnectionThread.start();
+    }
+
+    public void catchPing(){
+        catchPing.cancel();
+        catchPing = new Timer();
+        catchPing.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                catchPing.cancel();
+                reconnectAttempt();
+            }
+        }, 5000, 5000);
     }
 
     public String askUsername() throws RemoteException{
@@ -122,6 +150,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
     @Override
     public void pingNetwork() throws RemoteException {
         try {
+            catchPing();
             server.pingConnection(username);
         } catch (RemoteException e) {
             throw new RuntimeException(e);

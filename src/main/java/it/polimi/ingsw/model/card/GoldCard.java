@@ -12,29 +12,29 @@ import java.util.List;
 public class GoldCard extends Face {
 
     /**
-     * base points given by the card.
+     * Base points given by the card.
      */
     private final int basePoint;
 
     /**
-     * condition to fulfill to increase the points.
+     * Condition to fulfill to increase the points.
      */
     private final Condition condition;
 
     /**
-     * item required for the ITEM condition.
+     * Item required for the ITEM condition.
      */
     private final Symbols requiredItem;
 
     /**
-     * cost necessary to place the card.
+     * Cost necessary to place the card.
      */
     private final Integer[] cost;
 
     /**
      * Builds the front of the gold cards with corners, points and the card's cost.
      *
-     * @param corners      Corners of the card.
+     * @param corners      corners of the card.
      * @param basePoint    points written on the card.
      * @param condition    condition (if present) to fulfill to calculate points. For example 1 point for every visible quill.
      * @param cost         represents the cost, in terms of symbols, necessary to place the card.

@@ -21,21 +21,21 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 //TODO: timer sul ping -> quando salta chiamo reconnectAttempt -> a fine reconnect deve morire
 public class SocketClient implements ClientInterface {
-    private String address;
-    private int port;
+    private final String address;
+    private final int port;
     private Socket socket;
     private String username;
     private final Ui view;
     private ObjectInputStream in;
     private ObjectOutputStream out;
-    private boolean disconnected = false;
+    private boolean disconnected;
     private GameBean game;
     private PlayerBean player;
     private ArrayList<PlayerBean> opponents;
     private final BlockingQueue<Message> messageQueue;
     private boolean processingAction;
     private final Object outputLock = new Object();
-
+    private Timer catchPing;
     private Thread reconnectionThread;
     public SocketClient(String address, int port, Ui view){
         this.view = view;
@@ -44,6 +44,7 @@ public class SocketClient implements ClientInterface {
         messageQueue = new LinkedBlockingQueue<>();
         this.address = address;
         this.port = port;
+        this.catchPing = new Timer();
     }
 
     @Override
@@ -67,7 +68,9 @@ public class SocketClient implements ClientInterface {
             socket = new Socket(address, port);
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
+            disconnected = false;
             sendMessage(new LoginResponseMessage());
+            reconnectionThread.interrupt();
             while(!disconnected){
                 readMessage();
             }
@@ -83,6 +86,7 @@ public class SocketClient implements ClientInterface {
             message = (Message) in.readObject();
             if (message.getType().equals(MessageType.PING)){
                 sendMessage(new CatchPingMessage(this.username));
+                catchPing();
             }
             else{
                 messageQueue.add(message);
@@ -100,7 +104,7 @@ public class SocketClient implements ClientInterface {
                     out.reset();
                 }
             } catch (IOException e) {
-                System.err.println(e.getMessage());
+                System.out.println(e.getMessage());
             }
         }
     }
@@ -410,7 +414,20 @@ public class SocketClient implements ClientInterface {
     }
 
     public void reconnectAttempt(){
+        reconnectionThread.start();
+    }
 
+    public void catchPing(){
+        catchPing.cancel();
+        catchPing = new Timer();
+        catchPing.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                catchPing.cancel();
+                onDisconnect();
+                reconnectAttempt();
+            }
+        }, 5000, 5000);
     }
 
     public void resumeConnection(int number, boolean creation){

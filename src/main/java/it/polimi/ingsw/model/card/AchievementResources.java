@@ -13,16 +13,16 @@ public class AchievementResources implements Achievement{
      */
     private final int id;
     /**
-     * points given upon completion of the achievement.
+     * Points given upon completion of the achievement.
      */
     private final int basePoint;
     /**
-     * indicates the symbols (from the symbols enumeration) to collect
+     * Indicates the symbols (from the symbols enumeration) to collect.
      */
     private final Symbols symbol;
     /**
-     * Builds card which achievement is "Collect 3 symbols of the same type"
-     * @param symbol symbol to collect
+     * Builds card which achievement is "Collect 3 symbols of the same type".
+     * @param symbol symbol to collect.
      * @param id unique number to identify the card.
      */
     public AchievementResources(Symbols symbol, int id){
@@ -32,8 +32,8 @@ public class AchievementResources implements Achievement{
     }
 
     /**
-     * points = basePoint * (symbol_count / 3)
-     * @param player on which calculate the score
+     * points = basePoint * (symbol_count / 3).
+     * @param player on which calculate the score.
      */
     @Override
     public void calcPoints(Player player) {

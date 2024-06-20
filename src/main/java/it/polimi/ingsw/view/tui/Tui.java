@@ -24,7 +24,7 @@ public class Tui implements Ui {
     private ArrayList<PlayerBean> players;
     private Scanner scanner;
     private final Object lock = new Object();
-    private boolean running;
+    private volatile boolean running;
     private Thread inputThread;
     private boolean end = false;
 
