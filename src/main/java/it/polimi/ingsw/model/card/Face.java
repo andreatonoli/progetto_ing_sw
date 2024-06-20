@@ -9,12 +9,12 @@ import java.util.List;
 public abstract class Face implements Serializable {
 
     /**
-     * array containing the face's corners.
+     * Array containing the face's corners.
      */
     protected Corner[] corners;
 
     /**
-     * get the list of symbols present in the middle of the face.
+     * Get the list of symbols present in the middle of the face.
      * @return all the symbols in the center of the face.
      */
     public List<Symbols> getSymbols(){
@@ -48,7 +48,7 @@ public abstract class Face implements Serializable {
     }
 
     /**
-     * getter of the points attribute.
+     * Getter of the points attribute.
      * @return the face's base points.
      */
     public int getPoints() {
@@ -64,7 +64,7 @@ public abstract class Face implements Serializable {
     }
 
     /**
-     * getter of the requiredItem value.
+     * Getter of the requiredItem value.
      * @return (if present) the item needed in the ITEM condition.
      */
     public Symbols getRequiredItem() {
@@ -81,7 +81,7 @@ public abstract class Face implements Serializable {
     }
 
     /**
-     * getter of the symbol in one specified card's corner.
+     * Getter of the symbol in one specified card's corner.
      * @param corner the position of the corner we want to get the symbol.
      * @return the symbol contained in that corner.
      */
@@ -90,7 +90,7 @@ public abstract class Face implements Serializable {
     }
 
     /**
-     * getter of one corner's state.
+     * Getter of one corner's state.
      * @param corner the position of the corner we want to get the state.
      * @return the corner's state.
      */
@@ -99,7 +99,7 @@ public abstract class Face implements Serializable {
     }
 
     /**
-     * set the card's corner state.
+     * Set the card's corner state.
      * @param corner position of the corner we want to set the state.
      * @param state the corner's state we want to set.
      */

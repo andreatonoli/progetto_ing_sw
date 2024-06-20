@@ -15,13 +15,14 @@ public class AchievementL implements Achievement{
      */
     private final int id;
     /**
-     * points given upon completion of the achievement.
+     * Points given upon completion of the achievement.
      */
     private final int basePoint;
     /**
-     * the needed color ((from the color enumeration)) 2/3 of the cards in an L-shaped pattern have to be.
+     * The needed color ((from the color enumeration)) 2/3 of the cards in an L-shaped pattern have to be.
      */
     private final Color color;
+
     /**
      * Builds cards which achievement is "create an L with two cards of the same color, and one different".
      * They've all the same base points (3).
@@ -33,6 +34,7 @@ public class AchievementL implements Achievement{
         this.color = color;
         this.id = id;
     }
+
     /**
      * This method calculates the points made by a player with the L achievement. For each we check its color and the
      * color of the card under and laterally (to form an L shape) to see if they match with the achievement colour.

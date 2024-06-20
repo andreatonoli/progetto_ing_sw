@@ -9,23 +9,47 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Set;
 
+/**
+ * The PlayerBoard class represents the game board of a player.
+ * It provides methods to manage the cards and symbols of a player.
+ *
+ * This class is a part of the model component in the MVC pattern.
+ */
 public class PlayerBoard implements Serializable {
+    /**
+     * Offset used for calculating card positions.
+     */
     public static final int OFFSET = 128;
-    private Player player;
-    private Card starterCard; //Se si vuole far tornare di tipo starter bisogna creare un metodo drawCard apposito per lei
-    private HashMap<Integer, Card> cardPosition;
-    private HashMap<Symbols,Integer> symbolCount;
 
+    /**
+     * The starter card of the player.
+     */
+    private Card starterCard;
+
+    /**
+     * A map that holds the position of each card on the board.
+     */
+    private final HashMap<Integer, Card> cardPosition;
+
+    /**
+     * A map that holds the count of each symbol for the player.
+     */
+    private final HashMap<Symbols,Integer> symbolCount;
+
+    /**
+     * Constructor for PlayerBoard.
+     * Initializes the cardPosition and symbolCount maps.
+     */
     public PlayerBoard(){
-
         this.cardPosition = new HashMap<>();
         this.symbolCount= new HashMap<>();
     }
+
     /**
-     * requires valid coordinates.
-     * the controller will place the card wherever is possible and then call this method to update the game board
-     * @param placedCard is the card that has been placed
-     * @param coordinates is the position where the card has been placed
+     * Sets the position of a card on the player's board.
+     *
+     * @param placedCard the card that has been placed.
+     * @param coordinates the position where the card has been placed.
      */
     public void setCardPosition(Card placedCard, int[] coordinates) {
         int x = coordinates[0] + OFFSET;
@@ -33,14 +57,20 @@ public class PlayerBoard implements Serializable {
         cardPosition.put(y + ((1<<10) * x), placedCard);
     }
 
+    /**
+     * Gets the positions of all cards on the player's board.
+     *
+     * @return a map of card positions.
+     */
     public HashMap<Integer, Card> getCardPositon(){
         return this.cardPosition;
     }
 
     /**
-     * method to get the coordinates of the card
-     * @param card is the card we need to know the position of
-     * @return the position of the card
+     * Gets the coordinates of a specific card on the player's board.
+     *
+     * @param card the card whose position is to be retrieved.
+     * @return the coordinates of the card.
      */
     public int[] getCardCoordinates(Card card){
         int[] coord = new int[]{0,0};
@@ -52,6 +82,13 @@ public class PlayerBoard implements Serializable {
         }
         return coord;
     }
+
+    /**
+     * Gets the card at a specific position on the player's board.
+     *
+     * @param coord the coordinates of the position.
+     * @return the card at the given position, or null if no card is present.
+     */
     public Card getCard(int[] coord){
         int x = coord[0] + OFFSET;
         int y = coord[1] + OFFSET;
@@ -61,38 +98,74 @@ public class PlayerBoard implements Serializable {
         }
         return this.cardPosition.get(key);
     }
+
+    /**
+     * Gets the keys of the card positions on the player's board.
+     *
+     * @return a set of keys representing the card positions.
+     */
     public Set<Integer> getPositionCardKeys(){
         return this.cardPosition.keySet();
     }
+
+    /**
+     * Gets the count of a specific symbol for the player.
+     *
+     * @param s the symbol whose count is to be retrieved.
+     * @return the count of the symbol, or 0 if the symbol is not present.
+     */
     public Integer getSymbolCount(Symbols s){
         if(this.symbolCount.get(s) != null){
             return this.symbolCount.get(s);
         }
         return 0;
     }
+
+    /**
+     * Sets the starter card for the player and places it at position (0,0).
+     *
+     * @param starterCard the starter card to be set.
+     */
     public void setStarterCard(Card starterCard){
         this.starterCard = starterCard;
         setCardPosition(starterCard, new int[]{0,0});
         coverCorner(starterCard, new int[]{0,0});
     }
 
+    /**
+     * Gets the starter card of the player.
+     *
+     * @return the starter card of the player.
+     */
     public Card getStarterCard(){
         return this.starterCard;
     }
 
     /**
-     * Gives the player his starter card without placing it
-     * @param card player's starter card drew from the deck
+     * Gives the player his starter card without placing it on the board.
+     *
+     * @param card the starter card to be given to the player.
      */
     public void giveStarterCard(Card card){
         this.starterCard = card;
     }
 
+    /**
+     * Increases the count of a specific symbol for the player.
+     *
+     * @param symbol the symbol whose count is to be increased.
+     */
     public void increaseSymbolCount(Symbols symbol){
         if (!symbol.equals(Symbols.NOCORNER) && !symbol.equals(Symbols.EMPTY)){
             this.symbolCount.compute(symbol, (key, value) -> (value == null) ? 1 : value + 1);
         }
     }
+
+    /**
+     * Decreases the count of a specific symbol for the player.
+     *
+     * @param symbol the symbol whose count is to be decreased.
+     */
     public void decreaseSymbolCount(Symbols symbol){
         if (!symbol.equals(Symbols.NOCORNER) && !symbol.equals(Symbols.EMPTY)){
             this.symbolCount.compute(symbol, (key, value) -> (value == null || value == 0) ? 0 : value - 1);
@@ -101,9 +174,10 @@ public class PlayerBoard implements Serializable {
 
     /**
      * When the player board is modified, starting from the last card placed, adds its symbols to the symbol count,
-     * covers the corners of the potential card below it and decrements the counter of these symbols
-     * @param card last card that was placed
-     * @param coordinates of the last card placed
+     * covers the corners of the potential card below it and decrements the counter of these symbols.
+     *
+     * @param card the last card that was placed.
+     * @param coordinates the coordinates of the last card placed.
      */
     public void coverCorner(Card card, int[] coordinates){
         int[] checkCoordinates = new int[2];
@@ -114,14 +188,10 @@ public class PlayerBoard implements Serializable {
         }
         for (CornerEnum position : CornerEnum.values()) {
             if (!card.getCornerSymbol(position).equals(Symbols.NOCORNER)){
-                //Add symbols (of the placed card) to counter
                 this.increaseSymbolCount(card.getCornerSymbol(position));
             }
-            //select the card below the placed card
             checkCoordinates[0] = coordinates[0] + position.getX();
             checkCoordinates[1] = coordinates[1] + position.getY();
-            //Cover its corner and removes its symbols from the counter, also cover those placedCard corners which have
-            //another corner below them
             if (this.getCard(checkCoordinates) != null) {
                 card.setCornerState(position, CornerState.OCCUPIED);
                 this.getCard(checkCoordinates).setCornerState(position.getOppositePosition(), CornerState.NOT_VISIBLE);
@@ -129,8 +199,13 @@ public class PlayerBoard implements Serializable {
             }
         }
     }
+
+    /**
+     * Gets the positions of all cards on the player's board.
+     *
+     * @return a map of card positions.
+     */
     public HashMap<Integer, Card> getCardPosition(){
         return cardPosition;
     }
 }
-

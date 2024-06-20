@@ -8,7 +8,7 @@ import java.util.List;
 public class CardBack extends Face {
 
     /**
-     * list of one or more symbols which appear in the middle of the card.
+     * List of one or more symbols which appear in the middle of the card.
      */
     private final List<Symbols> centerSymbols;
 

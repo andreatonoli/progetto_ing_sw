@@ -13,11 +13,11 @@ public class AchievementItem implements Achievement{
      */
     private final int id;
     /**
-     * points given upon completion of the achievement.
+     * Points given upon completion of the achievement.
      */
     private final int basePoint;
     /**
-     * indicates the symbols (from the symbols enumeration) to collect.
+     * Indicates the symbols (from the symbols enumeration) to collect.
      */
     private final ArrayList<Symbols> symbol;
 

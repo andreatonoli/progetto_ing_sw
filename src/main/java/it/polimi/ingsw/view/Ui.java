@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface Ui{
+    void reset();
     void handleReconnection();
     void askNickname();
     void selectGame(List<Integer> startingGamesId, List<Integer> gamesWhitDisconnectionsId);

@@ -8,12 +8,12 @@ import java.io.Serializable;
 public class Corner implements Serializable {
 
     /**
-     * indicates the symbol contained in the corner.
+     * Indicates the symbol contained in the corner.
      */
     private final Symbols symbol;
 
     /**
-     * indicate the state of the corner.
+     * Indicate the state of the corner.
      */
     private CornerState state;
 
@@ -33,7 +33,7 @@ public class Corner implements Serializable {
     }
 
     /**
-     * getter of the symbol inside the corner.
+     * Getter of the symbol inside the corner.
      * @return the symbol contained in the corner.
      */
     public Symbols getSymbol(){
@@ -41,7 +41,7 @@ public class Corner implements Serializable {
     }
 
     /**
-     * getter of the corner state.
+     * Getter of the corner state.
      * @return the current state of the corner.
      */
     public CornerState getState(){
