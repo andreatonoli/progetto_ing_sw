@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class Game extends Observable implements Serializable {
-    private int lobbySize;
+    private final int lobbySize;
     private final GameBoard gameBoard;
     private GameState gameState;
     private final ArrayList<Player> players;

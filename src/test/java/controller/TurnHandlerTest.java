@@ -143,7 +143,7 @@ public class TurnHandlerTest {
 
     @Test
     @DisplayName("testing the changePlayerState method in case the player disconnect while in turn")
-    void changePlayerStateWHileDisconnectingTest() throws Exception {
+    void changePlayerStateWhileDisconnectingTest() throws Exception {
         Player player1 = mock(Player.class);
         Player player2 = mock(Player.class);
         Controller controller = mock(Controller.class);

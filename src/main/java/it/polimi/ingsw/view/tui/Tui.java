@@ -9,7 +9,9 @@ import it.polimi.ingsw.network.server.Server;
 import it.polimi.ingsw.view.Ui;
 import org.fusesource.jansi.AnsiConsole;
 
+import java.awt.*;
 import java.io.Console;
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Scanner;
@@ -37,24 +39,36 @@ public class Tui implements Ui {
 
     public void spawnThread(){
         inputThread = new Thread(() -> {
-            Scanner input = new Scanner(System.in);
+            TuiInputReaderTask tis = new TuiInputReaderTask();
             while (running) {
-                String choice = input.nextLine();
-                synchronized (lock) {
-                    if (choice.equals("q")){
-                        printViewWithCommands(player, game, players);
-                    }
-                    else{
-                        handleInput(choice);
+                String choice = null;
+                try {
+                    choice = tis.call();
+                } catch (IOException e) {
+                    System.out.println(e.getMessage());
+                    running = false;
+                }
+                if (running) {
+                    synchronized (lock) {
+                        if (choice.equals("q")){
+                            printViewWithCommands(player, game, players);
+                        }
+                        else{
+                            handleInput(choice);
+                        }
                     }
                 }
             }
-            input.close();
         });
     }
 
     public void handleReconnection(){
-        this.inputThread.start();
+        running = true;
+    }
+
+    public void reset(){
+        this.running = false;
+        clearConsole();
     }
 
     /**

@@ -19,7 +19,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-//TODO: timer sul ping -> quando salta chiamo reconnectAttempt -> a fine reconnect deve morire
+
 public class SocketClient implements ClientInterface {
     private final String address;
     private final int port;
@@ -37,6 +37,7 @@ public class SocketClient implements ClientInterface {
     private final Object outputLock = new Object();
     private Timer catchPing;
     private Thread reconnectionThread;
+
     public SocketClient(String address, int port, Ui view){
         this.view = view;
         this.opponents = new ArrayList<>();
@@ -425,6 +426,7 @@ public class SocketClient implements ClientInterface {
             public void run() {
                 catchPing.cancel();
                 onDisconnect();
+                view.reset();
                 reconnectAttempt();
             }
         }, 5000, 5000);

@@ -85,6 +85,11 @@ public class Gui extends Application implements Ui{
     }
 
     @Override
+    public void reset() {
+
+    }
+
+    @Override
     public void handleReconnection() {
 
     }
