@@ -88,7 +88,6 @@ public class TurnHandlerTest {
     @Test
     @DisplayName("testing the startEnd method")
     void startEndTest() throws Exception {
-
         Player player1 = mock(Player.class);
         Player player2 = mock(Player.class);
         Controller controller = mock(Controller.class);
@@ -108,7 +107,6 @@ public class TurnHandlerTest {
 
         turnHandler.startEnd(player1);
         assertTrue((Boolean) field.get(turnHandler));
-
     }
 
     @Test
@@ -143,7 +141,7 @@ public class TurnHandlerTest {
 
     @Test
     @DisplayName("testing the changePlayerState method in case the player disconnect while in turn")
-    void changePlayerStateWHileDisconnectingTest() throws Exception {
+    void changePlayerStateWhileDisconnectingTest() throws Exception {
         Player player1 = mock(Player.class);
         Player player2 = mock(Player.class);
         Controller controller = mock(Controller.class);
@@ -206,6 +204,38 @@ public class TurnHandlerTest {
         verify(turnHandler).notifyAll(any(WinnerMessage.class));
         verify(turnHandler).notifyAll(any(GameStateMessage.class));
 
+    }
+
+    @Test
+    @DisplayName("testing the changePlayerState in the last turn")
+    void lastTurnTestTest() throws Exception {
+        Player player1 = mock(Player.class);
+        Player player2 = mock(Player.class);
+        Controller controller = mock(Controller.class);
+        Game game = mock(Game.class);
+
+        TurnHandler turnHandler = spy(new TurnHandler(game, controller));
+        java.lang.reflect.Field field1 = TurnHandler.class.getDeclaredField("endCountDown");
+        field1.setAccessible(true);
+        field1.set(turnHandler,0);
+        java.lang.reflect.Field field2 = TurnHandler.class.getDeclaredField("endingCycle");
+        field2.setAccessible(true);
+        field2.set(turnHandler,true);
+
+        when(game.getPlayerInTurn()).thenReturn(player2);
+        when(player2.isFirstToPlay()).thenReturn(true);
+        when(player1.isDisconnected()).thenReturn(false);
+        when(player1.getPlayerState()).thenReturn(PlayerState.PLAY_CARD);
+        when(game.getDisconnections()).thenReturn(0);
+        when(game.getLobbySize()).thenReturn(2);
+
+        turnHandler.changePlayerState(player1);
+
+        verify(game).setPlayerInTurn();
+        verify(player2).setPlayerState(PlayerState.NOT_IN_TURN);
+        verify(turnHandler).notifyAll(any(GameStateMessage.class));
+        verify(turnHandler).notifyAll(any(WinnerMessage.class));
+        verify(controller).removeFromServer();
     }
 
 }
