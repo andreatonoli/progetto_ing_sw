@@ -7,6 +7,7 @@ import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.controller.ServerController;
 import it.polimi.ingsw.network.server.Connection;
 import it.polimi.ingsw.network.server.Server;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -15,8 +16,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class ServerControllerTest {
 
     @Test
-    public void testCreateLobby() {
-        String username = "testUser";
+    @DisplayName("Create lobby")
+    public void createLobbyTest() {
+        String username = "mario";
         int numPlayers = 4;
         int id = 123;
 
@@ -37,8 +39,9 @@ public class ServerControllerTest {
     }
 
     @Test
-    public void testJoinLobby() {
-        String username = "testUser";
+    @DisplayName("Join lobby")
+    public void joinLobbyTest() {
+        String username = "luigi";
 
         // Mock dependencies
         Server serverMock = mock(Server.class);

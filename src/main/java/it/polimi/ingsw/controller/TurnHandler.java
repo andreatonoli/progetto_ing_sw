@@ -11,21 +11,22 @@ import it.polimi.ingsw.network.messages.*;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.CountDownLatch;
 
 public class TurnHandler extends Observable {
     /**
      * game reference
      */
     private final Game game;
+    private Controller controller;
     private int j = 0;
     private boolean endingCycle = false;
     private boolean endingByPlacingCard = false;
     private boolean disconnectedWhileInTurn = false;
     private int endCountDown;
 
-    public TurnHandler(Game game){
+    public TurnHandler(Game game, Controller controller){
         this.game = game;
+        this.controller = controller;
     }
 
     public void startEnd(Player player){
@@ -88,6 +89,7 @@ public class TurnHandler extends Observable {
                         notifyAll(new GameStateMessage(GameState.END));
                         try {
                             notifyAll(new WinnerMessage(game.endGame()));
+                            controller.removeFromServer();
                         } catch (GameNotStartedException e) {
                             System.out.println(e.getMessage());
                         }
@@ -132,6 +134,7 @@ public class TurnHandler extends Observable {
         notifyAll(new WinnerMessage(List.of(p)));
         notifyAll(new GameStateMessage(GameState.END));
         game.setGameState(GameState.END);
+        controller.removeFromServer();
     }
     public String changeSetupPlayer(){
         j++;

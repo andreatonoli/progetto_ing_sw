@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model.enums;
 
-import it.polimi.ingsw.view.TuiColors;
+import it.polimi.ingsw.view.tui.TuiColors;
 
 public enum Symbols {
 

@@ -199,7 +199,6 @@ public class Player implements Serializable {
             System.out.println("Player not found");
         }
     }
-    //TODO: commentare
     public void displayMessage(Player sender, String message){
         if(chat.size() >= Chat.CHATDIM){
             chat.set(Chat.CHATDIM - 1, sender.getUsername() + ": " + message);

@@ -10,8 +10,8 @@ public class Server {
     public static final int MAX_PLAYERS_PER_LOBBY = 4; /** sets max number of players */
     public static final int MIN_PLAYERS_PER_LOBBY = 2; /** sets min number of players */
     public final static String serverName = "GameServer";
-    public final static int rmiPort = 1234;
-    public final static int socketPort = 1235;
+    public final static int rmiPort = 50678;
+    public final static int socketPort = 50679;
     private List<Integer> idTaken;
     private List<Controller> activeGames;
     private List<Controller> gamesWithDisconnections;
@@ -47,7 +47,6 @@ public class Server {
         } else {
             client.joinGame(startingGamesId, gamesWithDisconnectionsId);
         }
-        //TODO spostare il ping sopra e fare eslpodere tutto se uno si scollega nella selezione del game (e mettere setup automatico se serve
     }
 
     public void startPing(Connection client){
@@ -152,5 +151,11 @@ public class Server {
         this.gamesWithDisconnections.remove(game);
         this.gamesWithDisconnectionsId.remove((Integer) game.getId());
         idTaken.set(game.getId(),-1);
+        System.out.println("the game [" + game.getId() + "] ended");
+    }
+    public void removeStartingGame(Controller game){
+        this.startingGames.remove(game);
+        idTaken.set(game.getId(),-1);
+        System.out.println("the game [" + game.getId() + "] got cancelled due to lack of players");
     }
 }

@@ -43,7 +43,7 @@ public class Controller extends Observable {
     public Controller(int numPlayers, int id){
         this.id = id;
         this.game = new Game(numPlayers);
-        this.turnHandler = new TurnHandler(game);
+        this.turnHandler = new TurnHandler(game, this);
         this.connectedPlayers = new ConcurrentHashMap<>();
         this.actionQueue = new LinkedBlockingQueue<>();
     }
@@ -104,7 +104,7 @@ public class Controller extends Observable {
         this.turnHandler.addObserver(user);
         user.setLobby(this);
         game.addPlayer(player);
-        notifyAll(new GenericMessage("Players: " + this.connectedPlayers.keySet().size() + "/" + this.game.getLobbySize()));
+        getConnectedPlayersMessage();
         if (game.isFull()){
             game.setGameState(GameState.START);
             notifyAll(new GameStateMessage(game.getGameState()));
@@ -371,5 +371,22 @@ public class Controller extends Observable {
 
     public Game getGame(){
         return this.game;
+    }
+
+    public void getConnectedPlayersMessage(){
+        notifyAll(new GenericMessage("Players: " + this.connectedPlayers.keySet().size() + "/" + this.game.getLobbySize()));
+    }
+
+    public void removeFromServer(){
+        boolean last = false;
+        int count = 0;
+        Set<Connection> connections = connectedPlayers.keySet();
+        for (Connection c : connections){
+            count++;
+            if (count == game.getLobbySize()){
+                last = true;
+            }
+            c.removeFromServer(last);
+        }
     }
 }

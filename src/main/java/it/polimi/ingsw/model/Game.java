@@ -208,10 +208,6 @@ public class Game extends Observable implements Serializable {
         }
     }
 
-    public void setLobbySize(int lobbySize) {
-        this.lobbySize = lobbySize;
-    }
-
     public boolean isFull(){
         return gameFull;
     }
@@ -233,6 +229,10 @@ public class Game extends Observable implements Serializable {
 
     public void addDisconnections(int disconnectedPlayers) {
         disconnections += disconnectedPlayers;
+    }
+
+    public void removePlayer(String username){
+        players.remove(getPlayerByUsername(username));
     }
 
 

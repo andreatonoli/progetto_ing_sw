@@ -1,6 +1,7 @@
 package it.polimi.ingsw.network.server;
 
 import it.polimi.ingsw.controller.*;
+import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.card.Achievement;
 import it.polimi.ingsw.model.card.Card;
 import it.polimi.ingsw.model.enums.Color;
@@ -79,12 +80,23 @@ public class RMIConnection extends Connection {
 
     //TODO: potrebbe conflittare con le operazioni del controller
     public void onDisconnect(){
-        if (!lobby.getGame().getGameState().equals(GameState.END)) {
+        Game game = lobby.getGame();
+        if (game.getGameState().equals(GameState.WAIT_PLAYERS)){
+            server.removePlayers(username);
+            game.removePlayer(username);
+            if (game.getPlayers().isEmpty()){
+                server.removeStartingGame(lobby);
+            }
+            else {
+                lobby.getConnectedPlayersMessage();
+            }
+        }
+        else if (!game.getGameState().equals(GameState.END)) {
             this.disconnected = true;
-            lobby.getGame().getPlayerByUsername(username).setDisconnected(true);
+            game.getPlayerByUsername(username).setDisconnected(true);
             setConnectionStatus(false);
             server.addDisconnectedPlayer(username,lobby);
-            if (lobby.getGame().getPlayerInTurn().getUsername().equals(username)){
+            if (game.getPlayerInTurn().getUsername().equals(username)){
                 lobby.disconnectedWhileInTurn(username);
             }
         }
@@ -200,6 +212,23 @@ public class RMIConnection extends Connection {
     public void sendChatMessage(String message) {
         this.lobby.addAction(new ActionMessage(this, () -> lobby.sendChatMessage(this, message)));
     }
+
+    @Override
+    public void removeFromServer(boolean last) {
+        cancelPing();
+        onDisconnect();
+        System.err.println(username + " got disconnected");
+        server.removePlayers(username);
+        if (last){
+            server.removeGame(lobby);
+        }
+        try {
+            serverHandler.removeConnections(username);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public void update(Message message) {
         this.sendMessage(message);

@@ -7,13 +7,9 @@ import it.polimi.ingsw.model.enums.PlayerState;
 import it.polimi.ingsw.model.player.PlayerBoard;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.network.server.VirtualServer;
-import it.polimi.ingsw.network.server.Action;
 import it.polimi.ingsw.view.Ui;
 import it.polimi.ingsw.model.card.Card;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -73,7 +69,11 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
     }
 
     public int joinGame(List<Integer> startingGamesId, List<Integer> gamesWhitDisconnectionsId) throws RemoteException{
-        return this.view.selectGame(startingGamesId, gamesWhitDisconnectionsId);
+        int response;
+        do{
+            response = this.view.selectGame(startingGamesId, gamesWhitDisconnectionsId);
+        } while (response == -2);
+        return response;
     }
 
     public int setLobbySize() throws RemoteException{
@@ -136,7 +136,6 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
             case RECONNECTION:
                 this.player = ((ReconnectionMessage) message).getPlayerBean();
                 this.game = ((ReconnectionMessage) message).getGameBean();
-                //TODO: Controlla come viene passato il parametro e cerca di passare una copia
                 this.opponents = ((ReconnectionMessage) message).getOpponents();
                 this.view.handleReconnection();
                 this.view.printViewWithCommands(this.player, this.game, this.opponents);
@@ -144,7 +143,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
             case GAME_STATE:
                 GameState state = ((GameStateMessage) message).getState();
                 game.setState(state);
-                if (state.ordinal() >= 2){
+                if (state.equals(GameState.IN_GAME)){
                     this.view.printViewWithCommands(player, game, opponents);
                 }
                 break;
@@ -272,7 +271,6 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                         }
                     }
                 }
-                //this.view.printViewWithCommands(this.player, this.game, this.opponents);
                 break;
             case CHAT:
                 player.setChat(((ChatMessage) message).getChat());
@@ -288,11 +286,11 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
             case DECLARE_WINNER:
                 ArrayList<String> winners = ((WinnerMessage) message).getWinners();
                 this.view.declareWinners(winners);
-                try {
-                    server.removeFromServer(username);
-                } catch (RemoteException e) {
-                    System.out.println(e.getMessage() + " in removeFromServer");
-                }
+                //try {
+                //    server.removeFromServer(username);
+                //} catch (RemoteException e) {
+                //    System.out.println(e.getMessage() + " in removeFromServer");
+                //}
                 break;
             case GENERIC_MESSAGE:
                 if (game.getState().ordinal() > 1) {
@@ -347,7 +345,6 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
             }
         }
         else{
-            //TODO: errore profondo
             update(new GenericMessage("\nThere's a time and place for everything! But not now.\n"));
         }
     }
@@ -362,7 +359,6 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
             }
         }
         else{
-            //TODO: errore profondo
             update(new GenericMessage("\nThere's a time and place for everything! But not now.\n"));
         }
     }
@@ -377,7 +373,6 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
             }
         }
         else{
-            //TODO: errore profondo
             update(new GenericMessage("\nThere's a time and place for everything! But not now.\n"));
         }
     }
