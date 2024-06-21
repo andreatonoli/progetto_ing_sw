@@ -64,6 +64,9 @@ public class Tui implements Ui {
 
     public void handleReconnection(){
         running = true;
+        if (inputThread.getState().equals(Thread.State.NEW)){
+            inputThread.start();
+        }
     }
 
     public void reset(){
