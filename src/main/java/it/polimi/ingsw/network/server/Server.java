@@ -37,6 +37,14 @@ public class Server {
     }
 
     public void startServer(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Insert remote IP (leave empty for localhost)");
+        String ip = scanner.nextLine();
+        if (ip.isEmpty()){
+            System.setProperty("java.rmi.server.hostname", "127.0.0.1");
+        } else {
+            System.setProperty("java.rmi.server.hostname", ip);
+        }
         new RMIServer(this, rmiPort);
         new SocketServer(this, socketPort);
     }
