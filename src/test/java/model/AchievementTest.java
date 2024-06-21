@@ -122,9 +122,14 @@ public class AchievementTest {
         Card c = new Card( new ResourceCard(new Corner[]{new Corner(Symbols.NOCORNER), new Corner(Symbols.FUNGI), new Corner(Symbols.FUNGI), new Corner(Symbols.EMPTY) }, 1), new CardBack(List.of(Symbols.FUNGI)), "resource", 30, Color.PURPLE);
         Player p = new Player("pippo", game);
         //Creating a purple diagonal
-        p.getPlayerBoard().setCardPosition(c, new int[]{-40,-40});
-        p.getPlayerBoard().setCardPosition(c, new int[]{-39,-41});
-        p.getPlayerBoard().setCardPosition(c, new int[]{-41,-39});
+        p.getPlayerBoard().setCardPosition(c, new int[]{0, 0});
+        p.getPlayerBoard().setCardPosition(c, new int[]{-1, 1});
+        p.getPlayerBoard().setCardPosition(c, new int[]{1, -1});
+
+        //Creating a purple diagonal but in the opposite sense
+        p.getPlayerBoard().setCardPosition(c, new int[]{1, 1});
+        p.getPlayerBoard().setCardPosition(c, new int[]{-1, -1});
+
         //2 points
         a.calcPoints(p);
         assertEquals(2, p.getPoints());

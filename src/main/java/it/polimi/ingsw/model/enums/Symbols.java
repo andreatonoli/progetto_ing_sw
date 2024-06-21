@@ -3,8 +3,7 @@ package it.polimi.ingsw.model.enums;
 import it.polimi.ingsw.view.tui.TuiColors;
 
 /**
- * Enumeration which represents all the possibile symbols that are present in the game. In addition the are some symbols,
- * like CARD, that are useful to represent the cards in TUI and are useless in GUI.
+ * Symbols enumeration used to indicate the card's symbol.
  */
 public enum Symbols {
 
