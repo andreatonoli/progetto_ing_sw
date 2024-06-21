@@ -64,36 +64,33 @@ public class GuiInputHandler implements Ui {
     }
 
     @Override
-    public String askNickname() {
+    public void askNickname() {
         Platform.runLater(() -> {
             Gui.setScene(Gui.getScenes().get(GuiScenes.LOGIN_SCENE.ordinal()));
         });
-        return "";
     }
 
-    @Override
     public String askServerAddress() {
         return "";
     }
 
-    @Override
     public int askServerPort(String connectionType) {
         return 0;
     }
 
     @Override
-    public int selectGame(List<Integer> startingGamesId, List<Integer> gamesWhitDisconnectionsId) {
-        return 0;
+    public void selectGame(List<Integer> startingGamesId, List<Integer> gamesWhitDisconnectionsId) {
+
     }
 
     @Override
-    public int setLobbySize() {
-        return 0;
+    public void askLobbySize() {
+
     }
 
     @Override
-    public boolean askSide(Card starterCard) {
-        return false;
+    public void askSide(Card starterCard) {
+
     }
 
     @Override
@@ -102,13 +99,13 @@ public class GuiInputHandler implements Ui {
     }
 
     @Override
-    public Achievement chooseAchievement(Achievement[] choices) {
-        return null;
+    public void askAchievement(Achievement[] choices) {
+
     }
 
     @Override
-    public Color chooseColor(List<Color> colors) {
-        return null;
+    public void askColor(List<Color> colors) {
+
     }
 
     @Override
