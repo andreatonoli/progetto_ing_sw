@@ -9,7 +9,6 @@ import it.polimi.ingsw.network.server.Server;
 import it.polimi.ingsw.view.Ui;
 import org.fusesource.jansi.AnsiConsole;
 
-import java.awt.*;
 import java.io.Console;
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -107,12 +106,11 @@ public class Tui implements Ui {
      * Asks the player's nickname
      */
     @Override
-    public String askNickname(){
+    public void askNickname(){
         String nickname;
         AnsiConsole.out().print("Please insert your username: ");
         nickname = scanner.next();
         client.setNickname(nickname);
-        return nickname;
     }
 
     @Override

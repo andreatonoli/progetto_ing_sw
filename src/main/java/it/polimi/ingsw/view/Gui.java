@@ -95,8 +95,8 @@ public class Gui extends Application implements Ui{
     }
 
     @Override
-    public String askNickname() {
-        return null;
+    public void askNickname() {
+
     }
 
     @Override
