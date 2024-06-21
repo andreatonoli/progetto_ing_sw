@@ -1,11 +1,11 @@
-package it.polimi.ingsw.view.controllers;
+package it.polimi.ingsw.view.gui.controllers;
 
 import it.polimi.ingsw.model.card.Card;
-import it.polimi.ingsw.view.Gui;
-import it.polimi.ingsw.view.GuiInputHandler;
-import javafx.event.ActionEvent;
+import it.polimi.ingsw.view.gui.Gui;
+import it.polimi.ingsw.view.gui.GuiInputHandler;
+import it.polimi.ingsw.view.gui.GuiScenes;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.CacheHint;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -68,9 +68,15 @@ public class StarterFlipSceneController extends GenericController{
             else if(result.get().getText().equals("Confirm")){
                 if(card.getImage().equals(front)){
                     guiHandler.nextStarterCardButtonClicked(true, starter);
+                    Platform.runLater(() -> {
+                        Gui.setScene(Gui.getScenes().get(GuiScenes.ACHIEVEMENT_CHOICE_SCENE.ordinal()));
+                    });
                 }
                 else{
                     guiHandler.nextStarterCardButtonClicked(false, starter);
+                    Platform.runLater(() -> {
+                        Gui.setScene(Gui.getScenes().get(GuiScenes.ACHIEVEMENT_CHOICE_SCENE.ordinal()));
+                    });
                 }
             }
             else if(result.get().getText().equals("Cancel")){

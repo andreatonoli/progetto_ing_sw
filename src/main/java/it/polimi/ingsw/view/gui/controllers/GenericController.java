@@ -1,6 +1,6 @@
-package it.polimi.ingsw.view.controllers;
+package it.polimi.ingsw.view.gui.controllers;
 
-import it.polimi.ingsw.view.GuiInputHandler;
+import it.polimi.ingsw.view.gui.GuiInputHandler;
 import javafx.fxml.FXML;
 
 public class GenericController {

@@ -1,26 +1,15 @@
-package it.polimi.ingsw.view;
+package it.polimi.ingsw.view.gui;
 
-import it.polimi.ingsw.model.card.*;
-import it.polimi.ingsw.model.enums.Color;
-import it.polimi.ingsw.model.enums.Symbols;
-import it.polimi.ingsw.model.player.PlayerBoard;
 import it.polimi.ingsw.network.client.*;
-import it.polimi.ingsw.network.server.Server;
-import it.polimi.ingsw.view.controllers.*;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.fusesource.jansi.AnsiConsole;
 
+import java.awt.*;
 import java.io.IOException;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -68,11 +57,17 @@ public class Gui extends Application{
     @Override
     public void start(Stage s) throws Exception {
 
+        //GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        //int width = gd.getDisplayMode().getWidth();
+        //int height = gd.getDisplayMode().getHeight();
+
         loadAllScenes();
         stage = s;
 
         stage.setScene(new Scene(scenes.get(GuiScenes.START_SCENE.ordinal())));
         stage.show();
+
+        stage.setFullScreen(true);
 
         //Timer t = new Timer();
         //t.schedule(new TimerTask() {

@@ -1,8 +1,6 @@
-package it.polimi.ingsw.view.controllers;
+package it.polimi.ingsw.view.gui.controllers;
 
-import it.polimi.ingsw.view.Gui;
-import it.polimi.ingsw.view.GuiInputHandler;
-import javafx.event.ActionEvent;
+import it.polimi.ingsw.view.gui.GuiInputHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;

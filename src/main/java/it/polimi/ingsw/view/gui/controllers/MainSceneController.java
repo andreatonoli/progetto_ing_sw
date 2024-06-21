@@ -1,17 +1,12 @@
-package it.polimi.ingsw.view.controllers;
+package it.polimi.ingsw.view.gui.controllers;
 
-import it.polimi.ingsw.model.card.Card;
-import it.polimi.ingsw.model.card.GoldCard;
-import it.polimi.ingsw.model.card.StarterCard;
 import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.CornerEnum;
 import it.polimi.ingsw.model.enums.CornerState;
 import it.polimi.ingsw.model.enums.PlayerState;
-import it.polimi.ingsw.model.player.PlayerBoard;
 import it.polimi.ingsw.network.client.GameBean;
 import it.polimi.ingsw.network.client.PlayerBean;
-import it.polimi.ingsw.view.Gui;
-import it.polimi.ingsw.view.GuiInputHandler;
+import it.polimi.ingsw.view.gui.GuiInputHandler;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -23,7 +18,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 
 import java.util.ArrayList;
@@ -76,35 +70,35 @@ public class MainSceneController extends GenericController{
     private Button otherPlayersBoard;
 
     //this matrix has the x and y position of the zero point for alle the 4 pions
-    private int[][] scoretrackZero = {new int[] {65, 115, 65, 115}, new int[] {670, 670, 715, 715}};
+    private final int[][] scoretrackZero = {new int[] {65, 115, 65, 115}, new int[] {670, 670, 715, 715}};
     //this matrix has the x and y values of the first pion based on points
-    private int[][] scoretrackFirstPion = {new int[]{65, 155, 245, 290, 200, 110, 20, 20, 110, 200, 290, 290, 200, 110, 20, 20, 110, 200, 290, 290, 135, 40, 40, 40, 95, 175, 260, 310, 310, 175}, new int[]{670, 670, 670, 590, 590, 590, 590, 510, 510, 510, 505, 425, 425, 425, 425, 345, 345, 345, 345, 260, 220, 265, 180, 100, 20, 5, 20, 90, 170, 105}};
+    private final int[][] scoretrackFirstPion = {new int[]{65, 155, 245, 290, 200, 110, 20, 20, 110, 200, 290, 290, 200, 110, 20, 20, 110, 200, 290, 290, 135, 40, 40, 40, 95, 175, 260, 310, 310, 175}, new int[]{670, 670, 670, 590, 590, 590, 590, 510, 510, 510, 505, 425, 425, 425, 425, 345, 345, 345, 345, 260, 220, 265, 180, 100, 20, 5, 20, 90, 170, 105}};
 
     private int cardToPlace;
 
-    private ArrayList<ImageView> pions = new ArrayList<>();
+    private final ArrayList<ImageView> pions = new ArrayList<>();
 
     private PlayerBean player;
     private ArrayList<PlayerBean> opponents;
 
-    int h1;
-    int h2;
-    int h3;
+    private int h1;
+    private int h2;
+    private int h3;
 
-    ImageView viewHand1;
-    ImageView viewHand2;
-    ImageView viewHand3;
+    private ImageView viewHand1;
+    private ImageView viewHand2;
+    private ImageView viewHand3;
 
-    ImageView viewFungiRetro;
-    ImageView viewAnimalRetro;
-    ImageView viewPlantRetro;
-    ImageView viewInsectRetro;
-    ImageView viewFungiGoldRetro;
-    ImageView viewAnimalGoldRetro;
-    ImageView viewPlantGoldRetro;
-    ImageView viewInsectGoldRetro;
+    private ImageView viewFungiRetro;
+    private ImageView viewAnimalRetro;
+    private ImageView viewPlantRetro;
+    private ImageView viewInsectRetro;
+    private ImageView viewFungiGoldRetro;
+    private ImageView viewAnimalGoldRetro;
+    private ImageView viewPlantGoldRetro;
+    private ImageView viewInsectGoldRetro;
 
-    GuiInputHandler guiHandler;
+    private GuiInputHandler guiHandler;
 
     @FXML
     public void initialize(){

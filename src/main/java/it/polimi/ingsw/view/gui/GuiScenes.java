@@ -1,6 +1,6 @@
-package it.polimi.ingsw.view;
+package it.polimi.ingsw.view.gui;
 
-import it.polimi.ingsw.view.controllers.*;
+import it.polimi.ingsw.view.gui.controllers.*;
 
 public enum GuiScenes {
     START_SCENE("/fxml/startScene.fxml"),

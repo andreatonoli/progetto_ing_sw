@@ -1,11 +1,12 @@
-package it.polimi.ingsw.view;
+package it.polimi.ingsw.view.gui;
 
 import it.polimi.ingsw.model.card.Achievement;
 import it.polimi.ingsw.model.card.Card;
 import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.network.client.*;
 import it.polimi.ingsw.network.server.Server;
-import it.polimi.ingsw.view.controllers.*;
+import it.polimi.ingsw.view.Ui;
+import it.polimi.ingsw.view.gui.controllers.*;
 import javafx.application.Platform;
 
 import java.rmi.RemoteException;
@@ -203,11 +204,8 @@ public class GuiInputHandler implements Ui {
 
     @Override
     public void askAchievement(Achievement[] choices) {
-        Platform.runLater(() -> {
-            AchievementChoiceSceneController c = (AchievementChoiceSceneController) GuiScenes.getController(GuiScenes.ACHIEVEMENT_CHOICE_SCENE);
-            c.setAchievements(choices);
-            Gui.setScene(Gui.getScenes().get(GuiScenes.ACHIEVEMENT_CHOICE_SCENE.ordinal()));
-        });
+        AchievementChoiceSceneController c = (AchievementChoiceSceneController) GuiScenes.getController(GuiScenes.ACHIEVEMENT_CHOICE_SCENE);
+        c.setAchievements(choices);
     }
 
     @Override

@@ -1,13 +1,10 @@
-package it.polimi.ingsw.view.controllers;
+package it.polimi.ingsw.view.gui.controllers;
 
-import it.polimi.ingsw.model.enums.CornerEnum;
-import it.polimi.ingsw.model.enums.CornerState;
 import it.polimi.ingsw.model.player.PlayerBoard;
 import it.polimi.ingsw.network.client.PlayerBean;
-import it.polimi.ingsw.view.Gui;
+import it.polimi.ingsw.view.gui.Gui;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
