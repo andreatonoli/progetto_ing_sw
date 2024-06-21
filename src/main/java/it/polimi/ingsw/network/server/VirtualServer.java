@@ -15,9 +15,6 @@ public interface VirtualServer extends Remote {
     void sendNickname(String nickname, Integer id) throws RemoteException;
     void handleAction(int actionToPerform, Integer id, String username, List<Integer> startingGamesId, List<Integer> gamesWhitDisconnectionsId) throws RemoteException;
     void setLobbySize(int size, Integer id, String username) throws RemoteException;
-    boolean usernameTaken(String username) throws RemoteException;
-
-    boolean userNotDisconnected(String username, int gameId) throws RemoteException;
 
     void placeStarterCard(Card card, Integer id) throws RemoteException;
 

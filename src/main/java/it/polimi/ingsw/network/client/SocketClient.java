@@ -331,11 +331,6 @@ public class SocketClient implements ClientInterface {
     }
 
     @Override
-    public void setNickname(String nickname, int lobby) {
-
-    }
-
-    @Override
     public void setOnConnectionAction(int response, List<Integer> startingGamesId, List<Integer> gamesWithDisconnectionsId) {
         if (response == -2) {
             this.view.selectGame(startingGamesId, gamesWithDisconnectionsId);

@@ -53,7 +53,7 @@ public class RMIServer implements VirtualServer {
 
     @Override
     public void sendNickname(String nickname, Integer id) throws RemoteException {
-        addToQueue(() -> connections.get(id).setNickname(nickname));
+        addToQueue(() -> connections.get(id).sendNickname(nickname));
     }
 
     @Override
@@ -64,16 +64,6 @@ public class RMIServer implements VirtualServer {
     @Override
     public void setLobbySize(int size, Integer id, String username) throws RemoteException {
         addToQueue(() -> connections.get(id).setLobbySize(size, username));
-    }
-
-    @Override
-    public boolean usernameTaken(String username) throws RemoteException {
-        return server.usernameTaken(username);
-    }
-
-    @Override
-    public boolean userNotDisconnected(String username, int gameId) throws RemoteException {
-        return server.userNotDisconnected(username, gameId);
     }
 
     public void pingConnection(Integer id) throws RemoteException{

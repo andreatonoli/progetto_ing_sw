@@ -276,4 +276,8 @@ public class RMIConnection extends Connection {
     public void update(Message message) {
         this.sendMessage(message);
     }
+
+    public void sendNickname(String nickname) {
+        this.username = nickname;
+    }
 }

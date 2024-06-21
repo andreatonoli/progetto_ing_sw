@@ -56,11 +56,6 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
         });
     }
 
-    @Override
-    public void setClientId(Integer id){
-        this.id = id;
-    }
-
     public void login(){
         try {
             Registry registry = LocateRegistry.getRegistry(address, port);
@@ -72,10 +67,25 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
         }
     }
 
+    @Override
+    public void setClientId(Integer id){
+        this.id = id;
+    }
+
     public void reconnectAttempt(){
         reconnectionThread.start();
     }
 
+    @Override
+    public void pingNetwork() throws RemoteException {
+        try {
+            catchPing();
+            server.pingConnection(id);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
     public void catchPing(){
         catchPing.cancel();
         catchPing = new Timer();
@@ -146,14 +156,122 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
     }
 
     @Override
-    public void pingNetwork() throws RemoteException {
+    public void setNickname(String nickname) {
+        this.username = nickname;
         try {
-            catchPing();
-            server.pingConnection(id);
+            if (this.player != null) {
+                player.setUsername(nickname);
+            }
+            else {
+                this.player = new PlayerBean(this.username);
+            }
+            server.sendNickname(nickname, id);
         } catch (RemoteException e) {
-            throw new RuntimeException(e);
+            System.out.println(e.getMessage());
         }
+    }
 
+    @Override
+    public void setOnConnectionAction(int response, List<Integer> startingGamesId, List<Integer> gamesWithDisconnectionsId) {
+        try {
+            server.handleAction(response, this.id, username, startingGamesId, gamesWithDisconnectionsId);
+        } catch (RemoteException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    @Override
+    public void placeStarterCard(boolean side, Card starterCard) {
+        if (!side) {
+            starterCard.setCurrentSide();
+        }
+        player.setStarterCard(starterCard);
+        try {
+            this.placeStarterCard(starterCard);
+        } catch (RemoteException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    @Override
+    public void chooseAchievement(Achievement achievement) {
+        this.player.setAchievement(achievement);
+        try {
+            this.setPrivateAchievement(player.getAchievement());
+        } catch (RemoteException e) {
+            System.err.println(e.getMessage() + " in RMIClient.update");
+        }
+    }
+
+    @Override
+    public void chooseColor(Color chosenColor) {
+        player.setPionColor(chosenColor);
+        try {
+            this.setColor(chosenColor);
+        } catch (RemoteException e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
+    @Override
+    public void sendChatMessage(String message) {
+        try {
+            server.sendChatMessage(message, id);
+        } catch (RemoteException e) {
+            System.out.println(e.getMessage() + " sendChatMessage");
+        }
+    }
+
+    @Override
+    public void sendChatMessage(String receiver, String message) {
+        try {
+            server.sendChatMessage(message, id, receiver);
+        } catch (RemoteException e) {
+            System.out.println(e.getMessage() + " sendChatMessage");
+        }
+    }
+
+    @Override
+    public void placeCard(Card card, int[] placingCoordinates) {
+        if (player.getState().equals(PlayerState.PLAY_CARD)) {
+            try {
+                server.placeCard(card, placingCoordinates, id);
+                player.removeCardFromHand(card);
+            } catch (RemoteException e) {
+                System.out.println(e.getMessage() + " in placeCard");
+            }
+        }
+        else{
+            update(new GenericMessage("\nThere's a time and place for everything! But not now.\n"));
+        }
+    }
+
+    @Override
+    public void drawCard(String chosenDeck) {
+        if (player.getState().equals(PlayerState.DRAW_CARD)){
+            try {
+                server.drawCard(chosenDeck, id);
+            } catch (RemoteException e) {
+                System.out.println(e.getMessage() + " in drawCard");
+            }
+        }
+        else{
+            update(new GenericMessage("\nThere's a time and place for everything! But not now.\n"));
+        }
+    }
+
+    @Override
+    public void drawCardFromBoard(int index){
+        if (player.getState().equals(PlayerState.DRAW_CARD)){
+            try {
+                server.drawCardFromBoard(index - 1, id);
+            } catch (RemoteException e) {
+                System.out.println(e.getMessage() + " in drawCardFromBoard");
+            }
+        }
+        else{
+            update(new GenericMessage("\nThere's a time and place for everything! But not now.\n"));
+        }
     }
 
     @Override
@@ -321,138 +439,5 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
         }
     }
 
-    @Override
-    public void setNickname(String nickname) {
-        this.username = nickname;
-        try {
-            if (this.player != null) {
-                player.setUsername(nickname);
-            }
-            else {
-                this.player = new PlayerBean(this.username);
-            }
-            server.sendNickname(nickname, id);
-        } catch (RemoteException e) {
-            System.out.println(e.getMessage());
-        }
-    }
 
-    @Override
-    public void setNickname(String nickname, int lobby){
-        try {
-            this.username = nickname;
-            if(!server.userNotDisconnected(username, lobby)) {
-                System.out.println("there is no player disconnected in game " + lobby + " with that name.");
-            }
-            else {
-                this.player = new PlayerBean(username);
-            }
-            //server.setNickname(nickname);
-        } catch (RemoteException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-    
-    @Override
-    public void setOnConnectionAction(int response, List<Integer> startingGamesId, List<Integer> gamesWithDisconnectionsId) {
-            try {
-            server.handleAction(response, this.id, username, startingGamesId, gamesWithDisconnectionsId);
-        } catch (RemoteException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    @Override
-    public void placeStarterCard(boolean side, Card starterCard) {
-        if (!side) {
-            starterCard.setCurrentSide();
-        }
-        player.setStarterCard(starterCard);
-        try {
-            this.placeStarterCard(starterCard);
-        } catch (RemoteException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    @Override
-    public void chooseAchievement(Achievement achievement) {
-        this.player.setAchievement(achievement);
-        try {
-            this.setPrivateAchievement(player.getAchievement());
-        } catch (RemoteException e) {
-            System.err.println(e.getMessage() + " in RMIClient.update");
-        }
-    }
-
-    @Override
-    public void chooseColor(Color chosenColor) {
-        player.setPionColor(chosenColor);
-        try {
-            this.setColor(chosenColor);
-        } catch (RemoteException e) {
-            System.err.println(e.getMessage());
-        }
-    }
-
-    @Override
-    public void sendChatMessage(String message) {
-        try {
-            server.sendChatMessage(message, id);
-        } catch (RemoteException e) {
-            System.out.println(e.getMessage() + " sendChatMessage");
-        }
-    }
-
-    @Override
-    public void sendChatMessage(String receiver, String message) {
-        try {
-            server.sendChatMessage(message, id, receiver);
-        } catch (RemoteException e) {
-            System.out.println(e.getMessage() + " sendChatMessage");
-        }
-    }
-
-    @Override
-    public void placeCard(Card card, int[] placingCoordinates) {
-        if (player.getState().equals(PlayerState.PLAY_CARD)) {
-            try {
-                server.placeCard(card, placingCoordinates, id);
-                player.removeCardFromHand(card);
-            } catch (RemoteException e) {
-                System.out.println(e.getMessage() + " in placeCard");
-            }
-        }
-        else{
-            update(new GenericMessage("\nThere's a time and place for everything! But not now.\n"));
-        }
-    }
-
-    @Override
-    public void drawCard(String chosenDeck) {
-        if (player.getState().equals(PlayerState.DRAW_CARD)){
-            try {
-                server.drawCard(chosenDeck, id);
-            } catch (RemoteException e) {
-                System.out.println(e.getMessage() + " in drawCard");
-            }
-        }
-        else{
-            update(new GenericMessage("\nThere's a time and place for everything! But not now.\n"));
-        }
-    }
-
-    @Override
-    public void drawCardFromBoard(int index){
-        if (player.getState().equals(PlayerState.DRAW_CARD)){
-            try {
-                server.drawCardFromBoard(index - 1, id);
-            } catch (RemoteException e) {
-                System.out.println(e.getMessage() + " in drawCardFromBoard");
-            }
-        }
-        else{
-            update(new GenericMessage("\nThere's a time and place for everything! But not now.\n"));
-        }
-    }
 }
