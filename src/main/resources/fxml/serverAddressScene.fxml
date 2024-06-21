@@ -32,7 +32,7 @@
     </top>
     <center>
         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-            <TextField alignment="CENTER" prefWidth="500.0">
+            <TextField fx:id="address" alignment="CENTER" prefWidth="500.0">
                 <font>
                     <Font size="60.0"/>
                 </font>
@@ -40,7 +40,7 @@
         </HBox>
     </center>
     <bottom>
-        <Button id="setup-small-button" mnemonicParsing="false" text="Next" onAction="#nextButtonClicked" stylesheets="@../buttons.css" BorderPane.alignment="BOTTOM_RIGHT">
+        <Button fx:id="next" id="setup-small-button" mnemonicParsing="false" text="Next" stylesheets="@../buttons.css" BorderPane.alignment="BOTTOM_RIGHT">
             <BorderPane.margin>
                 <Insets bottom="20.0" right="20.0"/>
             </BorderPane.margin>

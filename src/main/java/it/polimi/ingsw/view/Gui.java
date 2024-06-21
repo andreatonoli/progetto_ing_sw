@@ -26,46 +26,70 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class Gui extends Application implements Ui{
 
-    Stage stage;
-    FXMLLoader loader;
-    Parent root;
+    static Stage stage;
+    static FXMLLoader loader;
+    static Parent root;
     static String address;
-    static int port;
     static String connection;
+    static int port;
     private ClientInterface client;
     protected static BlockingQueue<String> returnValue = new LinkedBlockingQueue<>();
     //red, blue, green, yellow
     int[] freeColors = {1, 1, 1, 1};
+    private static Gui instance = null;
+    private static GuiInputHandler handler;
+    private static ArrayList<Parent> scenes = new ArrayList<>();
+    private static ArrayList<Object> controllers = new ArrayList<>();
+
 
     public static void addReturnValue(String s){
         returnValue.add(s);
     }
 
     public static void main(String[] args){
+        handler = new GuiInputHandler();
         launch(args);
     }
 
     public static void setConnection(String c) { connection = c; }
     public static String getConnection() { return connection; }
 
-    public void loadScene(GuiScenes s) {
-        this.loader = new FXMLLoader(getClass().getResource(GuiScenes.getFxml(s)));
+    public static void loadAllScenes(){
+        for(GuiScenes s : GuiScenes.values()){
+            loader = new FXMLLoader(Gui.class.getResource(GuiScenes.getFxml(s)));
+            try {
+                root = loader.load();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            scenes.add(root);
+            controllers.add(loader.getController());
+        }
+    }
+
+    public static ArrayList<Parent> getScenes(){ return scenes; }
+    public static ArrayList<Object> getControllers(){ return controllers; }
+
+    public static void loadScene(GuiScenes s) {
+        loader = new FXMLLoader(Gui.class.getResource(GuiScenes.getFxml(s)));
         try {
-            this.root = loader.load();
+            root = loader.load();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
+    public static void setScene(Parent r){
+        stage.getScene().setRoot(r);
+    }
+
 
     @Override
     public void start(Stage s) throws Exception {
+        loadAllScenes();
+        stage = s;
 
-        this.stage = s;
-
-        loader = new FXMLLoader(getClass().getResource(GuiScenes.getFxml(GuiScenes.START_SCENE)));
-        Parent root = loader.load();
-        stage.setScene(new Scene(root));
+        stage.setScene(new Scene(scenes.get(GuiScenes.START_SCENE.ordinal())));
         stage.show();
 
         Timer t = new Timer();
@@ -75,9 +99,9 @@ public class Gui extends Application implements Ui{
                 if(!returnValue.isEmpty()){
                     t.cancel();
                     returnValue.poll();
-                    address = askServerAddress();
-                    connection =  askConnection();
-                    port =  askServerPort(connection);
+                    askServerAddress();
+                    askConnection();
+                    askServerPort(connection);
                 }
             }
         }, 0, 500);
