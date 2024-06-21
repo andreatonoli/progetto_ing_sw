@@ -443,6 +443,7 @@ public class Controller extends Observable {
         else {
             player.setPionColor(color);
         }
+        notifyAll(new ColorResponseMessage(user.getUsername(), color));
         notifyAll(new PlayerBoardUpdateMessage(getPlayerByClient(user).getPlayerBoard(), user.getUsername()));
         if (inTurn){
             playerInTurn = turnHandler.changeSetupPlayer();

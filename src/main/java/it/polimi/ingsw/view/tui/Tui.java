@@ -165,12 +165,11 @@ public class Tui implements Ui {
      * Asks the player's nickname
      */
     @Override
-    public String askNickname(){
+    public void askNickname(){
         String nickname;
         AnsiConsole.out().print("Please insert your username: ");
         nickname = scanner.next();
         client.setNickname(nickname);
-        return nickname;
     }
 
     @Override

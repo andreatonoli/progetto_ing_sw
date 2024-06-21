@@ -149,15 +149,6 @@ public class RMIConnection extends Connection {
         this.username = username;
     }
 
-    public void setId(Integer id){
-        this.id = id;
-        try {
-            this.client.setId(id);
-        } catch (RemoteException e) {
-            System.err.println(e.getMessage() + " in RMIConnection/setId");
-        }
-    }
-
     @Override
     public void joinGame(List<Integer> startingGamesId, List<Integer> gamesWhitDisconnectionsId){
         try{

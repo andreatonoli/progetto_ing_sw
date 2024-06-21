@@ -75,13 +75,21 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
         }
     }
 
-    @Override
-    public void setClientId(Integer id){
-        this.id = id;
+    public void joinGame(List<Integer> startingGamesId, List<Integer> gamesWhitDisconnectionsId) throws RemoteException{
+        this.view.selectGame(startingGamesId, gamesWhitDisconnectionsId);
     }
 
     public void reconnectAttempt(){
         reconnectionThread.start();
+    }
+
+    @Override
+    public void setOnConnectionAction(int response, List<Integer> startingGamesId, List<Integer> gamesWithDisconnectionsId) {
+        try {
+            server.handleAction(response, this.id, username, startingGamesId, gamesWithDisconnectionsId);
+        } catch (RemoteException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     @Override
@@ -107,60 +115,12 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
     }
 
     @Override
-    public void setId(Integer id) throws RemoteException {
+    public void setClientId(Integer id){
         this.id = id;
     }
 
     public void askUsername() throws RemoteException{
         view.askNickname();
-    }
-
-    public void joinGame(List<Integer> startingGamesId, List<Integer> gamesWhitDisconnectionsId) throws RemoteException{
-        this.view.selectGame(startingGamesId, gamesWhitDisconnectionsId);
-    }
-
-    public void askLobbySize() throws RemoteException{
-        this.view.askLobbySize();
-    }
-
-    public void setLobbySize(int size) {
-        try {
-            this.server.setLobbySize(size, this.id, username);
-        } catch (RemoteException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    public void placeStarterCard(Card card) throws RemoteException{
-        this.server.placeStarterCard(card, id);
-    }
-    public void setPrivateAchievement(Achievement toBeSet) throws RemoteException {
-        this.server.setAchievement(toBeSet, id);
-    }
-
-    public void setColor(Color color) throws RemoteException{
-        this.server.setColor(color, id);
-    }
-    private void pickQueue(){
-        Timer t = new Timer();
-        t.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                processQueue();
-            }
-        }, 0, 500);
-    }
-
-    private void processQueue() {
-        if (!messageQueue.isEmpty() && !processingAction) {
-            Message message = messageQueue.poll();
-            processingAction = true;
-            this.onMessage(message);
-            processingAction = false;
-            if (!messageQueue.isEmpty()) {
-                processQueue();
-            }
-        }
     }
 
     @Override
@@ -179,13 +139,38 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
         }
     }
 
-    @Override
-    public void setOnConnectionAction(int response, List<Integer> startingGamesId, List<Integer> gamesWithDisconnectionsId) {
+    public void askLobbySize() throws RemoteException{
+        this.view.askLobbySize();
+    }
+
+    public void setLobbySize(int size) {
         try {
-            server.handleAction(response, this.id, username, startingGamesId, gamesWithDisconnectionsId);
+            this.server.setLobbySize(size, this.id, username);
         } catch (RemoteException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    public void setColor(Color color) throws RemoteException{
+        this.server.setColor(color, id);
+    }
+
+    @Override
+    public void chooseAchievement(Achievement achievement) {
+        this.player.setAchievement(achievement);
+        try {
+            this.setPrivateAchievement(player.getAchievement());
+        } catch (RemoteException e) {
+            System.err.println(e.getMessage() + " in RMIClient.update");
+        }
+    }
+
+    public void setPrivateAchievement(Achievement toBeSet) throws RemoteException {
+        this.server.setAchievement(toBeSet, id);
+    }
+
+    public void placeStarterCard(Card card) throws RemoteException{
+        this.server.placeStarterCard(card, id);
     }
 
     @Override
@@ -202,40 +187,12 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
     }
 
     @Override
-    public void chooseAchievement(Achievement achievement) {
-        this.player.setAchievement(achievement);
-        try {
-            this.setPrivateAchievement(player.getAchievement());
-        } catch (RemoteException e) {
-            System.err.println(e.getMessage() + " in RMIClient.update");
-        }
-    }
-
-    @Override
     public void chooseColor(Color chosenColor) {
         player.setPionColor(chosenColor);
         try {
             this.setColor(chosenColor);
         } catch (RemoteException e) {
             System.err.println(e.getMessage());
-        }
-    }
-
-    @Override
-    public void sendChatMessage(String message) {
-        try {
-            server.sendChatMessage(message, id);
-        } catch (RemoteException e) {
-            System.out.println(e.getMessage() + " sendChatMessage");
-        }
-    }
-
-    @Override
-    public void sendChatMessage(String receiver, String message) {
-        try {
-            server.sendChatMessage(message, id, receiver);
-        } catch (RemoteException e) {
-            System.out.println(e.getMessage() + " sendChatMessage");
         }
     }
 
@@ -279,6 +236,28 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
         }
         else{
             update(new GenericMessage("\nThere's a time and place for everything! But not now.\n"));
+        }
+    }
+
+    private void pickQueue(){
+        Timer t = new Timer();
+        t.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                processQueue();
+            }
+        }, 0, 500);
+    }
+
+    private void processQueue() {
+        if (!messageQueue.isEmpty() && !processingAction) {
+            Message message = messageQueue.poll();
+            processingAction = true;
+            this.onMessage(message);
+            processingAction = false;
+            if (!messageQueue.isEmpty()) {
+                processQueue();
+            }
         }
     }
 
@@ -447,5 +426,22 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
         }
     }
 
+    @Override
+    public void sendChatMessage(String message) {
+        try {
+            server.sendChatMessage(message, id);
+        } catch (RemoteException e) {
+            System.out.println(e.getMessage() + " sendChatMessage");
+        }
+    }
+
+    @Override
+    public void sendChatMessage(String receiver, String message) {
+        try {
+            server.sendChatMessage(message, id, receiver);
+        } catch (RemoteException e) {
+            System.out.println(e.getMessage() + " sendChatMessage");
+        }
+    }
 
 }

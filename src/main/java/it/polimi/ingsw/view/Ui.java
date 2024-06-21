@@ -12,7 +12,7 @@ import java.util.List;
 public interface Ui{
     void reset();
     void handleReconnection();
-    String askNickname();
+    void askNickname();
     void askNickname(int lobby);
     void selectGame(List<Integer> startingGamesId, List<Integer> gamesWhitDisconnectionsId);
     void askLobbySize();
