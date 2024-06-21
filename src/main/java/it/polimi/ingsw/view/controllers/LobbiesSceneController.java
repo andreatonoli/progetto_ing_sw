@@ -2,6 +2,8 @@ package it.polimi.ingsw.view.controllers;
 
 import it.polimi.ingsw.view.Gui;
 import it.polimi.ingsw.view.GuiInputHandler;
+import it.polimi.ingsw.view.GuiScenes;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -56,7 +58,15 @@ public class LobbiesSceneController extends GenericController {
             b.setId("setup-small-button");
             int finalI = i;
             b.setOnAction(event -> {
-                guiHandler.joinLobbyButtonClicked(finalI, freeLobbies, freeReconnectLobbies);
+                //guiHandler.joinLobbyButtonClicked(finalI, freeLobbies, freeReconnectLobbies);
+                Platform.runLater(() -> {
+                    LoginSceneController lsc = (LoginSceneController) GuiScenes.getController(GuiScenes.LOGIN_SCENE);
+                    lsc.setNextAction(2);
+                    lsc.setNextActionValue(finalI);
+                    lsc.setFreeLobbies(freeLobbies);
+                    lsc.setFreeReconnectLobbies(freeReconnectLobbies);
+                    Gui.setScene(Gui.getScenes().get(GuiScenes.LOGIN_SCENE.ordinal()));
+                });
             });
 
             h.getChildren().addAll(t, b);

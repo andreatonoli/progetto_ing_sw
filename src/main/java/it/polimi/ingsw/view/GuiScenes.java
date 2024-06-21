@@ -3,28 +3,30 @@ package it.polimi.ingsw.view;
 import it.polimi.ingsw.view.controllers.*;
 
 public enum GuiScenes {
-    START_SCENE("/fxml/startScene.fxml", new StartSceneController()),
-    CONNECTION_SCENE("/fxml/connectionScene.fxml", new ConnectionSceneController()),
-    SERVER_ADDRESS_SCENE("/fxml/serverAddressScene.fxml", new ServerAddressSceneController()),
-    SERVER_PORT_SCENE("/fxml/serverPortScene.fxml", new ServerPortSceneController()),
-    LOBBIES_SCENE("/fxml/lobbiesScene.fxml", new LobbiesSceneController()),
-    LOBBY_SIZE_SCENE("/fxml/lobbySizeScene.fxml", new LobbySizeSceneController()),
-    RECONNECT_SCENE("/fxml/reconnectScene.fxml", new ReconnectSceneController()),
-    WAITING_SCENE("/fxml/waitingScene.fxml", null),
-    LOGIN_SCENE("/fxml/loginScene.fxml", new LoginSceneController()),
-    STARTER_FLIP_SCENE("/fxml/starterFlipScene.fxml", new StarterFlipSceneController()),
-    ACHIEVEMENT_CHOICE_SCENE("/fxml/achievementChoiceScene.fxml", new AchievementChoiceSceneController()),
-    WAITING_SETUP_SCENE("/fxml/waitingSetupScene.fxml", null),
-    COLOR_CHOICE_SCENE("/fxml/colorChoiceScene.fxml", new ColorChoiceSceneController()),
-    WAITING_COLOR_SCENE("/fxml/waitingColorScene.fxml", null),
-    MAIN_SCENE("/fxml/mainScene.fxml", new MainSceneController()),
-    OTHER_PLAYER_BOARDS_SCENE("/fxml/otherPlayerBoardsScene.fxml", new OtherPlayerBoardsSceneController());
+    START_SCENE("/fxml/startScene.fxml"),
+    CONNECTION_SCENE("/fxml/connectionScene.fxml"),
+    SERVER_ADDRESS_SCENE("/fxml/serverAddressScene.fxml"),
+    SERVER_PORT_SCENE("/fxml/serverPortScene.fxml"),
+    LOBBIES_SCENE("/fxml/lobbiesScene.fxml"),
+    LOBBY_SIZE_SCENE("/fxml/lobbySizeScene.fxml"),
+    RECONNECT_SCENE("/fxml/reconnectScene.fxml"),
+    WAITING_SCENE("/fxml/waitingScene.fxml"),
+    LOGIN_SCENE("/fxml/loginScene.fxml"),
+    STARTER_FLIP_SCENE("/fxml/starterFlipScene.fxml"),
+    ACHIEVEMENT_CHOICE_SCENE("/fxml/achievementChoiceScene.fxml"),
+    WAITING_SETUP_SCENE("/fxml/waitingSetupScene.fxml"),
+    COLOR_CHOICE_SCENE("/fxml/colorChoiceScene.fxml"),
+    WAITING_COLOR_SCENE("/fxml/waitingColorScene.fxml"),
+    MAIN_SCENE("/fxml/mainScene.fxml"),
+    OTHER_PLAYER_BOARDS_SCENE("/fxml/otherPlayerBoardsScene.fxml");
 
     private final String fxml;
-    private final GenericController controller;
+    private GenericController controller;
 
-    GuiScenes(String fxml, GenericController controller){
+    GuiScenes(String fxml){
         this.fxml = fxml;
+    }
+    public void setController(GenericController controller){
         this.controller = controller;
     }
 

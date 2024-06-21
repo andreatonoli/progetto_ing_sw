@@ -2,12 +2,15 @@ package it.polimi.ingsw.view.controllers;
 
 import it.polimi.ingsw.view.Gui;
 import it.polimi.ingsw.view.GuiInputHandler;
-import javafx.event.ActionEvent;
+import it.polimi.ingsw.view.GuiScenes;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+
+import static it.polimi.ingsw.view.GuiScenes.getController;
 
 public class LobbySizeSceneController extends GenericController{
 
@@ -32,7 +35,12 @@ public class LobbySizeSceneController extends GenericController{
                 a.show();
             }
             else{
-                guiHandler.nextLobbySizeButtonClicked(Integer.parseInt(lobbySize.getText()));
+                Platform.runLater(() -> {
+                    Gui.setScene(Gui.getScenes().get(GuiScenes.LOGIN_SCENE.ordinal()));
+                    LoginSceneController lsc = (LoginSceneController) GuiScenes.getController(GuiScenes.LOGIN_SCENE);
+                    lsc.setNextAction(1);
+                    lsc.setNextActionValue(Integer.parseInt(lobbySize.getText()));
+                });
             }
         });
     }

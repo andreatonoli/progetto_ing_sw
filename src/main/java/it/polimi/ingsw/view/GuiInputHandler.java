@@ -27,30 +27,22 @@ public class GuiInputHandler implements Ui {
     }
 
     public void playButtonClicked(){
-        Platform.runLater(() -> {
-            Gui.setScene(Gui.getScenes().get(GuiScenes.SERVER_ADDRESS_SCENE.ordinal()));
-        });
+        Platform.runLater(() -> Gui.setScene(Gui.getScenes().get(GuiScenes.SERVER_ADDRESS_SCENE.ordinal())));
     }
 
     public void nextAddressButtonClicked(String s){
         address = s;
-        Platform.runLater(() -> {
-            Gui.setScene(Gui.getScenes().get(GuiScenes.CONNECTION_SCENE.ordinal()));
-        });
+        Platform.runLater(() -> Gui.setScene(Gui.getScenes().get(GuiScenes.CONNECTION_SCENE.ordinal())));
     }
 
     public void rmiButtonClicked() {
         connection = "rmi";
-        Platform.runLater(() -> {
-            Gui.setScene(Gui.getScenes().get(GuiScenes.SERVER_PORT_SCENE.ordinal()));
-        });
+        Platform.runLater(() -> Gui.setScene(Gui.getScenes().get(GuiScenes.SERVER_PORT_SCENE.ordinal())));
     }
 
     public void socketButtonClicked() {
         connection = "socket";
-        Platform.runLater(() -> {
-            Gui.setScene(Gui.getScenes().get(GuiScenes.SERVER_PORT_SCENE.ordinal()));
-        });
+        Platform.runLater(() -> Gui.setScene(Gui.getScenes().get(GuiScenes.SERVER_PORT_SCENE.ordinal())));
     }
 
     public void nextPortButtonClicked(String s){
@@ -110,7 +102,7 @@ public class GuiInputHandler implements Ui {
         client.setOnConnectionAction(selectedLobby, startingGamesId, gamesWithDisconnectionsId);
     }
 
-    public void nextLobbySizeButtonClicked(int lobbySize){
+    public void nextLobbySizeButtonClicked(int lobbySize) {
         client.setLobbySize(lobbySize);
     }
 
@@ -188,9 +180,7 @@ public class GuiInputHandler implements Ui {
 
     @Override
     public void askLobbySize() {
-        Platform.runLater(() -> {
-            Gui.setScene(Gui.getScenes().get(GuiScenes.LOBBY_SIZE_SCENE.ordinal()));
-        });
+        Platform.runLater(() -> Gui.setScene(Gui.getScenes().get(GuiScenes.LOBBY_SIZE_SCENE.ordinal())));
     }
 
     @Override

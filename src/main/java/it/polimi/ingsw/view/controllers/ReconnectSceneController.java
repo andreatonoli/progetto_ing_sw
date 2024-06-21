@@ -2,6 +2,8 @@ package it.polimi.ingsw.view.controllers;
 
 import it.polimi.ingsw.view.Gui;
 import it.polimi.ingsw.view.GuiInputHandler;
+import it.polimi.ingsw.view.GuiScenes;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -19,13 +21,8 @@ public class ReconnectSceneController extends GenericController{
     @FXML
     private VBox v = new VBox();
 
-    @FXML
-    public void initialize() {
-        guiHandler = GuiInputHandler.getInstance();
-    }
-
     public void setLobbies(List<Integer> freeLobbies, List<Integer> freeReconnectLobbies){
-        for (Integer i : freeLobbies){
+        for (Integer i : freeReconnectLobbies){
             HBox h = new HBox();
             Text t = new Text("Lobby " + i);
             t.setFont(new Font(70));
@@ -36,7 +33,12 @@ public class ReconnectSceneController extends GenericController{
             b.setId("setup-small-button");
             int finalI = i;
             b.setOnAction(event -> {
-                guiHandler.reconnectButtonClicked(finalI, freeLobbies, freeReconnectLobbies);
+                Platform.runLater(() -> Gui.setScene(Gui.getScenes().get(GuiScenes.LOGIN_SCENE.ordinal())));
+                LoginSceneController lsc = (LoginSceneController) GuiScenes.getController(GuiScenes.LOGIN_SCENE);
+                lsc.setNextAction(3);
+                lsc.setNextActionValue(finalI);
+                lsc.setFreeLobbies(freeLobbies);
+                lsc.setFreeReconnectLobbies(freeReconnectLobbies);
             });
 
             h.getChildren().addAll(t, b);

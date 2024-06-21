@@ -54,7 +54,7 @@ public class Gui extends Application{
                 System.out.println(e.getMessage());
             }
             scenes.add(root);
-            //controllers.add(loader.getController());
+            s.setController(loader.getController());
         }
     }
 

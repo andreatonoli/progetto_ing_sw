@@ -10,6 +10,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 
+import java.util.List;
 import java.util.Optional;
 
 public class LoginSceneController extends GenericController{
@@ -19,7 +20,11 @@ public class LoginSceneController extends GenericController{
     @FXML
     private Button next;
 
-    GuiInputHandler guiHandler;
+    private GuiInputHandler guiHandler;
+    private int nextAction = 0;
+    private int nextActionValue;
+    private List<Integer> freeLobbies = null;
+    private List<Integer> freeReconnectLobbies = null;
 
     @FXML
     public void initialize(){
@@ -38,8 +43,43 @@ public class LoginSceneController extends GenericController{
             }
             else{
                 guiHandler.nextLoginButtonClicked(username.getText());
+                handleNextAction();
             }
         });
+    }
+
+    public void setNextAction(int i){
+        this.nextAction = i;
+    }
+
+    public void setNextActionValue(int i){
+        this.nextActionValue = i;
+    }
+
+    public void setFreeLobbies(List<Integer> freeLobbies){
+        this.freeLobbies = freeLobbies;
+    }
+
+    public void setFreeReconnectLobbies(List<Integer> freeReconnectLobbies){
+        this.freeReconnectLobbies = freeReconnectLobbies;
+    }
+
+    public void handleNextAction(){
+        System.out.println(nextAction);
+        switch (nextAction){
+            case 1:
+                System.out.println(nextActionValue);
+                guiHandler.nextLobbySizeButtonClicked(nextActionValue);
+                break;
+            case 2:
+                guiHandler.joinLobbyButtonClicked(nextActionValue, freeLobbies, freeReconnectLobbies);
+                break;
+            case 3:
+                guiHandler.reconnectButtonClicked(nextActionValue, freeLobbies, freeReconnectLobbies);
+                break;
+            default:
+                break;
+        }
     }
 
 }
