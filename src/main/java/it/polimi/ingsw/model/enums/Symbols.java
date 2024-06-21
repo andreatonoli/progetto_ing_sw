@@ -3,7 +3,7 @@ package it.polimi.ingsw.model.enums;
 import it.polimi.ingsw.view.tui.TuiColors;
 
 /**
- * Symbols enumeration used to indicate the card's symbol.
+ * Enumerates the possible symbols that can be present on a card.
  */
 public enum Symbols {
 
@@ -54,8 +54,16 @@ public enum Symbols {
         this.nameString = longString;
     }
 
+    /**
+     * Get the short string to show the symbol on the cards.
+     * @return short string to show the symbol on the cards.
+     */
     public static String getString(Symbols symbol){ return symbol.string; }
 
+    /**
+     * Get the string that better describes the symbol to the user.
+     * @return string that better describes the symbol to the user.
+     */
     public static String getNameString(Symbols symbol){ return symbol.nameString; }
 
 }

@@ -1,7 +1,7 @@
 package it.polimi.ingsw.model.enums;
 
 /**
- * Enumeration that represents the various state a corner can be.
+ * Enumerates the possible states of a corner.
  */
 public enum CornerState {
 

@@ -13,14 +13,17 @@ public class AchievementDiagonal implements Achievement{
      * Unique number to identify the card.
      */
     private final int id;
+
     /**
      * Points given upon completion of the achievement.
      */
     private final int basePoint;
+
     /**
      * The needed color (from the color enumeration) of the cards in a diagonal-shaped pattern have to be.
      */
     private final Color color;
+
     /**
      * Builds cards which achievement is creating a diagonal with cards of the same color.
      * They've all the same base points (2).

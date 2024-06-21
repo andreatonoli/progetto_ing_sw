@@ -1,10 +1,10 @@
 package it.polimi.ingsw.model.enums;
 
 /**
- * Enum that represents the conditions shown on the gold card. Those conditions are needed to calculate the points obtained
- * when placing a gold card.
+ * Enumerates the possible conditions that a card can have to give points to the player.
  */
 public enum Condition {
+    
     /**
      * Gives 2 points for every corner covered by the placed card.
      */

@@ -12,19 +12,22 @@ public class AchievementItem implements Achievement{
      * Unique number to identify the card.
      */
     private final int id;
+
     /**
      * Points given upon completion of the achievement.
      */
     private final int basePoint;
+
     /**
      * Indicates the symbols (from the symbols enumeration) to collect.
      */
     private final ArrayList<Symbols> symbol;
 
     /**
-     * Builds cards which achievement is getting some uncovered symbol.
-     * @param basePoint are the points that the player will get each time it completes the achievement.
-     * @param symbols are the needed symbols to get to complete the achievement.
+     * Builds cards which achievement is collecting a certain number of symbols.
+     * They've all the same base points (2 or 3).
+     * @param basePoint points given upon completion of the achievement.
+     * @param symbols symbols to collect.
      * @param id unique number to identify the card.
      */
     public AchievementItem(int basePoint, ArrayList<Symbols> symbols, int id){
@@ -34,10 +37,9 @@ public class AchievementItem implements Achievement{
     }
 
     /**
-     * Calculates the player's points based on the number of uncovered symbols on the player's board.
-     * if (basePoint == 3) then point = basePoint * min(Item_symbolCount)
-     * if (basePoint == 2) then point = basePoint * (item_count / 2)
-     * @param player on which calculate the score
+     * This method calculates the points made by a player. The points are calculated by multiplying the number of symbols
+     * collected by the base points of the achievement.
+     * @param player to calculate the points.
      */
     @Override
     public void calcPoints(Player player) {

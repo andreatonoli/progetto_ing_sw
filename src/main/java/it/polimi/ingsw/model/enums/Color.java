@@ -1,7 +1,7 @@
 package it.polimi.ingsw.model.enums;
 
 /**
- * Color enumeration used to indicate the card's color or the color chosen by the player
+ * Enumeration of the colors of the game.
  */
 public enum Color {
 
@@ -20,7 +20,7 @@ public enum Color {
     ORANGE(6, "\033[48;5;208m");
 
     /**
-     * Index of the color which is linked in the L shape objective. //TODO: commentare meglio
+     * Index of the color which is linked in the L shape objective.
      */
     private final Integer associatedIndex;
 
@@ -32,7 +32,7 @@ public enum Color {
     /**
      * Color constructor.
      *
-     * @param associatedIndex Index of the color which is linked in the L shape objective. //TODO: commentare meglio
+     * @param associatedIndex index of the color which is linked in the L shape objective.
      * @param background      ANSI escape code of the color. It is necessary to show the correct color in the TUI.
      */
     Color(Integer associatedIndex, String background){
@@ -42,7 +42,7 @@ public enum Color {
 
     /**
      * Getter of the associatedColor attribute.
-     * @param color //TODO: il colore di cui prendere l'associatedColor.
+     * @param color color to get the associated color.
      * @return the {@param color} associated color.
      */
     public static Color getAssociatedColor(Color color){
@@ -57,7 +57,7 @@ public enum Color {
 
     /**
      * Gets the ANSI escape sequence to represent the color.
-     * @param color color to get the ANSI code. //TODO: scrivere meglio
+     * @param color color to get the ANSI escape sequence.
      * @return the ANSI escape sequence of the color.
      */
     public static String getBackground(Color color){ return color.background; }

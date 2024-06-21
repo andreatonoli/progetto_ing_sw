@@ -13,7 +13,7 @@ public class CardBack extends Face {
     private final List<Symbols> centerSymbols;
 
     /**
-     * Builds the back of the cards, and sets the corners copying the corners array.
+     * Builds the back of the cards, initializing the corners.
      * @param centerSymbols one or more symbols which appear in the middle of the card.
      * @param corners array of corners.
      */

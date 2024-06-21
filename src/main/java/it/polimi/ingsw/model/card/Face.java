@@ -22,7 +22,7 @@ public abstract class Face implements Serializable {
     }
 
     /**
-     * Checks if a player could afford the potential cost to place a card on this face. //TODO: tradurre decentemente piazzare la carta su questa faccia
+     * Check if the player can afford the face's cost.
      * @param player player to be checked.
      * @return  true if the face has no cost or the player can afford it.
      */
@@ -31,7 +31,7 @@ public abstract class Face implements Serializable {
     }
 
     /**
-     * Calculates the points given by the face, and adds them to the player score.
+     * Calculate the points of the face when a card is placed on it and adds them to the player's score.
      * @param player player whose score is being calculated.
      * @param card card which points are calculated.
      */
@@ -40,15 +40,15 @@ public abstract class Face implements Serializable {
     }
 
     /**
-     * Getter of the potential face's cost.
-     * @return the cost, in terms of symbols, necessary to place the card //TODO: on this face.
+     * Getter of the face's cost.
+     * @return the cost, in terms of symbols, necessary to place the card.
      */
     public Integer[] getCost() {
         return null;
     }
 
     /**
-     * Getter of the points attribute.
+     * Getter of the face's base points.
      * @return the face's base points.
      */
     public int getPoints() {
@@ -56,7 +56,7 @@ public abstract class Face implements Serializable {
     }
 
     /**
-     * Gets the condition to calculate the points when the card is placed //TODO: on this face.
+     * Gets the condition to calculate the points when the card is placed.
      * @return the condition (if present) to calculates points. For example 1 point for every visible quill.
      */
     public Condition getCondition() {
@@ -64,7 +64,7 @@ public abstract class Face implements Serializable {
     }
 
     /**
-     * Getter of the requiredItem value.
+     * Gets the item needed to fulfill the condition.
      * @return (if present) the item needed in the ITEM condition.
      */
     public Symbols getRequiredItem() {

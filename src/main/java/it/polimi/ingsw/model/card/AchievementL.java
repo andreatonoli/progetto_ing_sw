@@ -14,20 +14,21 @@ public class AchievementL implements Achievement{
      * Unique number to identify the card.
      */
     private final int id;
+
     /**
      * Points given upon completion of the achievement.
      */
     private final int basePoint;
+
     /**
-     * The needed color ((from the color enumeration)) 2/3 of the cards in an L-shaped pattern have to be.
+     * The needed color (from the color enumeration) of 2/3 of the cards in a L-shaped pattern have to be.
      */
     private final Color color;
 
     /**
-     * Builds cards which achievement is "create an L with two cards of the same color, and one different".
+     * Builds cards which achievement is creating a L with cards of the same color.
      * They've all the same base points (3).
-     * @param color color of 2/3 of the cards.
-     * @param id the unique number of the achievement card.
+     * @param color color of 2/3 of the L.
      */
     public AchievementL(Color color, int id){
         this.basePoint = 3;

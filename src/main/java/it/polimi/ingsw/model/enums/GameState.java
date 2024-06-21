@@ -1,9 +1,10 @@
 package it.polimi.ingsw.model.enums;
 
 /**
- * Enumeration that represents the various phases of the game.
+ * Enumerates the possible states of the game.
  */
 public enum GameState {
+
     /**
      * Waiting for players to fill the lobby.
      */

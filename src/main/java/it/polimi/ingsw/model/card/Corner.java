@@ -18,8 +18,7 @@ public class Corner implements Serializable {
     private CornerState state;
 
     /**
-     * Corner constructor. If the symbol is a NOCORNER it sets the state to NOT_VISIBLE to hide the corner. In every other
-     * case the state is VISIBLE.
+     * Builds the corner, initializing the symbol and the state.
      * @param symbol symbol contained in the corner.
      */
     public Corner(Symbols symbol){

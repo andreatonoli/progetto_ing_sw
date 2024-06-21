@@ -19,7 +19,7 @@ public class Player implements Serializable {
     private final String username;
 
     /**
-     * Boolean value that is true if the player is the first to reach 20 points.
+     * Boolean value that is true if the player was the first to reach 20 points.
      */
     private boolean firstToEnd;
 
@@ -34,7 +34,7 @@ public class Player implements Serializable {
     private Color pionColor;
 
     /**
-     * Contains all the cards that are in the player's hand.
+     * Contains the cards in the player's hand.
      */
     private final Card[] cardInHand;
 
@@ -54,7 +54,7 @@ public class Player implements Serializable {
     private int points = 0;
 
     /**
-     * State of the player (e.g. DRAW_CARD).
+     * State of the player.
      */
     private PlayerState playerState;
 
@@ -86,8 +86,8 @@ public class Player implements Serializable {
     /**
      * Constructor of the player class.
      *
-     * @param name The player's username, unique in the lobby.
-     * @param game The game the player is participating to.
+     * @param name the player's username, unique in the lobby.
+     * @param game the game the player is participating to.
      */
     public Player(String name, Game game)
     {
@@ -102,6 +102,10 @@ public class Player implements Serializable {
         this.firstToEnd = false;
     }
 
+    /**
+     * Indicates if the player is disconnected.
+     * @return true if the player is disconnected.
+     */
     public boolean isDisconnected() {
         return disconnected;
     }
@@ -124,7 +128,7 @@ public class Player implements Serializable {
 
     /**
      * Gets the color chosen by the player.
-     * @return The color of the player's token.
+     * @return the color of the player's token.
      */
     public Color getPionColor() {
         return pionColor;
@@ -132,7 +136,7 @@ public class Player implements Serializable {
 
     /**
      * Sets the color of the player's token.
-     * @param pionColor Color chosen by the player.
+     * @param pionColor color chosen by the player.
      */
     public void setPionColor(Color pionColor) {
         this.pionColor = pionColor;
@@ -140,7 +144,7 @@ public class Player implements Serializable {
 
     /**
      * Gets the player's name.
-     * @return Player's username.
+     * @return player's username.
      */
     public String getUsername(){
         return username;
@@ -148,7 +152,7 @@ public class Player implements Serializable {
 
     /**
      * Gets the objective chosen by the player.
-     * @return Objective chosen by the player.
+     * @return objective chosen by the player.
      */
     public Achievement getChosenObj() {
         return chosenObj;
@@ -156,7 +160,7 @@ public class Player implements Serializable {
 
     /**
      * Gets all the card in the player's hand.
-     * @return An array (size = 3) containing all the cards in the player's hand.
+     * @return an array (size = 3) containing all the cards in the player's hand.
      */
     public Card[] getCardInHand() { //cercare valore per definire "no carta"
         return cardInHand;
@@ -164,7 +168,7 @@ public class Player implements Serializable {
 
     /**
      * Gets the two objective the player can choose from.
-     * @return The array containing the two objectives the player can choose from.
+     * @return the array containing the two objectives the player can choose from.
      */
     public Achievement[] getPersonalObj() {
         return personalObj;
@@ -172,7 +176,7 @@ public class Player implements Serializable {
 
     /**
      * Gets the chat log.
-     * @return A list of 25 messages sent to and by the player.
+     * @return a list of 25 messages sent to and by the player.
      */
     public ArrayList<String> getChat() {
         return chat;
@@ -196,7 +200,7 @@ public class Player implements Serializable {
 
     /**
      * Sets the objective chosen by the player.
-     * @param choice The objective the player has chosen from the personalObj array.
+     * @param choice the objective the player has chosen from the personalObj array.
      */
     public void setChosenObj(Achievement choice){
         this.chosenObj = choice;
@@ -204,7 +208,7 @@ public class Player implements Serializable {
 
     /**
      * Gets the current score of the player.
-     * @return The player's score.
+     * @return the player's score.
      */
     public int getPoints(){
         return points;
@@ -213,7 +217,7 @@ public class Player implements Serializable {
     /**
      * Adds some points to the player.
      *
-     * @param pointsToAdd Points that the player will receive.
+     * @param pointsToAdd points that the player will receive.
      */
     public void addPoints(int pointsToAdd){
         this.points = this.points + pointsToAdd;
@@ -227,7 +231,7 @@ public class Player implements Serializable {
 
     /**
      * Indicates if the player was the first to reach 20 points.
-     * @return True only if the player was the first to reach 20 points.
+     * @return true only if the player was the first to reach 20 points.
      */
     public boolean isFirstToEnd(){
         return firstToEnd;
@@ -242,7 +246,7 @@ public class Player implements Serializable {
 
     /**
      * Indicates if the player was the first to have played.
-     * @return True only if the player was the first to have played.
+     * @return true only if the player was the first to have played.
      */
     public boolean isFirstToPlay(){
         return firstToPlay;
@@ -250,9 +254,9 @@ public class Player implements Serializable {
 
     /**
      * Player sends a message to another player.
-     * @param receiver Receiver of the message.
-     * @param message Message text.
-     * @throws PlayerNotFoundException When the receiver is not part of the lobby.
+     * @param receiver receiver of the message.
+     * @param message message text.
+     * @throws PlayerNotFoundException when the receiver is not part of the lobby.
      */
     public void sendChatMessage(Player receiver, String message) throws PlayerNotFoundException{
         this.game.getChat().forwardMessage(this, receiver, false, message);
@@ -260,7 +264,7 @@ public class Player implements Serializable {
 
     /**
      * Player sends a global message (received by all the players in the lobby).
-     * @param message Message text.
+     * @param message message text.
      */
     public void sendChatMessage(String message) {
         try {
@@ -272,8 +276,8 @@ public class Player implements Serializable {
 
     /**
      * Adds the message into the chat log. If the size of the log is greater than {@link Chat.CHATDIM} the oldest message is deleted.
-     * @param sender The sender of the message.
-     * @param message Message Text.
+     * @param sender the sender of the message.
+     * @param message message Text.
      */
     public void displayMessage(Player sender, String message){
         if(chat.size() >= Chat.CHATDIM){
@@ -287,7 +291,7 @@ public class Player implements Serializable {
 
     /**
      * Gets the player's board.
-     * @return The personal board of this player.
+     * @return the personal board of this player.
      */
     public PlayerBoard getPlayerBoard(){
         return this.playerBoard;
@@ -295,7 +299,7 @@ public class Player implements Serializable {
 
     /**
      * Adds a card to the player's hand
-     * @param card Card to add to the hand.
+     * @param card card to add to the hand.
      */
     public void addInHand(Card card){
         for (int i = 0; i < this.cardInHand.length; i++) {
@@ -308,7 +312,7 @@ public class Player implements Serializable {
 
     /**
      * Remove a card from the player's hand if present.
-     * @param cardToRemove Card to remove from the player's hand.
+     * @param cardToRemove card to remove from the player's hand.
      */
     public void removeFromHand(Card cardToRemove){
         for (int i = 0; i < this.cardInHand.length; i++) {
@@ -328,7 +332,7 @@ public class Player implements Serializable {
 
     /**
      * Gets the counter of how many objectives the player has completed.
-     * @return The number of objective the player has completed.
+     * @return the number of objective the player has completed.
      */
     public int getObjCompleted(){
         return objCompleted;

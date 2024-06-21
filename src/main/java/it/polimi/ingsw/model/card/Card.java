@@ -44,7 +44,7 @@ public class Card implements Serializable {
     private boolean isBack = false;
 
     /**
-     * Card constructor that sets the class attributes, the face to be firstly shown is the front face.
+     * Constructor of the class which initializes all the attributes. The currentSide is set to the front face.
      * @param front front face of the card.
      * @param retro retro face of the card.
      * @param type type of the card (e.g. resource, gold or starter).
@@ -107,7 +107,7 @@ public class Card implements Serializable {
     }
 
     /**
-     * getter of the symbols list.
+     * Getter of the List of symbols in the middle of the card.
      * @return all the symbols in the middle of the card (if present).
      */
     public List<Symbols> getSymbols(){
@@ -115,7 +115,7 @@ public class Card implements Serializable {
     }
 
     /**
-     * Checks if a player could afford the potential cost to place a card.
+     * Checks if a player could afford the cost to place a card.
      * @param player player to be checked.
      * @return true only if the player can place the card.
      */
@@ -132,7 +132,7 @@ public class Card implements Serializable {
     }
 
     /**
-     * Getter of the potential card's cost.
+     * Getter of the card's cost.
      * @return the cost, in terms of symbols, necessary to place the card.
      */
     public Integer[] getCost(){
@@ -140,7 +140,7 @@ public class Card implements Serializable {
     }
 
     /**
-     * getter of the points attribute.
+     * Getter of the card's base points.
      * @return the card's base points.
      */
     public int getPoints(){
@@ -156,8 +156,8 @@ public class Card implements Serializable {
     }
 
     /**
-     * getter of the requiredItem value.
-     * @return (if present) the item needed in the ITEM condition.
+     * Gets the item needed to place the card.
+     * @return the item needed to place the card.
      */
     public Symbols getRequiredItem() {
         return currentSide.getRequiredItem();
@@ -174,7 +174,7 @@ public class Card implements Serializable {
 
 
     /**
-     * getter of the symbol in one specified card's corner.
+     * Getter of the symbol contained in a corner.
      * @param corner the position of the corner we want to get the symbol.
      * @return the symbol contained in that corner.
      */
@@ -183,7 +183,7 @@ public class Card implements Serializable {
     }
 
     /**
-     * getter of one corner's state.
+     * Getter of the corner's state.
      * @param corner the position of the corner we want to get the state.
      * @return the corner's state.
      */
@@ -192,7 +192,7 @@ public class Card implements Serializable {
     }
 
     /**
-     * set the card's corner state.
+     * Setter of the corner's state.
      * @param corner position of the corner we want to set the state.
      * @param state the corner's state we want to set.
      */

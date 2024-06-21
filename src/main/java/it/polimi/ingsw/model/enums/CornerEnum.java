@@ -1,7 +1,7 @@
 package it.polimi.ingsw.model.enums;
 
 /**
- * Enumeration that represents the corners position. For example Top-Left.
+ * Enumerates the position of the possible corners of a card.
  */
 public enum CornerEnum {
 
@@ -26,7 +26,7 @@ public enum CornerEnum {
     BL(-1,-1);
 
     /**
-     * Value to add on the x-axis when we place a card on that corner.
+     * value to add on the x-axis when we place a card on that corner.
      */
     private final int x;
 
@@ -62,7 +62,7 @@ public enum CornerEnum {
     }
 
     /**
-     * Get the corner juxtaposed to this. For example BR.getOppositeCorner() returns TL.
+     * Get the opposite corner.
      * @return the opposite corner.
      */
     public CornerEnum getOppositePosition(){

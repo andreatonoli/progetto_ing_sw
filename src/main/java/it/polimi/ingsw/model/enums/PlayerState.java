@@ -1,9 +1,10 @@
 package it.polimi.ingsw.model.enums;
 
 /**
- * Enumeration that represents the state a player can assume.
+ * Enumerates the possible states of a player.
  */
 public enum PlayerState {
+
     /**
      * Player has to place a card.
      */
