@@ -235,7 +235,7 @@ public class MainSceneController extends GenericController{
         });
         otherPlayersBoard.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             for(PlayerBean p : opponents){
-                if(p.getUsername().equals((String) otherPlayers.getSelectionModel().getSelectedItem())){
+                if(p.getUsername().equals(otherPlayers.getSelectionModel().getSelectedItem())){
                     guiHandler.otherPlayersBoardButtonClicked(p);
                 }
             }

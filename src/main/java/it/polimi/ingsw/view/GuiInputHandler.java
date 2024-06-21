@@ -184,7 +184,7 @@ public class GuiInputHandler implements Ui {
     @Override
     public void askSide(Card starterCard) {
         Platform.runLater(() -> {
-            StarterFlipSceneController c = (StarterFlipSceneController) GuiScenes.getController(GuiScenes.LOBBIES_SCENE);
+            StarterFlipSceneController c = (StarterFlipSceneController) GuiScenes.getController(GuiScenes.STARTER_FLIP_SCENE);
             c.setFace(starterCard);
             Gui.setScene(Gui.getScenes().get(GuiScenes.STARTER_FLIP_SCENE.ordinal()));
         });
@@ -193,16 +193,16 @@ public class GuiInputHandler implements Ui {
     @Override
     public void printViewWithCommands(PlayerBean player, GameBean game, ArrayList<PlayerBean> players) {
         Platform.runLater(() -> {
-            MainSceneController c = (MainSceneController) GuiScenes.getController(GuiScenes.LOBBIES_SCENE);
+            MainSceneController c = (MainSceneController) GuiScenes.getController(GuiScenes.MAIN_SCENE);
             c.setBoard(player, game, players);
-            Gui.setScene(Gui.getScenes().get(GuiScenes.STARTER_FLIP_SCENE.ordinal()));
+            Gui.setScene(Gui.getScenes().get(GuiScenes.MAIN_SCENE.ordinal()));
         });
     }
 
     @Override
     public void askAchievement(Achievement[] choices) {
         Platform.runLater(() -> {
-            AchievementChoiceSceneController c = (AchievementChoiceSceneController) GuiScenes.getController(GuiScenes.LOBBIES_SCENE);
+            AchievementChoiceSceneController c = (AchievementChoiceSceneController) GuiScenes.getController(GuiScenes.ACHIEVEMENT_CHOICE_SCENE);
             c.setAchievements(choices);
             Gui.setScene(Gui.getScenes().get(GuiScenes.ACHIEVEMENT_CHOICE_SCENE.ordinal()));
         });
@@ -211,7 +211,7 @@ public class GuiInputHandler implements Ui {
     @Override
     public void askColor(List<Color> colors) {
         Platform.runLater(() -> {
-            ColorChoiceSceneController c = (ColorChoiceSceneController) GuiScenes.getController(GuiScenes.LOBBIES_SCENE);
+            ColorChoiceSceneController c = (ColorChoiceSceneController) GuiScenes.getController(GuiScenes.COLOR_CHOICE_SCENE);
             c.setColors(colors);
             Gui.setScene(Gui.getScenes().get(GuiScenes.COLOR_CHOICE_SCENE.ordinal()));
         });
