@@ -79,6 +79,7 @@ public class AchievementDiagonal implements Achievement{
                     for (int j = 0; j < len % 3; j++) {
                         marked.removeLast();
                     }
+                    len = 0;
                 }
             }
         }
