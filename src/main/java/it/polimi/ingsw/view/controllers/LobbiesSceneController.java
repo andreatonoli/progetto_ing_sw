@@ -1,28 +1,50 @@
 package it.polimi.ingsw.view.controllers;
 
 import it.polimi.ingsw.view.Gui;
+import it.polimi.ingsw.view.GuiInputHandler;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 import java.util.List;
 
-public class LobbiesSceneController {
+public class LobbiesSceneController extends GenericController {
 
     @FXML
-    private VBox v = new VBox();
+    private VBox v;
+    @FXML
+    private Button create;
+    @FXML
+    private Button reconnect;
+
+    GuiInputHandler guiHandler;
+    List<Integer> startingGamesId;
+    List<Integer> gamesWhitDisconnectionsId;
 
     @FXML
-    public void initialize() {
-
+    public void initialize(){
+        guiHandler = GuiInputHandler.getInstance();
+        bindEvents();
     }
 
-    public void setLobbies(List<Integer> freeLobbies){
+    public void bindEvents(){
+        create.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            guiHandler.createLobbyButtonClicked(startingGamesId, gamesWhitDisconnectionsId);
+        });
+        reconnect.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            guiHandler.reconnectLobbyButtonClicked(startingGamesId, gamesWhitDisconnectionsId);
+        });
+    }
+
+    public void setLobbies(List<Integer> freeLobbies, List<Integer> freeReconnectLobbies){
+        startingGamesId = freeLobbies;
+        gamesWhitDisconnectionsId = freeReconnectLobbies;
         for (Integer i : freeLobbies){
             HBox h = new HBox();
             Text t = new Text("Lobby " + i);
@@ -34,7 +56,7 @@ public class LobbiesSceneController {
             b.setId("setup-small-button");
             int finalI = i;
             b.setOnAction(event -> {
-                joinLobbyButtonClicked(finalI);
+                guiHandler.joinLobbyButtonClicked(finalI, freeLobbies, freeReconnectLobbies);
             });
 
             h.getChildren().addAll(t, b);
@@ -49,12 +71,5 @@ public class LobbiesSceneController {
 
     }
 
-    private void joinLobbyButtonClicked(Integer selectedLobby){ Gui.addReturnValue(String.valueOf(selectedLobby)); }
-
-    @FXML
-    private void createLobbyButtonClicked(){ Gui.addReturnValue(String.valueOf("newLobby")); }
-
-    @FXML
-    public void reconnectButtonClicked(ActionEvent e) { Gui.addReturnValue("reconnect"); }
 }
 

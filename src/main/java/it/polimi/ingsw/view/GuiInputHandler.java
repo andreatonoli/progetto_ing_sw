@@ -5,6 +5,9 @@ import it.polimi.ingsw.model.card.Card;
 import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.network.client.*;
 import it.polimi.ingsw.network.server.Server;
+import it.polimi.ingsw.view.controllers.LobbiesSceneController;
+import it.polimi.ingsw.view.controllers.ReconnectSceneController;
+import it.polimi.ingsw.view.controllers.StarterFlipSceneController;
 import javafx.application.Platform;
 
 import java.rmi.RemoteException;
@@ -15,6 +18,8 @@ public class GuiInputHandler implements Ui {
 
     static GuiInputHandler instance;
     private ClientInterface client;
+    private String address;
+    private String connection;
 
     public static GuiInputHandler getInstance(){
         if(instance == null){
@@ -24,38 +29,91 @@ public class GuiInputHandler implements Ui {
     }
 
     public void playButtonClicked(){
-
+        Platform.runLater(() -> {
+            Gui.setScene(Gui.getScenes().get(GuiScenes.SERVER_ADDRESS_SCENE.ordinal()));
+        });
     }
 
     public void nextAddressButtonClicked(String s){
-        Gui.address = s;
+        address = s;
+        Platform.runLater(() -> {
+            Gui.setScene(Gui.getScenes().get(GuiScenes.CONNECTION_SCENE.ordinal()));
+        });
     }
 
     public void rmiButtonClicked() {
-        Gui.connection = "rmi";
+        connection = "rmi";
+        Platform.runLater(() -> {
+            Gui.setScene(Gui.getScenes().get(GuiScenes.SERVER_PORT_SCENE.ordinal()));
+        });
     }
 
     public void socketButtonClicked() {
-        Gui.connection = "socket";
+        connection = "socket";
+        Platform.runLater(() -> {
+            Gui.setScene(Gui.getScenes().get(GuiScenes.SERVER_PORT_SCENE.ordinal()));
+        });
     }
 
     public void nextPortButtonClicked(String s){
-        if(Gui.connection.equals("rmi")){
+        if(connection.equals("rmi")){
             if(s.equals("default")){
-                Gui.port = Server.rmiPort;
+                try{
+                    client = new RMIClient(address, Server.rmiPort, this);
+                }
+                catch(RemoteException e){
+                    System.err.println(e.getMessage());
+                }
             }
             else{
-                Gui.port = Integer.parseInt(s);
+                try{
+                    client = new RMIClient(address, Integer.parseInt(s), this);
+                }
+                catch(RemoteException e){
+                    System.err.println(e.getMessage());
+                }            
             }
         }
         else{
             if(s.equals("default")){
-                Gui.port = Server.socketPort;
+                client = new SocketClient(address, Server.socketPort, this);
             }
             else{
-                Gui.port = Integer.parseInt(s);
+                client = new SocketClient(address, Integer.parseInt(s), this);
             }
         }
+    }
+    
+    public void nextLoginButtonClicked(String username){
+        client.setNickname(username);
+    }
+    
+    public void joinLobbyButtonClicked(int selectedLobby, List<Integer> startingGamesId, List<Integer> gamesWithDisconnectionsId){
+        client.setOnConnectionAction(selectedLobby, startingGamesId, gamesWithDisconnectionsId);
+    }
+
+    public void createLobbyButtonClicked(List<Integer> startingGamesId, List<Integer> gamesWithDisconnectionsId){
+        client.setOnConnectionAction(-1, startingGamesId, gamesWithDisconnectionsId);
+    }
+
+    public void reconnectLobbyButtonClicked(List<Integer> startingGamesId, List<Integer> gamesWithDisconnectionsId){
+        Platform.runLater(() -> {
+            ReconnectSceneController c = (ReconnectSceneController) GuiScenes.getController(GuiScenes.LOBBIES_SCENE);
+            c.setLobbies(startingGamesId, gamesWithDisconnectionsId);
+            Gui.setScene(Gui.getScenes().get(GuiScenes.RECONNECT_SCENE.ordinal()));
+        });
+    }
+    
+    public void reconnectButtonClicked(int selectedLobby, List<Integer> startingGamesId, List<Integer> gamesWithDisconnectionsId){
+        client.setOnConnectionAction(selectedLobby, startingGamesId, gamesWithDisconnectionsId);
+    }
+
+    public void nextLobbySizeButtonClicked(int lobbySize){
+        client.setLobbySize(lobbySize);
+    }
+
+    public void nextStarterCardButtonClicked(boolean side, Card starter){
+        client.placeStarterCard(side, starter);
     }
 
     @Override
@@ -69,28 +127,31 @@ public class GuiInputHandler implements Ui {
             Gui.setScene(Gui.getScenes().get(GuiScenes.LOGIN_SCENE.ordinal()));
         });
     }
-
-    public String askServerAddress() {
-        return "";
-    }
-
-    public int askServerPort(String connectionType) {
-        return 0;
-    }
+    
 
     @Override
-    public void selectGame(List<Integer> startingGamesId, List<Integer> gamesWhitDisconnectionsId) {
-
+    public void selectGame(List<Integer> startingGamesId, List<Integer> gamesWithDisconnectionsId) {
+        Platform.runLater(() -> {
+            LobbiesSceneController c = (LobbiesSceneController) GuiScenes.getController(GuiScenes.LOBBIES_SCENE);
+            c.setLobbies(startingGamesId, gamesWithDisconnectionsId);
+            Gui.setScene(Gui.getScenes().get(GuiScenes.LOBBIES_SCENE.ordinal()));
+        });
     }
 
     @Override
     public void askLobbySize() {
-
+        Platform.runLater(() -> {
+            Gui.setScene(Gui.getScenes().get(GuiScenes.LOBBY_SIZE_SCENE.ordinal()));
+        });
     }
 
     @Override
     public void askSide(Card starterCard) {
-
+        Platform.runLater(() -> {
+            StarterFlipSceneController c = (StarterFlipSceneController) GuiScenes.getController(GuiScenes.LOBBIES_SCENE);
+            c.setFace(starterCard);
+            Gui.setScene(Gui.getScenes().get(GuiScenes.STARTER_FLIP_SCENE.ordinal()));
+        });
     }
 
     @Override

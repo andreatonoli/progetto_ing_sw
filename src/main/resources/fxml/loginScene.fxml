@@ -19,7 +19,7 @@
                   <Font size="100.0" />
                </font>
             </Text>
-            <TextField fx:id="text" prefWidth="500">
+            <TextField fx:id="username" prefWidth="500">
                <font>
                   <Font size="60.0" />
                </font>
@@ -28,7 +28,7 @@
       </HBox>
    </center>
    <bottom>
-      <Button id="setup-small-button" mnemonicParsing="false" text="Next" onAction="#nextButtonClicked" stylesheets="@../buttons.css" BorderPane.alignment="BOTTOM_RIGHT">
+      <Button fx:id="next" id="setup-small-button" mnemonicParsing="false" text="Next" stylesheets="@../buttons.css" BorderPane.alignment="BOTTOM_RIGHT">
          <BorderPane.margin>
             <Insets bottom="20.0" right="20.0"/>
          </BorderPane.margin>

@@ -33,12 +33,12 @@
    <bottom>
        <HBox alignment="CENTER" BorderPane.alignment="CENTER" spacing="50">
            <children>
-               <Button id="setup-big-button" mnemonicParsing="false" text="Create new lobby" onAction="#createLobbyButtonClicked" stylesheets="@../buttons.css" BorderPane.alignment="CENTER">
+               <Button fx:id="create" id="setup-big-button" mnemonicParsing="false" text="Create new lobby" stylesheets="@../buttons.css" BorderPane.alignment="CENTER">
                    <font>
                        <Font size="30.0" />
                    </font>
                </Button>
-               <Button id="setup-big-button" mnemonicParsing="false" text="Reconnect to an exsisting lobby" onAction="#reconnectButtonClicked" stylesheets="@../buttons.css" BorderPane.alignment="CENTER">
+               <Button fx:id="reconnect" id="setup-big-button" mnemonicParsing="false" text="Reconnect to an exsisting lobby" stylesheets="@../buttons.css" BorderPane.alignment="CENTER">
                    <font>
                        <Font size="30.0" />
                    </font>

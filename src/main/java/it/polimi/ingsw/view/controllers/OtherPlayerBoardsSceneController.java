@@ -13,7 +13,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 
-public class OtherPlayerBoardsSceneController {
+public class OtherPlayerBoardsSceneController extends GenericController{
 
     @FXML
     private AnchorPane board;

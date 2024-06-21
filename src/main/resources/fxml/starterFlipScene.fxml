@@ -35,7 +35,7 @@
       <URL value="@../text.css" />
    </stylesheets>
    <bottom>
-      <Button id="setup-small-button" mnemonicParsing="false" onAction="#nextButtonClicked" stylesheets="@../buttons.css" text="Next" BorderPane.alignment="BOTTOM_RIGHT">
+      <Button fx:id="next" id="setup-small-button" mnemonicParsing="false" stylesheets="@../buttons.css" text="Next" BorderPane.alignment="BOTTOM_RIGHT">
          <BorderPane.margin>
             <Insets bottom="20.0" right="20.0" />
          </BorderPane.margin>
@@ -44,8 +44,8 @@
    <center>
       <StackPane prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-            <ImageView fx:id="i" fitHeight="252.0" fitWidth="378.0" pickOnBounds="true" preserveRatio="true" />
-            <Button mnemonicParsing="false" onAction="#starterFlipped" prefHeight="252.0" prefWidth="378.0" style="-fx-background-color: transparent" />
+            <ImageView fx:id="card" fitHeight="252.0" fitWidth="378.0" pickOnBounds="true" preserveRatio="true" />
+            <Button fx:id="flip" mnemonicParsing="false" prefHeight="252.0" prefWidth="378.0" style="-fx-background-color: transparent" />
          </children>
       </StackPane>
    </center>
