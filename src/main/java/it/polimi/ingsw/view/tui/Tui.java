@@ -222,6 +222,7 @@ public class Tui implements Ui {
     @Override
     public void askLobbySize(){
         int lobbySize;
+        askNickname();
         AnsiConsole.out().println("Select the lobby's capacity (min is " + Server.MIN_PLAYERS_PER_LOBBY + " and max is " + Server.MAX_PLAYERS_PER_LOBBY + " players)");
         do{
             try{
