@@ -10,6 +10,8 @@ import it.polimi.ingsw.network.server.VirtualServer;
 import it.polimi.ingsw.view.Ui;
 import it.polimi.ingsw.model.card.Card;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -39,6 +41,12 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
         this.view = view;
         this.address = host;
         this.port = port;
+        try {
+            InetAddress ip = InetAddress.getLocalHost();
+            System.setProperty("java.rmi.server.hostname", ip.getHostAddress());
+        } catch (UnknownHostException e) {
+            System.out.println(e.getMessage());
+        }
         //Initialization of player's attributes
         this.game = new GameBean();
         this.opponents = new ArrayList<>();

@@ -137,7 +137,6 @@ public class Tui implements Ui {
         } else {
             host = address;
         }
-        System.setProperty("java.rmi.server.hostname", host);
         return host;
     }
 
