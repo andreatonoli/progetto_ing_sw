@@ -7,7 +7,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 
-public class ConnectionSceneController {
+public class ConnectionSceneController extends GenericController{
 
     private GuiInputHandler guiHandler;
 

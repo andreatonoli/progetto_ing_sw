@@ -19,7 +19,7 @@ import javafx.scene.text.Text;
 import java.util.List;
 import java.util.Optional;
 
-public class ColorChoiceSceneController {
+public class ColorChoiceSceneController extends GenericController{
 
     @FXML
     private HBox h = new HBox();

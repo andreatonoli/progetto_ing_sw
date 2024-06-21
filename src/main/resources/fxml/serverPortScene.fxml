@@ -42,7 +42,7 @@
         </HBox>
     </center>
     <bottom>
-        <Button fx:id="next" id="setup-small-button" mnemonicParsing="false" onAction="#nextButtonClicked" stylesheets="@../buttons.css" text="Next" BorderPane.alignment="BOTTOM_RIGHT">
+        <Button fx:id="next" id="setup-small-button" mnemonicParsing="false" stylesheets="@../buttons.css" text="Next" BorderPane.alignment="BOTTOM_RIGHT">
             <BorderPane.margin>
                 <Insets bottom="20.0" right="20.0" />
             </BorderPane.margin>

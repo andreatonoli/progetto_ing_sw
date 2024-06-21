@@ -8,7 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 
-public class ServerAddressSceneController {
+public class ServerAddressSceneController extends GenericController{
 
     @FXML
     private TextField address;

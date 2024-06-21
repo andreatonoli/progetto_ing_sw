@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view.controllers;
 
 import it.polimi.ingsw.view.Gui;
+import it.polimi.ingsw.view.GuiInputHandler;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -13,17 +14,17 @@ import javafx.scene.text.Text;
 
 import java.util.List;
 
-public class ReconnectSceneController {
+public class ReconnectSceneController extends GenericController{
 
     @FXML
     private VBox v = new VBox();
 
     @FXML
     public void initialize() {
-
+        guiHandler = GuiInputHandler.getInstance();
     }
 
-    public void setLobbies(List<Integer> freeLobbies){
+    public void setLobbies(List<Integer> freeLobbies, List<Integer> freeReconnectLobbies){
         for (Integer i : freeLobbies){
             HBox h = new HBox();
             Text t = new Text("Lobby " + i);
@@ -35,7 +36,7 @@ public class ReconnectSceneController {
             b.setId("setup-small-button");
             int finalI = i;
             b.setOnAction(event -> {
-                reconnectLobbyButtonClicked(finalI);
+                guiHandler.reconnectButtonClicked(finalI, freeLobbies, freeReconnectLobbies);
             });
 
             h.getChildren().addAll(t, b);
@@ -49,7 +50,5 @@ public class ReconnectSceneController {
         h.setPadding(new Insets(0, 0, 50, 0));
 
     }
-
-    private void reconnectLobbyButtonClicked(Integer selectedLobby){ Gui.addReturnValue(String.valueOf(selectedLobby)); }
 }
 

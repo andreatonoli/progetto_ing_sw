@@ -13,7 +13,7 @@ import javafx.scene.image.ImageView;
 
 import java.util.Optional;
 
-public class AchievementChoiceSceneController {
+public class AchievementChoiceSceneController extends GenericController{
 
     @FXML
     private ImageView a1;

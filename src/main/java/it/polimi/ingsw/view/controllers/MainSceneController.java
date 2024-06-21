@@ -26,7 +26,7 @@ import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 
-public class MainSceneController {
+public class MainSceneController extends GenericController{
 
     @FXML
     private Button hand1;
