@@ -637,17 +637,6 @@ public class Tui implements Ui {
             if (game.getState().equals(GameState.START)){
                 moveCursor(39, 0);
                 AnsiConsole.out().println("Waiting for all players to end their setup");
-            } else if(game.getState().equals(GameState.END)){
-                clearConsole();
-                ArrayList<PlayerBean> allPlayers = new ArrayList<>(players);
-                allPlayers.add(player);
-                String [][][][] scoreTrack = createPrintableScoreBoard(allPlayers);
-                printTrack(scoreTrack);
-                moveCursor(38, 0);
-                AnsiConsole.out().println(message);
-                AnsiConsole.out().println("\nGG to everyone");
-                this.running = false;
-                System.exit(1);
             }
             else {
                 if (player.getState().equals(PlayerState.PLAY_CARD)) {
@@ -1176,12 +1165,21 @@ public class Tui implements Ui {
             message = "\nThe winner is: " + winners.getFirst();
         }
         else{
-            message = "\nThe winners are: \n";
+            message = sb.append("\nThe winners are: \n").toString();
             for (String s : winners){
                 message = sb.append("\t").append(s).append("\n").toString();
             }
         }
-        this.printViewWithCommands(player, game, players);
+        clearConsole();
+        ArrayList<PlayerBean> allPlayers = new ArrayList<>(players);
+        allPlayers.add(player);
+        String [][][][] scoreTrack = createPrintableScoreBoard(allPlayers);
+        printTrack(scoreTrack);
+        moveCursor(38, 0);
+        AnsiConsole.out().println(message);
+        AnsiConsole.out().println("\nGG to everyone\n");
+        this.running = false;
+        System.exit(1);
     }
 
     public void moveCursor(int row, int column){

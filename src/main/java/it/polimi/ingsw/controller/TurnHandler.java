@@ -8,6 +8,7 @@ import it.polimi.ingsw.observer.Observable;
 import it.polimi.ingsw.model.exceptions.*;
 import it.polimi.ingsw.network.messages.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -88,7 +89,11 @@ public class TurnHandler extends Observable {
                         playerInTurn.setPlayerState(PlayerState.NOT_IN_TURN);
                         notifyAll(new GameStateMessage(GameState.END));
                         try {
-                            notifyAll(new WinnerMessage(game.endGame()));
+                            ArrayList<Player> winners = game.endGame();
+                            for (Player p : game.getPlayers()) {
+                                notifyAll(new ScoreUpdateMessage(p.getPoints(), p.getUsername()));
+                            }
+                            notifyAll(new WinnerMessage(winners));
                             controller.removeFromServer();
                         } catch (GameNotStartedException e) {
                             System.out.println(e.getMessage());
