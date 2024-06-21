@@ -60,7 +60,7 @@ public class Gui extends Application{
             try {
                 root = loader.load();
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                System.out.println(e.getMessage());
             }
             scenes.add(root);
             //controllers.add(loader.getController());

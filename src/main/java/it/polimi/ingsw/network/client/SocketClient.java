@@ -145,7 +145,6 @@ public class SocketClient implements ClientInterface {
                 resumeConnection(number, creation);
                 break;
             case NUM_PLAYER_REQUEST:
-                this.view.askNickname();
                 this.view.askLobbySize();
                 break;
             case FREE_LOBBY:
