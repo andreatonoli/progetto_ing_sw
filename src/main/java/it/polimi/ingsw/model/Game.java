@@ -16,26 +16,66 @@ import java.util.Collections;
 import java.util.List;
 
 public class Game extends Observable implements Serializable {
-    private final int lobbySize;
-    private final GameBoard gameBoard;
-    private GameState gameState;
-    private final ArrayList<Player> players;
-    private int willPlay;
-    private boolean gameFull;
-    private Player firstPlayer;
-    private Player playerInTurn;
-    private final Chat chatHandler;
+
     /**
-     * number of disconnected players
+     * lobbySize is the number of players that the game can host.
+     */
+    private final int lobbySize;
+
+    /**
+     * gameBoard is the board where the game is played.
+     */
+    private final GameBoard gameBoard;
+
+    /**
+     * gameState is the state the game is currently in.
+     */
+    private GameState gameState;
+
+    /**
+     * players is the list of players that are currently in the game.
+     */
+    private final ArrayList<Player> players;
+
+    /**
+     * willPlay is the index of the player that will play next.
+     */
+    private int willPlay;
+
+    /**
+     * gameFull is a boolean that is true if the game has reached the maximum number of players.
+     */
+    private boolean gameFull;
+
+    /**
+     * firstPlayer is the player that will play first.
+     */
+    private Player firstPlayer;
+
+    /**
+     * playerInTurn is the player that is currently playing.
+     */
+    private Player playerInTurn;
+
+    /**
+     * chatHandler is the chat of the game.
+     */
+    private final Chat chatHandler;
+
+    /**
+     * number of disconnected players.
      */
     private int disconnections;
-    private final List<Color> availableColors;
-
 
     /**
-     *
+     * available colors for the players.
      */
+    private final List<Color> availableColors;
 
+    /**
+     * Constructor of the class Game. Initially the game is in the state WAIT_PLAYERS, waiting for players to join.
+     * @param lobbySize is the number of players that the game can host.
+     */
     public Game(int lobbySize) {
         this.lobbySize = lobbySize;
         this.gameState = GameState.WAIT_PLAYERS;
@@ -45,14 +85,22 @@ public class Game extends Observable implements Serializable {
         this.playerInTurn = null;
         this.disconnections = 0;
         this.chatHandler = new Chat(this);
-        this.gameBoard = new GameBoard(this);
+        this.gameBoard = new GameBoard();
         this.availableColors = new ArrayList<>(List.of(Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW));
     }
 
+    /**
+     *  Method that returns the available colors for the players.
+     * @return the list of available colors.
+     */
     public List<Color> getAvailableColors(){
         return availableColors;
     }
 
+    /**
+     * Method that starts the game. It shuffles the decks and gives the cards to each player.
+     * @throws NotEnoughPlayersException if the game has not reached the maximum number of players.
+     */
     public void startGame() throws NotEnoughPlayersException{
         if (!this.gameFull){
             throw new NotEnoughPlayersException();
@@ -92,6 +140,13 @@ public class Game extends Observable implements Serializable {
         setFirstPlayer();
     }
 
+    /**
+     * Method that ends the game. It calculates the points of each player and one or more winners are chosen.
+     * The winner is the player with the highest number of points. In case of a tie in points, the winner is the player
+     * with the highest number of objectives completed. If there is still a tie, the game is a draw.
+     * @return the list of winners.
+     * @throws GameNotStartedException if the game has not started yet.
+     */
     public ArrayList<Player> endGame() throws GameNotStartedException {
         if(!this.gameState.equals(GameState.IN_GAME)){
             throw new GameNotStartedException();
@@ -113,7 +168,7 @@ public class Game extends Observable implements Serializable {
                 }
             }
         }
-        //the winner is chosen by the number of points
+        //the winner is chosen by the number of points and the number of objectives completed in case of a tie in points between two or more players
         int max = 0;
         ArrayList<Player> winners = new ArrayList<>();
         for (Player p: players){
@@ -133,6 +188,9 @@ public class Game extends Observable implements Serializable {
         return winners;
     }
 
+    /**
+     * Method that ends the game due to disconnection of one or more players.
+     */
     public void endGameByDisconnection(){
         notifyAll(new GenericMessage("\ngame ended due to lack of players"));
         this.gameState = GameState.END;

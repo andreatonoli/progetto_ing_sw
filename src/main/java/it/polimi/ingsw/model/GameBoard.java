@@ -16,7 +16,6 @@ import java.io.Serializable;
 import java.util.*;
 
 public class GameBoard implements Serializable {
-    private Game game;
     private LinkedList<Achievement> achievementDeck;
     private LinkedList<Card> goldDeck;
     private LinkedList<Card> resourceDeck;
@@ -25,15 +24,11 @@ public class GameBoard implements Serializable {
     private Card[] commonResource;
     private Card[] commonGold;
     private Achievement[] commonAchievement;
-    private Color resourceDeckRetro;
-    private Color resourceGoldRetro;
 
     /**
      * Builds game's board, its decks and links one specific board to one specific game
-     * @param game game to which the board belongs
      */
-    public GameBoard(Game game) {
-        this.game = game;
+    public GameBoard() {
         this.endedDecks = 0;
         try {
             Corner[] arrayCorner;
@@ -224,39 +219,86 @@ public class GameBoard implements Serializable {
         achievementDeck.removeFirst();
         return drawedCard;
     }
+
+    /**
+     * Getter for the achievement deck.
+     * @return the achievement deck.
+     */
     public LinkedList<Achievement> getAchievementDeck() {
         return this.achievementDeck;
     }
+
+    /**
+     * Getter for the gold deck.
+     * @return the gold deck.
+     */
     public LinkedList<Card> getGoldDeck() {
         return this.goldDeck;
     }
+
+    /**
+     * Getter for the resource deck.
+     * @return the resource deck.
+     */
     public LinkedList<Card> getResourceDeck() {
         return this.resourceDeck;
     }
+
+    /**
+     * Getter for the starter deck.
+     * @return the starter deck.
+     */
     public LinkedList<Card> getStarterDeck() {
         return this.starterDeck;
     }
 
+    /**
+     * Getter for the common resource cards.
+     * @return the common resource cards.
+     */
     public Card[] getCommonResource(){
         return this.commonResource;
     }
 
+    /**
+     * Setter for the common resource cards.
+     * @param commonResource the common resource card to insert.
+     * @param i the index where to insert the common resource card.
+     */
     public void setCommonResource(Card commonResource, int i){
         this.commonResource[i] = commonResource;
     }
 
+    /**
+     * Getter for the common gold cards.
+     * @return the common gold cards.
+     */
     public Card[] getCommonGold(){
         return this.commonGold;
     }
 
+    /**
+     * Setter for the common gold cards.
+     * @param commonGold the common gold card to insert.
+     * @param i the index where to insert the common gold card.
+     */
     public void setCommonGold(Card commonGold, int i){
         this.commonGold[i] = commonGold;
     }
 
+    /**
+     * Getter for the common achievement cards.
+     * @return the common achievement cards.
+     */
     public Achievement[] getCommonAchievement(){
         return this.commonAchievement;
     }
 
+    /**
+     * Setter for the common achievement cards.
+     * @param commonAchievement the common achievement card to insert.
+     * @param i the index where to insert the common achievement card.
+     */
     public void setCommonAchievement(Achievement commonAchievement, int i){
         this.commonAchievement[i] = commonAchievement;
     }

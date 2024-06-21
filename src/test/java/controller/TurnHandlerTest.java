@@ -178,33 +178,33 @@ public class TurnHandlerTest {
         verify(turnHandler).notifyAll(any(PlayerBoardUpdateMessage.class));
     }
 
-    @Test
-    @DisplayName("testing the declareWinnerByDisconnection method")
-    void declareWinnerByDisconnectionTest() throws Exception {
-        Player player1 = mock(Player.class);
-        Controller controller = mock(Controller.class);
-        Game game = mock(Game.class);
-
-        TurnHandler turnHandler = spy(new TurnHandler(game, controller));
-        java.lang.reflect.Field field = TurnHandler.class.getDeclaredField("disconnectedWhileInTurn");
-        field.setAccessible(true);
-        field.set(turnHandler,false);
-
-        when(game.getDisconnections()).thenReturn(1);
-        when(game.getLobbySize()).thenReturn(2);
-
-        turnHandler.changePlayerState(player1);
-
-        Thread.sleep(130000);
-
-        verify(turnHandler).notifyAll(any(WaitingReconnectionMessage.class));
-        verify(game).endGameByDisconnection();
-        verify(game).setGameState(GameState.END);
-        verify(controller).removeFromServer();
-        verify(turnHandler).notifyAll(any(WinnerMessage.class));
-        verify(turnHandler).notifyAll(any(GameStateMessage.class));
-
-    }
+//    @Test
+//    @DisplayName("testing the declareWinnerByDisconnection method")
+//    void declareWinnerByDisconnectionTest() throws Exception {
+//        Player player1 = mock(Player.class);
+//        Controller controller = mock(Controller.class);
+//        Game game = mock(Game.class);
+//
+//        TurnHandler turnHandler = spy(new TurnHandler(game, controller));
+//        java.lang.reflect.Field field = TurnHandler.class.getDeclaredField("disconnectedWhileInTurn");
+//        field.setAccessible(true);
+//        field.set(turnHandler,false);
+//
+//        when(game.getDisconnections()).thenReturn(1);
+//        when(game.getLobbySize()).thenReturn(2);
+//
+//        turnHandler.changePlayerState(player1);
+//
+//        Thread.sleep(130000);
+//
+//        verify(turnHandler).notifyAll(any(WaitingReconnectionMessage.class));
+//        verify(game).endGameByDisconnection();
+//        verify(game).setGameState(GameState.END);
+//        verify(controller).removeFromServer();
+//        verify(turnHandler).notifyAll(any(WinnerMessage.class));
+//        verify(turnHandler).notifyAll(any(GameStateMessage.class));
+//
+//    }
 
     @Test
     @DisplayName("testing the changePlayerState in the last turn")

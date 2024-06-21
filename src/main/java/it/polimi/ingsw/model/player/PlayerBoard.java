@@ -12,8 +12,6 @@ import java.util.Set;
 /**
  * The PlayerBoard class represents the game board of a player.
  * It provides methods to manage the cards and symbols of a player.
- *
- * This class is a part of the model component in the MVC pattern.
  */
 public class PlayerBoard implements Serializable {
     /**
