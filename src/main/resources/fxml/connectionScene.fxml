@@ -23,12 +23,12 @@
    <center>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="50.0" BorderPane.alignment="TOP_CENTER">
          <children>
-            <Button alignment="CENTER" mnemonicParsing="false" text="RMI" onAction="#rmiButtonClicked" id="setup-big-button" stylesheets="@../buttons.css">
+            <Button fx:id="rmi" alignment="CENTER" mnemonicParsing="false" text="RMI" id="setup-big-button" stylesheets="@../buttons.css">
                <font>
                   <Font size="40.0" />
                </font>
             </Button>
-            <Button alignment="CENTER" mnemonicParsing="false" text="Socket" onAction="#socketButtonClicked" id="setup-big-button" stylesheets="@../buttons.css">
+            <Button fx:id="socket" alignment="CENTER" mnemonicParsing="false" text="Socket" id="setup-big-button" stylesheets="@../buttons.css">
                <font>
                   <Font size="40.0" />
                </font>
