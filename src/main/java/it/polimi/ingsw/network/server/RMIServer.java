@@ -36,19 +36,6 @@ public class RMIServer implements VirtualServer {
         connections.remove(username);
     }
 
-    //public void removeFromServer(String username) throws RemoteException {
-    //    connections.get(username).cancelPing();
-    //    connections.get(username).onDisconnect();
-    //    int playersToDelete = connections.get(username).getLobby().getGame().getLobbySize()-1;
-    //    connections.get(username).getLobby().getGame().askLobbySize(playersToDelete);
-    //    System.out.println("                              "+playersToDelete);
-    //    if (playersToDelete == 0) {
-    //        server.removeGame(connections.get(username).getLobby());
-    //    }
-    //    connections.remove(username);
-    //    server.removePlayers(username);
-    //}
-
     @Override
     public void login(RMIClientHandler client) throws RemoteException {
         RMIConnection c = new RMIConnection(server, client, this);

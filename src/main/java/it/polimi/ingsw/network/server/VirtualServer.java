@@ -9,7 +9,6 @@ import it.polimi.ingsw.network.messages.Message;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-//per inserire i metodi che vogliamo che il client chiami del server
 public interface VirtualServer extends Remote {
     void login(RMIClientHandler client) throws RemoteException;
 
@@ -37,5 +36,4 @@ public interface VirtualServer extends Remote {
 
     void removeConnections(String username) throws RemoteException;
 
-    //void removeFromServer(String username) throws RemoteException;
 }

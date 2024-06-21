@@ -50,7 +50,6 @@ public class SocketConnection extends Connection implements Runnable {
 
     @Override
     public void run() {
-        //TODO: capire quando chiudere connessione
         try {
             while(!Thread.currentThread().isInterrupted()) {
                     readMessage();
@@ -68,9 +67,6 @@ public class SocketConnection extends Connection implements Runnable {
         if (message.getType().equals(MessageType.CATCH_PING)){
             catchPing();
         }
-        //else if (message.getType().equals(MessageType.RECONNECT_LOBBY_INDEX)){
-        //    reconnectLobbyIndex(message);
-        //}
         else{
             messageQueue.add(message);
         }
@@ -170,21 +166,8 @@ public class SocketConnection extends Connection implements Runnable {
             } catch (IOException e) {
                 System.err.println(e.getMessage());
             }
-        } catch (NullPointerException ignored){} //TODO controlla la chisura
+        } catch (NullPointerException ignored){}
     }
-
-    //private void reconnectLobbyIndex(Message message){
-    //    String user = message.getSender();
-    //    int room = ((ReconnectLobbyIndexMessage) message).getChoice();
-    //    if (!server.userNotDisconnected(user, room)) {
-    //        sendMessage(new GenericMessage("there is no player disconnected in game "+ room + " with that name.\n"));
-    //        server.login(this);
-    //    }
-    //    else {
-    //        this.username = message.getSender();
-    //        server.reconnectPlayer(this, message.getSender());
-    //    }
-    //}
 
     @Override
     public void reconnect(Connection oldConnection) {
@@ -239,22 +222,6 @@ public class SocketConnection extends Connection implements Runnable {
 
     public void onMessage(Message message){
         switch (message.getType()){
-            //case REMOVE_FROM_SERVER:
-            //    this.cancelPing();
-            //    int playersToDelete = lobby.getGame().getLobbySize()-1;
-            //    lobby.getGame().askLobbySize(playersToDelete);
-            //    server.removePlayers(username);
-            //    if (playersToDelete == 0){
-            //        server.removeGame(lobby);
-            //    }
-            //    try {
-            //        in.close();
-            //        out.close();
-            //        socket.close();
-            //    } catch (IOException e) {
-            //        System.err.println(e.getMessage());
-            //    }
-            //    break;
             case ADD_TO_CHAT:
                 String receiver = ((AddToChatMessage) message).getReceiver();
                 if (receiver == null) {
