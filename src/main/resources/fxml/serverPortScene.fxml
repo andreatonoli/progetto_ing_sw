@@ -33,7 +33,7 @@
     <center>
         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <children>
-                <TextField fx:id="text" alignment="CENTER" prefWidth="500.0" >
+                <TextField fx:id="port" alignment="CENTER" prefWidth="500.0" >
                     <font>
                         <Font size="60.0" />
                     </font>
@@ -42,7 +42,7 @@
         </HBox>
     </center>
     <bottom>
-        <Button id="setup-small-button" mnemonicParsing="false" onAction="#nextButtonClicked" stylesheets="@../buttons.css" text="Next" BorderPane.alignment="BOTTOM_RIGHT">
+        <Button fx:id="next" id="setup-small-button" mnemonicParsing="false" onAction="#nextButtonClicked" stylesheets="@../buttons.css" text="Next" BorderPane.alignment="BOTTOM_RIGHT">
             <BorderPane.margin>
                 <Insets bottom="20.0" right="20.0" />
             </BorderPane.margin>
