@@ -5,9 +5,7 @@ import it.polimi.ingsw.model.card.Card;
 import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.network.client.*;
 import it.polimi.ingsw.network.server.Server;
-import it.polimi.ingsw.view.controllers.LobbiesSceneController;
-import it.polimi.ingsw.view.controllers.ReconnectSceneController;
-import it.polimi.ingsw.view.controllers.StarterFlipSceneController;
+import it.polimi.ingsw.view.controllers.*;
 import javafx.application.Platform;
 
 import java.rmi.RemoteException;
@@ -116,6 +114,42 @@ public class GuiInputHandler implements Ui {
         client.placeStarterCard(side, starter);
     }
 
+    public void chosenAchievement(Achievement selectedAchievement){
+        client.chooseAchievement(selectedAchievement);
+    }
+
+    public void chosenColor(Color selectedColor){
+        client.chooseColor(selectedColor);
+    }
+
+    public void drawDeckButtonClicked(String s){
+        client.drawCard(s);
+    }
+
+    public void drawCardButtonClicked(String s){
+        client.drawCard(s);
+    }
+
+    public void placeCard(Card cardToPlace, int[] placingCoordinates){
+        client.placeCard(cardToPlace, placingCoordinates);
+    }
+
+    public void sendGlobalMessageButtonClicked(String message){
+        client.sendChatMessage(message);
+    }
+
+    public void sendMessageButtonClicked(String message, String receiver){
+        client.sendChatMessage(receiver, message);
+    }
+
+    public void otherPlayersBoardButtonClicked(PlayerBean other){
+        Platform.runLater(() -> {
+            OtherPlayerBoardsSceneController c = (OtherPlayerBoardsSceneController) GuiScenes.getController(GuiScenes.OTHER_PLAYER_BOARDS_SCENE);
+            c.setBoard(other);
+            Gui.setScene(Gui.getScenes().get(GuiScenes.OTHER_PLAYER_BOARDS_SCENE.ordinal()));
+        });
+    }
+
     @Override
     public void handleReconnection() {
 
@@ -156,17 +190,29 @@ public class GuiInputHandler implements Ui {
 
     @Override
     public void printViewWithCommands(PlayerBean player, GameBean game, ArrayList<PlayerBean> players) {
-
+        Platform.runLater(() -> {
+            MainSceneController c = (MainSceneController) GuiScenes.getController(GuiScenes.LOBBIES_SCENE);
+            c.setBoard(player, game, players);
+            Gui.setScene(Gui.getScenes().get(GuiScenes.STARTER_FLIP_SCENE.ordinal()));
+        });
     }
 
     @Override
     public void askAchievement(Achievement[] choices) {
-
+        Platform.runLater(() -> {
+            AchievementChoiceSceneController c = (AchievementChoiceSceneController) GuiScenes.getController(GuiScenes.LOBBIES_SCENE);
+            c.setAchievements(choices);
+            Gui.setScene(Gui.getScenes().get(GuiScenes.ACHIEVEMENT_CHOICE_SCENE.ordinal()));
+        });
     }
 
     @Override
     public void askColor(List<Color> colors) {
-
+        Platform.runLater(() -> {
+            ColorChoiceSceneController c = (ColorChoiceSceneController) GuiScenes.getController(GuiScenes.LOBBIES_SCENE);
+            c.setColors(colors);
+            Gui.setScene(Gui.getScenes().get(GuiScenes.COLOR_CHOICE_SCENE.ordinal()));
+        });
     }
 
     @Override

@@ -41,13 +41,13 @@
             <StackPane prefHeight="150.0" prefWidth="200.0">
                <children>
                   <ImageView fx:id="a1" fitHeight="252.0" fitWidth="378.0" pickOnBounds="true" preserveRatio="true" />
-                  <Button mnemonicParsing="false" onAction="#chosenFirstAchievement" prefHeight="252.0" prefWidth="378.0" style="-fx-background-color: transparent" />
+                  <Button fx:id="chooseA1" mnemonicParsing="false" prefHeight="252.0" prefWidth="378.0" style="-fx-background-color: transparent" />
                </children>
             </StackPane>
             <StackPane prefHeight="150.0" prefWidth="200.0">
                <children>
                   <ImageView fx:id="a2" fitHeight="252.0" fitWidth="378.0" pickOnBounds="true" preserveRatio="true" />
-                  <Button mnemonicParsing="false" onAction="#chosenSecondAchievement" prefHeight="252.0" prefWidth="378.0" style="-fx-background-color: transparent" />
+                  <Button fx:id="chooseA2" mnemonicParsing="false" prefHeight="252.0" prefWidth="378.0" style="-fx-background-color: transparent" />
                </children>
             </StackPane>
          </children>

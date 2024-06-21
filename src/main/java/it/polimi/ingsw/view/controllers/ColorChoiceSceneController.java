@@ -2,6 +2,7 @@ package it.polimi.ingsw.view.controllers;
 
 import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.view.Gui;
+import it.polimi.ingsw.view.GuiInputHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -10,6 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -27,9 +29,11 @@ public class ColorChoiceSceneController extends GenericController{
     ImageView[] views = null;
     ImageView[] miniViews = null;
 
-    @FXML
-    public void initialize() {
+    GuiInputHandler guiHandler;
 
+    @FXML
+    public void initialize(){
+        guiHandler = GuiInputHandler.getInstance();
     }
 
     public void setColors(List<Color> colors){
@@ -102,7 +106,7 @@ public class ColorChoiceSceneController extends GenericController{
                     a.close();
                 }
                 else if(result.get().getText().equals("Confirm")){
-                    Gui.addReturnValue(String.valueOf(finalI));
+                    guiHandler.chosenColor(colors.get(finalI));
                 }
                 else if(result.get().getText().equals("Cancel")){
                     a.close();

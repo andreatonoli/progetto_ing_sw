@@ -29,14 +29,8 @@ public class Gui extends Application{
     static Stage stage;
     static FXMLLoader loader;
     static Parent root;
-    static String address;
-    static String connection;
-    static int port;
     private ClientInterface client;
     protected static BlockingQueue<String> returnValue = new LinkedBlockingQueue<>();
-    //red, blue, green, yellow
-    int[] freeColors = {1, 1, 1, 1};
-    private static Gui instance = null;
     private static GuiInputHandler handler;
     private static ArrayList<Parent> scenes = new ArrayList<>();
     private static ArrayList<Object> controllers = new ArrayList<>();
@@ -50,9 +44,6 @@ public class Gui extends Application{
         handler = new GuiInputHandler();
         launch(args);
     }
-
-    public static void setConnection(String c) { connection = c; }
-    public static String getConnection() { return connection; }
 
     public static void loadAllScenes(){
         for(GuiScenes s : GuiScenes.values()){
@@ -70,22 +61,13 @@ public class Gui extends Application{
     public static ArrayList<Parent> getScenes(){ return scenes; }
     public static ArrayList<Object> getControllers(){ return controllers; }
 
-    public static void loadScene(GuiScenes s) {
-        loader = new FXMLLoader(Gui.class.getResource(GuiScenes.getFxml(s)));
-        try {
-            root = loader.load();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public static void setScene(Parent r){
         stage.getScene().setRoot(r);
     }
 
-
     @Override
     public void start(Stage s) throws Exception {
+
         loadAllScenes();
         stage = s;
 

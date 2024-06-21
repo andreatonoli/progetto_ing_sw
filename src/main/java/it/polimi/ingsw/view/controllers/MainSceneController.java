@@ -11,6 +11,7 @@ import it.polimi.ingsw.model.player.PlayerBoard;
 import it.polimi.ingsw.network.client.GameBean;
 import it.polimi.ingsw.network.client.PlayerBean;
 import it.polimi.ingsw.view.Gui;
+import it.polimi.ingsw.view.GuiInputHandler;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -19,6 +20,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Paint;
@@ -68,6 +70,10 @@ public class MainSceneController extends GenericController{
     private ChoiceBox otherPlayers;
     @FXML
     private Text playerState;
+    @FXML
+    private Button chat;
+    @FXML
+    private Button otherPlayersBoard;
 
     //this matrix has the x and y position of the zero point for alle the 4 pions
     private int[][] scoretrackZero = {new int[] {65, 115, 65, 115}, new int[] {670, 670, 715, 715}};
@@ -77,6 +83,9 @@ public class MainSceneController extends GenericController{
     private int cardToPlace;
 
     private ArrayList<ImageView> pions = new ArrayList<>();
+
+    private PlayerBean player;
+    private ArrayList<PlayerBean> opponents;
 
     int h1;
     int h2;
@@ -95,7 +104,148 @@ public class MainSceneController extends GenericController{
     ImageView viewPlantGoldRetro;
     ImageView viewInsectGoldRetro;
 
+    GuiInputHandler guiHandler;
+
+    @FXML
+    public void initialize(){
+        guiHandler = GuiInputHandler.getInstance();
+        bindEvents();
+    }
+
+    public void bindEvents(){
+        resourceDeck.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            guiHandler.drawDeckButtonClicked("resource");
+        });
+        resource1.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            guiHandler.drawCardButtonClicked("1");
+        });
+        resource2.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            guiHandler.drawCardButtonClicked("2");
+        });
+        goldDeck.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            guiHandler.drawDeckButtonClicked("gold");
+        });
+        gold1.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            guiHandler.drawCardButtonClicked("3");
+        });
+        gold2.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            guiHandler.drawCardButtonClicked("4");
+        });
+        hand1.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            if(hand1.getGraphic().equals(viewHand1)){
+                if(h1 > 0 && h1 < 11){
+                    hand1.setGraphic(viewFungiRetro);
+                }
+                else if(h1 > 10 && h1 < 21){
+                    hand1.setGraphic(viewPlantRetro);
+                }
+                else if(h1 > 20 && h1 < 31){
+                    hand1.setGraphic(viewAnimalRetro);
+                }
+                else if(h1 > 30 && h1 < 41){
+                    hand1.setGraphic(viewInsectRetro);
+                }
+                else if(h1 > 40 && h1 < 51){
+                    hand1.setGraphic(viewFungiGoldRetro);
+                }
+                else if(h1 > 50 && h1 < 61){
+                    hand1.setGraphic(viewPlantGoldRetro);
+                }
+                else if(h1 > 60 && h1 < 71){
+                    hand1.setGraphic(viewAnimalGoldRetro);
+                }
+                else{
+                    hand1.setGraphic(viewInsectGoldRetro);
+                }
+            }
+            else{
+                hand1.setGraphic(viewHand1);
+            }        });
+        hand2.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            if(hand2.getGraphic().equals(viewHand2)){
+                if(h2 > 0 && h2 < 11){
+                    hand2.setGraphic(viewFungiRetro);
+                }
+                else if(h2 > 10 && h2 < 21){
+                    hand2.setGraphic(viewPlantRetro);
+                }
+                else if(h2 > 20 && h2 < 31){
+                    hand2.setGraphic(viewAnimalRetro);
+                }
+                else if(h2 > 30 && h2 < 41){
+                    hand2.setGraphic(viewInsectRetro);
+                }
+                else if(h2 > 40 && h2 < 51){
+                    hand2.setGraphic(viewFungiGoldRetro);
+                }
+                else if(h2 > 50 && h2 < 61){
+                    hand2.setGraphic(viewPlantGoldRetro);
+                }
+                else if(h2 > 60 && h2 < 71){
+                    hand2.setGraphic(viewAnimalGoldRetro);
+                }
+                else{
+                    hand2.setGraphic(viewInsectGoldRetro);
+                }
+            }
+            else{
+                hand2.setGraphic(viewHand2);
+            }
+        });
+        hand3.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            if(hand3.getGraphic().equals(viewHand3)){
+                if(h3 > 0 && h3 < 11){
+                    hand3.setGraphic(viewFungiRetro);
+                }
+                else if(h3 > 10 && h3 < 21){
+                    hand3.setGraphic(viewPlantRetro);
+                }
+                else if(h3 > 20 && h3 < 31){
+                    hand3.setGraphic(viewAnimalRetro);
+                }
+                else if(h3 > 30 && h3 < 41){
+                    hand3.setGraphic(viewInsectRetro);
+                }
+                else if(h3 > 40 && h3 < 51){
+                    hand3.setGraphic(viewFungiGoldRetro);
+                }
+                else if(h3 > 50 && h3 < 61){
+                    hand3.setGraphic(viewPlantGoldRetro);
+                }
+                else if(h3 > 60 && h3 < 71){
+                    hand3.setGraphic(viewAnimalGoldRetro);
+                }
+                else{
+                    hand3.setGraphic(viewInsectGoldRetro);
+                }
+            }
+            else{
+                hand3.setGraphic(viewHand3);
+            }
+        });
+        chat.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            if(!textMessage.getText().isEmpty()){
+                if(receiver.getSelectionModel().getSelectedItem().equals("global")){
+                    guiHandler.sendGlobalMessageButtonClicked(textMessage.getText());
+                }
+                else{
+                    guiHandler.sendMessageButtonClicked(textMessage.getText(), (String) receiver.getSelectionModel().getSelectedItem());
+                }
+            }
+        });
+        otherPlayersBoard.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            for(PlayerBean p : opponents){
+                if(p.getUsername().equals((String) otherPlayers.getSelectionModel().getSelectedItem())){
+                    guiHandler.otherPlayersBoardButtonClicked(p);
+                }
+            }
+        });
+
+    }
+
     public void setBoard(PlayerBean player, GameBean game, ArrayList<PlayerBean> opponents){
+        this.player = player;
+        this.opponents = opponents;
 
         if(player.getState().equals(PlayerState.DRAW_CARD)){
             playerState.setText("Your turn, draw a card");
@@ -380,36 +530,6 @@ public class MainSceneController extends GenericController{
     }
 
     @FXML
-    public void drawResourceDeck(ActionEvent e) {
-        Gui.addReturnValue("2" + "§" + "resource");
-    }
-
-    @FXML
-    public void drawResource1(ActionEvent e) {
-        Gui.addReturnValue("3" + "§" + "1");
-    }
-
-    @FXML
-    public void drawResource2(ActionEvent e) {
-        Gui.addReturnValue("3" + "§" + "2");
-    }
-
-    @FXML
-    public void drawGoldDeck(ActionEvent e) {
-        Gui.addReturnValue("2" + "§" + "gold");
-    }
-
-    @FXML
-    public void drawGold1(ActionEvent e) {
-        Gui.addReturnValue("3" + "§" + "3");
-    }
-
-    @FXML
-    public void drawGold2(ActionEvent e) {
-        Gui.addReturnValue("3" + "§" + "4");
-    }
-
-    @FXML
     public void wantToPlaceHand1(ActionEvent e) {
         cardToPlace = 0;
         for (Node b : buttonBoard.getChildren()){
@@ -436,118 +556,10 @@ public class MainSceneController extends GenericController{
     @FXML void placeCard(int cardToPlace, int[] newCardCoord){
         //take the card in hand based on the number saved in cardToPlace (0 means the first card in hand) and place it
         //in the coordinates saved in newCardCoord
-        Gui.addReturnValue("1" + "§" + String.valueOf(cardToPlace) + "§" + String.valueOf(newCardCoord[0]) + "§" + String.valueOf(newCardCoord[1]));
+        guiHandler.placeCard(player.getHand()[cardToPlace], newCardCoord);
         for (Node b : buttonBoard.getChildren()){
             b.setVisible(false);
         }
     }
 
-    public void flipHand1(ActionEvent e) {
-        if(hand1.getGraphic().equals(viewHand1)){
-            if(h1 > 0 && h1 < 11){
-                hand1.setGraphic(viewFungiRetro);
-            }
-            else if(h1 > 10 && h1 < 21){
-                hand1.setGraphic(viewPlantRetro);
-            }
-            else if(h1 > 20 && h1 < 31){
-                hand1.setGraphic(viewAnimalRetro);
-            }
-            else if(h1 > 30 && h1 < 41){
-                hand1.setGraphic(viewInsectRetro);
-            }
-            else if(h1 > 40 && h1 < 51){
-                hand1.setGraphic(viewFungiGoldRetro);
-            }
-            else if(h1 > 50 && h1 < 61){
-                hand1.setGraphic(viewPlantGoldRetro);
-            }
-            else if(h1 > 60 && h1 < 71){
-                hand1.setGraphic(viewAnimalGoldRetro);
-            }
-            else{
-                hand1.setGraphic(viewInsectGoldRetro);
-            }
-        }
-        else{
-            hand1.setGraphic(viewHand1);
-        }
-
-    }
-
-    public void flipHand2(ActionEvent e) {
-        if(hand2.getGraphic().equals(viewHand2)){
-            if(h2 > 0 && h2 < 11){
-                hand2.setGraphic(viewFungiRetro);
-            }
-            else if(h2 > 10 && h2 < 21){
-                hand2.setGraphic(viewPlantRetro);
-            }
-            else if(h2 > 20 && h2 < 31){
-                hand2.setGraphic(viewAnimalRetro);
-            }
-            else if(h2 > 30 && h2 < 41){
-                hand2.setGraphic(viewInsectRetro);
-            }
-            else if(h2 > 40 && h2 < 51){
-                hand2.setGraphic(viewFungiGoldRetro);
-            }
-            else if(h2 > 50 && h2 < 61){
-                hand2.setGraphic(viewPlantGoldRetro);
-            }
-            else if(h2 > 60 && h2 < 71){
-                hand2.setGraphic(viewAnimalGoldRetro);
-            }
-            else{
-                hand2.setGraphic(viewInsectGoldRetro);
-            }
-        }
-        else{
-            hand2.setGraphic(viewHand2);
-        }
-
-    }
-
-    public void flipHand3(ActionEvent e) {
-        if(hand3.getGraphic().equals(viewHand3)){
-            if(h3 > 0 && h3 < 11){
-                hand3.setGraphic(viewFungiRetro);
-            }
-            else if(h3 > 10 && h3 < 21){
-                hand3.setGraphic(viewPlantRetro);
-            }
-            else if(h3 > 20 && h3 < 31){
-                hand3.setGraphic(viewAnimalRetro);
-            }
-            else if(h3 > 30 && h3 < 41){
-                hand3.setGraphic(viewInsectRetro);
-            }
-            else if(h3 > 40 && h3 < 51){
-                hand3.setGraphic(viewFungiGoldRetro);
-            }
-            else if(h3 > 50 && h3 < 61){
-                hand3.setGraphic(viewPlantGoldRetro);
-            }
-            else if(h3 > 60 && h3 < 71){
-                hand3.setGraphic(viewAnimalGoldRetro);
-            }
-            else{
-                hand3.setGraphic(viewInsectGoldRetro);
-            }
-        }
-        else{
-            hand3.setGraphic(viewHand3);
-        }
-
-    }
-
-    public void sendMessage(ActionEvent e) {
-        if(!textMessage.getText().isEmpty()){
-            Gui.addReturnValue("4" + receiver.getSelectionModel().getSelectedItem() + "§" + textMessage.getText());
-        }
-    }
-
-    public void viewPlayerboard(ActionEvent e) {
-        Gui.addReturnValue("5" + "§" + otherPlayers.getSelectionModel().getSelectedItem());
-    }
 }

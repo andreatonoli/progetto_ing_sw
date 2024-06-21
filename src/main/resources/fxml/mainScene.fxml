@@ -29,7 +29,7 @@
                      </font>
                   </Text>
                   <ChoiceBox fx:id="otherPlayers" prefHeight="50.0" prefWidth="250.0" />
-                   <Button id="setup-mini-button" mnemonicParsing="false" onAction="#viewPlayerboard" stylesheets="@../buttons.css" text="View other's playerboard" />
+                   <Button fx:id="otherPlayersBoard" id="setup-mini-button" mnemonicParsing="false" onAction="#viewPlayerboard" stylesheets="@../buttons.css" text="View other's playerboard" />
                </children>
             </VBox>
             <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" stylesheets="@../text.css">
@@ -42,16 +42,16 @@
                        <children>
                            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
                                <children>
-                                   <Button fx:id="hand1" mnemonicParsing="false" onAction="#wantToPlaceHand1" prefHeight="168.0" prefWidth="189.0" style="-fx-background-color: transparent"/>
-                                   <Button fx:id="hand2" mnemonicParsing="false" onAction="#wantToPlaceHand2" prefHeight="168.0" prefWidth="189.0" style="-fx-background-color: transparent" />
-                                   <Button fx:id="hand3" mnemonicParsing="false" onAction="#wantToPlaceHand3" prefHeight="168.0" prefWidth="189.0" style="-fx-background-color: transparent" />
+                                   <Button mnemonicParsing="false" onAction="#wantToPlaceHand1" prefHeight="168.0" prefWidth="189.0" style="-fx-background-color: transparent"/>
+                                   <Button mnemonicParsing="false" onAction="#wantToPlaceHand2" prefHeight="168.0" prefWidth="189.0" style="-fx-background-color: transparent" />
+                                   <Button mnemonicParsing="false" onAction="#wantToPlaceHand3" prefHeight="168.0" prefWidth="189.0" style="-fx-background-color: transparent" />
                                </children>
                            </HBox>
                            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="140.0">
                                <children>
-                                   <Button id="setup-mini-button" mnemonicParsing="false" onAction="#flipHand1" stylesheets="@../buttons.css" text="Flip card" />
-                                   <Button id="setup-mini-button" mnemonicParsing="false" onAction="#flipHand2" stylesheets="@../buttons.css" text="Flip card" />
-                                   <Button id="setup-mini-button" mnemonicParsing="false" onAction="#flipHand3" stylesheets="@../buttons.css" text="Flip card" />
+                                   <Button fx:id="hand1" id="setup-mini-button" mnemonicParsing="false" stylesheets="@../buttons.css" text="Flip card" />
+                                   <Button fx:id="hand2" id="setup-mini-button" mnemonicParsing="false" stylesheets="@../buttons.css" text="Flip card" />
+                                   <Button fx:id="hand3" id="setup-mini-button" mnemonicParsing="false" stylesheets="@../buttons.css" text="Flip card" />
                                </children>
                                <HBox.margin>
                                    <Insets top="30.0" />
@@ -93,7 +93,7 @@
                            <font>
                               <Font size="20.0" />
                            </font></TextField>
-                        <Button id="setup-small-button" mnemonicParsing="false" onAction="#sendMessage" stylesheets="@../buttons.css" text="➤" />
+                        <Button fx:id="chat" id="setup-small-button" mnemonicParsing="false" stylesheets="@../buttons.css" text="➤" />
                      </children>
                       <HBox.margin>
                           <Insets bottom="50.0" right="20.0" />
@@ -123,16 +123,16 @@
             </Text>
             <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
                <children>
-                   <Button fx:id="resourceDeck" mnemonicParsing="false" onAction="#drawResourceDeck" prefHeight="105.0" prefWidth="160.0" style="-fx-background-color: transparent" />
-                   <Button fx:id="resource1" mnemonicParsing="false" onAction="#drawResource1" prefHeight="105.0" prefWidth="160.0" style="-fx-background-color: transparent" />
-                   <Button fx:id="resource2" mnemonicParsing="false" onAction="#drawResource2" prefHeight="105.0" prefWidth="160.0" style="-fx-background-color: transparent" />
+                   <Button fx:id="resourceDeck" mnemonicParsing="false" prefHeight="105.0" prefWidth="160.0" style="-fx-background-color: transparent" />
+                   <Button fx:id="resource1" mnemonicParsing="false" prefHeight="105.0" prefWidth="160.0" style="-fx-background-color: transparent" />
+                   <Button fx:id="resource2" mnemonicParsing="false" prefHeight="105.0" prefWidth="160.0" style="-fx-background-color: transparent" />
                </children>
             </HBox>
             <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
                <children>
-                   <Button fx:id="goldDeck" mnemonicParsing="false" onAction="#drawGoldDeck" prefHeight="105.0" prefWidth="160.0" style="-fx-background-color: transparent" />
-                   <Button fx:id="gold1" mnemonicParsing="false" onAction="#drawGold1" prefHeight="105.0" prefWidth="160.0" style="-fx-background-color: transparent" />
-                   <Button fx:id="gold2" mnemonicParsing="false" onAction="#drawGold2" prefHeight="105.0" prefWidth="160.0" style="-fx-background-color: transparent" />
+                   <Button fx:id="goldDeck" mnemonicParsing="false" prefHeight="105.0" prefWidth="160.0" style="-fx-background-color: transparent" />
+                   <Button fx:id="gold1" mnemonicParsing="false" prefHeight="105.0" prefWidth="160.0" style="-fx-background-color: transparent" />
+                   <Button fx:id="gold2" mnemonicParsing="false" prefHeight="105.0" prefWidth="160.0" style="-fx-background-color: transparent" />
                </children>
             </HBox>
             <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
