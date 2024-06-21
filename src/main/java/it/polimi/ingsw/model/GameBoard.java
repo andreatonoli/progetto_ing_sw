@@ -25,8 +25,6 @@ public class GameBoard implements Serializable {
     private Card[] commonResource;
     private Card[] commonGold;
     private Achievement[] commonAchievement;
-    private Color resourceDeckRetro;
-    private Color resourceGoldRetro;
 
     /**
      * Builds game's board, its decks and links one specific board to one specific game

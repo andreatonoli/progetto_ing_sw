@@ -58,6 +58,7 @@ public class GuiInputHandler implements Ui {
             if(s.equals("default")){
                 try{
                     client = new RMIClient(address, Server.rmiPort, this);
+                    client.login();
                 }
                 catch(RemoteException e){
                     System.err.println(e.getMessage());
@@ -66,6 +67,7 @@ public class GuiInputHandler implements Ui {
             else{
                 try{
                     client = new RMIClient(address, Integer.parseInt(s), this);
+                    client.login();
                 }
                 catch(RemoteException e){
                     System.err.println(e.getMessage());
@@ -75,9 +77,11 @@ public class GuiInputHandler implements Ui {
         else{
             if(s.equals("default")){
                 client = new SocketClient(address, Server.socketPort, this);
+                client.login();
             }
             else{
                 client = new SocketClient(address, Integer.parseInt(s), this);
+                client.login();
             }
         }
     }
@@ -157,9 +161,7 @@ public class GuiInputHandler implements Ui {
 
     @Override
     public void askNickname() {
-        Platform.runLater(() -> {
-            Gui.setScene(Gui.getScenes().get(GuiScenes.LOGIN_SCENE.ordinal()));
-        });
+        Platform.runLater(() -> Gui.setScene(Gui.getScenes().get(GuiScenes.LOGIN_SCENE.ordinal())));
     }
     
 
