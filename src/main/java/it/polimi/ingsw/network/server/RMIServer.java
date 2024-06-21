@@ -17,9 +17,10 @@ import it.polimi.ingsw.network.messages.Message;
 public class RMIServer implements VirtualServer {
     private final BlockingQueue<Action> actionQueue;
     private boolean processingAction;
+    private Integer lastId = 0;
     private final Server server;
     private final int port;
-    private final Map<String, RMIConnection> connections;
+    private final Map<Integer, RMIConnection> connections;
 
     public RMIServer(Server server, int port){
         this.server = server;
@@ -32,18 +33,37 @@ public class RMIServer implements VirtualServer {
     }
 
     @Override
-    public void removeConnections(String username) throws RemoteException {
-        connections.remove(username);
+    public synchronized int getAvailableId(){
+        this.lastId++;
+        return lastId;
+    }
+    
+    @Override
+    public void removeConnections(Integer id) throws RemoteException {
+        connections.remove(id);
     }
 
     @Override
     public void login(RMIClientHandler client) throws RemoteException {
-        RMIConnection c = new RMIConnection(server, client, this);
+        Integer id = getAvailableId();
+        RMIConnection c = new RMIConnection(server, client, this, id);
+        connections.put(id, c);
         server.login(c);
     }
 
-    public void setEntry(String username, RMIConnection c){
-        connections.put(username, c);
+    @Override
+    public void sendNickname(String nickname, Integer id) throws RemoteException {
+        addToQueue(() -> connections.get(id).setNickname(nickname));
+    }
+
+    @Override
+    public void handleAction(int actionToPerform, Integer id, String username, List<Integer> startingGamesId, List<Integer> gamesWhitDisconnectionsId) throws RemoteException {
+        addToQueue(() -> connections.get(id).handleAction(actionToPerform, username, startingGamesId, gamesWhitDisconnectionsId));
+    }
+
+    @Override
+    public void setLobbySize(int size, Integer id, String username) throws RemoteException {
+        addToQueue(() -> connections.get(id).setLobbySize(size, username));
     }
 
     @Override
@@ -56,8 +76,8 @@ public class RMIServer implements VirtualServer {
         return server.userNotDisconnected(username, gameId);
     }
 
-    public void pingConnection(String username) throws RemoteException{
-        connections.get(username).catchPing();
+    public void pingConnection(Integer id) throws RemoteException{
+        connections.get(id).catchPing();
     }
 
     public void startServer(){
@@ -72,42 +92,42 @@ public class RMIServer implements VirtualServer {
     }
 
     @Override
-    public void sendChatMessage(String message, String sender, String receiver) throws RemoteException {
-        addToQueue(() -> connections.get(sender).sendChatMessage(message, connections.get(receiver)));
+    public void sendChatMessage(String message, Integer id, String receiver) throws RemoteException {
+        addToQueue(() -> connections.get(id).sendChatMessage(message, connections.get(receiver)));
     }
     @Override
-    public void sendChatMessage(String message, String sender) throws RemoteException {
-        addToQueue(() -> connections.get(sender).sendChatMessage(message));
-    }
-
-    @Override
-    public void placeStarterCard(Card card, String username) throws RemoteException {
-        addToQueue(() -> connections.get(username).placeStarterCard(card));
+    public void sendChatMessage(String message, Integer id) throws RemoteException {
+        addToQueue(() -> connections.get(id).sendChatMessage(message));
     }
 
     @Override
-    public void setColor(Color color, String username) throws RemoteException {
-        addToQueue(() -> connections.get(username).setColor(color));
+    public void placeStarterCard(Card card, Integer id) throws RemoteException {
+        addToQueue(() -> connections.get(id).placeStarterCard(card));
     }
 
     @Override
-    public void placeCard(Card card, int[] placingCoordinates, String username) {
-        addToQueue(() -> connections.get(username).placeCard(card, placingCoordinates));
+    public void setColor(Color color, Integer id) throws RemoteException {
+        addToQueue(() -> connections.get(id).setColor(color));
     }
 
     @Override
-    public void drawCard(String chosenDeck, String username) throws RemoteException {
-        addToQueue(() -> connections.get(username).drawCard(chosenDeck));
+    public void placeCard(Card card, int[] placingCoordinates, Integer id) {
+        addToQueue(() -> connections.get(id).placeCard(card, placingCoordinates));
     }
 
     @Override
-    public void drawCardFromBoard(int index, String username) throws RemoteException {
-        addToQueue(() -> connections.get(username).drawCardFromBoard(index));
+    public void drawCard(String chosenDeck, Integer id) throws RemoteException {
+        addToQueue(() -> connections.get(id).drawCard(chosenDeck));
     }
 
     @Override
-    public void setAchievement(Achievement achievement, String username) throws RemoteException {
-        addToQueue(() -> connections.get(username).setAchievement(achievement));
+    public void drawCardFromBoard(int index, Integer id) throws RemoteException {
+        addToQueue(() -> connections.get(id).drawCardFromBoard(index));
+    }
+
+    @Override
+    public void setAchievement(Achievement achievement, Integer id) throws RemoteException {
+        addToQueue(() -> connections.get(id).setAchievement(achievement));
     }
 
     private void addToQueue(Action action) {

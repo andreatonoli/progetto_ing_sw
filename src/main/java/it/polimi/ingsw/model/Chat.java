@@ -18,8 +18,14 @@ public class Chat implements Serializable {
         this.players = game.getPlayers();
     }
 
-    /** this method saves the messages into the players' chat according to the sender */
-
+    /**
+     * Sends a message to the receiver.
+     * @param sender the player who sends the message.
+     * @param receiver the player who receives the message.
+     * @param global if the message is global.
+     * @param message the message to send.
+     * @throws PlayerNotFoundException if the receiver is not found.
+     */
     public void forwardMessage(Player sender, Player receiver, boolean global, String message) throws PlayerNotFoundException {
         if (global){
             for (Player p : players){

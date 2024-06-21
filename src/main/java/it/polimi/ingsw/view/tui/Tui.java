@@ -107,11 +107,20 @@ public class Tui implements Ui {
      * Asks the player's nickname
      */
     @Override
-    public void askNickname(){
+    public String askNickname(){
         String nickname;
         AnsiConsole.out().print("Please insert your username: ");
         nickname = scanner.next();
         client.setNickname(nickname);
+        return nickname;
+    }
+
+    @Override
+    public void askNickname(int lobby) {
+        //String nickname;
+        //AnsiConsole.out().print("Please insert your username: ");
+        //nickname = scanner.next();
+        //client.setNickname(nickname, lobby);
     }
 
     /**
@@ -171,7 +180,9 @@ public class Tui implements Ui {
                     AnsiConsole.out().println("There are no lobbies yet");
                 }
                 else{
-                    lobby = getLobby(startingGamesId);
+                    do{
+                        lobby = getLobby(startingGamesId);
+                    } while (!startingGamesId.contains(lobby));
                 }
             }
             case "3" -> {
@@ -179,10 +190,13 @@ public class Tui implements Ui {
                     AnsiConsole.out().println("There are no lobbies with disconnected players");
                 }
                 else{
-                    lobby = getLobby(gamesWithDisconnectionsId);
+                    do{
+                        lobby = getLobby(gamesWithDisconnectionsId);
+                    } while (!gamesWithDisconnectionsId.contains(lobby));
                 }
             }
         }
+        askNickname();
         client.setOnConnectionAction(lobby, startingGamesId, gamesWithDisconnectionsId);
     }
 
@@ -218,6 +232,7 @@ public class Tui implements Ui {
                     scanner = new Scanner(System.in);
             }
         } while (lobbySize < Server.MIN_PLAYERS_PER_LOBBY || lobbySize > Server.MAX_PLAYERS_PER_LOBBY);
+        askNickname();
         client.setLobbySize(lobbySize);
     }
 

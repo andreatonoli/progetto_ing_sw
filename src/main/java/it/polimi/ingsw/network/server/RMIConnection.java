@@ -17,6 +17,7 @@ import java.util.TimerTask;
 
 public class RMIConnection extends Connection {
     private final RMIClientHandler client;
+    private Integer id;
     private Controller lobby;
     private final transient Server server;
     private final transient RMIServer serverHandler;
@@ -26,13 +27,22 @@ public class RMIConnection extends Connection {
     private boolean firstTime = true;
     private boolean disconnected = false;
 
-    public RMIConnection(Server server, RMIClientHandler client, RMIServer serverHandler){
+    public RMIConnection(Server server, RMIClientHandler client, RMIServer serverHandler, Integer id){
         this.client = client;
         this.server = server;
         this.serverHandler = serverHandler;
+        this.id = id;
+        this.setClientId();
         this.setConnectionStatus(true);
     }
 
+    public void setClientId(){
+        try {
+            client.setClientId(id);
+        } catch (RemoteException e){
+            System.err.println("error in RMIConnection/setClientId");
+        }
+    }
     public void ping(){
         ping = new Timer();
         catchPing = new Timer();
@@ -110,7 +120,7 @@ public class RMIConnection extends Connection {
     @Override
     public void reconnect(Connection oldConnection) {
         this.lobby = oldConnection.getLobby();
-        this.lobby.addAction(new ActionMessage(this, () -> lobby.reconnectBackup(this/*, oldConnection*/)));
+        this.lobby.addAction(new ActionMessage(this, () -> lobby.reconnectBackup(this)));
         this.disconnected = false;
     }
 
@@ -135,53 +145,77 @@ public class RMIConnection extends Connection {
         }
     }
 
+    public void setUsername(String username){
+        this.username = username;
+    }
+
+    public void setId(Integer id){
+        this.id = id;
+        try {
+            this.client.setId(id);
+        } catch (RemoteException e) {
+            System.err.println(e.getMessage() + " in RMIConnection/setId");
+        }
+    }
+
     @Override
     public void joinGame(List<Integer> startingGamesId, List<Integer> gamesWhitDisconnectionsId){
         try{
-            int response = this.client.joinGame(startingGamesId, gamesWhitDisconnectionsId);
-            if (response == -1){
-                this.createGame();
-            }
-            else if (startingGamesId.contains(response)){
-                this.username = client.askUsername();
-                if (server.usernameTaken(username)){
-                    this.joinGame(startingGamesId, gamesWhitDisconnectionsId);
-                }
-                else{
-                    serverHandler.setEntry(username, this);
-                    server.setClient(this, username);
-                    server.startPing(this);
-                    this.server.joinLobby(this.username, response);
-                }
-            }
-            else if (gamesWhitDisconnectionsId.contains(response)){
-                this.username = client.askUsername(response);
-                if (!server.userNotDisconnected(username, response)){
-                    this.joinGame(startingGamesId, gamesWhitDisconnectionsId);
-                }
-                else{
-                    serverHandler.setEntry(username, this);
-                    server.startPing(this);
-                    this.server.reconnectPlayer(this, username);
-                }
-            }
+            this.client.joinGame(startingGamesId, gamesWhitDisconnectionsId);
         } catch (RemoteException e){
             System.err.println(e.getMessage() + " in RMIConnection/joinGame");
+        }
+    }
+
+    public void handleAction(int response, String username, List<Integer> startingGamesId, List<Integer> gamesWhitDisconnectionsId){
+        if (response == -1) {
+            this.createGame();
+        } else if (startingGamesId.contains(response)) {
+            if (server.usernameTaken(username)) {
+                this.joinGame(startingGamesId, gamesWhitDisconnectionsId);
+            } else {
+                this.username = username;
+                server.setClient(this, username);
+                server.startPing(this);
+                this.server.joinLobby(this.username, response);
+            }
+        } else if (gamesWhitDisconnectionsId.contains(response)) {
+            if (!server.userNotDisconnected(username, response)) {
+                this.joinGame(startingGamesId, gamesWhitDisconnectionsId);
+            } else {
+                this.username = username;
+                server.startPing(this);
+                this.server.reconnectPlayer(this, username);
+            }
         }
     }
 
     @Override
     public void createGame(){
         try {
-            this.username = client.askUsername();
-            serverHandler.setEntry(username, this);
+            this.client.askLobbySize();
+        } catch (RemoteException e) {
+            System.out.println(e.getMessage() + " in RMIConnection/createGame");
+        }
+    }
+
+    public void setLobbySize(int lobbySize, String username){
+        if (!server.usernameTaken(username)){
             server.setClient(this, username);
             server.startPing(this);
-            this.server.createLobby(this.username, this.client.setLobbySize());
-        } catch (RemoteException e) {
-            System.err.println(e.getMessage());
+            this.server.createLobby(this.username, lobbySize);
+            server.setClient(this, username);
         }
-        server.setClient(this, username);
+        else {
+            try {
+                client.askUsername();
+            } catch (RemoteException e) {
+                System.out.println(e.getMessage() + " in RMIConnection/setLobbySize");
+            }
+        }
+    }
+    public void setNickname(String nickname) {
+        this.username = nickname;
     }
 
     @Override
@@ -227,7 +261,7 @@ public class RMIConnection extends Connection {
             server.removeGame(lobby);
         }
         try {
-            serverHandler.removeConnections(username);
+            serverHandler.removeConnections(id);
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }

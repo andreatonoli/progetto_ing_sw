@@ -331,18 +331,21 @@ public class SocketClient implements ClientInterface {
     }
 
     @Override
-    public void setOnConnectionAction(int response, List<Integer> startingGamesId, List<Integer> gamesWithDisconnectionsId){
+    public void setNickname(String nickname, int lobby) {
+
+    }
+
+    @Override
+    public void setOnConnectionAction(int response, List<Integer> startingGamesId, List<Integer> gamesWithDisconnectionsId) {
         if (response == -2) {
-           this.view.selectGame(startingGamesId, gamesWithDisconnectionsId);
+            this.view.selectGame(startingGamesId, gamesWithDisconnectionsId);
         }
         this.view.askNickname();
-        if (response == -1){
+        if (response == -1) {
             this.view.askLobbySize();
-        }
-        else if (startingGamesId.contains(response)){
+        } else if (startingGamesId.contains(response)) {
             sendMessage(new LobbyIndexMessage(this.username, response));
-        }
-        else if (gamesWithDisconnectionsId.contains(response)){
+        } else if (gamesWithDisconnectionsId.contains(response)) {
             sendMessage(new ReconnectLobbyIndexMessage(this.username, response, startingGamesId, gamesWithDisconnectionsId));
         }
     }

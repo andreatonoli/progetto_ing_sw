@@ -12,7 +12,8 @@ import java.util.List;
 public interface Ui{
     void reset();
     void handleReconnection();
-    void askNickname();
+    String askNickname();
+    void askNickname(int lobby);
     void selectGame(List<Integer> startingGamesId, List<Integer> gamesWhitDisconnectionsId);
     void askLobbySize();
     void askSide(Card starterCard);

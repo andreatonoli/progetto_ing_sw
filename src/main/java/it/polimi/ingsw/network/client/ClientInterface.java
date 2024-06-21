@@ -10,6 +10,7 @@ import java.util.List;
 public interface ClientInterface {
     void login();
     void setNickname(String nickname);
+    void setNickname(String nickname, int lobby);
     void setOnConnectionAction(int response, List<Integer> startingGamesId, List<Integer> gamesWithDisconnectionsId);
     void setLobbySize(int size);
     void placeStarterCard(boolean side, Card starterCard);

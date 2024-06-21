@@ -24,23 +24,45 @@ public class Controller extends Observable {
      * Reference to the game (model) controlled by {@code this}
      */
     private final Game game;
+    /**
+     * Unique identifier of the game
+     */
     private final int id;
     /**
-     * Map to connect the different Connections (client handlers) to their representation on the model (Player)
+     * Map to connect the different Connections to their representation on the model
      */
     private final ConcurrentHashMap<Connection, Player> connectedPlayers;
+    /**
+     * Reference to the turn handler that manages the turns of the players
+     */
     private final TurnHandler turnHandler;
     /**
      * Queue that stores all the actions required by the players to be carried out by the controller
      */
     private final BlockingQueue<ActionMessage> actionQueue;
+    /**
+     * String that stores the username of the player in turn
+     */
     private String playerInTurn;
+    /**
+     * Boolean that stores the state of the setup phase
+     */
     private boolean setupFinished = false;
+    /**
+     * Boolean that stores the state of the ending cycle
+     */
     private boolean endingCycle = false;
+    /**
+     * Boolean that stores the state of the processing action
+     */
     private boolean processingAction = false;
 
     //TODO: mettere controllo lato server per controllare che client non scammi
-
+    /**
+     * Constructor of the class.
+     * @param numPlayers number of players in the game.
+     * @param id unique identifier of the game.
+     */
     public Controller(int numPlayers, int id){
         this.id = id;
         this.game = new Game(numPlayers);
@@ -48,21 +70,24 @@ public class Controller extends Observable {
         this.connectedPlayers = new ConcurrentHashMap<>();
         this.actionQueue = new LinkedBlockingQueue<>();
     }
-
+    /**
+     * Getter of the id attribute.
+     * @return the unique identifier of the game.
+     */
     public int getId(){
         return id;
     }
 
     /**
-     * This method adds the tasks required by the player to the queue
-     * @param action requested by the player
+     * This method adds the tasks required by the player to the queue.
+     * @param action requested by the player.
      */
     public void addAction(ActionMessage action){
         this.actionQueue.add(action);
     }
 
     /**
-     * reads one action from the queue and performs it
+     * reads one action from the queue and performs it.
      */
     public void execAction(){
         if (!actionQueue.isEmpty() && !processingAction) {
@@ -81,6 +106,9 @@ public class Controller extends Observable {
         }
     }
 
+    /**
+     * This method is used to pick the next player in turn.
+     */
     public void pickQueue(){
         Timer t = new Timer();
         t.schedule(new TimerTask() {
@@ -93,9 +121,9 @@ public class Controller extends Observable {
 
 
     /**
-     * Permits the client to join the game
-     * @param user of the client who's joining the game
-     * @return {@code true} if the game is full, {@code false} otherwise
+     * Permits the client to join the game.
+     * @param user of the client who's joining the game.
+     * @return {@code true} if the game is full, {@code false} otherwise.
      */
     //TODO: controlla che quando faccio disconnessione non rifaccio più il setup
     public boolean joinGame(Connection user) throws FullLobbyExeption {
@@ -167,9 +195,9 @@ public class Controller extends Observable {
     }
 
     /**
-     *Picks the top card of the deck and calls addInHand to give it to the player
-     * @param user who wants to draw a card
-     * @param chosenDeck deck from which user wants to draw a card
+     *Picks the top card of the deck and calls addInHand to give it to the player.
+     * @param user who wants to draw a card.
+     * @param chosenDeck deck from which user wants to draw a card.
      */
     public void drawCard(Connection user, String chosenDeck){
         LinkedList<Card> deck;
@@ -200,9 +228,9 @@ public class Controller extends Observable {
     }
 
     /**
-     * Permits the player to take one card from the board, then replaces it with the same type card drew from the decks
-     * @param user who wants to take the card
-     * @param index of the card taken by the player (0,1 are from commonResources and 2,3 are from commonGold)
+     * Permits the player to take one card from the board, then replaces it with the same type card drew from the decks.
+     * @param user who wants to take the card.
+     * @param index of the card taken by the player (0,1 are from commonResources and 2,3 are from commonGold).
      */
     public void drawCardFromBoard(Connection user, int index){
         try {
@@ -236,10 +264,10 @@ public class Controller extends Observable {
         }
     }
     /**
-     * Place the card on the chosen coordinates
-     * @param user who asked to place the card
-     * @param card to place
-     * @param coordinates where the player wants to place the card
+     * Place the card on the chosen coordinates.
+     * @param user who asked to place the card.
+     * @param card to place.
+     * @param coordinates where the player wants to place the card.
      */
     public void placeCard(Connection user, Card card, int[] coordinates) {
         try {
@@ -284,9 +312,9 @@ public class Controller extends Observable {
     }
 
     /**
-     * Permits the player to set its personal achievement
-     * @param user to which belongs the chosen achievement
-     * @param achievement to be set
+     * Permits the player to set its personal achievement.
+     * @param user to which belongs the chosen achievement.
+     * @param achievement to be set.
      */
     public void chooseObj(Connection user, Achievement achievement){
         Player player = getPlayerByClient(user);
@@ -299,10 +327,19 @@ public class Controller extends Observable {
         chooseColor(user);
     }
 
+    /**
+     * Permits the player to choose the color of its pion.
+     * @param user who have to choose the color.
+     */
     public void chooseColor(Connection user) {
             user.sendMessage(new ColorRequestMessage(game.getAvailableColors()));
     }
 
+    /**
+     * Setter to set the color of the pion of the player.
+     * @param user who wants to move the pion.
+     * @param color chosen by the player.
+     */
     public void setColor(Connection user, Color color){
         if (!game.getAvailableColors().contains(color)){
             this.chooseColor(user);
@@ -321,10 +358,20 @@ public class Controller extends Observable {
         }
     }
 
+    /**
+     * Getter to get the player in turn.
+     * @return the player in turn.
+     */
     public String getPlayerInTurn(){
         return playerInTurn;
     }
 
+    /**
+     * Method to send a chat message to a player.
+     * @param sender of the message.
+     * @param receiver of the message.
+     * @param message to be sent.
+     */
     public void sendChatMessage(Connection sender, Connection receiver, String message){
         try {
             getPlayerByClient(sender).sendChatMessage(getPlayerByClient(receiver), message);
@@ -334,20 +381,40 @@ public class Controller extends Observable {
             sender.sendMessage(new ErrorMessage(e.getMessage()));
         }
     }
+
+    /**
+     * Method to send a chat message to all the players.
+     * @param sender of the message.
+     * @param message to be sent.
+     */
     public void sendChatMessage(Connection sender, String message){
         getPlayerByClient(sender).sendChatMessage(message);
         notifyAll(new ChatMessage(getPlayerByClient(sender).getChat()));
     }
 
+    /**
+     * Getter to get the player by its connection.
+     * @param user to get the player.
+     * @return the player.
+     */
     public synchronized Player getPlayerByClient(Connection user){
         return this.connectedPlayers.get(user);
     }
 
+    /**
+     * Method that will change the playerState of a player who disconnected while in turn.
+     * @param username of the player that disconnected.
+     */
     public void disconnectedWhileInTurn(String username){
         Player player = game.getPlayerByUsername(username);
         turnHandler.disconnectedWhileInTurn(player);
     }
 
+    /**
+     * Method that will change the playerState of a player who disconnected while setting up.
+     * @param user who disconnected.
+     * @param inTurn boolean that is true if the player was in turn, false otherwise.
+     */
     public void disconnectedWhileSetupping(Connection user, Boolean inTurn){
         Player player = game.getPlayerByUsername(user.getUsername());
         PlayerBoard pb = player.getPlayerBoard();
@@ -377,9 +444,9 @@ public class Controller extends Observable {
     }
 
     /**
-     * Sends back the model state to the player who has reconnected
-     * Precondition: user.username is equal to one, and only one, username
-     * @param user who reconnected
+     * Sends back the model state to the player who has reconnected.
+     * Precondition: user.username is equal to one, and only one, username.
+     * @param user who reconnected.
      */
     public void reconnectBackup(Connection user){
         String username = user.getUsername();
@@ -404,17 +471,32 @@ public class Controller extends Observable {
         user.sendMessage(new ReconnectionMessage(game.getGameBoard(), reconnectedPlayer, opponents));
     }
 
+    /**
+     * Getter of the game attribute.
+     * @return the game.
+     */
     public Game getGame(){
         return this.game;
     }
+
+    /**
+     * Getter of the turnHandler attribute.
+     * @return the turnHandler.
+     */
     public TurnHandler getTurnHandler() {
         return this.turnHandler;
     }
 
+    /**
+     * Sends a message to all the players connected to the server with the number of the connected players.
+     */
     public void getConnectedPlayersMessage(){
         notifyAll(new GenericMessage("Players: " + this.connectedPlayers.keySet().size() + "/" + this.game.getLobbySize()));
     }
 
+    /**
+     * Removes the player from the server.
+     */
     public void removeFromServer(){
         boolean last = false;
         int count = 0;

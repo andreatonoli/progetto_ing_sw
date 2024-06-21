@@ -15,21 +15,54 @@ import java.util.TimerTask;
 
 public class TurnHandler extends Observable {
     /**
-     * game reference
+     * Reference to the game.
      */
     private final Game game;
+
+    /**
+     * Reference to the controller.
+     */
     private Controller controller;
+
+    /**
+     * Index of the player in the lobby.
+     */
     private int j = 0;
+
+    /**
+     * Boolean that indicates if we are in the last turns of the game.
+     */
     private boolean endingCycle = false;
+
+    /**
+     * Boolean that indicates if the game is ending by placing a card.
+     */
     private boolean endingByPlacingCard = false;
+
+    /**
+     * Boolean that indicates if a player disconnected while in turn.
+     */
     private boolean disconnectedWhileInTurn = false;
+
+    /**
+     * Counter used to manage the end of the game.
+     */
     private int endCountDown;
 
+    /**
+     * Constructor of the class.
+     * @param game is the reference to the game.
+     * @param controller is the reference to the controller.
+     */
     public TurnHandler(Game game, Controller controller){
         this.game = game;
         this.controller = controller;
     }
 
+    /**
+     * Method used to indicate that the player has started the end of the game.
+     * @param player is the player that started the end of the game.
+     */
     public void startEnd(Player player){
         endingCycle = true;
         endCountDown = 2;
@@ -38,6 +71,9 @@ public class TurnHandler extends Observable {
         }
     }
 
+    /**
+     * Method used to manage the change of the player state in case the player disconnect while in turn.
+     */
     public void disconnectedWhileInTurn(Player player){
         if (player.getPlayerState().equals(PlayerState.PLAY_CARD)){
             player.setPlayerState(PlayerState.DRAW_CARD);
@@ -50,6 +86,12 @@ public class TurnHandler extends Observable {
         disconnectedWhileInTurn = false;
     }
 
+    /**
+     * Method used to manage the change of the player state.
+     * If the player is disconnected and has already placed a card, he will draw a card.
+     * at the end of the player's turn, a new player will be set in turn.
+     * @param player is the player that has to change the state.
+     */
     public void changePlayerState(Player player){
         if (game.getDisconnections()+1 < game.getLobbySize() || disconnectedWhileInTurn) {
             int i = (player.getPlayerState().ordinal() + 1) % 3;
@@ -108,6 +150,7 @@ public class TurnHandler extends Observable {
             player.setPlayerState(PlayerState.values()[i]);
             notifyAll(new PlayerStateMessage(player.getPlayerState(), player.getUsername()));
         }
+        //If the player is disconnected and is the last one, the game will end after 2 minutes
         else {
             notifyAll(new WaitingReconnectionMessage(player.getUsername()));
             Timer t = new Timer();
@@ -137,12 +180,21 @@ public class TurnHandler extends Observable {
         }
     }
 
+    /**
+     * Method used to set the winner in case of disconnections.
+     * @param p is the last player remaining in the game.
+     */
     private void declareWinnerByDisconnection(Player p){
         notifyAll(new WinnerMessage(List.of(p)));
         notifyAll(new GameStateMessage(GameState.END));
         game.setGameState(GameState.END);
         controller.removeFromServer();
     }
+
+    /**
+     * Method used to change the player in turn during the setup phase.
+     * @return the username of the new player in turn (null if all the player have ended the setup).
+     */
     public String changeSetupPlayer(){
         j++;
         if (j != game.getLobbySize() && game.getPlayers().get(j).isDisconnected() ){
