@@ -270,21 +270,22 @@ public class MainSceneController {
             ImageView viewCard = new ImageView(imageCard);
             viewCard.setFitHeight(42*3);
             viewCard.setFitWidth(64*3);
-            viewCard.setLayoutX(996 + coord[1]*150);
-            viewCard.setLayoutY(524 + coord[0]*77);
+            viewCard.setLayoutX(996 + coord[0]*150);
+            viewCard.setLayoutY(524 - coord[1]*77);
             board.getChildren().addFirst(viewCard);
             int[][] buttonCornerCenter = {new int[]{6, 6, 7, 7}, new int[]{6, 7, 7, 6}};
             int[][] cornerCenter = {new int[]{-1, 1, 1, -1}, new int[]{1, 1, -1, -1}};
             int j = 0;
             for (CornerEnum c : CornerEnum.values()){
                 if (player.getBoard().getCard(coord).getCorner(c).getState().equals(CornerState.VISIBLE)){
-                    Button b = new Button();
+                    Button b = new Button(String.valueOf(j));
                     b.setPrefSize(58, 52);
                     //b.setStyle("-fx-background-color: transparent");
                     b.setOnAction(event -> {
                         System.out.println(GridPane.getRowIndex(b) + " " + GridPane.getColumnIndex(b));
                         if(GridPane.getRowIndex(b) < GridPane.getColumnIndex(b)){
-                            placeCard(cardToPlace, new int[]{cornerCenter[0][1], cornerCenter[1][1]});
+                            System.out.println(cornerCenter[0][1] + " " + cornerCenter[1][1]);
+                            placeCard(cardToPlace, new int[]{cornerCenter[0][1] + coord[0], cornerCenter[1][1] + coord[1] });
                         }
                         else if(GridPane.getRowIndex(b) > GridPane.getColumnIndex(b)){
                             placeCard(cardToPlace, new int[]{cornerCenter[0][3], cornerCenter[1][3]});
@@ -298,8 +299,7 @@ public class MainSceneController {
                             }
                         }
                     });
-                    System.out.println((buttonCornerCenter[0][j] + coord[0]) + " " + (buttonCornerCenter[1][j] + coord[1]));
-                    buttonBoard.add(b, (buttonCornerCenter[0][j] + coord[0]), (buttonCornerCenter[1][j] + coord[1]));
+                    buttonBoard.add(b, (buttonCornerCenter[1][j] + coord[1]), (buttonCornerCenter[0][j] + coord[0]));
                     //b.setVisible(false);
                 }
                 j = j + 1;
