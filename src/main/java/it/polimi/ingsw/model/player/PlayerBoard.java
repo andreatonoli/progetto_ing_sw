@@ -56,15 +56,6 @@ public class PlayerBoard implements Serializable {
     }
 
     /**
-     * Gets the positions of all cards on the player's board.
-     *
-     * @return a map of card positions.
-     */
-    public HashMap<Integer, Card> getCardPositon(){
-        return this.cardPosition;
-    }
-
-    /**
      * Gets the coordinates of a specific card on the player's board.
      *
      * @param card the card whose position is to be retrieved.

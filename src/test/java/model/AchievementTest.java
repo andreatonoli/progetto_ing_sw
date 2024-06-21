@@ -346,7 +346,7 @@ public class AchievementTest {
             p.placeCard(r1, new int[]{1, 1});
             p.placeCard(r2, new int[]{1, -1});
             p.placeCard(g1, new int[]{2, -2});
-            p.placeCard(g2, new int[]{3, -3}); //
+            p.placeCard(g2, new int[]{3, -3});
             p.placeCard(g3, new int[]{4, -4});
             p.placeCard(b1, new int[]{0, -2});
             p.placeCard(p3, new int[]{-1, -3});

@@ -381,17 +381,11 @@ public class Controller extends Observable {
      * Precondition: user.username is equal to one, and only one, username
      * @param user who reconnected
      */
-    public void reconnectBackup(Connection user /*, Connection oldConnection*/){
-        //Player player = connectedPlayers.get(oldConnection);
-        //connectedPlayers.remove(oldConnection);
-        //connectedPlayers.put(user,player);
-        //user.sendMessage(new ReconnectionMessage(game.getGameBoard(),player));
-        //player.setDisconnected(false);
+    public void reconnectBackup(Connection user){
         String username = user.getUsername();
         Player reconnectedPlayer = null;
         List<Player> opponents = new ArrayList<>();
         Set<Connection> connectionSet = connectedPlayers.keySet();
-        //TODO: corsa di dati
         for (Connection c : connectionSet){
             if (c.getUsername().equalsIgnoreCase(username)){
                 reconnectedPlayer = getPlayerByClient(c);

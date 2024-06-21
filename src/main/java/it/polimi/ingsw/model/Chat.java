@@ -10,14 +10,11 @@ public class Chat implements Serializable {
 
     public static final int CHATDIM = 25;
 
-    /** game's id */
-    private Game game;
-
     /** players' list */
     private final ArrayList<Player> players;
 
     public Chat(Game game) {
-        this.game = game;
+        /** game's id */
         this.players = game.getPlayers();
     }
 
