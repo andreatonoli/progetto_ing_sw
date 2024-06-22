@@ -1,11 +1,11 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.model.exceptions.FullLobbyExeption;
-import it.polimi.ingsw.network.messages.FreeLobbyMessage;
 import it.polimi.ingsw.network.server.Connection;
 import it.polimi.ingsw.network.server.Server;
 
 public class ServerController {
+
     /**
      * Reference to the server.
      */

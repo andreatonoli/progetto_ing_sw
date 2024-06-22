@@ -15,18 +15,54 @@ import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.util.*;
 
+/**
+ * GameBoard class represents the board of the game.
+ * It contains the decks of cards and the common cards.
+ */
 public class GameBoard implements Serializable {
+
+    /**
+     * The achievement deck.
+     */
     private LinkedList<Achievement> achievementDeck;
+
+    /**
+     * The gold deck.
+     */
     private LinkedList<Card> goldDeck;
+
+    /**
+     * The resource deck.
+     */
     private LinkedList<Card> resourceDeck;
+
+    /**
+     * The starter deck.
+     */
     private LinkedList <Card> starterDeck;
+
+    /**
+     * The number of ended decks.
+     */
     private int endedDecks;
+
+    /**
+     * The common resource cards.
+     */
     private Card[] commonResource;
+
+    /**
+     * The common gold cards.
+     */
     private Card[] commonGold;
+
+    /**
+     * The common achievement cards.
+     */
     private Achievement[] commonAchievement;
 
     /**
-     * Builds game's board, its decks and links one specific board to one specific game
+     * Constructor for the GameBoard class. It initializes the decks of cards.
      */
     public GameBoard() {
         this.endedDecks = 0;
@@ -187,9 +223,9 @@ public class GameBoard implements Serializable {
     }
 
     /**
-     * Receives a shuffled deck and takes the first card also removing it
-     * @param deck to draw from
-     * @return Card drew from the deck
+     * Receives a shuffled deck and takes the first card removing it.
+     * @param deck to draw from.
+     * @return card drew from the deck.
      */
     public Card drawCard(LinkedList<Card> deck){
         Card drawedCard = deck.getFirst();
@@ -203,7 +239,7 @@ public class GameBoard implements Serializable {
     }
 
     /**
-     * used to check if resource deck and gold deck are empty
+     * Used to check if resource deck and gold deck are empty
      * @return true if the decks are both empty
      */
     public boolean decksAreEmpty(){
@@ -211,8 +247,8 @@ public class GameBoard implements Serializable {
     }
 
     /**
-     * Receives a shuffled achievementDeck and takes the first card also removing it
-     * @return Achievement drew from the deck
+     * Draws a card from the achievement deck.
+     * @return the card drew from the achievement deck.
      */
     public Achievement drawCard(){
         Achievement drawedCard = achievementDeck.getFirst();

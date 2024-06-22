@@ -18,22 +18,22 @@ import java.util.List;
 public class Game extends Observable implements Serializable {
 
     /**
-     * lobbySize is the number of players that the game can host.
+     * LobbySize is the number of players that the game can host.
      */
     private final int lobbySize;
 
     /**
-     * gameBoard is the board where the game is played.
+     * GameBoard is the board where the game is played.
      */
     private final GameBoard gameBoard;
 
     /**
-     * gameState is the state the game is currently in.
+     * GameState is the state the game is currently in.
      */
     private GameState gameState;
 
     /**
-     * players is the list of players that are currently in the game.
+     * Players is the list of players that are currently in the game.
      */
     private final ArrayList<Player> players;
 
@@ -63,18 +63,18 @@ public class Game extends Observable implements Serializable {
     private final Chat chatHandler;
 
     /**
-     * number of disconnected players.
+     * Number of disconnected players.
      */
     private int disconnections;
 
     /**
-     * available colors for the players.
+     * List of available colors for the players.
      */
     private final List<Color> availableColors;
 
     /**
-     * Constructor of the class Game. Initially the game is in the state WAIT_PLAYERS, waiting for players to join.
-     * @param lobbySize is the number of players that the game can host.
+     * Constructor for the Game class. It initializes the game with the given lobby size. The game is in the WAIT_PLAYERS.
+     * @param lobbySize the number of players that the game can host.
      */
     public Game(int lobbySize) {
         this.lobbySize = lobbySize;
@@ -90,7 +90,7 @@ public class Game extends Observable implements Serializable {
     }
 
     /**
-     *  Method that returns the available colors for the players.
+     * Method that returns the available colors for the players.
      * @return the list of available colors.
      */
     public List<Color> getAvailableColors(){
@@ -98,7 +98,7 @@ public class Game extends Observable implements Serializable {
     }
 
     /**
-     * Method that starts the game. It shuffles the decks and gives the cards to each player.
+     * Method that starts the game. It shuffles the decks and gives the cards to the players.
      * @throws NotEnoughPlayersException if the game has not reached the maximum number of players.
      */
     public void startGame() throws NotEnoughPlayersException{
@@ -196,6 +196,9 @@ public class Game extends Observable implements Serializable {
         this.gameState = GameState.END;
     }
 
+    /**
+     * Method that sets the first player to play.
+     */
     private void setFirstPlayer()
     {
         firstPlayer = players.getFirst();
@@ -205,15 +208,26 @@ public class Game extends Observable implements Serializable {
         this.setPlayerInTurn();
     }
 
+    /**
+     * Method that returns the first player to play.
+     * @return the first player.
+     */
     public Player getFirstPlayer(){
         return this.firstPlayer;
     }
 
+    /**
+     * Method that sets the state in which the game is currently in.
+     * @param nextGameState the current state of the game.
+     */
     public void setGameState(GameState nextGameState)
     {
         this.gameState = nextGameState;
     }
 
+    /**
+     * Method that sets the player that is currently playing.
+     */
     public void setPlayerInTurn()
     {
         willPlay++;
@@ -231,22 +245,36 @@ public class Game extends Observable implements Serializable {
         playerInTurn.setPlayerState(PlayerState.PLAY_CARD);
     }
 
+    /**
+     * Method that returns the player that is currently playing.
+     * @return the player that is currently playing.
+     */
     public Player getPlayerInTurn(){
         return this.playerInTurn;
     }
 
     /**
-     * @return returns the state in which the game is played
+     * Gets the state in which the game is played.
+     * @return returns the state in which the game is played.
      */
     public GameState getGameState()
     {
         return gameState;
     }
 
+    /**
+     * Method that returns the list of players that are currently in the game.
+     * @return the list of players.
+     */
     public ArrayList<Player> getPlayers(){
         return this.players;
     }
 
+    /**
+     * Method that returns the player with the given username.
+     * @param username the username of the player.
+     * @return the player with the given username.
+     */
     public Player getPlayerByUsername(String username){
         for (Player player : players) {
             if (player.getUsername().equals(username)) {
@@ -256,6 +284,10 @@ public class Game extends Observable implements Serializable {
         return null;
     }
 
+    /**
+     * Method that adds a player to the game.
+     * @param player the player to be added.
+     */
     public void addPlayer(Player player){
         synchronized (this.players){
             this.players.add(player);
@@ -265,32 +297,59 @@ public class Game extends Observable implements Serializable {
         }
     }
 
+    /**
+     * Method that checks if the game is full.
+     * @return true if the game is full, false otherwise.
+     */
     public boolean isFull(){
         return gameFull;
     }
 
+    /**
+     * Method that returns the game board.
+     * @return the game board.
+     */
     public GameBoard getGameBoard(){
         return this.gameBoard;
     }
 
+    /**
+     * Method that returns the chat of the game.
+     * @return the chat of the game.
+     */
     public Chat getChat(){
         return this.chatHandler;
     }
+
+    /**
+     * Method that returns the number of players that the game can host.
+     * @return the number of players that the game can host.
+     */
     public int getLobbySize(){
         return lobbySize;
     }
 
+    /**
+     * Method that returns the number of disconnected players.
+     * @return the number of disconnected players.
+     */
     public int getDisconnections() {
         return disconnections;
     }
 
+    /**
+     * Method that adds a disconnection to the game.
+     * @param disconnectedPlayers the number of disconnected players.
+     */
     public void addDisconnections(int disconnectedPlayers) {
         disconnections += disconnectedPlayers;
     }
 
+    /**
+     * Method that removes a player from the game.
+     * @param username the username of the player to be removed.
+     */
     public void removePlayer(String username){
         players.remove(getPlayerByUsername(username));
     }
-
-
 }

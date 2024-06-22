@@ -9,7 +9,6 @@ import it.polimi.ingsw.network.server.Server;
 import it.polimi.ingsw.view.Ui;
 import org.fusesource.jansi.AnsiConsole;
 
-import java.awt.*;
 import java.io.Console;
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -17,19 +16,69 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.*;
 
+/**
+ * Class that represents the Text User Interface of the game.
+ */
 public class Tui implements Ui {
+
+    /**
+     * Client interface used to communicate with the server.
+     */
     private ClientInterface client;
+
+    /**
+     * Error message to be displayed.
+     */
     private String error = "";
+
+    /**
+     * Message to be displayed.
+     */
     private String message = "";
+
+    /**
+     * PlayerBean object representing the player.
+     */
     private PlayerBean player;
+
+    /**
+     * GameBean object representing the game.
+     */
     private GameBean game;
+
+    /**
+     * List of PlayerBean objects representing the opponents.
+     */
     private ArrayList<PlayerBean> players;
+
+    /**
+     * Scanner object used to read the input from the user.
+     */
     private Scanner scanner;
+
+    /**
+     * Object used to synchronize the input thread leaving time to handle the input before accepting a new one.
+     */
     private final Object lock = new Object();
+
+    /**
+     * Boolean that indicates if the input thread is running.
+     */
     private volatile boolean running;
+
+    /**
+     * Thread used to read the input from the user.
+     */
     private Thread inputThread;
+
+    /**
+     * Boolean that indicates if the game is ended.
+     */
     private boolean end = false;
 
+    /**
+     * Constructor of the class. It initializes the TUI and starts the input thread.
+     */
     public Tui(){
         AnsiConsole.systemInstall();
         scanner = new Scanner(System.in);
@@ -37,6 +86,9 @@ public class Tui implements Ui {
         this.running = true;
     }
 
+    /**
+     * Spawns the input thread.
+     */
     public void spawnThread(){
         inputThread = new Thread(() -> {
             TuiInputReaderTask tis = new TuiInputReaderTask();
@@ -62,6 +114,9 @@ public class Tui implements Ui {
         });
     }
 
+    /**
+     * Method used to handle the reconnection to a game.
+     */
     public void handleReconnection(){
         running = true;
         if (inputThread.getState().equals(Thread.State.NEW)){
@@ -69,13 +124,16 @@ public class Tui implements Ui {
         }
     }
 
+    /**
+     * Resets the TUI
+     */
     public void reset(){
         this.running = false;
         clearConsole();
     }
 
     /**
-     * Starts the TUI instance and begins the login phase
+     * Starts the TUI, asking the player the server address and port.
      */
     public void run(){
         try {
