@@ -49,6 +49,7 @@ public class StarterFlipSceneController extends GenericController{
         });
         next.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             Alert a = new Alert(Alert.AlertType.CONFIRMATION);
+            a.initOwner(Gui.stage.getOwner());
             ButtonType yes = new ButtonType("Confirm");
             ButtonType no = new ButtonType("Cancel");
             a.setTitle("Placing starter card");

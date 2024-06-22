@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view.gui.controllers;
 
 import it.polimi.ingsw.model.card.Achievement;
+import it.polimi.ingsw.view.gui.Gui;
 import it.polimi.ingsw.view.gui.GuiInputHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -41,6 +42,7 @@ public class AchievementChoiceSceneController extends GenericController{
     public void bindEvents(){
         chooseA1.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             Alert a = new Alert(Alert.AlertType.CONFIRMATION);
+            a.initOwner(Gui.stage.getOwner());
             ButtonType yes = new ButtonType("Confirm");
             ButtonType no = new ButtonType("Cancel");
             a.setTitle("Choosing achievement card");
@@ -61,6 +63,7 @@ public class AchievementChoiceSceneController extends GenericController{
         });
         chooseA2.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             Alert a = new Alert(Alert.AlertType.CONFIRMATION);
+            a.initOwner(Gui.stage.getOwner());
             ButtonType yes = new ButtonType("Confirm");
             ButtonType no = new ButtonType("Cancel");
             a.setTitle("Choosing achievement card");

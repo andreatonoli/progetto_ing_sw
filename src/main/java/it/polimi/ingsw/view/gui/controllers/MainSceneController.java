@@ -9,6 +9,7 @@ import it.polimi.ingsw.network.client.PlayerBean;
 import it.polimi.ingsw.view.gui.GuiInputHandler;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
@@ -18,6 +19,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 import java.util.ArrayList;
@@ -30,6 +34,12 @@ public class MainSceneController extends GenericController{
     private Button hand2;
     @FXML
     private Button hand3;
+    @FXML
+    private Button flip1;
+    @FXML
+    private Button flip2;
+    @FXML
+    private Button flip3;
     @FXML
     private ImageView personalAch;
     @FXML
@@ -79,6 +89,7 @@ public class MainSceneController extends GenericController{
     private final ArrayList<ImageView> pions = new ArrayList<>();
 
     private PlayerBean player;
+    private GameBean game;
     private ArrayList<PlayerBean> opponents;
 
     private int h1;
@@ -125,7 +136,7 @@ public class MainSceneController extends GenericController{
         gold2.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             guiHandler.drawCardButtonClicked("4");
         });
-        hand1.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+        flip1.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if(hand1.getGraphic().equals(viewHand1)){
                 if(h1 > 0 && h1 < 11){
                     hand1.setGraphic(viewFungiRetro);
@@ -154,8 +165,9 @@ public class MainSceneController extends GenericController{
             }
             else{
                 hand1.setGraphic(viewHand1);
-            }        });
-        hand2.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            }
+        });
+        flip2.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if(hand2.getGraphic().equals(viewHand2)){
                 if(h2 > 0 && h2 < 11){
                     hand2.setGraphic(viewFungiRetro);
@@ -186,7 +198,7 @@ public class MainSceneController extends GenericController{
                 hand2.setGraphic(viewHand2);
             }
         });
-        hand3.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+        flip3.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if(hand3.getGraphic().equals(viewHand3)){
                 if(h3 > 0 && h3 < 11){
                     hand3.setGraphic(viewFungiRetro);
@@ -230,7 +242,7 @@ public class MainSceneController extends GenericController{
         otherPlayersBoard.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             for(PlayerBean p : opponents){
                 if(p.getUsername().equals(otherPlayers.getSelectionModel().getSelectedItem())){
-                    guiHandler.otherPlayersBoardButtonClicked(p);
+                    guiHandler.otherPlayersBoardButtonClicked(p, player, game, opponents);
                 }
             }
         });
@@ -239,6 +251,7 @@ public class MainSceneController extends GenericController{
 
     public void setBoard(PlayerBean player, GameBean game, ArrayList<PlayerBean> opponents){
         this.player = player;
+        this.game = game;
         this.opponents = opponents;
 
         if(player.getState().equals(PlayerState.DRAW_CARD)){
@@ -417,34 +430,38 @@ public class MainSceneController extends GenericController{
             viewCard.setLayoutX(996 + coord[0]*150);
             viewCard.setLayoutY(524 - coord[1]*77);
             board.getChildren().addFirst(viewCard);
+            board.setLayoutX(1000);
+            board.setLayoutY(530);
             int[][] buttonCornerCenter = {new int[]{6, 6, 7, 7}, new int[]{6, 7, 7, 6}};
             int[][] cornerCenter = {new int[]{-1, 1, 1, -1}, new int[]{1, 1, -1, -1}};
             int j = 0;
             for (CornerEnum c : CornerEnum.values()){
                 if (player.getBoard().getCard(coord).getCorner(c).getState().equals(CornerState.VISIBLE)){
-                    Button b = new Button(String.valueOf(j));
+                    Button b = new Button();
                     b.setPrefSize(58, 52);
-                    //b.setStyle("-fx-background-color: transparent");
+                    b.setStyle("-fx-background-color: transparent");
                     b.setOnAction(event -> {
-                        System.out.println(GridPane.getRowIndex(b) + " " + GridPane.getColumnIndex(b));
                         if(GridPane.getRowIndex(b) < GridPane.getColumnIndex(b)){
-                            System.out.println(cornerCenter[0][1] + " " + cornerCenter[1][1]);
-                            placeCard(cardToPlace, new int[]{cornerCenter[0][1] + coord[0], cornerCenter[1][1] + coord[1] });
+                            placeCard(cardToPlace, new int[]{cornerCenter[0][1] + coord[0], cornerCenter[1][1] + coord[1]});
+                            buttonBoard.getChildren().remove((buttonCornerCenter[1][1] + coord[0]), (buttonCornerCenter[0][1] - coord[1]));
                         }
                         else if(GridPane.getRowIndex(b) > GridPane.getColumnIndex(b)){
-                            placeCard(cardToPlace, new int[]{cornerCenter[0][3], cornerCenter[1][3]});
+                            placeCard(cardToPlace, new int[]{cornerCenter[0][3] + coord[0], cornerCenter[1][3] + coord[1]});
+                            buttonBoard.getChildren().remove((buttonCornerCenter[1][3] + coord[0]), (buttonCornerCenter[0][3] - coord[1]));
                         }
                         else{
                             if(GridPane.getRowIndex(b) % 2 == 0){
-                                placeCard(cardToPlace, new int[]{cornerCenter[0][0], cornerCenter[1][0]});
+                                placeCard(cardToPlace, new int[]{cornerCenter[0][0] + coord[0], cornerCenter[1][0] + coord[1]});
+                                buttonBoard.getChildren().remove((buttonCornerCenter[1][0] + coord[0]), (buttonCornerCenter[0][0] - coord[1]));
                             }
                             else{
-                                placeCard(cardToPlace, new int[]{cornerCenter[0][2], cornerCenter[1][2]});
+                                placeCard(cardToPlace, new int[]{cornerCenter[0][2] + coord[0], cornerCenter[1][2] + coord[1]});
+                                buttonBoard.getChildren().remove((buttonCornerCenter[1][2] + coord[0]), (buttonCornerCenter[0][2] - coord[1]));
                             }
                         }
                     });
-                    buttonBoard.add(b, (buttonCornerCenter[1][j] + coord[1]), (buttonCornerCenter[0][j] + coord[0]));
-                    //b.setVisible(false);
+                    buttonBoard.add(b, (buttonCornerCenter[1][j] + coord[0]), (buttonCornerCenter[0][j] - coord[1]));
+                    b.setVisible(false);
                 }
                 j = j + 1;
             }
@@ -454,48 +471,50 @@ public class MainSceneController extends GenericController{
         ArrayList<PlayerBean> allPlayers = new ArrayList<>(opponents);
         allPlayers.add(player);
         for(PlayerBean p : allPlayers){
-            switch(p.getPionColor()){
-                case RED -> {
-                    Image imageRed = new Image(getClass().getResourceAsStream("/images/red.png"));
-                    ImageView viewRed = new ImageView(imageRed);
-                    viewRed.setFitHeight(40);
-                    viewRed.setFitWidth(40);
-                    scoreBoard.getChildren().add(viewRed);
-                    viewRed.setLayoutX(scoretrackZero[0][0]);
-                    viewRed.setLayoutY(scoretrackZero[1][0]);
-                    pions.add(viewRed);
+            if(pions.size() < allPlayers.size()){
+                switch(p.getPionColor()){
+                    case RED -> {
+                        Image imageRed = new Image(getClass().getResourceAsStream("/images/red.png"));
+                        ImageView viewRed = new ImageView(imageRed);
+                        viewRed.setFitHeight(40);
+                        viewRed.setFitWidth(40);
+                        scoreBoard.getChildren().add(viewRed);
+                        viewRed.setLayoutX(scoretrackZero[0][0]);
+                        viewRed.setLayoutY(scoretrackZero[1][0]);
+                        pions.add(viewRed);
+                    }
+                    case BLUE -> {
+                        Image imageBlue = new Image(getClass().getResourceAsStream("/images/blue.png"));
+                        ImageView viewBlue = new ImageView(imageBlue);
+                        scoreBoard.getChildren().add(viewBlue);
+                        viewBlue.setFitHeight(40);
+                        viewBlue.setFitWidth(40);
+                        viewBlue.setLayoutX(scoretrackZero[0][2]);
+                        viewBlue.setLayoutY(scoretrackZero[1][2]);
+                        pions.add(viewBlue);
+                    }
+                    case GREEN -> {
+                        Image imageGreen = new Image(getClass().getResourceAsStream("/images/green.png"));
+                        ImageView viewGreen = new ImageView(imageGreen);
+                        scoreBoard.getChildren().add(viewGreen);
+                        viewGreen.setFitHeight(40);
+                        viewGreen.setFitWidth(40);
+                        viewGreen.setLayoutX(scoretrackZero[0][1]);
+                        viewGreen.setLayoutY(scoretrackZero[1][1]);
+                        pions.add(viewGreen);
+                    }
+                    case YELLOW -> {
+                        Image imageYellow = new Image(getClass().getResourceAsStream("/images/yellow.png"));
+                        ImageView viewYellow = new ImageView(imageYellow);
+                        scoreBoard.getChildren().add(viewYellow);
+                        viewYellow.setFitHeight(40);
+                        viewYellow.setFitWidth(40);
+                        viewYellow.setLayoutX(scoretrackZero[0][3]);
+                        viewYellow.setLayoutY(scoretrackZero[1][3]);
+                        pions.add(viewYellow);
+                    }
+                    case null, default -> {}
                 }
-                case BLUE -> {
-                    Image imageBlue = new Image(getClass().getResourceAsStream("/images/blue.png"));
-                    ImageView viewBlue = new ImageView(imageBlue);
-                    scoreBoard.getChildren().add(viewBlue);
-                    viewBlue.setFitHeight(40);
-                    viewBlue.setFitWidth(40);
-                    viewBlue.setLayoutX(scoretrackZero[0][2]);
-                    viewBlue.setLayoutY(scoretrackZero[1][2]);
-                    pions.add(viewBlue);
-                }
-                case GREEN -> {
-                    Image imageGreen = new Image(getClass().getResourceAsStream("/images/green.png"));
-                    ImageView viewGreen = new ImageView(imageGreen);
-                    scoreBoard.getChildren().add(viewGreen);
-                    viewGreen.setFitHeight(40);
-                    viewGreen.setFitWidth(40);
-                    viewGreen.setLayoutX(scoretrackZero[0][1]);
-                    viewGreen.setLayoutY(scoretrackZero[1][1]);
-                    pions.add(viewGreen);
-                }
-                case YELLOW -> {
-                    Image imageYellow = new Image(getClass().getResourceAsStream("/images/yellow.png"));
-                    ImageView viewYellow = new ImageView(imageYellow);
-                    scoreBoard.getChildren().add(viewYellow);
-                    viewYellow.setFitHeight(40);
-                    viewYellow.setFitWidth(40);
-                    viewYellow.setLayoutX(scoretrackZero[0][3]);
-                    viewYellow.setLayoutY(scoretrackZero[1][3]);
-                    pions.add(viewYellow);
-                }
-                case null, default -> {}
             }
         }
         for (int i = 0; i < pions.size(); i++){
@@ -504,22 +523,32 @@ public class MainSceneController extends GenericController{
         }
 
         //chat
+        VBox v = new VBox();
+        v.setSpacing(5);
+        v.setAlignment(Pos.TOP_CENTER);
         for(String s : player.getChat()){
             Text t = new Text(s);
-            messages.getChildren().add(t);
+            t.setFont(new Font(10));
+            v.getChildren().add(t);
+            messages.getChildren().add(v);
         }
-        receiver.getItems().add("global");
-        for(PlayerBean p : opponents){
-            receiver.getItems().add(p.getUsername());
+        if(receiver.getItems().size() < opponents.size()){
+            receiver.getItems().add("global");
+            for(PlayerBean p : opponents){
+                receiver.getItems().add(p.getUsername());
+            }
+            receiver.setStyle("-fx-font-size:15");
+            receiver.getSelectionModel().selectFirst();
         }
-        receiver.getSelectionModel().selectFirst();
 
         //other players' playerboard
-        for(PlayerBean p : opponents){
-            otherPlayers.getItems().add(p.getUsername());
+        if(otherPlayers.getItems().size() < opponents.size()){
+            for(PlayerBean p : opponents){
+                otherPlayers.getItems().add(p.getUsername());
+            }
+            otherPlayers.setStyle("-fx-font-size:20");
+            otherPlayers.getSelectionModel().selectFirst();
         }
-        otherPlayers.getSelectionModel().selectFirst();
-
 
     }
 

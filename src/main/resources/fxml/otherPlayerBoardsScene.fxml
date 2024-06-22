@@ -37,7 +37,7 @@
          <children>
             <HBox prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Button id="setup-small-button" mnemonicParsing="false" onAction="#backPressed" stylesheets="@../buttons.css" text="Back" />
+                  <Button fx:id="back" id="setup-small-button" mnemonicParsing="false" stylesheets="@../buttons.css" text="Back" />
                </children>
                <opaqueInsets>
                   <Insets />

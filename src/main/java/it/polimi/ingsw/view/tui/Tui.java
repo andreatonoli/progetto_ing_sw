@@ -74,7 +74,7 @@ public class Tui implements Ui {
         clearConsole();
     }
 
-    /**
+    /**2
      * Starts the TUI instance and begins the login phase
      */
     public void run(){

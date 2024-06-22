@@ -17,7 +17,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane id="game-scene" prefHeight="1050.0" prefWidth="1680.0" stylesheets="@../backgrounds.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.gui.controllers.MainSceneController">
+<BorderPane id="game-scene" prefHeight="1080.0" prefWidth="1920.0" stylesheets="@../backgrounds.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.gui.controllers.MainSceneController">
    <bottom>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="60.0" BorderPane.alignment="TOP_CENTER">
          <children>
@@ -29,29 +29,29 @@
                      </font>
                   </Text>
                   <ChoiceBox fx:id="otherPlayers" prefHeight="50.0" prefWidth="250.0" />
-                   <Button fx:id="otherPlayersBoard" id="setup-mini-button" mnemonicParsing="false" stylesheets="@../buttons.css" text="View other's playerboard" />
+                   <Button id="setup-mini-button" fx:id="otherPlayersBoard" mnemonicParsing="false" stylesheets="@../buttons.css" text="View other's playerboard" />
                </children>
             </VBox>
-            <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" stylesheets="@../text.css">
+            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" stylesheets="@../text.css">
                <children>
                   <Text id="setup-text" strokeType="OUTSIDE" strokeWidth="0.0" text="Your hand">
                      <font>
                         <Font size="40.0" />
                      </font></Text>
-                   <VBox>
+                   <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0">
                        <children>
                            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
                                <children>
-                                   <Button mnemonicParsing="false" onAction="#wantToPlaceHand1" prefHeight="168.0" prefWidth="189.0" style="-fx-background-color: transparent"/>
-                                   <Button mnemonicParsing="false" onAction="#wantToPlaceHand2" prefHeight="168.0" prefWidth="189.0" style="-fx-background-color: transparent" />
-                                   <Button mnemonicParsing="false" onAction="#wantToPlaceHand3" prefHeight="168.0" prefWidth="189.0" style="-fx-background-color: transparent" />
+                                   <Button fx:id="hand1" mnemonicParsing="false" onAction="#wantToPlaceHand1" prefHeight="168.0" prefWidth="189.0" style="-fx-background-color: transparent" />
+                                   <Button fx:id="hand2" mnemonicParsing="false" onAction="#wantToPlaceHand2" prefHeight="168.0" prefWidth="189.0" style="-fx-background-color: transparent" />
+                                   <Button fx:id="hand3" mnemonicParsing="false" onAction="#wantToPlaceHand3" prefHeight="168.0" prefWidth="189.0" style="-fx-background-color: transparent" />
                                </children>
                            </HBox>
                            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="140.0">
                                <children>
-                                   <Button fx:id="hand1" id="setup-mini-button" mnemonicParsing="false" stylesheets="@../buttons.css" text="Flip card" />
-                                   <Button fx:id="hand2" id="setup-mini-button" mnemonicParsing="false" stylesheets="@../buttons.css" text="Flip card" />
-                                   <Button fx:id="hand3" id="setup-mini-button" mnemonicParsing="false" stylesheets="@../buttons.css" text="Flip card" />
+                                   <Button id="setup-mini-button" fx:id="flip1" mnemonicParsing="false" stylesheets="@../buttons.css" text="Flip card" />
+                                   <Button id="setup-mini-button" fx:id="flip2" mnemonicParsing="false" stylesheets="@../buttons.css" text="Flip card" />
+                                   <Button id="setup-mini-button" fx:id="flip3" mnemonicParsing="false" stylesheets="@../buttons.css" text="Flip card" />
                                </children>
                                <HBox.margin>
                                    <Insets top="30.0" />
@@ -88,12 +88,12 @@
                   </ScrollPane>
                   <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="250.0" spacing="15.0">
                      <children>
-                        <ChoiceBox fx:id="receiver" prefHeight="50.0" prefWidth="100.0" />
-                        <TextField fx:id="textMessage" prefHeight="50.0" prefWidth="270.0">
+                        <ChoiceBox fx:id="receiver" prefHeight="50.0" prefWidth="120.0" />
+                        <TextField fx:id="textMessage" prefHeight="50.0" prefWidth="250.0">
                            <font>
                               <Font size="20.0" />
                            </font></TextField>
-                        <Button fx:id="chat" id="setup-small-button" mnemonicParsing="false" stylesheets="@../buttons.css" text="➤" />
+                        <Button id="setup-small-button" fx:id="chat" mnemonicParsing="false" stylesheets="@../buttons.css" text="➤" />
                      </children>
                       <HBox.margin>
                           <Insets bottom="50.0" right="20.0" />
@@ -135,7 +135,7 @@
                    <Button fx:id="gold2" mnemonicParsing="false" prefHeight="105.0" prefWidth="160.0" style="-fx-background-color: transparent" />
                </children>
             </HBox>
-            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="50.0">
                <children>
                    <ImageView fx:id="achievement1" fitHeight="105.0" fitWidth="160.0" pickOnBounds="true" preserveRatio="true"> </ImageView>
                    <ImageView fx:id="achievement2" fitHeight="105.0" fitWidth="160.0" pickOnBounds="true" preserveRatio="true"> </ImageView>
@@ -145,7 +145,7 @@
       </VBox>
    </right>
    <center>
-       <VBox alignment="CENTER" stylesheets="@../text.css" spacing="30.0">
+       <VBox alignment="CENTER" spacing="30.0" stylesheets="@../text.css">
            <children>
               <ScrollPane hbarPolicy="NEVER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" pannable="true" prefHeight="600.0" prefWidth="900.0" stylesheets="@../text.css" vbarPolicy="NEVER" BorderPane.alignment="TOP_RIGHT">
                 <content>
@@ -199,7 +199,7 @@
                     <Insets right="15.0" top="80.0" />
                  </BorderPane.margin>
               </ScrollPane>
-               <Text fx:id="playerState" id="setup-text" strokeType="OUTSIDE" strokeWidth="0.0">
+               <Text id="setup-text" fx:id="playerState" strokeType="OUTSIDE" strokeWidth="0.0">
                    <font>
                        <Font size="40.0" />
                    </font>
