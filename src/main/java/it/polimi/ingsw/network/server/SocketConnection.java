@@ -11,33 +11,91 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+/**
+ * This class represents the connection between the server and the client through a socket.
+ */
 public class SocketConnection extends Connection implements Runnable {
+
+    /**
+     * This attribute represents the server that the connection is connected to.
+     */
     private Server server;
+
+    /**
+     * This attribute represents the socket of the connection.
+     */
     private Socket socket;
+
+    /**
+     * This attribute represents the input stream of the connection.
+     */
     private ObjectInputStream in;
+
+    /**
+     * This attribute represents the output stream of the connection.
+     */
     private ObjectOutputStream out;
+
+    /**
+     * This attribute represents the lobby of the connection.
+     */
     private Controller lobby;
+
+    /**
+     * This attribute represents the username of the connection.
+     */
     private String username;
+
+    /**
+     * This attribute represents the timer that catches the ping.
+     */
     private Timer catchPing;
+
+    /**
+     * This attribute represents the timer that sends the ping.
+     */
     private Timer ping;
+
+    /**
+     * This attribute represents if the connection responds to the ping.
+     */
     private boolean firstTime = true;
+
+    /**
+     * This attribute represents if the connection is disconnected.
+     */
     private boolean disconnected = false;
+
+    /**
+     * This attribute represents the queue of the messages that where received by the connection.
+     */
     private BlockingQueue<Message> messageQueue;
+
+    /**
+     * This attribute represents if the connection is processing an action.
+     */
     private boolean processingAction;
+
+    /**
+     * This attribute represents the lock of the output stream.
+     */
     private final Object outputLock = new Object();
 
+    /**
+     * This constructor creates a socket connection.
+     * @param server is the server that the connection is connected to.
+     * @param socket is the socket of the connection.
+     */
     public SocketConnection(Server server, Socket socket){
         try{
             this.server = server;
             this.socket = socket;
-            this.setConnectionStatus(true);
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
             this.messageQueue = new LinkedBlockingQueue<>();
@@ -61,6 +119,11 @@ public class SocketConnection extends Connection implements Runnable {
         }
     }
 
+    /**
+     * This method reads a message from the input stream.
+     * @throws IOException if there is an error in the input stream.
+     * @throws ClassNotFoundException if the class of the object received is not found.
+     */
     public void readMessage() throws IOException, ClassNotFoundException {
         Message message;
         message = (Message) in.readObject();
@@ -72,6 +135,9 @@ public class SocketConnection extends Connection implements Runnable {
         }
     }
 
+    /**
+     * This method picks a message from the queue and processes it.
+     */
     private void pickQueue(){
         Timer t = new Timer();
         t.schedule(new TimerTask() {
@@ -82,6 +148,9 @@ public class SocketConnection extends Connection implements Runnable {
         }, 0, 500);
     }
 
+    /**
+     * This method processes the queue of the messages.
+     */
     private void processQueue() {
         if (!messageQueue.isEmpty() && !processingAction) {
             Message message = messageQueue.poll();
@@ -94,6 +163,9 @@ public class SocketConnection extends Connection implements Runnable {
         }
     }
 
+    /**
+     * This method starts the timer that sends a ping message to the client.
+     */
     public void ping(){
         ping = new Timer();
         catchPing = new Timer();
@@ -115,6 +187,9 @@ public class SocketConnection extends Connection implements Runnable {
         }
     }
 
+    /**
+     * This method catches the ping message.
+     */
     public synchronized void catchPing(){
         catchPing.cancel();
         catchPing = new Timer();
@@ -127,11 +202,17 @@ public class SocketConnection extends Connection implements Runnable {
         }, 5000, 5000);
     }
 
+    /**
+     * This method cancels the ping message.
+     */
     public void cancelPing(){
         ping.cancel();
         catchPing.cancel();
     }
 
+    /**
+     * This method is ran when the client disconnects.
+     */
     public void onDisconnect() throws NullPointerException{
         try {
             try {
@@ -151,7 +232,6 @@ public class SocketConnection extends Connection implements Runnable {
                     this.disconnected = true;
                     game.getPlayerByUsername(username).setDisconnected(true);
                     server.addDisconnectedPlayer(username, lobby);
-                    setConnectionStatus(false);
                     if (game.getPlayerInTurn().getUsername().equals(username)) {
                         lobby.disconnectedWhileInTurn(username);
                     }
@@ -169,6 +249,10 @@ public class SocketConnection extends Connection implements Runnable {
         } catch (NullPointerException ignored){}
     }
 
+    /**
+     * This method reconnects the connection.
+     * @param oldConnection is the old connection that belonged to the user and will be replaced by the new one.
+     */
     @Override
     public void reconnect(Connection oldConnection) {
         this.lobby = oldConnection.getLobby();
@@ -176,26 +260,47 @@ public class SocketConnection extends Connection implements Runnable {
         this.disconnected = false;
     }
 
+    /**
+     * This method sends a chat message to a specific player.
+     * @param message is the message that has to be sent.
+     * @param receiver is the connection that has to receive the message.
+     */
     @Override
     public void sendChatMessage(String message, Connection receiver) {
         lobby.addAction(new ActionMessage(this, () -> lobby.sendChatMessage(this, receiver, message)));
     }
 
+    /**
+     * This method sends a global chat message.
+     * @param message is the message that has to be sent.
+     */
     @Override
     public void sendChatMessage(String message) {
         lobby.addAction(new ActionMessage(this, () -> lobby.sendChatMessage(this, message)));
     }
 
+    /**
+     * This method gets the lobby of the connection.
+     * @return the lobby of the connection.
+     */
     @Override
     public Controller getLobby(){
         return this.lobby;
     }
 
+    /**
+     * This method sets the lobby of the connection.
+     * @param controller is the lobby that has to be set.
+     */
     @Override
     public void setLobby(Controller controller) {
         this.lobby = controller;
     }
 
+    /**
+     * This method sends a message to the client.
+     * @param message is the message that has to be sent.
+     */
     @Override
     public void sendMessage(Message message) {
         if(!disconnected) {
@@ -210,16 +315,28 @@ public class SocketConnection extends Connection implements Runnable {
         }
     }
 
+    /**
+     * This method asks the client whether it wants to create, join or reconnect to a lobby.
+     * @param startingGamesId is the list of the id of the games that are starting.
+     * @param gamesWhitDisconnectionsId is the list of the id of the games that have disconnections.
+     */
     @Override
     public void joinGame(List<Integer> startingGamesId, List<Integer> gamesWhitDisconnectionsId) {
         sendMessage(new FreeLobbyMessage(startingGamesId, gamesWhitDisconnectionsId));
     }
 
+    /**
+     * This method handles the action of creating a game.
+     */
     @Override
     public void createGame() {
         sendMessage(new NumPlayerRequestMessage());
     }
 
+    /**
+     * This method processes the message that was received.
+     * @param message is the message that has to be processed.
+     */
     public void onMessage(Message message){
         switch (message.getType()){
             case ADD_TO_CHAT:
@@ -301,16 +418,27 @@ public class SocketConnection extends Connection implements Runnable {
                 break;
         }
     }
+
+    /**
+     * This method gets the username of the connection.
+     * @return the username of the connection.
+     */
     @Override
     public String getUsername(){
         return this.username;
     }
 
+    /**
+     * This method sends the update received from the model to the client.
+     */
     @Override
     public void update(Message message) {
         sendMessage(message);
     }
 
+    /**
+     * This method removes the connection from the server.
+     */
     @Override
     public void removeFromServer(boolean last) {
         cancelPing();
@@ -327,6 +455,10 @@ public class SocketConnection extends Connection implements Runnable {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * This method sends a message to the client that it has to wait.
+     */
     @Override
     public void waiting() {
         sendMessage(new GenericMessage("someone else is joining a game, please wait..."));

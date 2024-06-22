@@ -101,8 +101,8 @@ public class Controller extends Observable {
         if (!actionQueue.isEmpty() && !processingAction) {
             ActionMessage nextAction = actionQueue.poll();
             processingAction = true;
-            if (setupFinished || nextAction.getApplicant().getUsername().equals(playerInTurn)){
-                nextAction.getCommand().execute();
+            if (setupFinished || nextAction.applicant().getUsername().equals(playerInTurn)){
+                nextAction.command().execute();
             }
             else if(!setupFinished){
                 actionQueue.add(nextAction);
