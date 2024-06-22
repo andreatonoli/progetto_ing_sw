@@ -1,5 +1,8 @@
 package it.polimi.ingsw.view.tui;
 
+/**
+ * Class that contains the constants used in the TUI.
+ */
 public class TuiCostants {
     public static final int BOARD_DIM = 15;
     public static final int ROW = 3;

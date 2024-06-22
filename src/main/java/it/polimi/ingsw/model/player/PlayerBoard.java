@@ -10,10 +10,11 @@ import java.util.HashMap;
 import java.util.Set;
 
 /**
- * The PlayerBoard class represents the game board of a player.
- * It provides methods to manage the cards and symbols of a player.
+ * PlayerBoard class represents the board of a player.
+ * It contains the player's cards, their positions and the count of each symbol.
  */
 public class PlayerBoard implements Serializable {
+
     /**
      * Offset used for calculating card positions.
      */
@@ -35,8 +36,7 @@ public class PlayerBoard implements Serializable {
     private final HashMap<Symbols,Integer> symbolCount;
 
     /**
-     * Constructor for PlayerBoard.
-     * Initializes the cardPosition and symbolCount maps.
+     * Constructor for the PlayerBoard class.
      */
     public PlayerBoard(){
         this.cardPosition = new HashMap<>();
@@ -101,7 +101,7 @@ public class PlayerBoard implements Serializable {
      * Gets the count of a specific symbol for the player.
      *
      * @param s the symbol whose count is to be retrieved.
-     * @return the count of the symbol, or 0 if the symbol is not present.
+     * @return the count of the symbol.
      */
     public Integer getSymbolCount(Symbols s){
         if(this.symbolCount.get(s) != null){
@@ -111,7 +111,7 @@ public class PlayerBoard implements Serializable {
     }
 
     /**
-     * Sets the starter card for the player and places it at position (0,0).
+     * Sets the starter card of the player and places it on the board at position (0,0).
      *
      * @param starterCard the starter card to be set.
      */

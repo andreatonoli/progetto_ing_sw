@@ -159,24 +159,24 @@ public class Player implements Serializable {
     }
 
     /**
-     * Gets all the card in the player's hand.
-     * @return an array (size = 3) containing all the cards in the player's hand.
+     * Gets the cards in the player's hand.
+     * @return the cards in the player's hand.
      */
-    public Card[] getCardInHand() { //cercare valore per definire "no carta"
+    public Card[] getCardInHand() {
         return cardInHand;
     }
 
     /**
-     * Gets the two objective the player can choose from.
-     * @return the array containing the two objectives the player can choose from.
+     * Gets the personal objectives of the player.
+     * @return the personal objectives of the player.
      */
     public Achievement[] getPersonalObj() {
         return personalObj;
     }
 
     /**
-     * Gets the chat log.
-     * @return a list of 25 messages sent to and by the player.
+     * Gets the chat log of the player.
+     * @return the chat log of the player.
      */
     public ArrayList<String> getChat() {
         return chat;
@@ -191,8 +191,8 @@ public class Player implements Serializable {
     }
 
     /**
-     * Gets the current state of the player.
-     * @return the current player state.
+     * Gets the current player's state.
+     * @return the current player's state.
      */
     public PlayerState getPlayerState() {
         return playerState;
@@ -215,9 +215,8 @@ public class Player implements Serializable {
     }
 
     /**
-     * Adds some points to the player.
-     *
-     * @param pointsToAdd points that the player will receive.
+     * Adds points to the player's score.
+     * @param pointsToAdd points to add to the player's score.
      */
     public void addPoints(int pointsToAdd){
         this.points = this.points + pointsToAdd;
@@ -231,14 +230,14 @@ public class Player implements Serializable {
 
     /**
      * Indicates if the player was the first to reach 20 points.
-     * @return true only if the player was the first to reach 20 points.
+     * @return true if the player was the first to reach 20 points.
      */
     public boolean isFirstToEnd(){
         return firstToEnd;
     }
 
     /**
-     * Sets that the player is the first to play. //TODO: commenta meglio
+     * Sets the player as the first to have played.
      */
     public void setFirstToPlay(){
         firstToPlay = true;
@@ -253,10 +252,10 @@ public class Player implements Serializable {
     }
 
     /**
-     * Player sends a message to another player.
-     * @param receiver receiver of the message.
-     * @param message message text.
-     * @throws PlayerNotFoundException when the receiver is not part of the lobby.
+     * Sends a private message to another player.
+     * @param receiver the player who will receive the message.
+     * @param message the message text.
+     * @throws PlayerNotFoundException if the receiver is not in the game.
      */
     public void sendChatMessage(Player receiver, String message) throws PlayerNotFoundException{
         this.game.getChat().forwardMessage(this, receiver, false, message);
@@ -275,9 +274,9 @@ public class Player implements Serializable {
     }
 
     /**
-     * Adds the message into the chat log. If the size of the log is greater than {@link Chat.CHATDIM} the oldest message is deleted.
-     * @param sender the sender of the message.
-     * @param message message Text.
+     * Displays a message in the chat log. If the chat log is full, the oldest message is removed.
+     * @param sender player who sent the message.
+     * @param message message text.
      */
     public void displayMessage(Player sender, String message){
         if(chat.size() >= Chat.CHATDIM){
@@ -311,8 +310,8 @@ public class Player implements Serializable {
     }
 
     /**
-     * Remove a card from the player's hand if present.
-     * @param cardToRemove card to remove from the player's hand.
+     * Removes a card from the player's hand.
+     * @param cardToRemove card to remove from the hand.
      */
     public void removeFromHand(Card cardToRemove){
         for (int i = 0; i < this.cardInHand.length; i++) {
@@ -477,7 +476,7 @@ public class Player implements Serializable {
     }
 
     /**
-     * check if the card can be placed in the designed spot
+     * Checks if the player can place a card in a specified position
      * @param cornerPosition position of one of the corner the card will be placed on
      * @param coordinates position of the card containing the corner on cornerPosition
      * @param cardToBePlaced card the player wants to place

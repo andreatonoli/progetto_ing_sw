@@ -14,6 +14,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class TurnHandler extends Observable {
+
     /**
      * Reference to the game.
      */
@@ -22,7 +23,7 @@ public class TurnHandler extends Observable {
     /**
      * Reference to the controller.
      */
-    private Controller controller;
+    private final Controller controller;
 
     /**
      * Index of the player in the lobby.

@@ -5,7 +5,6 @@ import it.polimi.ingsw.model.card.Achievement;
 import it.polimi.ingsw.model.card.Card;
 import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.GameState;
-import it.polimi.ingsw.model.enums.PlayerState;
 import it.polimi.ingsw.model.exceptions.*;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.PlayerBoard;
@@ -24,40 +23,47 @@ public class Controller extends Observable {
      * Reference to the game (model) controlled by {@code this}
      */
     private final Game game;
+
     /**
      * Unique identifier of the game
      */
     private final int id;
+
     /**
      * Map to connect the different Connections to their representation on the model
      */
     private final ConcurrentHashMap<Connection, Player> connectedPlayers;
+
     /**
      * Reference to the turn handler that manages the turns of the players
      */
     private final TurnHandler turnHandler;
+
     /**
      * Queue that stores all the actions required by the players to be carried out by the controller
      */
     private final BlockingQueue<ActionMessage> actionQueue;
+
     /**
      * String that stores the username of the player in turn
      */
     private String playerInTurn;
+
     /**
      * Boolean that stores the state of the setup phase
      */
     private boolean setupFinished = false;
+
     /**
      * Boolean that stores the state of the ending cycle
      */
     private boolean endingCycle = false;
+
     /**
      * Boolean that stores the state of the processing action
      */
     private boolean processingAction = false;
 
-    //TODO: mettere controllo lato server per controllare che client non scammi
     /**
      * Constructor of the class.
      * @param numPlayers number of players in the game.
@@ -70,6 +76,7 @@ public class Controller extends Observable {
         this.connectedPlayers = new ConcurrentHashMap<>();
         this.actionQueue = new LinkedBlockingQueue<>();
     }
+
     /**
      * Getter of the id attribute.
      * @return the unique identifier of the game.
@@ -107,7 +114,7 @@ public class Controller extends Observable {
     }
 
     /**
-     * This method is used to pick the next player in turn.
+     * This method sets a timer to pick the action from the queue every 100 milliseconds.
      */
     public void pickQueue(){
         Timer t = new Timer();
@@ -119,13 +126,11 @@ public class Controller extends Observable {
         }, 0, 100);
     }
 
-
     /**
      * Permits the client to join the game.
      * @param user of the client who's joining the game.
      * @return {@code true} if the game is full, {@code false} otherwise.
      */
-    //TODO: controlla che quando faccio disconnessione non rifaccio più il setup
     public boolean joinGame(Connection user) throws FullLobbyExeption {
         if (game.isFull()) {
             user.sendMessage(new GenericMessage("\nthe game is full, please retry.\n"));
@@ -195,7 +200,7 @@ public class Controller extends Observable {
     }
 
     /**
-     *Picks the top card of the deck and calls addInHand to give it to the player.
+     * Picks the top card of the deck and calls addInHand to give it to the player.
      * @param user who wants to draw a card.
      * @param chosenDeck deck from which user wants to draw a card.
      */
@@ -263,6 +268,7 @@ public class Controller extends Observable {
             user.sendMessage(new ErrorMessage(e.getMessage()));
         }
     }
+
     /**
      * Place the card on the chosen coordinates.
      * @param user who asked to place the card.
@@ -301,6 +307,11 @@ public class Controller extends Observable {
         }
     }
 
+    /**
+     * Permits the player to place the starter card on the board.
+     * @param user who wants to place the starter card.
+     * @param starterCard to be placed.
+     */
     public void placeStarterCard(Connection user, Card starterCard){
         Player player = getPlayerByClient(user);
         if (!starterCard.equals(player.getPlayerBoard().getStarterCard())){
@@ -418,7 +429,7 @@ public class Controller extends Observable {
     public void disconnectedWhileSetupping(Connection user, Boolean inTurn){
         Player player = game.getPlayerByUsername(user.getUsername());
         PlayerBoard pb = player.getPlayerBoard();
-        Color color = game.getAvailableColors().get(0);
+        Color color = game.getAvailableColors().getFirst();
         this.game.getAvailableColors().remove(color);
         if (pb.getCardPosition().isEmpty()){
             pb.setStarterCard(pb.getStarterCard());
@@ -445,7 +456,7 @@ public class Controller extends Observable {
 
     /**
      * Sends back the model state to the player who has reconnected.
-     * Precondition: user.username is equal to one, and only one, username.
+     * Precondition: username is equal to one, and only one, username.
      * @param user who reconnected.
      */
     public void reconnectBackup(Connection user){
