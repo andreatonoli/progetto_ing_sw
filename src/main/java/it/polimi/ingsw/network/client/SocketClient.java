@@ -20,24 +20,97 @@ import java.util.TimerTask;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+/**
+ * This class is used to handle the client side of the socket connection.
+ */
 public class SocketClient implements ClientInterface {
+
+    /**
+     * The address of the server.
+     */
     private final String address;
+
+    /**
+     * The port of the server.
+     */
     private final int port;
+
+    /**
+     * The socket used to connect to the server.
+     */
     private Socket socket;
+
+    /**
+     * The username of the client.
+     */
     private String username;
+
+    /**
+     * The view of the client.
+     */
     private final Ui view;
+
+    /**
+     * The input stream of the socket.
+     */
     private ObjectInputStream in;
+
+    /**
+     * The output stream of the socket.
+     */
     private ObjectOutputStream out;
+
+    /**
+     * The flag used to check if the client is disconnected.
+     */
     private boolean disconnected;
+
+    /**
+     * The game bean used to store the game state and the common resources, gold and achievements.
+     */
     private GameBean game;
+
+    /**
+     * The player bean used to store the player state and the player resources, hand and achievements.
+     */
     private PlayerBean player;
+
+    /**
+     * The list of the opponents of the player.
+     */
     private ArrayList<PlayerBean> opponents;
+
+    /**
+     * The message queue used to store the messages coming from the server.
+     */
     private final BlockingQueue<Message> messageQueue;
+
+    /**
+     * The flag used to check if the client is processing an action.
+     */
     private boolean processingAction;
+
+    /**
+     * The lock used to synchronize the output stream.
+     */
     private final Object outputLock = new Object();
+
+    /**
+     * The timer used to catch the ping.
+     */
     private Timer catchPing;
+
+    /**
+     * The reconnection thread used to reconnect the client.
+     */
     private Thread reconnectionThread;
 
+    /**
+     * The constructor of the class.
+     * @param address the address of the server.
+     * @param port the port of the server.
+     * @param view the view of the client.
+     */
     public SocketClient(String address, int port, Ui view){
         this.view = view;
         this.opponents = new ArrayList<>();
@@ -48,6 +121,11 @@ public class SocketClient implements ClientInterface {
         this.catchPing = new Timer();
     }
 
+    /**
+     * This method is used to start the client. It connects to the server and starts the communication.
+     * @param address the address of the server.
+     * @param port the port of the server.
+     */
     public void startClient(String address, int port){
         try {
             socket = new Socket(address, port);
@@ -66,6 +144,9 @@ public class SocketClient implements ClientInterface {
         }
     }
 
+    /**
+     * This method is used to read a message from the server.
+     */
     public void readMessage(){
         Message message;
         try {
@@ -82,6 +163,11 @@ public class SocketClient implements ClientInterface {
             System.err.println(e.getMessage());
         }
     }
+
+    /**
+     * This method is used to send a message to the server.
+     * @param message the message to send.
+     */
     public void sendMessage(Message message){
         if (!disconnected) {
             try {
@@ -95,6 +181,9 @@ public class SocketClient implements ClientInterface {
         }
     }
 
+    /**
+     * This method is to start the client, trying to connect to the server and initializing the reconnection thread.
+     */
     @Override
     public void login() {
         reconnectionThread = new Thread(() -> {
@@ -111,10 +200,18 @@ public class SocketClient implements ClientInterface {
         new Thread(() -> this.startClient(address, port)).start();
     }
 
+    /**
+     * This method is used to try to reconnect the client.
+     */
     public void reconnectAttempt(){
         reconnectionThread.start();
     }
 
+    /**
+     * This method is used to resume the connection.
+     * @param number the number of the player.
+     * @param creation the flag used to check if the player is creating a new game.
+     */
     public void resumeConnection(int number, boolean creation){
         if (creation){
             sendMessage(new NumPlayerResponseMessage(this.username, number));
@@ -124,6 +221,12 @@ public class SocketClient implements ClientInterface {
         }
     }
 
+    /**
+     * This method is used to set the action to perform on connection.
+     * @param response is the action to perform.
+     * @param startingGamesId is the list of the starting games' id.
+     * @param gamesWithDisconnectionsId is the list of the games with disconnections id.
+     */
     @Override
     public void setOnConnectionAction(int response, List<Integer> startingGamesId, List<Integer> gamesWithDisconnectionsId) {
         if (response == -2) {
@@ -139,6 +242,9 @@ public class SocketClient implements ClientInterface {
         }
     }
 
+    /**
+     * This method is used to catch the ping, resetting the timer. If the ping is not caught, the client is disconnected.
+     */
     public void catchPing(){
         catchPing.cancel();
         catchPing = new Timer();
@@ -152,6 +258,10 @@ public class SocketClient implements ClientInterface {
             }
         }, 5000, 5000);
     }
+
+    /**
+     * This method called when the client is disconnected.
+     */
     public void onDisconnect(){
         try {
             this.disconnected = true;
@@ -163,6 +273,10 @@ public class SocketClient implements ClientInterface {
         }
     }
 
+    /**
+     * This method is used to set the nickname of the player.
+     * @param nickname the nickname of the player.
+     */
     @Override
     public void setNickname(String nickname) {
         this.username = nickname;
@@ -174,23 +288,40 @@ public class SocketClient implements ClientInterface {
         }
     }
 
+    /**
+     * This method is used to set the lobby size.
+     * @param size the size of the lobby.
+     */
     @Override
     public void setLobbySize(int size){
         sendMessage(new NumPlayerResponseMessage(this.username, size));
     }
 
+    /**
+     * This method is used to set the achievement chosen by the player.
+     * @param achievement is the chosen achievement.
+     */
     @Override
     public void chooseAchievement(Achievement achievement){
         this.player.setAchievement(achievement);
         sendMessage(new SetPrivateAchievementMessage(this.username, achievement));
     }
 
+    /**
+     * This method is used to set the color chosen by the player.
+     * @param chosenColor is the chosen color.
+     */
     @Override
     public void chooseColor(Color chosenColor){
         player.setPionColor(chosenColor);
         sendMessage(new ColorResponseMessage(username, chosenColor));
     }
 
+    /**
+     * This method is used to place the starter card.
+     * @param side is the side of the card.
+     * @param starterCard is the starter card.
+     */
     @Override
     public void placeStarterCard(boolean side, Card starterCard){
         if (!side) {
@@ -200,6 +331,11 @@ public class SocketClient implements ClientInterface {
         sendMessage(new PlaceStarterRequestMessage(username, starterCard));
     }
 
+    /**
+     * This method is used to place the card.
+     * @param card is the card to place.
+     * @param placingCoordinates are the coordinates where to place the card.
+     */
     @Override
     public void placeCard(Card card, int[] placingCoordinates) {
         if (this.player.getState().equals(PlayerState.PLAY_CARD)){
@@ -211,6 +347,10 @@ public class SocketClient implements ClientInterface {
         }
     }
 
+    /**
+     * This method is used to draw a card.
+     * @param chosenDeck is the deck from which the card is drawn.
+     */
     @Override
     public void drawCard(String chosenDeck) {
         if (this.player.getState().equals(PlayerState.DRAW_CARD)) {
@@ -221,6 +361,10 @@ public class SocketClient implements ClientInterface {
         }
     }
 
+    /**
+     * This method is used to draw a card from the board.
+     * @param index is the index of the card to draw.
+     */
     @Override
     public void drawCardFromBoard(int index) {
         if (this.player.getState().equals(PlayerState.DRAW_CARD)) {
@@ -231,6 +375,9 @@ public class SocketClient implements ClientInterface {
         }
     }
 
+    /**
+     * This method is used to pick a message from the queue.
+     */
     private void pickQueue(){
         Timer t = new Timer();
         t.schedule(new TimerTask() {
@@ -241,6 +388,9 @@ public class SocketClient implements ClientInterface {
         }, 0, 500);
     }
 
+    /**
+     * This method is used to process the message queue.
+     */
     private void processQueue() {
         if (!messageQueue.isEmpty() && !processingAction) {
             Message message = messageQueue.poll();
@@ -253,6 +403,10 @@ public class SocketClient implements ClientInterface {
         }
     }
 
+    /**
+     * This method is used to update the client based on the message received.
+     * @param message the message to process.
+     */
     public void update(Message message){
         String name;
         switch (message.getType()){
@@ -429,11 +583,20 @@ public class SocketClient implements ClientInterface {
         }
     }
 
+    /**
+     * This method is used to send a chat message to the server.
+     * @param message the message to send.
+     */
     @Override
     public void sendChatMessage(String message) {
         sendMessage(new AddToChatMessage(username, message));
     }
 
+    /**
+     * This method is used to send a chat message to a specific player.
+     * @param receiver is the receiver of the message.
+     * @param message is the message to be sent.
+     */
     @Override
     public void sendChatMessage(String receiver, String message) {
         sendMessage(new AddToChatMessage(username, receiver, message));

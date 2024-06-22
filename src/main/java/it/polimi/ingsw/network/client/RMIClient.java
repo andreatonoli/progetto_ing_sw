@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.enums.GameState;
 import it.polimi.ingsw.model.enums.PlayerState;
 import it.polimi.ingsw.model.player.PlayerBoard;
 import it.polimi.ingsw.network.messages.*;
+import it.polimi.ingsw.network.server.Server;
 import it.polimi.ingsw.network.server.VirtualServer;
 import it.polimi.ingsw.view.Ui;
 import it.polimi.ingsw.model.card.Card;
@@ -21,22 +22,83 @@ import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+/**
+ * This class is the client of the RMI connection.
+ */
 public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, ClientInterface {
+
+    /**
+     * The address of the server.
+     */
     private final String address;
+
+    /**
+     * The port of the server.
+     */
     private final int port;
+
+    /**
+     * The id of the client.
+     */
     private Integer id;
+
+    /**
+     * The message queue.
+     */
     private final BlockingQueue<Message> messageQueue;
+
+    /**
+     * The flag to check if the client is processing an action.
+     */
     private boolean processingAction;
-    private static final String serverName = "GameServer";
+
+    /**
+     * The username of the client.
+     */
     private String username;
+
+    /**
+     * The game bean.
+     */
     private GameBean game;
+
+    /**
+     * The view.
+     */
     private final Ui view;
+
+    /**
+     * The skeleton of the server.
+     */
     private VirtualServer server;
+
+    /**
+     * The player bean.
+     */
     private PlayerBean player;
+
+    /**
+     * The list of the opponents.
+     */
     private ArrayList<PlayerBean> opponents;
+
+    /**
+     * The timer to catch the ping.
+     */
     private Timer catchPing;
+
+    /**
+     * The reconnection thread. Every second it tries to reconnect to the server.
+     */
     private final Thread reconnectionThread;
 
+    /**
+     * The constructor of the class.
+     * @param host the address of the server.
+     * @param port the port of the server.
+     * @param view the view.
+     * @throws RemoteException if there is an error in the connection.
+     */
     public RMIClient(String host, int port, Ui view) throws RemoteException{
         this.view = view;
         this.address = host;
@@ -64,10 +126,13 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
         });
     }
 
+    /**
+     * This method tries to connect the client to the server.
+     */
     public void login(){
         try {
             Registry registry = LocateRegistry.getRegistry(address, port);
-            server = (VirtualServer) registry.lookup(serverName);
+            server = (VirtualServer) registry.lookup(Server.serverName);
             server.login(this);
             pickQueue();
         } catch (RemoteException | NotBoundException e){
@@ -75,14 +140,26 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
         }
     }
 
+    /**
+     * This method asks the user if he wants to join, create or reconnect to a game.
+     */
     public void joinGame(List<Integer> startingGamesId, List<Integer> gamesWhitDisconnectionsId) throws RemoteException{
         this.view.selectGame(startingGamesId, gamesWhitDisconnectionsId);
     }
 
+    /**
+     * Starts the reconnection thread.
+     */
     public void reconnectAttempt(){
         reconnectionThread.start();
     }
 
+    /**
+     * This method sets the action to perform.
+     * @param response is the action to perform.
+     * @param startingGamesId is the list of the starting games' id.
+     * @param gamesWithDisconnectionsId is the list of the games with disconnections id.
+     */
     @Override
     public void setOnConnectionAction(int response, List<Integer> startingGamesId, List<Integer> gamesWithDisconnectionsId) {
         try {
@@ -92,6 +169,10 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
         }
     }
 
+    /**
+     * This method responds to the server ping.
+     * @throws RemoteException if there is an error in the connection.
+     */
     @Override
     public void pingNetwork() throws RemoteException {
         try {
@@ -100,8 +181,11 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
-
     }
+
+    /**
+     * This method catches the ping, resetting the timer. If the server doesn't respond in 5 seconds, it tries to reconnect.
+     */
     public void catchPing(){
         catchPing.cancel();
         catchPing = new Timer();
@@ -114,15 +198,27 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
         }, 5000, 5000);
     }
 
+    /**
+     * This method sets the id of the client.
+     * @param id the id of the client.
+     */
     @Override
     public void setClientId(Integer id){
         this.id = id;
     }
 
+    /**
+     * This method asks the user to insert the username.
+     * @throws RemoteException if there is an error in the connection.
+     */
     public void askUsername() throws RemoteException{
         view.askNickname();
     }
 
+    /**
+     * This method sets the nickname of the client.
+     * @param nickname the nickname of the client.
+     */
     @Override
     public void setNickname(String nickname) {
         this.username = nickname;
@@ -139,10 +235,18 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
         }
     }
 
+    /**
+     * This method asks the user to insert the number of players in the lobby.
+     * @throws RemoteException if there is an error in the connection.
+     */
     public void askLobbySize() throws RemoteException{
         this.view.askLobbySize();
     }
 
+    /**
+     * This method sets the size of the lobby.
+     * @param size the size of the lobby.
+     */
     public void setLobbySize(int size) {
         try {
             this.server.setLobbySize(size, this.id, username);
@@ -151,28 +255,35 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
         }
     }
 
+    /**
+     * This method set the color of the player.
+     * @param color the color chosen by the player.
+     * @throws RemoteException if there is an error in the connection.
+     */
     public void setColor(Color color) throws RemoteException{
         this.server.setColor(color, id);
     }
 
+    /**
+     * This method sets the achievement of the player.
+     * @param achievement the achievement chosen by the player.
+     * @throws RemoteException if there is an error in the connection.
+     */
     @Override
     public void chooseAchievement(Achievement achievement) {
         this.player.setAchievement(achievement);
         try {
-            this.setPrivateAchievement(player.getAchievement());
+            this.server.setAchievement(achievement, id);
         } catch (RemoteException e) {
             System.err.println(e.getMessage() + " in RMIClient.update");
         }
     }
 
-    public void setPrivateAchievement(Achievement toBeSet) throws RemoteException {
-        this.server.setAchievement(toBeSet, id);
-    }
-
-    public void placeStarterCard(Card card) throws RemoteException{
-        this.server.placeStarterCard(card, id);
-    }
-
+    /**
+     * Places the starter card.
+     * @param side is the side where the starter card is placed.
+     * @param starterCard is the starter card.
+     */
     @Override
     public void placeStarterCard(boolean side, Card starterCard) {
         if (!side) {
@@ -180,12 +291,16 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
         }
         player.setStarterCard(starterCard);
         try {
-            this.placeStarterCard(starterCard);
+            this.server.placeStarterCard(starterCard, id);
         } catch (RemoteException e) {
             System.out.println(e.getMessage());
         }
     }
 
+    /**
+     * This method sets the color of the player.
+     * @param chosenColor the color chosen by the player.
+     */
     @Override
     public void chooseColor(Color chosenColor) {
         player.setPionColor(chosenColor);
@@ -196,6 +311,11 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
         }
     }
 
+    /**
+     * This method places the card.
+     * @param card the card to place.
+     * @param placingCoordinates the coordinates where to place the card.
+     */
     @Override
     public void placeCard(Card card, int[] placingCoordinates) {
         if (player.getState().equals(PlayerState.PLAY_CARD)) {
@@ -211,6 +331,10 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
         }
     }
 
+    /**
+     * Method to draw a card from the deck.
+     * @param chosenDeck is the deck from which the card is drawn.
+     */
     @Override
     public void drawCard(String chosenDeck) {
         if (player.getState().equals(PlayerState.DRAW_CARD)){
@@ -225,6 +349,10 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
         }
     }
 
+    /**
+     * Method to draw a card from the board.
+     * @param index is the index of the card to draw.
+     */
     @Override
     public void drawCardFromBoard(int index){
         if (player.getState().equals(PlayerState.DRAW_CARD)){
@@ -239,6 +367,9 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
         }
     }
 
+    /**
+     * Method to pick an action to perform from the queue.
+     */
     private void pickQueue(){
         Timer t = new Timer();
         t.schedule(new TimerTask() {
@@ -249,6 +380,9 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
         }, 0, 500);
     }
 
+    /**
+     * Method to process the queue of messages.
+     */
     private void processQueue() {
         if (!messageQueue.isEmpty() && !processingAction) {
             Message message = messageQueue.poll();
@@ -261,13 +395,18 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
         }
     }
 
+    /**
+     * This method add a message coming from the server to the message queue.
+     * @param message the message to add.
+     */
     @Override
     public void update(Message message){
         messageQueue.add(message);
     }
+
     /**
-     * gets messages from the messageQueue and updates the view according to the message type.
-     * @param message sent from the server.
+     * This method handles the messages coming from the server.
+     * @param message the message to handle.
      */
     public void onMessage(Message message) {
         String name;
@@ -426,6 +565,10 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
         }
     }
 
+    /**
+     * This method sends a chat message to all the players of the lobby.
+     * @param message the message to send.
+     */
     @Override
     public void sendChatMessage(String message) {
         try {
@@ -435,6 +578,11 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
         }
     }
 
+    /**
+     * This method sends a chat message to a specific player.
+     * @param receiver the receiver of the message.
+     * @param message the message to send.
+     */
     @Override
     public void sendChatMessage(String receiver, String message) {
         try {

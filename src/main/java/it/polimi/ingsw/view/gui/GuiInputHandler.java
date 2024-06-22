@@ -158,17 +158,9 @@ public class GuiInputHandler implements Ui {
     }
 
     @Override
-    public String askNickname() {
+    public void askNickname() {
         Platform.runLater(() -> Gui.setScene(Gui.getScenes().get(GuiScenes.LOGIN_SCENE.ordinal())));
-        return null;
     }
-
-    //TODO: TOGLIERE
-    @Override
-    public void askNickname(int lobby) {
-
-    }
-
 
     @Override
     public void selectGame(List<Integer> startingGamesId, List<Integer> gamesWithDisconnectionsId) {

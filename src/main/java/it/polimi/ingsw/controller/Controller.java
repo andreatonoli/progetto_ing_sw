@@ -19,6 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Controller extends Observable {
+
     /**
      * Reference to the game (model) controlled by {@code this}
      */

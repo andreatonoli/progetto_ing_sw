@@ -172,14 +172,6 @@ public class Tui implements Ui {
         client.setNickname(nickname);
     }
 
-    @Override
-    public void askNickname(int lobby) {
-        //String nickname;
-        //AnsiConsole.out().print("Please insert your username: ");
-        //nickname = scanner.next();
-        //client.setNickname(nickname, lobby);
-    }
-
     /**
      * Asks the server address the player wants to connect to
      * @return the chosen server address
@@ -218,6 +210,11 @@ public class Tui implements Ui {
         return Integer.parseInt(port);
     }
 
+    /**
+     * Method to select the game to join, create or reconnect to.
+     * @param startingGamesId list of the starting games' id.
+     * @param gamesWithDisconnectionsId list of the games with disconnections' id.
+     */
     @Override
     public void selectGame(List<Integer> startingGamesId, List<Integer> gamesWithDisconnectionsId){
         int lobby = -2;
@@ -256,6 +253,11 @@ public class Tui implements Ui {
         client.setOnConnectionAction(lobby, startingGamesId, gamesWithDisconnectionsId);
     }
 
+    /**
+     * Method to choose between the available lobbies.
+     * @param lobbyList list of the available lobbies.
+     * @return the chosen lobby.
+     */
     public int getLobby(List<Integer> lobbyList) {
         int lobby;
         AnsiConsole.out().println("Select one of the following game's lobby by writing the respective number:");
@@ -274,7 +276,9 @@ public class Tui implements Ui {
         return lobby;
     }
 
-
+    /**
+     * Ask the user the size of the lobby he wants to create.
+     */
     @Override
     public void askLobbySize(){
         int lobbySize;
@@ -293,6 +297,10 @@ public class Tui implements Ui {
         client.setLobbySize(lobbySize);
     }
 
+    /**
+     * Ask the player which side he wants to place the starter card.
+     * @param starterCard the starter card to place.
+     */
     @Override
     public void askSide(Card starterCard){
         clearConsole();
@@ -306,6 +314,10 @@ public class Tui implements Ui {
         client.placeStarterCard(side, starterCard);
     }
 
+    /**
+     * Prints the starter card.
+     * @param card starter card to print.
+     */
     private void printStarterCard(Card card) {
         if(card == null){
             AnsiConsole.out().println("Starter card not existing");
@@ -335,6 +347,12 @@ public class Tui implements Ui {
         }
     }
 
+    /**
+     * Method to print a card from the player board.
+     * @param coord coordinates of the card to print.
+     * @param p player who owns the card.
+     * @return the printable card.
+     */
     public String[][] createPrintableCardToPlace(int[] coord, PlayerBean p) {
         String[][] matCard = new String[TuiCostants.ROW][TuiCostants.COLUMN];
         PlayerBoard playerBoard = p.getBoard();
@@ -388,6 +406,12 @@ public class Tui implements Ui {
         return matCard;
     }
 
+    /**
+     * Method to add the cost to the printable card.
+     * @param matCard printable card to add the cost.
+     * @param card card to print the cost.
+     * @param bottomCenter starting column to add the cost.
+     */
     public void addCost(String[][] matCard, Card card, int bottomCenter) {
         for (int i = 0; i < card.getCost().length; i++) {
             for (int j = 0; j < card.getCost()[i]; j++) {
@@ -402,6 +426,11 @@ public class Tui implements Ui {
         }
     }
 
+    /**
+     * Method to add the conditions and points to the printable card.
+     * @param matCard printable card to add the conditions and points.
+     * @param card card to print the conditions and points.
+     */
     public void addConditionAndPoints(String[][] matCard, Card card) {
         int topCenter = 4;
         switch (card.getCondition()) {
@@ -423,6 +452,11 @@ public class Tui implements Ui {
         }
     }
 
+    /**
+     * Method to print the retro of a deck.
+     * @param color color of the deck.
+     * @return the printable deck.
+     */
     public String[][] createPrintableRetro(Color color){
         String[][] matCard = new String[TuiCostants.ROW][TuiCostants.COLUMN];
         for (int i = 0; i < TuiCostants.ROW; i++) {
@@ -432,6 +466,12 @@ public class Tui implements Ui {
         }
         return matCard;
     }
+
+    /**
+     * Create a matrix that represents the printable card.
+     * @param card card to print.
+     * @return the printable card.
+     */
     public String[][] createPrintableCard(Card card) {
         String[][] matCard = new String[TuiCostants.ROW][TuiCostants.COLUMN];
         //creazione matrice vuota e bordi a destra e sinistra
@@ -495,6 +535,11 @@ public class Tui implements Ui {
         return matCard;
     }
 
+    /**
+     * Method to print an achievement.
+     * @param achievement achievement to print.
+     * @return the printable achievement.
+     */
     public String[][] createPrintableAchievement(Achievement achievement) {
         String[][] matCard = new String[TuiCostants.ROW][TuiCostants.COLUMN];
         //creazione matrice vuota e bordi a destra e sinistra
@@ -581,6 +626,11 @@ public class Tui implements Ui {
         return matCard;
     }
 
+    /**
+     * Method to print the scoreboard.
+     * @param players list of players to print.
+     * @return the printable scoreboard.
+     */
     public String[][][][] createPrintableScoreBoard(ArrayList<PlayerBean> players){
         String[][][][] matScoreBoard = new String[3][3][TuiCostants.SCOREBOARD_ROW][TuiCostants.SCOREBOARD_COLUMN];
         int[][] scoreBoardPoints = new int[][]{{8, 1}, {8, 2}, {8, 3}, {7, 4}, {7, 3}, {7, 2}, {7, 1}, {6, 0}, {6, 1}, {6, 2}, {6, 3}, {5, 4}, {5, 3}, {5, 2}, {5, 1}, {4, 0}, {4, 1}, {4, 2}, {4, 3}, {3, 4}, {3, 2}, {3, 0}, {2, 0}, {1, 0}, {0, 1}, {0, 2}, {0, 3}, {1, 4}, {2, 4}, {1, 2}};
@@ -623,6 +673,9 @@ public class Tui implements Ui {
         return matScoreBoard;
     }
 
+    /**
+     * Method to print the view of the game.
+     */
     public void printView(){
         clearConsole();
         String [][] resourceDeck = createPrintableRetro(game.getResourceDeckRetro());
@@ -686,6 +739,13 @@ public class Tui implements Ui {
         //Empty line to divide the commands from the view
         AnsiConsole.out().println();
     }
+
+    /**
+     * Method to print the commands to play the game.
+     * @param player self player.
+     * @param game game joined by the player.
+     * @param players list of opponents in the game.
+     */
     @Override
     public void printViewWithCommands(PlayerBean player, GameBean game, ArrayList<PlayerBean> players) {
         synchronized (lock){
@@ -749,6 +809,11 @@ public class Tui implements Ui {
             }
         }
     }
+
+    /**
+     * Method to handle the input of the player.
+     * @param choice input of the player.
+     */
     public void handleInput(String choice){
         Card[] hand = player.getHand();
         Card[] commonResource = game.getCommonResources();
@@ -1027,6 +1092,9 @@ public class Tui implements Ui {
         AnsiConsole.out().println("Press [q] to return to the main menu");
     }
 
+    /**
+     * Method to print the chat of the game.
+     */
     public void printChat(){
         Scanner input = new Scanner(System.in);
         int u;
@@ -1074,6 +1142,9 @@ public class Tui implements Ui {
         }
     }
 
+    /**
+     * Method to print the title of the game.
+     */
     public void printTitle(){
         AnsiConsole.out().print("\n");
         AnsiConsole.out().print(TuiColors.getColor(TuiColors.ANSI_GOLD) +
@@ -1111,6 +1182,12 @@ public class Tui implements Ui {
         }
     }
 
+    /**
+     * Method to print the matrix of a card.
+     * @param template matrix of the card.
+     * @param row row where to print the card.
+     * @param column column where to print the card.
+     */
     public void printCardMatrix(String[][] template, int row, int column){
         for (int i = 0; i < TuiCostants.ROW; i++) {
             moveCursor(row + i, column);
@@ -1121,6 +1198,10 @@ public class Tui implements Ui {
         AnsiConsole.out().print("\n");
     }
 
+    /**
+     * Method to print the player's board.
+     * @param playerToShow player to show the board.
+     */
     public void printBoard(PlayerBean playerToShow){
         PlayerBoard pBoard = playerToShow.getBoard();
         int[] coord = new int[2];
@@ -1148,6 +1229,10 @@ public class Tui implements Ui {
             }
         }
     }
+
+    /**
+     * Method to print the symbol count of the player and the legend.
+     */
     public void printLabel() {
         for (int i = 0; i < 7; i++) {
             moveCursor(TuiCostants.COMMON_ROW + i, TuiCostants.FIRST_COMMONBOARD_COLUMN);
@@ -1157,6 +1242,10 @@ public class Tui implements Ui {
         }
     }
 
+    /**
+     * Method to print the achievement of the player.
+     * @param achievement achievement to print.
+     */
     public void printAchievement(Achievement achievement){
         String[][] mat = this.createPrintableAchievement(achievement);
 
@@ -1168,6 +1257,11 @@ public class Tui implements Ui {
         }
         AnsiConsole.out().print("\n");
     }
+
+    /**
+     * Ask the user to choose between two achievements.
+     * @param choices two achievements to choose from.
+     */
     @Override
     public void askAchievement(Achievement[] choices) {
         AnsiConsole.out().println("[1]");
@@ -1194,6 +1288,10 @@ public class Tui implements Ui {
         client.chooseAchievement(choices[choice - 1]);
     }
 
+    /**
+     * Ask the user to choose a color.
+     * @param colors list of colors to choose from.
+     */
     @Override
     public void askColor(List<Color> colors){
         AnsiConsole.out().println("Choose your color by typing the corresponding number:");
@@ -1219,6 +1317,12 @@ public class Tui implements Ui {
         inputThread.start();
         client.chooseColor(colors.get(c - 1));
     }
+
+    /**
+     * Method to print the message of the game.
+     * @param message message to print.
+     * @param isError true if the message is an error, false otherwise.
+     */
     @Override
     public void setMessage(String message, boolean isError){
         if(isError){
@@ -1229,6 +1333,10 @@ public class Tui implements Ui {
         }
     }
 
+    /**
+     * Method to print the winner(s) of the game.
+     * @param winners list of winners.
+     */
     @Override
     public void declareWinners(ArrayList<String> winners){
         this.end = true;
@@ -1254,11 +1362,20 @@ public class Tui implements Ui {
         System.exit(1);
     }
 
+    /**
+     * Method to move the cursor to a specific position.
+     * @param row row.
+     * @param column column.
+     */
     public void moveCursor(int row, int column){
         Console console = System.console();
         char escCode = 0x1B;
         console.printf("%c[%d;%df", escCode, row, column);
     }
+
+    /**
+     * Method to clear the console.
+     */
     public static void clearConsole(){
         AnsiConsole.out().println(TuiColors.getColor(TuiColors.ANSI_CLEAR));
         AnsiConsole.out().flush();
