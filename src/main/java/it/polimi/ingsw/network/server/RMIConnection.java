@@ -15,8 +15,6 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-//TODO: troppi setter di nickname controlla
-
 /**
  * This class represents the connection between the server and the client.
  * It extends the Connection class and is used by the RMI server.
@@ -231,14 +229,6 @@ public class RMIConnection extends Connection {
     }
 
     /**
-     * This method sets the username of the connection.
-     * @param username is the username of the connection.
-     */
-    public void setUsername(String username){
-        this.username = username;
-    }
-
-    /**
      * This method asks the client whether it wants to create, join or reconnect to a lobby.
      * @param startingGamesId is the list of the id of the games that are starting.
      * @param gamesWhitDisconnectionsId is the list of the id of the games that have disconnections.
@@ -268,7 +258,7 @@ public class RMIConnection extends Connection {
                 this.server.joinLobby(this.username, response);
             }
         } else if (gamesWhitDisconnectionsId.contains(response)) {
-            if (!server.userNotDisconnected(username, response)) {
+            if (server.userNotDisconnected(username, response)) {
                 this.joinGame(startingGamesId, gamesWhitDisconnectionsId);
             } else {
                 this.username = username;

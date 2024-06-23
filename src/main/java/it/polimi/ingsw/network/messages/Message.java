@@ -2,6 +2,10 @@ package it.polimi.ingsw.network.messages;
 
 import java.io.Serializable;
 
+/**
+ * This class is the abstract class for all the messages that are exchanged between the server and the client.
+ * It contains the type of the message and the sender of the message.
+ */
 public abstract class Message implements Serializable {
     private final MessageType type;
     private final String sender;

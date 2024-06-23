@@ -376,7 +376,7 @@ public class SocketConnection extends Connection implements Runnable {
             case RECONNECT_LOBBY_INDEX:
                 String user = message.getSender();
                 int room = ((ReconnectLobbyIndexMessage) message).getChoice();
-                if (!server.userNotDisconnected(user, room)) {
+                if (server.userNotDisconnected(user, room)) {
                     List<Integer> startingGamesId = ((ReconnectLobbyIndexMessage) message).getstartingGamesId();
                     List<Integer> gamesWhitDisconnectionsId = ((ReconnectLobbyIndexMessage) message).getgamesWhitDisconnectionsId();
                     sendMessage(new GenericMessage("there is no player disconnected in game "+ room + " with that name.\n"));
@@ -396,7 +396,6 @@ public class SocketConnection extends Connection implements Runnable {
                 lobby.addAction(new ActionMessage(this, () -> lobby.placeCard(this, p.getCard(), p.getCoordinates())));
                 break;
             case DRAW_DECK:
-                //TODO: passare deck tramite stringa è la soluzione migliore?
                 String deck = ((DrawMessage) message).getDeck();
                 lobby.addAction(new ActionMessage(this, () -> lobby.drawCard(this, deck)));
                 break;

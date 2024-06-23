@@ -12,7 +12,6 @@ import it.polimi.ingsw.model.card.Achievement;
 import it.polimi.ingsw.model.card.Card;
 import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.network.client.RMIClientHandler;
-import it.polimi.ingsw.network.messages.Message;
 
 /**
  * This class is the RMI server that handles the connection between the server and the client.
@@ -253,7 +252,7 @@ public class RMIServer implements VirtualServer {
     }
 
     /**
-     * This method picks the action from the queue.
+     * This method sets a timer that picks the action from the queue.
      */
     private void pickQueue(){
         Timer t = new Timer();
