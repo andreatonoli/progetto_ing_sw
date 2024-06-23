@@ -219,36 +219,38 @@ public class Tui implements Ui {
     public void selectGame(List<Integer> startingGamesId, List<Integer> gamesWithDisconnectionsId){
         int lobby = -2;
         String choice;
-        do {
-            AnsiConsole.out().println("Select one of the following options by writing the respective number:\n[1] create a game\n[2] join a game\n[3] reconnect to a game");
-            choice = scanner.next();
-        } while (!choice.equals("3") && !choice.equals("2") && !choice.equals("1"));
-        switch (choice){
-            case "1" -> {
-                AnsiConsole.out().println("Creating a new game...");
-                lobby = -1;
+        do{
+            do {
+                AnsiConsole.out().println("Select one of the following options by writing the respective number:\n[1] create a game\n[2] join a game\n[3] reconnect to a game");
+                choice = scanner.next();
+            } while (!choice.equals("3") && !choice.equals("2") && !choice.equals("1"));
+            switch (choice){
+                case "1" -> {
+                    AnsiConsole.out().println("Creating a new game...");
+                    lobby = -1;
+                }
+                case "2" -> {
+                    if(startingGamesId.isEmpty()){
+                        AnsiConsole.out().println("There are no lobbies yet");
+                    }
+                    else{
+                        do{
+                            lobby = getLobby(startingGamesId);
+                        } while (!startingGamesId.contains(lobby));
+                    }
+                }
+                case "3" -> {
+                    if (gamesWithDisconnectionsId.isEmpty()) {
+                        AnsiConsole.out().println("There are no lobbies with disconnected players");
+                    }
+                    else{
+                        do{
+                            lobby = getLobby(gamesWithDisconnectionsId);
+                        } while (!gamesWithDisconnectionsId.contains(lobby));
+                    }
+                }
             }
-            case "2" -> {
-                if(startingGamesId.isEmpty()){
-                    AnsiConsole.out().println("There are no lobbies yet");
-                }
-                else{
-                    do{
-                        lobby = getLobby(startingGamesId);
-                    } while (!startingGamesId.contains(lobby));
-                }
-            }
-            case "3" -> {
-                if (gamesWithDisconnectionsId.isEmpty()) {
-                    AnsiConsole.out().println("There are no lobbies with disconnected players");
-                }
-                else{
-                    do{
-                        lobby = getLobby(gamesWithDisconnectionsId);
-                    } while (!gamesWithDisconnectionsId.contains(lobby));
-                }
-            }
-        }
+        } while (lobby == -2);
         askNickname();
         client.setOnConnectionAction(lobby, startingGamesId, gamesWithDisconnectionsId);
     }
@@ -282,7 +284,6 @@ public class Tui implements Ui {
     @Override
     public void askLobbySize(){
         int lobbySize;
-        askNickname();
         AnsiConsole.out().println("Select the lobby's capacity (min is " + Server.MIN_PLAYERS_PER_LOBBY + " and max is " + Server.MAX_PLAYERS_PER_LOBBY + " players)");
         do{
             try{

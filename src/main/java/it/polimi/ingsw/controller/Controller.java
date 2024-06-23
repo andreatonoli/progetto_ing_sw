@@ -482,6 +482,7 @@ public class Controller extends Observable {
             }
         }
         user.sendMessage(new ReconnectionMessage(game.getGameBoard(), reconnectedPlayer, opponents));
+        user.sendMessage(new GameStateMessage(game.getGameState()));
     }
 
     /**
