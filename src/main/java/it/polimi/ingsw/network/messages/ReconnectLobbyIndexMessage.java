@@ -2,26 +2,29 @@ package it.polimi.ingsw.network.messages;
 
 import java.util.List;
 
+/**
+ * Message used to request the server to reconnect to a specific lobby.
+ */
 public class ReconnectLobbyIndexMessage extends Message {
-    int choice;
+    private final int choice;
     private final List<Integer> startingGamesId;
-    private final List<Integer> gamesWhitDisconnectionsId;
-    public ReconnectLobbyIndexMessage(String username, int choice, List<Integer> startingGamesId, List<Integer> gamesWhitDisconnectionsId){
+    private final List<Integer> gamesWithDisconnectionsId;
+    public ReconnectLobbyIndexMessage(String username, int choice, List<Integer> startingGamesId, List<Integer> gamesWithDisconnectionsId){
         super(MessageType.RECONNECT_LOBBY_INDEX, username);
         this.choice = choice;
         this.startingGamesId = startingGamesId;
-        this.gamesWhitDisconnectionsId = gamesWhitDisconnectionsId;
+        this.gamesWithDisconnectionsId = gamesWithDisconnectionsId;
     }
     public int getChoice(){
         return choice;
     }
 
-    public List<Integer> getstartingGamesId() {
+    public List<Integer> getStartingGamesId() {
         return startingGamesId;
     }
 
-    public List<Integer> getgamesWhitDisconnectionsId() {
-        return gamesWhitDisconnectionsId;
+    public List<Integer> getGamesWithDisconnectionsId() {
+        return gamesWithDisconnectionsId;
     }
 
     @Override
@@ -30,7 +33,7 @@ public class ReconnectLobbyIndexMessage extends Message {
                 "choice: " + choice +
                 "sender = " + getSender() +
                 "startingGamesId: " + startingGamesId +
-                "gamesWhitDisconnectionsId: " + gamesWhitDisconnectionsId +
+                "gamesWithDisconnectionsId: " + gamesWithDisconnectionsId +
                 '}';
     }
 

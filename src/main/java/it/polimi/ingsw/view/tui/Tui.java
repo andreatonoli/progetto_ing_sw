@@ -690,7 +690,7 @@ public class Tui implements Ui {
         String [][] hand2 = createPrintableCard(player.getHand()[1]);
         String [][] hand3 = createPrintableCard(player.getHand()[2]);
         String [][] privateAchievement = createPrintableAchievement(player.getAchievement());
-        //TODO: DOVREI METTERE LABEL PER COMMON GOLD E PER COMMON RESOURCE?
+
         //CommonBoard label
         moveCursor(14,TuiCostants.FIRST_COMMONBOARD_COLUMN);
         AnsiConsole.out().println(Color.getBackground(Color.ORANGE) + TuiColors.getColor(TuiColors.ANSI_BLACK) + "common board" + TuiColors.getColor(TuiColors.ANSI_RESET));

@@ -3,8 +3,11 @@ package it.polimi.ingsw.network.messages;
 import it.polimi.ingsw.model.card.Card;
 import it.polimi.ingsw.network.server.Server;
 
+/**
+ * Message used to send the cards in the hand of the player.
+ */
 public class CardInHandMessage extends Message{
-    private Card[] hand;
+    private final Card[] hand;
     public CardInHandMessage(Card[] hand){
         super(MessageType.CARD_HAND, Server.serverName);
         this.hand = new Card[3];

@@ -1,7 +1,10 @@
 package it.polimi.ingsw.network.messages;
 
+/**
+ * Message used to notify the server that the player wants to draw from a deck
+ */
 public class DrawMessage extends Message{
-    private String deck;
+    private final String deck;
 
     public DrawMessage(String sender, String chosenDeck){
         super(MessageType.DRAW_DECK, sender);

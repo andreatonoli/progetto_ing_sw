@@ -6,8 +6,11 @@ import it.polimi.ingsw.network.server.Server;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Message used to declare the winner(s) of the game.
+ */
 public class WinnerMessage extends Message{
-    ArrayList<String> winners = new ArrayList<>();
+    private final ArrayList<String> winners = new ArrayList<>();
     public WinnerMessage(List<Player> winners){
         super(MessageType.DECLARE_WINNER, Server.serverName);
         for (Player winner : winners) {

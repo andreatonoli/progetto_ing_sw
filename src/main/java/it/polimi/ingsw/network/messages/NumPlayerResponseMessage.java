@@ -1,5 +1,8 @@
 package it.polimi.ingsw.network.messages;
 
+/**
+ * Message used to send the server the size of the lobby the player wants to create.
+ */
 public class NumPlayerResponseMessage extends Message{
     private final int size;
     public NumPlayerResponseMessage(String username, int size){

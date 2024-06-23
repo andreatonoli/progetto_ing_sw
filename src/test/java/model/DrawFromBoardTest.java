@@ -25,7 +25,7 @@ public class DrawFromBoardTest {
         game = new Game(4);
         p = new Player("pippo", game);
     }
-    //TODO: che succede quando pesco dalle carte a terra ma i mazzi sono vuoti?
+    
     @Test
     @DisplayName("Take Resource from Board")
     public void takeResource(){

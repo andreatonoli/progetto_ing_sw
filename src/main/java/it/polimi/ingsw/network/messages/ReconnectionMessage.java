@@ -10,12 +10,32 @@ import it.polimi.ingsw.network.server.Server;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Message notify the client of the updates that happened while he was disconnected.
+ */
 public class ReconnectionMessage extends Message {
+
+    /**
+     * GameBean containing the game status.
+     */
     private final GameBean gameBean;
 
+    /**
+     * PlayerBean containing the player status.
+     */
     private final PlayerBean playerBean;
 
+    /**
+     * List of PlayerBean containing the opponents' status.
+     */
     private final ArrayList<PlayerBean> opponents;
+
+    /**
+     * Constructor ReconnectionMessage creates a new ReconnectionMessage instance.
+     * @param board board from which to retrieve the status of the game.
+     * @param player Player instance from which to retrieve the player state.
+     * @param opponents list of the opponents.
+     */
     public ReconnectionMessage(GameBoard board, Player player, List<Player> opponents){
         super(MessageType.RECONNECTION, Server.serverName);
         //Creating gameBean

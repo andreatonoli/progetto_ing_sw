@@ -1,5 +1,8 @@
 package it.polimi.ingsw.network.messages;
 
+/**
+ * Message used to send a message to the chat. It can be sent to a specific player or to all the players.
+ */
 public class AddToChatMessage extends Message{
     private final String message;
     private final String receiver;

@@ -3,6 +3,9 @@ package it.polimi.ingsw.network.messages;
 import it.polimi.ingsw.model.enums.PlayerState;
 import it.polimi.ingsw.network.server.Server;
 
+/**
+ * Message used to send the state of a player to the client.
+ */
 public class PlayerStateMessage extends Message{
     private final PlayerState playerState;
     private final String name;

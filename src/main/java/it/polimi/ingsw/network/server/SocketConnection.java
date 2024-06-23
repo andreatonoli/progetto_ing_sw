@@ -322,7 +322,7 @@ public class SocketConnection extends Connection implements Runnable {
      */
     @Override
     public void joinGame(List<Integer> startingGamesId, List<Integer> gamesWhitDisconnectionsId) {
-        sendMessage(new FreeLobbyMessage(startingGamesId, gamesWhitDisconnectionsId));
+        sendMessage(new AvailableLobbiesMessage(startingGamesId, gamesWhitDisconnectionsId));
     }
 
     /**
@@ -377,10 +377,10 @@ public class SocketConnection extends Connection implements Runnable {
                 String user = message.getSender();
                 int room = ((ReconnectLobbyIndexMessage) message).getChoice();
                 if (server.userNotDisconnected(user, room)) {
-                    List<Integer> startingGamesId = ((ReconnectLobbyIndexMessage) message).getstartingGamesId();
-                    List<Integer> gamesWhitDisconnectionsId = ((ReconnectLobbyIndexMessage) message).getgamesWhitDisconnectionsId();
+                    List<Integer> startingGamesId = ((ReconnectLobbyIndexMessage) message).getStartingGamesId();
+                    List<Integer> gamesWhitDisconnectionsId = ((ReconnectLobbyIndexMessage) message).getGamesWithDisconnectionsId();
                     sendMessage(new GenericMessage("there is no player disconnected in game "+ room + " with that name.\n"));
-                    sendMessage(new FreeLobbyMessage(startingGamesId, gamesWhitDisconnectionsId));
+                    sendMessage(new AvailableLobbiesMessage(startingGamesId, gamesWhitDisconnectionsId));
                 }
                 else {
                     this.username = user;

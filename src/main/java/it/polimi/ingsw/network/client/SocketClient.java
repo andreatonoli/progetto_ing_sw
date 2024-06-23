@@ -427,9 +427,9 @@ public class SocketClient implements ClientInterface {
             case NUM_PLAYER_REQUEST:
                 this.view.askLobbySize();
                 break;
-            case FREE_LOBBY:
-                List<Integer> startingGamesId = ((FreeLobbyMessage) message).getstartingGamesId();
-                List<Integer> gamesWhitDisconnectionsId = ((FreeLobbyMessage) message).getgamesWhitDisconnectionsId();
+            case AVAILABLE_LOBBY:
+                List<Integer> startingGamesId = ((AvailableLobbiesMessage) message).getStartingGamesId();
+                List<Integer> gamesWhitDisconnectionsId = ((AvailableLobbiesMessage) message).getGamesWhitDisconnectionsId();
                 this.view.selectGame(startingGamesId, gamesWhitDisconnectionsId);
                 break;
             case GAME_STATE:

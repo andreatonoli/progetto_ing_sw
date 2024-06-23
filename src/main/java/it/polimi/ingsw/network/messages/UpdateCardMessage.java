@@ -3,6 +3,9 @@ package it.polimi.ingsw.network.messages;
 import it.polimi.ingsw.model.card.Card;
 import it.polimi.ingsw.network.server.Server;
 
+/**
+ * Message used to update a card in the hand of the client.
+ */
 public class UpdateCardMessage extends Message {
     private final Card card;
     public UpdateCardMessage(Card card){

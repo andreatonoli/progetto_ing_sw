@@ -1,5 +1,8 @@
 package it.polimi.ingsw.network.messages;
 
+/**
+ * Message used to notify the server that the player wants to draw a card from the board.
+ */
 public class DrawFromBoardMessage extends Message{
     private final int index;
     public DrawFromBoardMessage(String sender, int index){

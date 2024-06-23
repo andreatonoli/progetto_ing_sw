@@ -2,6 +2,9 @@ package it.polimi.ingsw.network.messages;
 
 import it.polimi.ingsw.model.card.Achievement;
 
+/**
+ * Message used to notify the server that the player wants to set his private achievement.
+ */
 public class SetPrivateAchievementMessage extends Message {
     private final Achievement achievement;
     public SetPrivateAchievementMessage(String username, Achievement achievement){

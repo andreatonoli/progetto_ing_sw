@@ -3,6 +3,9 @@ package it.polimi.ingsw.network.messages;
 import it.polimi.ingsw.network.server.Server;
 import it.polimi.ingsw.model.enums.Color;
 
+/**
+ * Message used to send the client an update on the deck.
+ */
 public class UpdateDeckMessage extends Message{
     private final Color color;
     private final boolean isResource;
