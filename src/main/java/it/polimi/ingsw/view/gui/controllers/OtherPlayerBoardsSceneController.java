@@ -66,7 +66,7 @@ public class OtherPlayerBoardsSceneController extends GenericController{
             viewCard.setFitWidth(64*3);
             viewCard.setLayoutX(996 + coord[0]*150);
             viewCard.setLayoutY(524 - coord[1]*77);
-            board.getChildren().addFirst(viewCard);
+            board.getChildren().addLast(viewCard);
         }
     }
 }

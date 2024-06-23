@@ -67,6 +67,8 @@ public class MainSceneController extends GenericController{
     @FXML
     private AnchorPane messages;
     @FXML
+    private VBox messagesV;
+    @FXML
     private ChoiceBox receiver;
     @FXML
     private TextField textMessage;
@@ -237,6 +239,7 @@ public class MainSceneController extends GenericController{
                 else{
                     guiHandler.sendMessageButtonClicked(textMessage.getText(), (String) receiver.getSelectionModel().getSelectedItem());
                 }
+                textMessage.clear();
             }
         });
         otherPlayersBoard.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
@@ -429,7 +432,7 @@ public class MainSceneController extends GenericController{
             viewCard.setFitWidth(64*3);
             viewCard.setLayoutX(996 + coord[0]*150);
             viewCard.setLayoutY(524 - coord[1]*77);
-            board.getChildren().addFirst(viewCard);
+            board.getChildren().addLast(viewCard);
             board.setLayoutX(1000);
             board.setLayoutY(530);
             int[][] buttonCornerCenter = {new int[]{6, 6, 7, 7}, new int[]{6, 7, 7, 6}};
@@ -439,24 +442,24 @@ public class MainSceneController extends GenericController{
                 if (player.getBoard().getCard(coord).getCorner(c).getState().equals(CornerState.VISIBLE)){
                     Button b = new Button();
                     b.setPrefSize(58, 52);
-                    b.setStyle("-fx-background-color: transparent");
+                    //b.setStyle("-fx-background-color: transparent");
                     b.setOnAction(event -> {
                         if(GridPane.getRowIndex(b) < GridPane.getColumnIndex(b)){
-                            placeCard(cardToPlace, new int[]{cornerCenter[0][1] + coord[0], cornerCenter[1][1] + coord[1]});
-                            buttonBoard.getChildren().remove((buttonCornerCenter[1][1] + coord[0]), (buttonCornerCenter[0][1] - coord[1]));
+                            placeCard(cardToPlace, new int[]{GridPane.getRowIndex(b) - buttonCornerCenter[0][1] + cornerCenter[1][1], GridPane.getColumnIndex(b) - buttonCornerCenter[1][1] + cornerCenter[0][1]});
+                            buttonBoard.getChildren().remove(b);
                         }
                         else if(GridPane.getRowIndex(b) > GridPane.getColumnIndex(b)){
-                            placeCard(cardToPlace, new int[]{cornerCenter[0][3] + coord[0], cornerCenter[1][3] + coord[1]});
-                            buttonBoard.getChildren().remove((buttonCornerCenter[1][3] + coord[0]), (buttonCornerCenter[0][3] - coord[1]));
+                            placeCard(cardToPlace, new int[]{GridPane.getRowIndex(b) - buttonCornerCenter[0][3] + cornerCenter[1][3], GridPane.getColumnIndex(b) - buttonCornerCenter[1][3] + cornerCenter[0][3]});
+                            buttonBoard.getChildren().remove(b);
                         }
                         else{
                             if(GridPane.getRowIndex(b) % 2 == 0){
-                                placeCard(cardToPlace, new int[]{cornerCenter[0][0] + coord[0], cornerCenter[1][0] + coord[1]});
-                                buttonBoard.getChildren().remove((buttonCornerCenter[1][0] + coord[0]), (buttonCornerCenter[0][0] - coord[1]));
+                                placeCard(cardToPlace, new int[]{GridPane.getRowIndex(b) - buttonCornerCenter[0][0] + cornerCenter[1][0], GridPane.getColumnIndex(b) - buttonCornerCenter[1][0] + cornerCenter[0][0]});
+                                buttonBoard.getChildren().remove(b);
                             }
                             else{
-                                placeCard(cardToPlace, new int[]{cornerCenter[0][2] + coord[0], cornerCenter[1][2] + coord[1]});
-                                buttonBoard.getChildren().remove((buttonCornerCenter[1][2] + coord[0]), (buttonCornerCenter[0][2] - coord[1]));
+                                placeCard(cardToPlace, new int[]{GridPane.getRowIndex(b) - buttonCornerCenter[0][2] + cornerCenter[1][2], GridPane.getColumnIndex(b) - buttonCornerCenter[1][2] + cornerCenter[0][2]});
+                                buttonBoard.getChildren().remove(b);
                             }
                         }
                     });
@@ -470,6 +473,7 @@ public class MainSceneController extends GenericController{
         //score track
         ArrayList<PlayerBean> allPlayers = new ArrayList<>(opponents);
         allPlayers.add(player);
+        ArrayList<Color> pionsColor = new ArrayList<>();
         for(PlayerBean p : allPlayers){
             if(pions.size() < allPlayers.size()){
                 switch(p.getPionColor()){
@@ -482,6 +486,7 @@ public class MainSceneController extends GenericController{
                         viewRed.setLayoutX(scoretrackZero[0][0]);
                         viewRed.setLayoutY(scoretrackZero[1][0]);
                         pions.add(viewRed);
+                        pionsColor.add(Color.RED);
                     }
                     case BLUE -> {
                         Image imageBlue = new Image(getClass().getResourceAsStream("/images/blue.png"));
@@ -492,6 +497,7 @@ public class MainSceneController extends GenericController{
                         viewBlue.setLayoutX(scoretrackZero[0][2]);
                         viewBlue.setLayoutY(scoretrackZero[1][2]);
                         pions.add(viewBlue);
+                        pionsColor.add(Color.BLUE);
                     }
                     case GREEN -> {
                         Image imageGreen = new Image(getClass().getResourceAsStream("/images/green.png"));
@@ -502,6 +508,7 @@ public class MainSceneController extends GenericController{
                         viewGreen.setLayoutX(scoretrackZero[0][1]);
                         viewGreen.setLayoutY(scoretrackZero[1][1]);
                         pions.add(viewGreen);
+                        pionsColor.add(Color.GREEN);
                     }
                     case YELLOW -> {
                         Image imageYellow = new Image(getClass().getResourceAsStream("/images/yellow.png"));
@@ -512,14 +519,25 @@ public class MainSceneController extends GenericController{
                         viewYellow.setLayoutX(scoretrackZero[0][3]);
                         viewYellow.setLayoutY(scoretrackZero[1][3]);
                         pions.add(viewYellow);
+                        pionsColor.add(Color.PURPLE);
                     }
                     case null, default -> {}
                 }
             }
+            else{
+                if(p.getPionColor() != null){
+                    pionsColor.add(p.getPionColor());
+
+                }
+            }
         }
         for (int i = 0; i < pions.size(); i++){
-            pions.get(i).setLayoutX(scoretrackFirstPion[0][allPlayers.get(i).getPoints()] + (scoretrackZero[0][i] - scoretrackZero[0][0]));
-            pions.get(i).setLayoutY(scoretrackFirstPion[1][allPlayers.get(i).getPoints()] + (scoretrackZero[1][i] - scoretrackZero[1][0]));
+            for(PlayerBean p : allPlayers){
+                if(p.getPionColor() != null && p.getPionColor().equals(pionsColor.get(i))){
+                    pions.get(i).setLayoutX(scoretrackFirstPion[0][p.getPoints()] + (scoretrackZero[0][i] - scoretrackZero[0][0]));
+                    pions.get(i).setLayoutY(scoretrackFirstPion[1][p.getPoints()] + (scoretrackZero[1][i] - scoretrackZero[1][0]));
+                }
+            }
         }
 
         //chat
@@ -527,10 +545,12 @@ public class MainSceneController extends GenericController{
         v.setSpacing(5);
         v.setAlignment(Pos.TOP_CENTER);
         for(String s : player.getChat()){
-            Text t = new Text(s);
-            t.setFont(new Font(10));
-            v.getChildren().add(t);
-            messages.getChildren().add(v);
+            if(!v.getChildren().contains(s)){
+                Text t = new Text(s);
+                t.setFont(new Font(10));
+                v.getChildren().add(t);
+                messages.getChildren().add(v);
+            }
         }
         if(receiver.getItems().size() < opponents.size()){
             receiver.getItems().add("global");

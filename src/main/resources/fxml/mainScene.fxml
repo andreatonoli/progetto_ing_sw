@@ -83,6 +83,8 @@
                   <ScrollPane prefHeight="200.0" prefWidth="200.0">
                     <content>
                       <AnchorPane fx:id="messages" minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
+                          <VBox fx:id="messagesV" alignment="TOP_CENTER" prefHeight="100.0" prefWidth="250.0" spacing="3.0">
+                          </VBox>
                       </AnchorPane>
                     </content>
                   </ScrollPane>
