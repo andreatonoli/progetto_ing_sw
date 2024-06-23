@@ -8,7 +8,8 @@ import it.polimi.ingsw.model.card.Card;
 import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.GameState;
 import it.polimi.ingsw.model.enums.PlayerState;
-import it.polimi.ingsw.model.exceptions.*;
+import it.polimi.ingsw.model.exceptions.EmptyException;
+import it.polimi.ingsw.model.exceptions.NotEnoughPlayersException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.messages.*;
 import org.junit.jupiter.api.DisplayName;
@@ -16,8 +17,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.lang.reflect.Field;
 import java.util.LinkedList;
-
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -95,7 +96,7 @@ public class TurnHandlerTest {
 
 
         TurnHandler turnHandler = spy(new TurnHandler(game, controller));
-        java.lang.reflect.Field field = TurnHandler.class.getDeclaredField("endingByPlacingCard");
+        Field field = TurnHandler.class.getDeclaredField("endingByPlacingCard");
         field.setAccessible(true);
 
 
@@ -118,7 +119,7 @@ public class TurnHandlerTest {
         Game game = mock(Game.class);
 
         TurnHandler turnHandler = spy(new TurnHandler(game, controller));
-        java.lang.reflect.Field field = TurnHandler.class.getDeclaredField("disconnectedWhileInTurn");
+        Field field = TurnHandler.class.getDeclaredField("disconnectedWhileInTurn");
         field.setAccessible(true);
         field.set(turnHandler,true);
 
@@ -152,7 +153,7 @@ public class TurnHandlerTest {
         LinkedList<Card> goldDeck = mock(LinkedList.class);
 
         TurnHandler turnHandler = spy(new TurnHandler(game, controller));
-        java.lang.reflect.Field field = TurnHandler.class.getDeclaredField("disconnectedWhileInTurn");
+        Field field = TurnHandler.class.getDeclaredField("disconnectedWhileInTurn");
         field.setAccessible(true);
         field.set(turnHandler,true);
 
@@ -178,33 +179,38 @@ public class TurnHandlerTest {
         verify(turnHandler).notifyAll(any(PlayerBoardUpdateMessage.class));
     }
 
-//    @Test
-//    @DisplayName("testing the declareWinnerByDisconnection method")
-//    void declareWinnerByDisconnectionTest() throws Exception {
-//        Player player1 = mock(Player.class);
-//        Controller controller = mock(Controller.class);
-//        Game game = mock(Game.class);
-//
-//        TurnHandler turnHandler = spy(new TurnHandler(game, controller));
-//        java.lang.reflect.Field field = TurnHandler.class.getDeclaredField("disconnectedWhileInTurn");
-//        field.setAccessible(true);
-//        field.set(turnHandler,false);
-//
-//        when(game.getDisconnections()).thenReturn(1);
-//        when(game.getLobbySize()).thenReturn(2);
-//
-//        turnHandler.changePlayerState(player1);
-//
-//        Thread.sleep(130000);
-//
-//        verify(turnHandler).notifyAll(any(WaitingReconnectionMessage.class));
-//        verify(game).endGameByDisconnection();
-//        verify(game).setGameState(GameState.END);
-//        verify(controller).removeFromServer();
-//        verify(turnHandler).notifyAll(any(WinnerMessage.class));
-//        verify(turnHandler).notifyAll(any(GameStateMessage.class));
-//
-//    }
+    @Test
+    @DisplayName("testing the declareWinnerByDisconnection method")
+    void declareWinnerByDisconnectionTest() throws Exception {
+        Player player1 = mock(Player.class);
+        Controller controller = mock(Controller.class);
+        Game game = mock(Game.class);
+        int reconTime = 10;
+
+        TurnHandler turnHandler = spy(new TurnHandler(game, controller));
+
+        Field field = TurnHandler.class.getDeclaredField("disconnectedWhileInTurn");
+        field.setAccessible(true);
+        field.set(turnHandler,false);
+
+        Field reconnectionTime = TurnHandler.class.getDeclaredField("RECONNECTION_TIME");
+        reconnectionTime.setAccessible(true);
+        reconnectionTime.set(turnHandler, reconTime);
+
+        when(game.getDisconnections()).thenReturn(1);
+        when(game.getLobbySize()).thenReturn(2);
+
+        turnHandler.changePlayerState(player1);
+
+        Thread.sleep(50);
+
+        verify(turnHandler).notifyAll(any(WaitingReconnectionMessage.class));
+        verify(game).endGameByDisconnection();
+        verify(game).setGameState(GameState.END);
+        verify(controller).removeFromServer();
+        verify(turnHandler).notifyAll(any(WinnerMessage.class));
+        verify(turnHandler).notifyAll(any(GameStateMessage.class));
+    }
 
     @Test
     @DisplayName("testing the changePlayerState in the last turn")
@@ -215,10 +221,11 @@ public class TurnHandlerTest {
         Game game = mock(Game.class);
 
         TurnHandler turnHandler = spy(new TurnHandler(game, controller));
-        java.lang.reflect.Field field1 = TurnHandler.class.getDeclaredField("endCountDown");
+        Field field1 = TurnHandler.class.getDeclaredField("endCountDown");
         field1.setAccessible(true);
         field1.set(turnHandler,0);
-        java.lang.reflect.Field field2 = TurnHandler.class.getDeclaredField("endingCycle");
+        
+        Field field2 = TurnHandler.class.getDeclaredField("endingCycle");
         field2.setAccessible(true);
         field2.set(turnHandler,true);
 

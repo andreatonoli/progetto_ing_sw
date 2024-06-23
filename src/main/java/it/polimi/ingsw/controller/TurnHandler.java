@@ -26,6 +26,11 @@ public class TurnHandler extends Observable {
     private final Controller controller;
 
     /**
+     * Time in milliseconds before the game ends if all players but one are disconnected.
+     */
+    private int RECONNECTION_TIME = 120000;
+
+    /**
      * Index of the player in the lobby.
      */
     private int j = 0;
@@ -164,7 +169,7 @@ public class TurnHandler extends Observable {
                     rec.cancel();
                     t.cancel();
                 }
-            }, 120000, 2000);
+            }, RECONNECTION_TIME, 2000);
 
             rec.schedule(new TimerTask() {
                 @Override

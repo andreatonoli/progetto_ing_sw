@@ -64,4 +64,31 @@ public class ServerControllerTest {
         verify(serverMock, times(1)).getClientFromName(username);
         verify(controllerMock, times(1)).joinGame(connectionMock);
     }
+
+    @Test
+    @DisplayName("Join lobby when lobby is full")
+    public void joinFullLobby() throws Exception {
+        // Mocking dependencies
+        String username = "luigi";
+        Server serverMock = mock(Server.class);
+        Connection connectionMock = mock(Connection.class);
+        Controller controllerMock = mock(Controller.class);
+
+        // Create the class under test with the mocked dependencies
+        ServerController serverController = new ServerController(serverMock);
+
+        // Define behavior for mocks
+        when(serverMock.getClientFromName(username)).thenReturn(connectionMock);
+        when(controllerMock.joinGame(connectionMock)).thenThrow(FullLobbyExeption.class);
+
+        // Call the method under test
+        boolean result = serverController.joinLobby(username, controllerMock);
+
+        // Verify interactions and assert results
+        assertFalse(result);
+        verify(serverMock, times(1)).getClientFromName(username);
+        verify(controllerMock, times(1)).joinGame(connectionMock);
+        verify(serverMock, times(1)).removePlayers(username);
+        verify(serverMock, times(1)).login(connectionMock);
+    }
 }

@@ -20,6 +20,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -101,7 +102,7 @@ public class ControllerTest {
         Controller controller = spy(new Controller(4, 0));
 
         // Using reflection to set the internal turnHandler since it's created in the constructor
-        java.lang.reflect.Field field = Controller.class.getDeclaredField("turnHandler");
+        Field field = Controller.class.getDeclaredField("turnHandler");
         field.setAccessible(true);
         field.set(controller, turnHandler);
 
@@ -133,7 +134,7 @@ public class ControllerTest {
         Controller controller = spy(new Controller(4, 0));
 
         // Using reflection to set the internal turnHandler since it's created in the constructor
-        java.lang.reflect.Field field = Controller.class.getDeclaredField("turnHandler");
+        Field field = Controller.class.getDeclaredField("turnHandler");
         field.setAccessible(true);
         field.set(controller, turnHandler);
 
@@ -165,7 +166,7 @@ public class ControllerTest {
         Controller controller = spy(new Controller(4, 0));
 
         // Using reflection to set the internal turnHandler since it's created in the constructor
-        java.lang.reflect.Field field = Controller.class.getDeclaredField("turnHandler");
+        Field field = Controller.class.getDeclaredField("turnHandler");
         field.setAccessible(true);
         field.set(controller, turnHandler);
 
@@ -192,7 +193,7 @@ public class ControllerTest {
         Controller controller = spy(new Controller(4, 0));
 
         // Using reflection to set the internal turnHandler since it's created in the constructor
-        java.lang.reflect.Field field = Controller.class.getDeclaredField("turnHandler");
+        Field field = Controller.class.getDeclaredField("turnHandler");
         field.setAccessible(true);
         field.set(controller, turnHandler);
 
@@ -219,7 +220,7 @@ public class ControllerTest {
         Controller controller = spy(new Controller(4, 0));
 
         // Using reflection to set the internal turnHandler since it's created in the constructor
-        java.lang.reflect.Field field = Controller.class.getDeclaredField("turnHandler");
+        Field field = Controller.class.getDeclaredField("turnHandler");
         field.setAccessible(true);
         field.set(controller, turnHandler);
 
@@ -275,7 +276,7 @@ public class ControllerTest {
         Controller controller = spy(new Controller(4, 0));
 
         // Using reflection to set the internal turnHandler since it's created in the constructor
-        java.lang.reflect.Field field = Controller.class.getDeclaredField("turnHandler");
+        Field field = Controller.class.getDeclaredField("turnHandler");
         field.setAccessible(true);
         field.set(controller, turnHandler);
 
@@ -307,7 +308,7 @@ public class ControllerTest {
         Controller controller = spy(new Controller(4, 0));
 
         // Using reflection to set the internal turnHandler since it's created in the constructor
-        java.lang.reflect.Field field = Controller.class.getDeclaredField("turnHandler");
+        Field field = Controller.class.getDeclaredField("turnHandler");
         field.setAccessible(true);
         field.set(controller, turnHandler);
 
@@ -339,7 +340,7 @@ public class ControllerTest {
         Controller controller = spy(new Controller(4, 0));
 
         // Using reflection to set the internal turnHandler since it's created in the constructor
-        java.lang.reflect.Field field = Controller.class.getDeclaredField("turnHandler");
+        Field field = Controller.class.getDeclaredField("turnHandler");
         field.setAccessible(true);
         field.set(controller, turnHandler);
 
@@ -371,7 +372,7 @@ public class ControllerTest {
         Controller controller = spy(new Controller(4, 0));
 
         // Using reflection to set the internal turnHandler since it's created in the constructor
-        java.lang.reflect.Field field = Controller.class.getDeclaredField("turnHandler");
+        Field field = Controller.class.getDeclaredField("turnHandler");
         field.setAccessible(true);
         field.set(controller, turnHandler);
 
@@ -402,7 +403,7 @@ public class ControllerTest {
         Controller controller = spy(new Controller(4, 0));
 
         // Using reflection to set the internal turnHandler since it's created in the constructor
-        java.lang.reflect.Field field = Controller.class.getDeclaredField("turnHandler");
+        Field field = Controller.class.getDeclaredField("turnHandler");
         field.setAccessible(true);
         field.set(controller, turnHandler);
 
@@ -427,7 +428,7 @@ public class ControllerTest {
         Controller controller = spy(new Controller(4, 0));
 
         // Using reflection to set the internal turnHandler since it's created in the constructor
-        java.lang.reflect.Field field = Controller.class.getDeclaredField("turnHandler");
+        Field field = Controller.class.getDeclaredField("turnHandler");
         field.setAccessible(true);
         field.set(controller, turnHandler);
 
@@ -454,12 +455,12 @@ public class ControllerTest {
         Controller controller = spy(new Controller(4, 0));
 
         // Using reflection to set the internal turnHandler since it's created in the constructor
-        java.lang.reflect.Field turnHandelerField = Controller.class.getDeclaredField("turnHandler");
+        Field turnHandelerField = Controller.class.getDeclaredField("turnHandler");
         turnHandelerField.setAccessible(true);
         turnHandelerField.set(controller, turnHandler);
 
         // Using reflection to set the internal game since it's created in the constructor
-        java.lang.reflect.Field gameField = Controller.class.getDeclaredField("game");
+        Field gameField = Controller.class.getDeclaredField("game");
         gameField.setAccessible(true);
         gameField.set(controller, game);
 
@@ -490,12 +491,12 @@ public class ControllerTest {
         Controller controller = spy(new Controller(4, 0));
 
         // Using reflection to set the internal turnHandler since it's created in the constructor
-        java.lang.reflect.Field field = Controller.class.getDeclaredField("turnHandler");
+        Field field = Controller.class.getDeclaredField("turnHandler");
         field.setAccessible(true);
         field.set(controller, turnHandler);
 
         // Using reflection to set the internal game since it's created in the constructor
-        java.lang.reflect.Field gameField = Controller.class.getDeclaredField("game");
+        Field gameField = Controller.class.getDeclaredField("game");
         gameField.setAccessible(true);
         gameField.set(controller, game);
 
@@ -551,17 +552,17 @@ public class ControllerTest {
         Controller controller = spy(new Controller(4,0));
 
         // Using reflection to set the internal turnHandler since it's created in the constructor
-        java.lang.reflect.Field field = Controller.class.getDeclaredField("turnHandler");
+        Field field = Controller.class.getDeclaredField("turnHandler");
         field.setAccessible(true);
         field.set(controller, turnHandler);
 
         // Using reflection to set the internal game since it's created in the constructor
-        java.lang.reflect.Field gameField = Controller.class.getDeclaredField("game");
+        Field gameField = Controller.class.getDeclaredField("game");
         gameField.setAccessible(true);
         gameField.set(controller, game);
 
         // Using reflection to set the internal connectedPlayers map since it's created in the constructor
-        java.lang.reflect.Field connectedPlayersField = Controller.class.getDeclaredField("connectedPlayers");
+        Field connectedPlayersField = Controller.class.getDeclaredField("connectedPlayers");
         connectedPlayersField.setAccessible(true);
         connectedPlayersField.set(controller, connectedPlayers);
 
@@ -630,7 +631,7 @@ public class ControllerTest {
         Controller controller = spy(new Controller(4,0));
 
         // Using reflection to set the internal game since it's created in the constructor
-        java.lang.reflect.Field gameField = Controller.class.getDeclaredField("game");
+        Field gameField = Controller.class.getDeclaredField("game");
         gameField.setAccessible(true);
         gameField.set(controller, game);
 
@@ -659,12 +660,12 @@ public class ControllerTest {
         Controller controller = spy(new Controller(4,0));
 
         // Using reflection to set the internal turnHandler since it's created in the constructor
-        java.lang.reflect.Field field = Controller.class.getDeclaredField("turnHandler");
+        Field field = Controller.class.getDeclaredField("turnHandler");
         field.setAccessible(true);
         field.set(controller, turnHandler);
 
         // Using reflection to set the internal game since it's created in the constructor
-        java.lang.reflect.Field gameField = Controller.class.getDeclaredField("game");
+        Field gameField = Controller.class.getDeclaredField("game");
         gameField.setAccessible(true);
         gameField.set(controller, game);
 
@@ -700,12 +701,12 @@ public class ControllerTest {
         Controller controller = spy(new Controller(4, 0));
 
         // Using reflection to set the internal turnHandler since it's created in the constructor
-        java.lang.reflect.Field field = Controller.class.getDeclaredField("turnHandler");
+        Field field = Controller.class.getDeclaredField("turnHandler");
         field.setAccessible(true);
         field.set(controller, turnHandler);
 
         // Using reflection to set the internal game since it's created in the constructor
-        java.lang.reflect.Field gameField = Controller.class.getDeclaredField("game");
+        Field gameField = Controller.class.getDeclaredField("game");
         gameField.setAccessible(true);
         gameField.set(controller, game);
 
@@ -739,12 +740,12 @@ public class ControllerTest {
         Controller controller = spy(new Controller(4, 0));
 
         // Using reflection to set the internal turnHandler since it's created in the constructor
-        java.lang.reflect.Field field = Controller.class.getDeclaredField("turnHandler");
+        Field field = Controller.class.getDeclaredField("turnHandler");
         field.setAccessible(true);
         field.set(controller, turnHandler);
 
         // Using reflection to set the internal game since it's created in the constructor
-        java.lang.reflect.Field gameField = Controller.class.getDeclaredField("game");
+        Field gameField = Controller.class.getDeclaredField("game");
         gameField.setAccessible(true);
         gameField.set(controller, game);
 
@@ -781,12 +782,12 @@ public class ControllerTest {
         Controller controller = spy(new Controller(4, 0));
 
         // Using reflection to set the internal turnHandler since it's created in the constructor
-        java.lang.reflect.Field field = Controller.class.getDeclaredField("turnHandler");
+        Field field = Controller.class.getDeclaredField("turnHandler");
         field.setAccessible(true);
         field.set(controller, turnHandler);
 
         // Using reflection to set the internal game since it's created in the constructor
-        java.lang.reflect.Field gameField = Controller.class.getDeclaredField("game");
+        Field gameField = Controller.class.getDeclaredField("game");
         gameField.setAccessible(true);
         gameField.set(controller, game);
 
@@ -825,12 +826,12 @@ public class ControllerTest {
         Controller controller = spy(new Controller(4, 0));
 
         // Using reflection to set the internal turnHandler since it's created in the constructor
-        java.lang.reflect.Field field = Controller.class.getDeclaredField("turnHandler");
+        Field field = Controller.class.getDeclaredField("turnHandler");
         field.setAccessible(true);
         field.set(controller, turnHandler);
 
         // Using reflection to set the internal game since it's created in the constructor
-        java.lang.reflect.Field gameField = Controller.class.getDeclaredField("game");
+        Field gameField = Controller.class.getDeclaredField("game");
         gameField.setAccessible(true);
         gameField.set(controller, game);
 
@@ -841,7 +842,7 @@ public class ControllerTest {
         connectedPlayers.put(opponentConnection2, opponent2);
 
         // Using reflection to set the internal connectedPlayers map since it's created in the constructor
-        java.lang.reflect.Field connectedPlayersField = Controller.class.getDeclaredField("connectedPlayers");
+        Field connectedPlayersField = Controller.class.getDeclaredField("connectedPlayers");
         connectedPlayersField.setAccessible(true);
         connectedPlayersField.set(controller, connectedPlayers);
 
@@ -879,5 +880,215 @@ public class ControllerTest {
 
         // Verify reconnection message sent to user
         verify(user, atLeastOnce()).sendMessage(any(ReconnectionMessage.class));
+    }
+
+    @Test
+    @DisplayName("Faking a setup")
+    public void fakePlayerSetup() throws Exception{
+        // Mocking dependencies
+        Connection user = mock(Connection.class);
+        Player player = mock(Player.class);
+        PlayerBoard playerBoard = mock(PlayerBoard.class);
+        Game game = mock(Game.class);
+        TurnHandler turnHandler = mock(TurnHandler.class);
+        Card starterCard = mock(Card.class);
+        LinkedList<Color> availableColors = new LinkedList<>(Arrays.asList(Color.RED, Color.BLUE, Color.GREEN));
+        Achievement[] personalObj = new Achievement[2];
+        personalObj[0] = new AchievementDiagonal(Color.RED, 1);
+        personalObj[1] = new AchievementDiagonal(Color.PURPLE, 4);
+
+        // Create an instance of Controller
+        Controller controller = spy(new Controller(4, 0));
+
+        // Using reflection to set the internal turnHandler since it's created in the constructor
+        Field field = Controller.class.getDeclaredField("turnHandler");
+        field.setAccessible(true);
+        field.set(controller, turnHandler);
+
+        // Using reflection to set the internal game since it's created in the constructor
+        Field gameField = Controller.class.getDeclaredField("game");
+        gameField.setAccessible(true);
+        gameField.set(controller, game);
+
+        // Stubbing methods
+        when(user.getUsername()).thenReturn("Paolo");
+        when(game.getPlayerByUsername(anyString())).thenReturn(player);
+        when(controller.getPlayerByClient(user)).thenReturn(player);
+        when(player.getPlayerBoard()).thenReturn(playerBoard);
+        when(game.getAvailableColors()).thenReturn(availableColors);
+        when(playerBoard.getStarterCard()).thenReturn(starterCard);
+        when(player.getPersonalObj()).thenReturn(personalObj);
+        doReturn(null).when(turnHandler).changeSetupPlayer();
+
+        // Call the method to be tested
+        controller.disconnectedWhileSetupping(user, true);
+
+        // Verify that the player's setup was handled correctly
+        verify(playerBoard).setStarterCard(any(Card.class));
+        verify(player).setChosenObj(any(Achievement.class));
+        verify(player).setPionColor(any(Color.class));
+        verify(game).setGameState(GameState.IN_GAME);
+    }
+
+    @Test
+    @DisplayName("Remove all players from the server")
+    public void removesAllPlayers() throws Exception{
+        // Mocking dependencies
+        Connection connection1 = mock(Connection.class);
+        Connection connection2 = mock(Connection.class);
+        Game game = mock(Game.class);
+        ConcurrentHashMap<Connection, Player> connectedPlayers = new ConcurrentHashMap<>();
+        connectedPlayers.put(connection1, mock(Player.class));
+        connectedPlayers.put(connection2, mock(Player.class));
+
+        // Create an instance of Controller
+        Controller controller = new Controller(2, 0);
+
+        // Stubbing methods
+        when(game.getLobbySize()).thenReturn(2);
+
+        // Using reflection to set the internal game since it's created in the constructor
+        Field gameField = Controller.class.getDeclaredField("game");
+        gameField.setAccessible(true);
+        gameField.set(controller, game);
+
+        // Using reflection to set the internal connectedPlayers map since it's created in the constructor
+        Field connectedPlayersField = Controller.class.getDeclaredField("connectedPlayers");
+        connectedPlayersField.setAccessible(true);
+        connectedPlayersField.set(controller, connectedPlayers);
+
+        // Call the method to be tested
+        controller.removeFromServer();
+
+        // Verify interactions
+        verify(connection1).removeFromServer(anyBoolean());
+        verify(connection2).removeFromServer(anyBoolean());
+    }
+
+    @Test
+    @DisplayName("Remove all players from an empty server")
+    public void removeFromEmptyServer() throws Exception{
+        // Mocking dependencies
+        Connection connection1 = mock(Connection.class);
+        Connection connection2 = mock(Connection.class);
+        Game game = mock(Game.class);
+        ConcurrentHashMap<Connection, Player> connectedPlayers = new ConcurrentHashMap<>();
+
+        // Create an instance of Controller
+        Controller controller = new Controller(2, 0);
+
+        // Using reflection to set the internal game since it's created in the constructor
+        Field gameField = Controller.class.getDeclaredField("game");
+        gameField.setAccessible(true);
+        gameField.set(controller, game);
+
+        // Using reflection to set the internal connectedPlayers map since it's created in the constructor
+        Field connectedPlayersField = Controller.class.getDeclaredField("connectedPlayers");
+        connectedPlayersField.setAccessible(true);
+        connectedPlayersField.set(controller, connectedPlayers);
+
+        // Call the method to be tested
+        controller.removeFromServer();
+
+        // Verify interactions
+        verify(connection1, never()).removeFromServer(anyBoolean());
+        verify(connection2, never()).removeFromServer(anyBoolean());
+    }
+
+    @Test
+    @DisplayName("Player in turn disconnection")
+    public void playerInTurnDisconnection() throws  Exception{
+        // Mocking dependencies
+        Game game = mock(Game.class);
+        TurnHandler turnHandler = mock(TurnHandler.class);
+        Player player = mock(Player.class);
+
+        // Create an instance of Controller
+        Controller controller = new Controller(4, 0);
+
+        // Stubbing methods
+        when(game.getPlayerByUsername("player1")).thenReturn(player);
+
+        // Using reflection to set the internal turnHandler since it's created in the constructor
+        Field field = Controller.class.getDeclaredField("turnHandler");
+        field.setAccessible(true);
+        field.set(controller, turnHandler);
+
+        // Using reflection to set the internal game since it's created in the constructor
+        Field gameField = Controller.class.getDeclaredField("game");
+        gameField.setAccessible(true);
+        gameField.set(controller, game);
+
+        // Call the method to be tested
+        controller.disconnectedWhileInTurn("player1");
+
+        // Verify interactions
+        verify(turnHandler).disconnectedWhileInTurn(player);
+    }
+
+    @Test
+    @DisplayName("Send chat message to all players")
+    public void sendChatMessageToAllPlayers() {
+        // Mocking dependencies
+        Connection sender = mock(Connection.class);
+        Player player = mock(Player.class);
+        Controller controller = spy(new Controller(4, 0));
+
+        // Stubbing methods
+        when(controller.getPlayerByClient(sender)).thenReturn(player);
+
+        // Call the method to be tested
+        controller.sendChatMessage(sender, "Hello world");
+
+        // Verify interactions
+        verify(player).sendChatMessage("Hello world");
+        verify(controller).notifyAll(any(ChatMessage.class));
+    }
+
+    @Test
+    @DisplayName("Send chat message successfully")
+    public void sendChatMessageSuccessfully() {
+        // Mocking dependencies
+        Connection sender = mock(Connection.class);
+        Connection receiver = mock(Connection.class);
+        Player senderPlayer = mock(Player.class);
+        Player receiverPlayer = mock(Player.class);
+        Controller controller = spy(new Controller(4, 0));
+
+        // Stubbing methods
+        when(controller.getPlayerByClient(sender)).thenReturn(senderPlayer);
+        when(controller.getPlayerByClient(receiver)).thenReturn(receiverPlayer);
+
+        // Call the method to be tested
+        controller.sendChatMessage(sender, receiver, "Hello, World!");
+
+        // Verify interactions
+        try {
+            verify(senderPlayer).sendChatMessage(receiverPlayer, "Hello, World!");
+        } catch (PlayerNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        verify(sender).sendMessage(any(ChatMessage.class));
+        verify(receiver).sendMessage(any(ChatMessage.class));
+    }
+
+    @Test
+    @DisplayName("Send chat message when receiver not found")
+    public void sendChatMessageReceiverNotFound() throws Exception{
+        // Mocking dependencies
+        Connection sender = mock(Connection.class);
+        Connection receiver = mock(Connection.class);
+        Player senderPlayer = mock(Player.class);
+        Controller controller = spy(new Controller(4, 0));
+
+        // Stubbing methods
+        when(controller.getPlayerByClient(sender)).thenReturn(senderPlayer);
+        doThrow(PlayerNotFoundException.class).when(senderPlayer).sendChatMessage(any(), any());
+
+        // Call the method to be tested
+        controller.sendChatMessage(sender, receiver, "Hello world");
+
+        // Verify interactions
+        verify(sender).sendMessage(any(ErrorMessage.class));
     }
 }
