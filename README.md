@@ -24,7 +24,7 @@ The following documentation includes a description for most of the classes and m
 
 ### JUnit Testing
 
-All the components have been tested using [JUnit](https://junit.org/junit5/) for the model, with the help of [Mockito](https://site.mockito.org/) to test the controller. Here are the [results]().
+All the components have been tested using [JUnit](https://junit.org/junit5/) for the model, with the help of [Mockito](https://site.mockito.org/) to test the controller. Here are the [results](https://github.com/rivaPolimi/ing-sw-2024-riva-pieruz-sartore-tonoli/blob/network/deliverables/Test_Results.png).
 
 ## Implemented Features
 
