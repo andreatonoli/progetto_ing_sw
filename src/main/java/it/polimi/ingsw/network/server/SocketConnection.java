@@ -211,7 +211,7 @@ public class SocketConnection extends Connection implements Runnable {
     }
 
     /**
-     * This method is ran when the client disconnects.
+     * This method is run when the client disconnects.
      */
     public void onDisconnect() throws NullPointerException{
         try {

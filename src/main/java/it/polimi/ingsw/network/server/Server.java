@@ -220,7 +220,7 @@ public class Server {
      */
     public void joinLobby(String username, int indexGame){
         try {
-            Controller controller = this.startingGames.get(indexGame);
+            Controller controller = this.startingGames.get(startingGamesId.indexOf(indexGame));
             boolean full = this.controller.joinLobby(username, controller);
             if (full) {
                 this.activeGames.add(controller);
@@ -228,6 +228,7 @@ public class Server {
                 this.startingGamesId.remove((Integer) controller.getId());
             }
         } catch (Exception e){
+            System.out.println(e.getMessage());
             client.get(username).sendMessage(new GenericMessage("an error as occurred, please try again."));
             login(client.get(username));
             client.remove(username);
