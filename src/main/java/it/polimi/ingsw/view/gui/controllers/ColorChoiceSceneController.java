@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view.gui.controllers;
 
 import it.polimi.ingsw.model.enums.Color;
+import it.polimi.ingsw.view.gui.Gui;
 import it.polimi.ingsw.view.gui.GuiInputHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -84,6 +85,7 @@ public class ColorChoiceSceneController extends GenericController{
             int finalI = i;
             b.setOnAction(event -> {
                 Alert a = new Alert(Alert.AlertType.CONFIRMATION);
+                a.initOwner(Gui.stage.getOwner());
                 ButtonType yes = new ButtonType("Confirm");
                 ButtonType no = new ButtonType("Cancel");
                 a.setTitle("Choosing color");

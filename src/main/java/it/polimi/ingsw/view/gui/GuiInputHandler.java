@@ -105,6 +105,7 @@ public class GuiInputHandler implements Ui {
 
     public void nextLobbySizeButtonClicked(int lobbySize) {
         client.setLobbySize(lobbySize);
+        Platform.runLater(() -> Gui.setScene(Gui.getScenes().get(GuiScenes.WAITING_SCENE.ordinal())));
     }
 
     public void nextStarterCardButtonClicked(boolean side, Card starter){
@@ -113,10 +114,12 @@ public class GuiInputHandler implements Ui {
 
     public void chosenAchievement(Achievement selectedAchievement){
         client.chooseAchievement(selectedAchievement);
+        Platform.runLater(() -> Gui.setScene(Gui.getScenes().get(GuiScenes.WAITING_SETUP_SCENE.ordinal())));
     }
 
     public void chosenColor(Color selectedColor){
         client.chooseColor(selectedColor);
+        Platform.runLater(() -> Gui.setScene(Gui.getScenes().get(GuiScenes.WAITING_COLOR_SCENE.ordinal())));
     }
 
     public void drawDeckButtonClicked(String s){
@@ -124,26 +127,30 @@ public class GuiInputHandler implements Ui {
     }
 
     public void drawCardButtonClicked(String s){
-        client.drawCard(s);
+        client.drawCardFromBoard(Integer.parseInt(s));
     }
 
-    public void placeCard(Card cardToPlace, int[] placingCoordinates){
-        client.placeCard(cardToPlace, placingCoordinates);
-    }
+    public void placeCard(Card cardToPlace, int[] placingCoordinates){ client.placeCard(cardToPlace, placingCoordinates); }
 
-    public void sendGlobalMessageButtonClicked(String message){
-        client.sendChatMessage(message);
-    }
+    public void sendGlobalMessageButtonClicked(String message){ client.sendChatMessage(message); }
 
     public void sendMessageButtonClicked(String message, String receiver){
         client.sendChatMessage(receiver, message);
     }
 
-    public void otherPlayersBoardButtonClicked(PlayerBean other){
+    public void otherPlayersBoardButtonClicked(PlayerBean other, PlayerBean player, GameBean game, ArrayList<PlayerBean> players){
         Platform.runLater(() -> {
             OtherPlayerBoardsSceneController c = (OtherPlayerBoardsSceneController) GuiScenes.getController(GuiScenes.OTHER_PLAYER_BOARDS_SCENE);
-            c.setBoard(other);
+            c.setBoard(other, player, game, players);
             Gui.setScene(Gui.getScenes().get(GuiScenes.OTHER_PLAYER_BOARDS_SCENE.ordinal()));
+        });
+    }
+
+    public void backButtonClicked(PlayerBean player, GameBean game, ArrayList<PlayerBean> opponents){
+        Platform.runLater(() -> {
+            MainSceneController c = (MainSceneController) GuiScenes.getController(GuiScenes.MAIN_SCENE);
+            c.setBoard(player, game, opponents);
+            Gui.setScene(Gui.getScenes().get(GuiScenes.MAIN_SCENE.ordinal()));
         });
     }
 
@@ -216,6 +223,10 @@ public class GuiInputHandler implements Ui {
 
     @Override
     public void declareWinners(ArrayList<String> winners) {
-
+        Platform.runLater(() -> {
+            WinnersSceneController c = (WinnersSceneController) GuiScenes.getController(GuiScenes.WINNERS_SCENE);
+            c.setWinners(winners);
+            Gui.setScene(Gui.getScenes().get(GuiScenes.WINNERS_SCENE.ordinal()));
+        });
     }
 }

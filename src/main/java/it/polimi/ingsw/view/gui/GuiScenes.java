@@ -18,7 +18,8 @@ public enum GuiScenes {
     COLOR_CHOICE_SCENE("/fxml/colorChoiceScene.fxml"),
     WAITING_COLOR_SCENE("/fxml/waitingColorScene.fxml"),
     MAIN_SCENE("/fxml/mainScene.fxml"),
-    OTHER_PLAYER_BOARDS_SCENE("/fxml/otherPlayerBoardsScene.fxml");
+    OTHER_PLAYER_BOARDS_SCENE("/fxml/otherPlayerBoardsScene.fxml"),
+    WINNERS_SCENE("/fxml/winnersScene.fxml");
 
     private final String fxml;
     private GenericController controller;

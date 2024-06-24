@@ -133,7 +133,7 @@ public class Tui implements Ui {
     }
 
     /**
-     * Starts the TUI, asking the player the server address and port.
+     * Starts the TUI instance and begins the login phase
      */
     public void run(){
         try {
