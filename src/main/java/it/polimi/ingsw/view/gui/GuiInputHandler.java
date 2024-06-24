@@ -85,6 +85,7 @@ public class GuiInputHandler implements Ui {
     
     public void joinLobbyButtonClicked(int selectedLobby, List<Integer> startingGamesId, List<Integer> gamesWithDisconnectionsId){
         client.setOnConnectionAction(selectedLobby, startingGamesId, gamesWithDisconnectionsId);
+        Platform.runLater(() -> Gui.setScene(Gui.getScenes().get(GuiScenes.WAITING_SCENE.ordinal())));
     }
 
     public void createLobbyButtonClicked(List<Integer> startingGamesId, List<Integer> gamesWithDisconnectionsId){
@@ -101,6 +102,7 @@ public class GuiInputHandler implements Ui {
     
     public void reconnectButtonClicked(int selectedLobby, List<Integer> startingGamesId, List<Integer> gamesWithDisconnectionsId){
         client.setOnConnectionAction(selectedLobby, startingGamesId, gamesWithDisconnectionsId);
+        Platform.runLater(() -> Gui.setScene(Gui.getScenes().get(GuiScenes.WAITING_SCENE.ordinal())));
     }
 
     public void nextLobbySizeButtonClicked(int lobbySize) {
@@ -218,7 +220,10 @@ public class GuiInputHandler implements Ui {
 
     @Override
     public void setMessage(String message, boolean isError) {
-
+        Platform.runLater(() -> {
+            MainSceneController c = (MainSceneController) GuiScenes.getController(GuiScenes.MAIN_SCENE);
+            c.setMessage(message, isError);
+        });
     }
 
     @Override

@@ -6,7 +6,9 @@ import it.polimi.ingsw.model.enums.CornerState;
 import it.polimi.ingsw.model.enums.PlayerState;
 import it.polimi.ingsw.network.client.GameBean;
 import it.polimi.ingsw.network.client.PlayerBean;
+import it.polimi.ingsw.view.gui.Gui;
 import it.polimi.ingsw.view.gui.GuiInputHandler;
+import javafx.css.PseudoClass;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -68,6 +70,8 @@ public class MainSceneController extends GenericController{
     private AnchorPane messages;
     @FXML
     private VBox messagesV;
+    @FXML
+    private VBox errorbox;
     @FXML
     private ChoiceBox receiver;
     @FXML
@@ -138,6 +142,31 @@ public class MainSceneController extends GenericController{
         gold2.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             guiHandler.drawCardButtonClicked("4");
         });
+        flipCard(flip1, hand1, viewHand1, h1);
+        flipCard(flip2, hand2, viewHand2, h2);
+        flipCard(flip3, hand3, viewHand3, h3);
+        chat.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            if(!textMessage.getText().isEmpty()){
+                if(receiver.getSelectionModel().getSelectedItem().equals("global")){
+                    guiHandler.sendGlobalMessageButtonClicked(textMessage.getText());
+                }
+                else{
+                    guiHandler.sendMessageButtonClicked(textMessage.getText(), (String) receiver.getSelectionModel().getSelectedItem());
+                }
+                textMessage.clear();
+            }
+        });
+        otherPlayersBoard.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            for(PlayerBean p : opponents){
+                if(p.getUsername().equals(otherPlayers.getSelectionModel().getSelectedItem())){
+                    guiHandler.otherPlayersBoardButtonClicked(p, player, game, opponents);
+                }
+            }
+        });
+
+    }
+
+    public void flipCard(Button flip1, Button hand1, ImageView viewHand1, int h1) {
         flip1.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if(hand1.getGraphic().equals(viewHand1)){
                 if(h1 > 0 && h1 < 11){
@@ -169,87 +198,6 @@ public class MainSceneController extends GenericController{
                 hand1.setGraphic(viewHand1);
             }
         });
-        flip2.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            if(hand2.getGraphic().equals(viewHand2)){
-                if(h2 > 0 && h2 < 11){
-                    hand2.setGraphic(viewFungiRetro);
-                }
-                else if(h2 > 10 && h2 < 21){
-                    hand2.setGraphic(viewPlantRetro);
-                }
-                else if(h2 > 20 && h2 < 31){
-                    hand2.setGraphic(viewAnimalRetro);
-                }
-                else if(h2 > 30 && h2 < 41){
-                    hand2.setGraphic(viewInsectRetro);
-                }
-                else if(h2 > 40 && h2 < 51){
-                    hand2.setGraphic(viewFungiGoldRetro);
-                }
-                else if(h2 > 50 && h2 < 61){
-                    hand2.setGraphic(viewPlantGoldRetro);
-                }
-                else if(h2 > 60 && h2 < 71){
-                    hand2.setGraphic(viewAnimalGoldRetro);
-                }
-                else{
-                    hand2.setGraphic(viewInsectGoldRetro);
-                }
-            }
-            else{
-                hand2.setGraphic(viewHand2);
-            }
-        });
-        flip3.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            if(hand3.getGraphic().equals(viewHand3)){
-                if(h3 > 0 && h3 < 11){
-                    hand3.setGraphic(viewFungiRetro);
-                }
-                else if(h3 > 10 && h3 < 21){
-                    hand3.setGraphic(viewPlantRetro);
-                }
-                else if(h3 > 20 && h3 < 31){
-                    hand3.setGraphic(viewAnimalRetro);
-                }
-                else if(h3 > 30 && h3 < 41){
-                    hand3.setGraphic(viewInsectRetro);
-                }
-                else if(h3 > 40 && h3 < 51){
-                    hand3.setGraphic(viewFungiGoldRetro);
-                }
-                else if(h3 > 50 && h3 < 61){
-                    hand3.setGraphic(viewPlantGoldRetro);
-                }
-                else if(h3 > 60 && h3 < 71){
-                    hand3.setGraphic(viewAnimalGoldRetro);
-                }
-                else{
-                    hand3.setGraphic(viewInsectGoldRetro);
-                }
-            }
-            else{
-                hand3.setGraphic(viewHand3);
-            }
-        });
-        chat.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            if(!textMessage.getText().isEmpty()){
-                if(receiver.getSelectionModel().getSelectedItem().equals("global")){
-                    guiHandler.sendGlobalMessageButtonClicked(textMessage.getText());
-                }
-                else{
-                    guiHandler.sendMessageButtonClicked(textMessage.getText(), (String) receiver.getSelectionModel().getSelectedItem());
-                }
-                textMessage.clear();
-            }
-        });
-        otherPlayersBoard.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            for(PlayerBean p : opponents){
-                if(p.getUsername().equals(otherPlayers.getSelectionModel().getSelectedItem())){
-                    guiHandler.otherPlayersBoardButtonClicked(p, player, game, opponents);
-                }
-            }
-        });
-
     }
 
     public void setBoard(PlayerBean player, GameBean game, ArrayList<PlayerBean> opponents){
@@ -277,7 +225,11 @@ public class MainSceneController extends GenericController{
             viewHand1 = new ImageView(imageHand1);
             viewHand1.setFitHeight(42*3);
             viewHand1.setFitWidth(63*3);
+            hand1.setVisible(true);
             hand1.setGraphic(viewHand1);
+        }
+        else{
+            hand1.setVisible(false);
         }
         if(player.getHand()[1] != null){
             h2 = player.getHand()[1].getCardNumber();
@@ -288,7 +240,11 @@ public class MainSceneController extends GenericController{
             viewHand2 = new ImageView(imageHand2);
             viewHand2.setFitHeight(42*3);
             viewHand2.setFitWidth(63*3);
+            hand2.setVisible(true);
             hand2.setGraphic(viewHand2);
+        }
+        else{
+            hand2.setVisible(false);
         }
         if(player.getHand()[2] != null){
             h3 = player.getHand()[2].getCardNumber();
@@ -299,9 +255,13 @@ public class MainSceneController extends GenericController{
             viewHand3 = new ImageView(imageHand3);
             viewHand3.setFitHeight(42*3);
             viewHand3.setFitWidth(63*3);
+            hand3.setVisible(true);
             hand3.setGraphic(viewHand3);
         }
-
+        else{
+            hand3.setVisible(false);
+        }
+        
         //personal achievement
         int pa = player.getAchievement().getId() + 86;
         Image imagePersonalAch = new Image(getClass().getResourceAsStream("/cards/fronts/" + String.valueOf(pa) + ".png"));
@@ -445,20 +405,20 @@ public class MainSceneController extends GenericController{
                     //b.setStyle("-fx-background-color: transparent");
                     b.setOnAction(event -> {
                         if(GridPane.getRowIndex(b) < GridPane.getColumnIndex(b)){
-                            placeCard(cardToPlace, new int[]{GridPane.getRowIndex(b) - buttonCornerCenter[0][1] + cornerCenter[1][1], GridPane.getColumnIndex(b) - buttonCornerCenter[1][1] + cornerCenter[0][1]});
+                            placeCard(cardToPlace, new int[]{GridPane.getColumnIndex(b) - buttonCornerCenter[1][1] + cornerCenter[0][1], GridPane.getRowIndex(b) - buttonCornerCenter[0][1] + cornerCenter[1][1]});
                             buttonBoard.getChildren().remove(b);
                         }
                         else if(GridPane.getRowIndex(b) > GridPane.getColumnIndex(b)){
-                            placeCard(cardToPlace, new int[]{GridPane.getRowIndex(b) - buttonCornerCenter[0][3] + cornerCenter[1][3], GridPane.getColumnIndex(b) - buttonCornerCenter[1][3] + cornerCenter[0][3]});
+                            placeCard(cardToPlace, new int[]{GridPane.getColumnIndex(b) - buttonCornerCenter[1][3] + cornerCenter[0][3], GridPane.getRowIndex(b) - buttonCornerCenter[0][3] + cornerCenter[1][3]});
                             buttonBoard.getChildren().remove(b);
                         }
                         else{
                             if(GridPane.getRowIndex(b) % 2 == 0){
-                                placeCard(cardToPlace, new int[]{GridPane.getRowIndex(b) - buttonCornerCenter[0][0] + cornerCenter[1][0], GridPane.getColumnIndex(b) - buttonCornerCenter[1][0] + cornerCenter[0][0]});
+                                placeCard(cardToPlace, new int[]{ GridPane.getColumnIndex(b) - buttonCornerCenter[1][0] + cornerCenter[0][0], GridPane.getRowIndex(b) - buttonCornerCenter[0][0] + cornerCenter[1][0]});
                                 buttonBoard.getChildren().remove(b);
                             }
                             else{
-                                placeCard(cardToPlace, new int[]{GridPane.getRowIndex(b) - buttonCornerCenter[0][2] + cornerCenter[1][2], GridPane.getColumnIndex(b) - buttonCornerCenter[1][2] + cornerCenter[0][2]});
+                                placeCard(cardToPlace, new int[]{ GridPane.getColumnIndex(b) - buttonCornerCenter[1][2] + cornerCenter[0][2], GridPane.getRowIndex(b) - buttonCornerCenter[0][2] + cornerCenter[1][2]});
                                 buttonBoard.getChildren().remove(b);
                             }
                         }
@@ -596,13 +556,24 @@ public class MainSceneController extends GenericController{
         }
     }
 
-    @FXML void placeCard(int cardToPlace, int[] newCardCoord){
+    @FXML
+    public void placeCard(int cardToPlace, int[] newCardCoord){
         //take the card in hand based on the number saved in cardToPlace (0 means the first card in hand) and place it
         //in the coordinates saved in newCardCoord
         guiHandler.placeCard(player.getHand()[cardToPlace], newCardCoord);
         for (Node b : buttonBoard.getChildren()){
             b.setVisible(false);
         }
+    }
+
+    public void setMessage(String message, boolean isError){
+    //    errorbox.getChildren().clear();
+    //    Text t = new Text(message);
+    //    t.setFont(new Font(10));
+    //    if (isError){
+    //        t.setStyle("-fx-fill: red");
+    //    }
+    //    errorbox.getChildren().add(t);
     }
 
 }

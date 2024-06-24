@@ -1,6 +1,5 @@
 package it.polimi.ingsw.view.gui;
 
-import it.polimi.ingsw.network.client.*;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,21 +9,16 @@ import javafx.stage.Stage;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public class Gui extends Application {
 
     public static Stage stage;
     static FXMLLoader loader;
     static Parent root;
-    private ClientInterface client;
-    private static GuiInputHandler handler;
-    private static ArrayList<Parent> scenes = new ArrayList<>();
-    private static ArrayList<Object> controllers = new ArrayList<>();
+    private static final ArrayList<Parent> scenes = new ArrayList<>();
+    private static final ArrayList<Object> controllers = new ArrayList<>();
 
     public static void main(String[] args) {
-        handler = new GuiInputHandler();
         launch(args);
     }
 

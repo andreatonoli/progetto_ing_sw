@@ -5,6 +5,8 @@ import it.polimi.ingsw.controller.ServerController;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.messages.GenericMessage;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.*;
 
 /**
@@ -107,14 +109,11 @@ public class Server {
      * Starts the server.
      */
     public void startServer(){
-        //TODO: controlla che per RMI sia strettamente necessaria questa cosa
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Insert remote IP (leave empty for localhost)");
-        String ip = scanner.nextLine();
-        if (ip.isEmpty()){
-            System.setProperty("java.rmi.server.hostname", "127.0.0.1");
-        } else {
-            System.setProperty("java.rmi.server.hostname", ip);
+        try {
+            InetAddress ip = InetAddress.getLocalHost();
+            System.setProperty("java.rmi.server.hostname", ip.getHostAddress());
+        } catch (UnknownHostException e) {
+            System.out.println(e.getMessage());
         }
         new RMIServer(this, rmiPort);
         new SocketServer(this, socketPort);

@@ -61,10 +61,8 @@ public class LoginSceneController extends GenericController{
     }
 
     public void handleNextAction(){
-        System.out.println(nextAction);
         switch (nextAction){
             case 1:
-                System.out.println(nextActionValue);
                 guiHandler.nextLobbySizeButtonClicked(nextActionValue);
                 break;
             case 2:
