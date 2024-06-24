@@ -74,8 +74,10 @@ In case you want to build the project you need to install [Maven](https://maven.
 ## Library and Plugins
 
 | Library\Plugin | Description |
-| Maven | Build automation tool used primarily for Java projects. |
+|----------------|-------------|
+| Maven | Build automation tool used primarily for Java projects |
 | JavaFX | Graphic library to create user interfaces |
 | JUnit | Unit testing framework |
 | Mockito | Mocking framework (used for controller test) |
 | Gson | JSON parser |
+| Jansi | Using ANSI escape codes on Windows |
