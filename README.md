@@ -16,7 +16,7 @@ Each player could play using a Text User Interface (TUI) or a Graphical User Int
 
 ### UML
 - [High-Level UML]()
-- [UML generati da Intellij]()
+- [Low-Level UML]()
 
 ### Javadoc
 
@@ -24,7 +24,7 @@ The following documentation includes a description for most of the classes and m
 
 ### JUnit Testing
 
-All the components have been tested using [JUnit](https://junit.org/junit5/) for the model, with the addition of [Mockito](https://site.mockito.org/) to test the controller. Here are the [results]().
+All the components have been tested using [JUnit](https://junit.org/junit5/) for the model, with the help of [Mockito](https://site.mockito.org/) to test the controller. Here are the [results]().
 
 ## Implemented Features
 
@@ -49,9 +49,9 @@ The project is deployed with two jars, one to run the client and one to run the 
 
 ### Prerequisites
 
-To run this project you need a jdk version 21 or above.
-It's highly recommended to use a terminal which support UTF-8 encoding and ANSI escape sequences, for example the latest version of Windows Terminal. The recommended size for the console is 50x150.
-With regard to the GUI there are no specific requirements.
+To run this project you need JDK 21 or above.
+If you want to play with TUI, it's highly recommended to use a terminal which support UTF-8 encoding and ANSI escape sequences, for example the latest version of Windows Terminal. The recommended size for the console is 50x150.
+To play with GUI there are no specific requirements.
 
 ### Server
 
@@ -65,7 +65,7 @@ The client can be run with the following command:
 
     java -jar CodexNaturalis-client.jar
 
-When run this program will ask the user if they want to play using the TUI or the GUI.
+When run this program will ask the user if they want to play using TUI or GUI.
 
 ### Another way to run
 
@@ -79,11 +79,3 @@ In case you want to build the project you need to install [Maven](https://maven.
 | JUnit | Unit testing framework |
 | Mockito | Mocking framework (used for controller test) |
 | Gson | JSON parser |
-
-
-
-
-
-
-
-
