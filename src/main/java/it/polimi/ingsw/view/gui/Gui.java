@@ -6,7 +6,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -49,10 +48,6 @@ public class Gui extends Application {
 
     @Override
     public void start(Stage s) throws Exception {
-
-        //GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-        //int width = gd.getDisplayMode().getWidth();
-        //int height = gd.getDisplayMode().getHeight();
 
         loadAllScenes();
         stage = s;

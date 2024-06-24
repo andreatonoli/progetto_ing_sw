@@ -191,8 +191,8 @@ public class TurnHandler extends Observable {
      * @param p is the last player remaining in the game.
      */
     private void declareWinnerByDisconnection(Player p){
-        notifyAll(new WinnerMessage(List.of(p)));
         notifyAll(new GameStateMessage(GameState.END));
+        notifyAll(new WinnerMessage(List.of(p)));
         game.setGameState(GameState.END);
         controller.removeFromServer();
     }

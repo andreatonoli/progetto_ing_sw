@@ -12,7 +12,7 @@ public class WinnersSceneController extends GenericController{
     @FXML
     Text header;
     @FXML
-    VBox v;
+    VBox winners;
 
     GuiInputHandler guiHandler;
 
@@ -21,18 +21,18 @@ public class WinnersSceneController extends GenericController{
         guiHandler = GuiInputHandler.getInstance();
     }
 
-    public void setWinners(ArrayList<String> winners){
-        if(winners.size() < 2){
+    public void setWinners(ArrayList<String> winner){
+        if(winner.size() < 2){
             header.setText("The winner is:");
         }
         else{
             header.setText("The winners are:");
         }
-        for(String s : winners){
+        for(String s : winner){
             Text t = new Text(s);
             t.setId("setup-text");
-            v.setSpacing(10);
-            v.getChildren().add(t);
+            winners.setSpacing(10);
+            winners.getChildren().add(t);
         }
     }
 

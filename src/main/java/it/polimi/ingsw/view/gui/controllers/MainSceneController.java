@@ -6,13 +6,13 @@ import it.polimi.ingsw.model.enums.CornerState;
 import it.polimi.ingsw.model.enums.PlayerState;
 import it.polimi.ingsw.network.client.GameBean;
 import it.polimi.ingsw.network.client.PlayerBean;
-import it.polimi.ingsw.view.gui.Gui;
 import it.polimi.ingsw.view.gui.GuiInputHandler;
-import javafx.css.PseudoClass;
+import it.polimi.ingsw.view.gui.GuiScenes;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
@@ -21,7 +21,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -142,9 +141,15 @@ public class MainSceneController extends GenericController{
         gold2.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             guiHandler.drawCardButtonClicked("4");
         });
-        flipCard(flip1, hand1, viewHand1, h1);
-        flipCard(flip2, hand2, viewHand2, h2);
-        flipCard(flip3, hand3, viewHand3, h3);
+        flip1.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            flipCard(0);
+        });
+        flip2.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            flipCard(1);
+        });
+        flip3.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            flipCard(2);
+        });
         chat.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if(!textMessage.getText().isEmpty()){
                 if(receiver.getSelectionModel().getSelectedItem().equals("global")){
@@ -166,36 +171,37 @@ public class MainSceneController extends GenericController{
 
     }
 
-    public void flipCard(Button flip1, Button hand1, ImageView viewHand1, int h1) {
-        flip1.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            if(hand1.getGraphic().equals(viewHand1)){
-                if(h1 > 0 && h1 < 11){
-                    hand1.setGraphic(viewFungiRetro);
+    public void flipCard(Button flip, Button hand, ImageView viewHand, int h) {
+        flip.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            System.out.println(h);
+            if(hand.getGraphic().equals(viewHand)){
+                if(h > 0 && h < 11){
+                    hand.setGraphic(viewFungiRetro);
                 }
-                else if(h1 > 10 && h1 < 21){
-                    hand1.setGraphic(viewPlantRetro);
+                else if(h > 10 && h < 21){
+                    hand.setGraphic(viewPlantRetro);
                 }
-                else if(h1 > 20 && h1 < 31){
-                    hand1.setGraphic(viewAnimalRetro);
+                else if(h > 20 && h < 31){
+                    hand.setGraphic(viewAnimalRetro);
                 }
-                else if(h1 > 30 && h1 < 41){
-                    hand1.setGraphic(viewInsectRetro);
+                else if(h > 30 && h < 41){
+                    hand.setGraphic(viewInsectRetro);
                 }
-                else if(h1 > 40 && h1 < 51){
-                    hand1.setGraphic(viewFungiGoldRetro);
+                else if(h > 40 && h < 51){
+                    hand.setGraphic(viewFungiGoldRetro);
                 }
-                else if(h1 > 50 && h1 < 61){
-                    hand1.setGraphic(viewPlantGoldRetro);
+                else if(h > 50 && h < 61){
+                    hand.setGraphic(viewPlantGoldRetro);
                 }
-                else if(h1 > 60 && h1 < 71){
-                    hand1.setGraphic(viewAnimalGoldRetro);
+                else if(h > 60 && h < 71){
+                    hand.setGraphic(viewAnimalGoldRetro);
                 }
                 else{
-                    hand1.setGraphic(viewInsectGoldRetro);
+                    hand.setGraphic(viewInsectGoldRetro);
                 }
             }
             else{
-                hand1.setGraphic(viewHand1);
+                hand.setGraphic(viewHand);
             }
         });
     }
@@ -325,7 +331,7 @@ public class MainSceneController extends GenericController{
         ImageView viewFungiGoldRetroBoard = new ImageView(imageFungiGoldRetro);
         viewFungiGoldRetroBoard.setFitHeight(42*2.5);
         viewFungiGoldRetroBoard.setFitWidth(64*2.5);
-        Image imageAnimalGoldRetro = new Image(getClass().getResourceAsStream("/cards/backs/66.png"));
+        Image imageAnimalGoldRetro = new Image(getClass().getResourceAsStream("/cards/backs/61.png"));
         viewAnimalGoldRetro = new ImageView(imageAnimalGoldRetro);
         viewAnimalGoldRetro.setFitHeight(42*3);
         viewAnimalGoldRetro.setFitWidth(63*3);
@@ -339,7 +345,7 @@ public class MainSceneController extends GenericController{
         ImageView viewPlantGoldRetroBoard = new ImageView(imagePlantGoldRetro);
         viewPlantGoldRetroBoard.setFitHeight(42*2.5);
         viewPlantGoldRetroBoard.setFitWidth(64*2.5);
-        Image imageInsectGoldRetro = new Image(getClass().getResourceAsStream("/cards/backs/73.png"));
+        Image imageInsectGoldRetro = new Image(getClass().getResourceAsStream("/cards/backs/71.png"));
         viewInsectGoldRetro = new ImageView(imageInsectGoldRetro);
         viewInsectGoldRetro.setFitHeight(42*3);
         viewInsectGoldRetro.setFitWidth(63*3);
@@ -385,6 +391,7 @@ public class MainSceneController extends GenericController{
             }
             Image imageCard = new Image(getClass().getResourceAsStream("/cards/fronts/" + String.valueOf(card) + ".png"));
             if(!player.getBoard().getCard(coord).isNotBack()){
+                card = getNumber(card);
                 imageCard = new Image(getClass().getResourceAsStream("/cards/backs/" + String.valueOf(card) + ".png"));
             }
             ImageView viewCard = new ImageView(imageCard);
@@ -398,6 +405,9 @@ public class MainSceneController extends GenericController{
             int[][] buttonCornerCenter = {new int[]{6, 6, 7, 7}, new int[]{6, 7, 7, 6}};
             int[][] cornerCenter = {new int[]{-1, 1, 1, -1}, new int[]{1, 1, -1, -1}};
             int j = 0;
+            //TODO: se c'è angolo vuoto allora si vede quello sotto
+            //TODO: carte flippano male
+            buttonBoard.toFront();
             for (CornerEnum c : CornerEnum.values()){
                 if (player.getBoard().getCard(coord).getCorner(c).getState().equals(CornerState.VISIBLE)){
                     Button b = new Button();
@@ -502,6 +512,7 @@ public class MainSceneController extends GenericController{
 
         //chat
         VBox v = new VBox();
+        messages.getChildren().clear();
         v.setSpacing(5);
         v.setAlignment(Pos.TOP_CENTER);
         for(String s : player.getChat()){
@@ -574,6 +585,79 @@ public class MainSceneController extends GenericController{
     //        t.setStyle("-fx-fill: red");
     //    }
     //    errorbox.getChildren().add(t);
+    }
+
+    public void flipCard(int index){
+        int number;
+        Image imageHand;
+
+        if (!player.getHand()[index].isNotBack()){
+            number = player.getHand()[index].getCardNumber();
+            player.getHand()[index].setCurrentSide();
+            if (player.getHand()[index].getType().equals("gold")){
+                number += 40;
+            }
+            imageHand = new Image(getClass().getResourceAsStream("/cards/fronts/" + number + ".png"));
+        }
+        else{
+            number = player.getHand()[index].getCardNumber();
+            if(player.getHand()[index].getType().equals("gold")){
+                number += 40;
+            }
+            number = getNumber(number);
+            player.getHand()[index].setCurrentSide();
+            imageHand = new Image(getClass().getResourceAsStream("/cards/backs/" + number + ".png"));
+        }
+
+        if (index == 0){
+            viewHand1 = new ImageView(imageHand);
+            viewHand1.setFitHeight(42*3);
+            viewHand1.setFitWidth(63*3);
+            hand1.setVisible(true);
+            hand1.setGraphic(viewHand1);
+        }
+        else if (index == 1){
+            viewHand2 = new ImageView(imageHand);
+            viewHand2.setFitHeight(42*3);
+            viewHand2.setFitWidth(63*3);
+            hand2.setVisible(true);
+            hand2.setGraphic(viewHand2);
+        }
+        else{
+            viewHand3 = new ImageView(imageHand);
+            viewHand3.setFitHeight(42*3);
+            viewHand3.setFitWidth(63*3);
+            hand3.setVisible(true);
+            hand3.setGraphic(viewHand3);
+        }
+    }
+
+    private int getNumber(int number) {
+        if (number < 10){
+            number = 1;
+        }
+        else if (number < 20){
+            number = 11;
+        }
+        else if (number < 30){
+            number = 21;
+        }
+        else if (number < 40){
+            number = 31;
+        }
+        else if (number < 50){
+            number = 41;
+        }
+        else if (number < 60){
+            number = 51;
+        }
+        else if (number < 70){
+            number = 61;
+        }
+        else{
+            number = 71;
+        }
+        return number;
     }
 
 }
