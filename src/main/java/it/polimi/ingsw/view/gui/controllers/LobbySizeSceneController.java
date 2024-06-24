@@ -23,6 +23,9 @@ public class LobbySizeSceneController extends GenericController{
         bindEvents();
     }
 
+    /**
+     * Method that binds the events to the buttons.
+     */
     public void bindEvents(){
         next.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if(lobbySize.getText().isEmpty() || Integer.parseInt(lobbySize.getText()) < 2 || Integer.parseInt(lobbySize.getText()) > 4 ){

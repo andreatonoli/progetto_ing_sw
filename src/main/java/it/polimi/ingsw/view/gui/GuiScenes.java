@@ -2,6 +2,9 @@ package it.polimi.ingsw.view.gui;
 
 import it.polimi.ingsw.view.gui.controllers.*;
 
+/**
+ * Enum that contains all the scenes of the game.
+ */
 public enum GuiScenes {
     START_SCENE("/fxml/startScene.fxml"),
     CONNECTION_SCENE("/fxml/connectionScene.fxml"),

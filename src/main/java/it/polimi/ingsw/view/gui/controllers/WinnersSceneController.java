@@ -21,6 +21,10 @@ public class WinnersSceneController extends GenericController{
         guiHandler = GuiInputHandler.getInstance();
     }
 
+    /**
+     * Method that sets the winners of the game.
+     * @param winner the winners of the game
+     */
     public void setWinners(ArrayList<String> winner){
         if(winner.size() < 2){
             header.setText("The winner is:");

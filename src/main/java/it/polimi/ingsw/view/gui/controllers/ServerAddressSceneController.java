@@ -15,22 +15,15 @@ public class ServerAddressSceneController extends GenericController{
 
     GuiInputHandler guiHandler;
 
-    //@FXML
-    //private void nextButtonClicked(ActionEvent e){
-    //    if(text.getText().isEmpty()){
-    //        Gui.addReturnValue("localhost");
-    //    }
-    //    else{
-    //        Gui.addReturnValue(text.getText());
-    //    }
-    //}
-
     @FXML
     public void initialize(){
         guiHandler = GuiInputHandler.getInstance();
         bindEvents();
     }
 
+    /**
+     * Method that binds the events to the buttons.
+     */
     public void bindEvents(){
         next.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if(address.getText().isEmpty()){

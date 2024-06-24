@@ -32,6 +32,10 @@ public class ColorChoiceSceneController extends GenericController{
         guiHandler = GuiInputHandler.getInstance();
     }
 
+    /**
+     * Method that sets the colors to choose from.
+     * @param colors the colors to choose from
+     */
     public void setColors(List<Color> colors){
         Image red = new Image(getClass().getResourceAsStream("/images/red.png"));
         ImageView redView = new ImageView(red);
@@ -85,7 +89,7 @@ public class ColorChoiceSceneController extends GenericController{
             int finalI = i;
             b.setOnAction(event -> {
                 Alert a = new Alert(Alert.AlertType.CONFIRMATION);
-                a.initOwner(Gui.stage.getOwner());
+                a.initOwner(Gui.getStage().getOwner());
                 ButtonType yes = new ButtonType("Confirm");
                 ButtonType no = new ButtonType("Cancel");
                 a.setTitle("Choosing color");

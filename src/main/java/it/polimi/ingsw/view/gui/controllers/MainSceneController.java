@@ -7,12 +7,10 @@ import it.polimi.ingsw.model.enums.PlayerState;
 import it.polimi.ingsw.network.client.GameBean;
 import it.polimi.ingsw.network.client.PlayerBean;
 import it.polimi.ingsw.view.gui.GuiInputHandler;
-import it.polimi.ingsw.view.gui.GuiScenes;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
@@ -84,9 +82,9 @@ public class MainSceneController extends GenericController{
     @FXML
     private Button otherPlayersBoard;
 
-    //this matrix has the x and y position of the zero point for alle the 4 pions
+    /**This matrix has the x and y position of the zero point for alle the 4 pions */
     private final int[][] scoretrackZero = {new int[] {65, 115, 65, 115}, new int[] {670, 670, 715, 715}};
-    //this matrix has the x and y values of the first pion based on points
+    /** this matrix has the x and y values of the first pion based on points */
     private final int[][] scoretrackFirstPion = {new int[]{65, 155, 245, 290, 200, 110, 20, 20, 110, 200, 290, 290, 200, 110, 20, 20, 110, 200, 290, 290, 135, 40, 40, 40, 95, 175, 260, 310, 310, 175}, new int[]{670, 670, 670, 590, 590, 590, 590, 510, 510, 510, 505, 425, 425, 425, 425, 345, 345, 345, 345, 260, 220, 265, 180, 100, 20, 5, 20, 90, 170, 105}};
 
     private int cardToPlace;
@@ -122,6 +120,9 @@ public class MainSceneController extends GenericController{
         bindEvents();
     }
 
+    /**
+     *
+     */
     public void bindEvents(){
         resourceDeck.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             guiHandler.drawDeckButtonClicked("resource");
@@ -171,41 +172,12 @@ public class MainSceneController extends GenericController{
 
     }
 
-    public void flipCard(Button flip, Button hand, ImageView viewHand, int h) {
-        flip.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            System.out.println(h);
-            if(hand.getGraphic().equals(viewHand)){
-                if(h > 0 && h < 11){
-                    hand.setGraphic(viewFungiRetro);
-                }
-                else if(h > 10 && h < 21){
-                    hand.setGraphic(viewPlantRetro);
-                }
-                else if(h > 20 && h < 31){
-                    hand.setGraphic(viewAnimalRetro);
-                }
-                else if(h > 30 && h < 41){
-                    hand.setGraphic(viewInsectRetro);
-                }
-                else if(h > 40 && h < 51){
-                    hand.setGraphic(viewFungiGoldRetro);
-                }
-                else if(h > 50 && h < 61){
-                    hand.setGraphic(viewPlantGoldRetro);
-                }
-                else if(h > 60 && h < 71){
-                    hand.setGraphic(viewAnimalGoldRetro);
-                }
-                else{
-                    hand.setGraphic(viewInsectGoldRetro);
-                }
-            }
-            else{
-                hand.setGraphic(viewHand);
-            }
-        });
-    }
-
+    /**
+     * Method that sets the board of the player, his chat and the common board.
+     * @param player the player
+     * @param game the game
+     * @param opponents the opponents
+     */
     public void setBoard(PlayerBean player, GameBean game, ArrayList<PlayerBean> opponents){
         this.player = player;
         this.game = game;
@@ -406,7 +378,8 @@ public class MainSceneController extends GenericController{
             int[][] cornerCenter = {new int[]{-1, 1, 1, -1}, new int[]{1, 1, -1, -1}};
             int j = 0;
             //TODO: se c'è angolo vuoto allora si vede quello sotto
-            //TODO: carte flippano male
+            //TODO: bottoni messi male alla seconda carta
+            //TODO: Fare errorBox
             buttonBoard.toFront();
             for (CornerEnum c : CornerEnum.values()){
                 if (player.getBoard().getCard(coord).getCorner(c).getState().equals(CornerState.VISIBLE)){
@@ -436,7 +409,7 @@ public class MainSceneController extends GenericController{
                     buttonBoard.add(b, (buttonCornerCenter[1][j] + coord[0]), (buttonCornerCenter[0][j] - coord[1]));
                     b.setVisible(false);
                 }
-                j = j + 1;
+                j += 1;
             }
         }
 
@@ -543,6 +516,10 @@ public class MainSceneController extends GenericController{
 
     }
 
+    /**
+     * Method called if the player wants to place the first card in his hand.
+     * @param e event captured by the eventHandler.
+     */
     @FXML
     public void wantToPlaceHand1(ActionEvent e) {
         cardToPlace = 0;
@@ -551,6 +528,10 @@ public class MainSceneController extends GenericController{
         }
     }
 
+    /**
+     * Method called if the player wants to place the second card in his hand.
+     * @param e event captured by the eventHandler.
+     */
     @FXML
     public void wantToPlaceHand2(ActionEvent e) {
         cardToPlace = 1;
@@ -559,6 +540,10 @@ public class MainSceneController extends GenericController{
         }
     }
 
+    /**
+     * Method called if the player wants to place the third card in his hand.
+     * @param e event captured by the eventHandler.
+     */
     @FXML
     public void wantToPlaceHand3(ActionEvent e) {
         cardToPlace = 2;
@@ -567,6 +552,11 @@ public class MainSceneController extends GenericController{
         }
     }
 
+    /**
+     * Method that places the card in the coordinates given.
+     * @param cardToPlace the card to place
+     * @param newCardCoord the coordinates where to place the card
+     */
     @FXML
     public void placeCard(int cardToPlace, int[] newCardCoord){
         //take the card in hand based on the number saved in cardToPlace (0 means the first card in hand) and place it
@@ -577,6 +567,11 @@ public class MainSceneController extends GenericController{
         }
     }
 
+    /**
+     * Method that sets the message in the error box.
+     * @param message the message to set
+     * @param isError if the message is an error
+     */
     public void setMessage(String message, boolean isError){
     //    errorbox.getChildren().clear();
     //    Text t = new Text(message);
@@ -587,6 +582,10 @@ public class MainSceneController extends GenericController{
     //    errorbox.getChildren().add(t);
     }
 
+    /**
+     * Method that flips a card in the hand of the player.
+     * @param index the index of the card to flip.
+     */
     public void flipCard(int index){
         int number;
         Image imageHand;
@@ -632,26 +631,31 @@ public class MainSceneController extends GenericController{
         }
     }
 
+    /**
+     * Method that returns the number of the back of the card to take the correct image.
+     * @param number the number of the card
+     * @return the number of the back of the card
+     */
     private int getNumber(int number) {
-        if (number < 10){
+        if (number <= 10){
             number = 1;
         }
-        else if (number < 20){
+        else if (number <= 20){
             number = 11;
         }
-        else if (number < 30){
+        else if (number <= 30){
             number = 21;
         }
-        else if (number < 40){
+        else if (number <= 40){
             number = 31;
         }
-        else if (number < 50){
+        else if (number <= 50){
             number = 41;
         }
-        else if (number < 60){
+        else if (number <= 60){
             number = 51;
         }
-        else if (number < 70){
+        else if (number <= 70){
             number = 61;
         }
         else{
