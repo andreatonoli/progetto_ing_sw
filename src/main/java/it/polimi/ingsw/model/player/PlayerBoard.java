@@ -7,6 +7,7 @@ import it.polimi.ingsw.model.enums.Symbols;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Set;
 
 /**
@@ -28,7 +29,7 @@ public class PlayerBoard implements Serializable {
     /**
      * A map that holds the position of each card on the board.
      */
-    private final HashMap<Integer, Card> cardPosition;
+    private final LinkedHashMap<Integer, Card> cardPosition;
 
     /**
      * A map that holds the count of each symbol for the player.
@@ -39,7 +40,7 @@ public class PlayerBoard implements Serializable {
      * Constructor for the PlayerBoard class.
      */
     public PlayerBoard(){
-        this.cardPosition = new HashMap<>();
+        this.cardPosition = new LinkedHashMap<>();
         this.symbolCount= new HashMap<>();
     }
 

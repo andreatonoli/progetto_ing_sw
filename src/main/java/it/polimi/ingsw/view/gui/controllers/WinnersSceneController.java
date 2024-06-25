@@ -35,6 +35,7 @@ public class WinnersSceneController extends GenericController{
         for(String s : winner){
             Text t = new Text(s);
             t.setId("setup-text");
+            t.setStyle("-fx-font-size: 70.0;");
             winners.setSpacing(10);
             winners.getChildren().add(t);
         }

@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.enums.CornerState;
 import it.polimi.ingsw.model.enums.PlayerState;
 import it.polimi.ingsw.network.client.GameBean;
 import it.polimi.ingsw.network.client.PlayerBean;
+import it.polimi.ingsw.view.gui.Gui;
 import it.polimi.ingsw.view.gui.GuiInputHandler;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,6 +14,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -24,6 +26,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class MainSceneController extends GenericController{
 
@@ -81,6 +84,8 @@ public class MainSceneController extends GenericController{
     private Button chat;
     @FXML
     private Button otherPlayersBoard;
+    @FXML
+    private TextArea errorBox;
 
     /**This matrix has the x and y position of the zero point for alle the 4 pions */
     private final int[][] scoretrackZero = {new int[] {65, 115, 65, 115}, new int[] {670, 670, 715, 715}};
@@ -333,11 +338,11 @@ public class MainSceneController extends GenericController{
 
         int g1 = game.getCommonGold()[0].getCardNumber() + 40;
         int g2 = game.getCommonGold()[1].getCardNumber() + 40;
-        Image imageGold1 = new Image(getClass().getResourceAsStream("/cards/fronts/" + String.valueOf(g1) + ".png"));
+        Image imageGold1 = new Image(getClass().getResourceAsStream("/cards/fronts/" + g1 + ".png"));
         ImageView viewGold1 = new ImageView(imageGold1);
         viewGold1.setFitHeight(42*2.5);
         viewGold1.setFitWidth(64*2.5);
-        Image imageGold2 = new Image(getClass().getResourceAsStream("/cards/fronts/" + String.valueOf(g2) + ".png"));
+        Image imageGold2 = new Image(getClass().getResourceAsStream("/cards/fronts/" + g2 + ".png"));
         ImageView viewGold2 = new ImageView(imageGold2);
         viewGold2.setFitHeight(42*2.5);
         viewGold2.setFitWidth(64*2.5);
@@ -361,10 +366,10 @@ public class MainSceneController extends GenericController{
             if(player.getBoard().getCard(coord).getType().equals("gold")){
                 card = card + 40;
             }
-            Image imageCard = new Image(getClass().getResourceAsStream("/cards/fronts/" + String.valueOf(card) + ".png"));
+            Image imageCard = new Image(getClass().getResourceAsStream("/cards/fronts/" + card + ".png"));
             if(!player.getBoard().getCard(coord).isNotBack()){
                 card = getNumber(card);
-                imageCard = new Image(getClass().getResourceAsStream("/cards/backs/" + String.valueOf(card) + ".png"));
+                imageCard = new Image(getClass().getResourceAsStream("/cards/backs/" + card + ".png"));
             }
             ImageView viewCard = new ImageView(imageCard);
             viewCard.setFitHeight(42*3);
@@ -374,12 +379,9 @@ public class MainSceneController extends GenericController{
             board.getChildren().addLast(viewCard);
             board.setLayoutX(1000);
             board.setLayoutY(530);
-            int[][] buttonCornerCenter = {new int[]{6, 6, 7, 7}, new int[]{6, 7, 7, 6}};
-            int[][] cornerCenter = {new int[]{-1, 1, 1, -1}, new int[]{1, 1, -1, -1}};
+            int[][] buttonCornerCenter = { new int[]{6, 6, 7, 7}, new int[]{6, 7, 7, 6} };
             int j = 0;
             //TODO: se c'è angolo vuoto allora si vede quello sotto
-            //TODO: bottoni messi male alla seconda carta
-            //TODO: Fare errorBox
             buttonBoard.toFront();
             for (CornerEnum c : CornerEnum.values()){
                 if (player.getBoard().getCard(coord).getCorner(c).getState().equals(CornerState.VISIBLE)){
@@ -387,24 +389,8 @@ public class MainSceneController extends GenericController{
                     b.setPrefSize(58, 52);
                     //b.setStyle("-fx-background-color: transparent");
                     b.setOnAction(event -> {
-                        if(GridPane.getRowIndex(b) < GridPane.getColumnIndex(b)){
-                            placeCard(cardToPlace, new int[]{GridPane.getColumnIndex(b) - buttonCornerCenter[1][1] + cornerCenter[0][1], GridPane.getRowIndex(b) - buttonCornerCenter[0][1] + cornerCenter[1][1]});
-                            buttonBoard.getChildren().remove(b);
-                        }
-                        else if(GridPane.getRowIndex(b) > GridPane.getColumnIndex(b)){
-                            placeCard(cardToPlace, new int[]{GridPane.getColumnIndex(b) - buttonCornerCenter[1][3] + cornerCenter[0][3], GridPane.getRowIndex(b) - buttonCornerCenter[0][3] + cornerCenter[1][3]});
-                            buttonBoard.getChildren().remove(b);
-                        }
-                        else{
-                            if(GridPane.getRowIndex(b) % 2 == 0){
-                                placeCard(cardToPlace, new int[]{ GridPane.getColumnIndex(b) - buttonCornerCenter[1][0] + cornerCenter[0][0], GridPane.getRowIndex(b) - buttonCornerCenter[0][0] + cornerCenter[1][0]});
-                                buttonBoard.getChildren().remove(b);
-                            }
-                            else{
-                                placeCard(cardToPlace, new int[]{ GridPane.getColumnIndex(b) - buttonCornerCenter[1][2] + cornerCenter[0][2], GridPane.getRowIndex(b) - buttonCornerCenter[0][2] + cornerCenter[1][2]});
-                                buttonBoard.getChildren().remove(b);
-                            }
-                        }
+                        placeCard(cardToPlace, new int[]{coord[0] + c.getX(), coord[1] + c.getY()});
+                        buttonBoard.getChildren().remove(b);
                     });
                     buttonBoard.add(b, (buttonCornerCenter[1][j] + coord[0]), (buttonCornerCenter[0][j] - coord[1]));
                     b.setVisible(false);
@@ -484,18 +470,16 @@ public class MainSceneController extends GenericController{
         }
 
         //chat
-        VBox v = new VBox();
-        messages.getChildren().clear();
-        v.setSpacing(5);
-        v.setAlignment(Pos.TOP_CENTER);
+        messagesV.getChildren().clear();
+        messagesV.setSpacing(5);
+        messagesV.setAlignment(Pos.TOP_CENTER);
         for(String s : player.getChat()){
-            if(!v.getChildren().contains(s)){
-                Text t = new Text(s);
-                t.setFont(new Font(10));
-                v.getChildren().add(t);
-                messages.getChildren().add(v);
-            }
+            Text t = new Text(s);
+            t.setStyle("-fx-font-size: 20;");
+            messagesV.getChildren().add(t);
         }
+
+        //Select handler
         if(receiver.getItems().size() < opponents.size()){
             receiver.getItems().add("global");
             for(PlayerBean p : opponents){
@@ -573,13 +557,13 @@ public class MainSceneController extends GenericController{
      * @param isError if the message is an error
      */
     public void setMessage(String message, boolean isError){
-    //    errorbox.getChildren().clear();
-    //    Text t = new Text(message);
-    //    t.setFont(new Font(10));
-    //    if (isError){
-    //        t.setStyle("-fx-fill: red");
-    //    }
-    //    errorbox.getChildren().add(t);
+        errorBox.clear();
+        Text t = new Text(message);
+        t.setFont(new Font(30));
+        if(isError){
+            t.setStyle("-fx-fill: red");
+        }
+        errorBox.setText(message);
     }
 
     /**

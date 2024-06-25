@@ -91,7 +91,6 @@ public class Gui extends Application {
         stage = s;
 
         stage.setScene(new Scene(scenes.get(GuiScenes.START_SCENE.ordinal())));
-        stage.setFullScreen(true);
         stage.show();
 
     }
