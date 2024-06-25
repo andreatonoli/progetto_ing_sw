@@ -79,4 +79,6 @@ public abstract class Connection implements Observer {
     public abstract void removeFromServer(boolean last);
 
     public abstract void waiting();
+
+    public abstract void cancelPing();
 }

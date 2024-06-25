@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.card.Achievement;
 import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.GameState;
+import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.messages.*;
 
 import java.io.IOException;

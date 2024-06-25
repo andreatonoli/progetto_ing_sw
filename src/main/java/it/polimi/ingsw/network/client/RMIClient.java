@@ -86,6 +86,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
      * The timer to catch the ping.
      */
     private Timer catchPing;
+    private Timer reconnectionTimer;
 
     /**
      * The reconnection thread. Every second it tries to reconnect to the server.
@@ -116,11 +117,11 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
         processingAction = false;
         catchPing = new Timer();
         reconnectionThread = new Thread(() -> {
-            Timer reconnectionTimer = new Timer();
+            reconnectionTimer = new Timer();
             reconnectionTimer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    login();
+                     login();
                 }
             }, 0, 1000);
         });
@@ -144,6 +145,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
      * This method asks the user if he wants to join, create or reconnect to a game.
      */
     public void joinGame(List<Integer> startingGamesId, List<Integer> gamesWhitDisconnectionsId) throws RemoteException{
+        cancelCatchPing();
         this.view.selectGame(startingGamesId, gamesWhitDisconnectionsId);
     }
 
@@ -198,6 +200,10 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
         }, 5000, 5000);
     }
 
+    public void cancelCatchPing(){
+        catchPing.cancel();
+    }
+
     /**
      * This method sets the id of the client.
      * @param id the id of the client.
@@ -240,6 +246,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
      * @throws RemoteException if there is an error in the connection.
      */
     public void askLobbySize() throws RemoteException{
+        cancelCatchPing();
         this.view.askLobbySize();
     }
 
@@ -546,6 +553,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                 break;
             case DECLARE_WINNER:
                 ArrayList<String> winners = ((WinnerMessage) message).getWinners();
+                cancelCatchPing();
                 this.view.declareWinners(winners);
                 break;
             case GENERIC_MESSAGE:

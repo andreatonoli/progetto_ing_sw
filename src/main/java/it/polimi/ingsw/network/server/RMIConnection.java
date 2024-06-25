@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.card.Achievement;
 import it.polimi.ingsw.model.card.Card;
 import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.GameState;
+import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.messages.GenericMessage;
 import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.client.RMIClientHandler;
@@ -141,8 +142,8 @@ public class RMIConnection extends Connection {
         catchPing.schedule(new TimerTask() {
             @Override
             public void run() {
-                cancelPing();
                 onDisconnect();
+                cancelPing();
             }
         }, 5000, 5000);
     }
@@ -161,24 +162,22 @@ public class RMIConnection extends Connection {
     public void onDisconnect(){
         cancelPing();
         Game game = lobby.getGame();
-        if (game.getGameState().equals(GameState.WAIT_PLAYERS)){
+        if (game.getGameState().equals(GameState.WAIT_PLAYERS)) {
             server.removePlayers(username);
             game.removePlayer(username);
-            if (game.getPlayers().isEmpty()){
+            if (game.getPlayers().isEmpty()) {
                 server.removeStartingGame(lobby);
-            }
-            else {
+            } else {
                 lobby.getConnectedPlayersMessage();
             }
-        }
-        else if (!game.getGameState().equals(GameState.END)) {
+        } else if (!game.getGameState().equals(GameState.END)) {
             this.disconnected = true;
             game.getPlayerByUsername(username).setDisconnected(true);
-            server.addDisconnectedPlayer(username,lobby);
-            if (game.getPlayerInTurn().getUsername().equals(username)){
+            server.addDisconnectedPlayer(username, lobby);
+            if (game.getPlayerInTurn().getUsername().equals(username)) {
                 lobby.disconnectedWhileInTurn(username);
             }
-            if (game.getGameState().equals(GameState.START)){
+            if (game.getGameState().equals(GameState.START)) {
                 lobby.disconnectedWhileSetupping(this, username.equals(lobby.getPlayerInTurn()));
             }
         }

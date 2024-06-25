@@ -52,6 +52,7 @@ public class ServerController {
             check = controller.joinGame(user);
         } catch (FullLobbyExeption e) {
             server.removePlayers(username);
+            user.cancelPing();
             server.login(user);
         }
         return check;

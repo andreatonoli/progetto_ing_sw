@@ -99,6 +99,7 @@ public class SocketClient implements ClientInterface {
      * The timer used to catch the ping.
      */
     private Timer catchPing;
+    private Timer reconnectionTimer;
 
     /**
      * The reconnection thread used to reconnect the client.
@@ -187,7 +188,7 @@ public class SocketClient implements ClientInterface {
     @Override
     public void login() {
         reconnectionThread = new Thread(() -> {
-            Timer reconnectionTimer = new Timer();
+            reconnectionTimer = new Timer();
             reconnectionTimer.schedule(new TimerTask() {
                 @Override
                 public void run() {
@@ -256,6 +257,10 @@ public class SocketClient implements ClientInterface {
                 reconnectAttempt();
             }
         }, 5000, 5000);
+    }
+
+    public void cancelCatchPing(){
+        catchPing.cancel();
     }
 
     /**
@@ -424,11 +429,13 @@ public class SocketClient implements ClientInterface {
                 resumeConnection(number, creation);
                 break;
             case NUM_PLAYER_REQUEST:
+                cancelCatchPing();
                 this.view.askLobbySize();
                 break;
             case AVAILABLE_LOBBY:
                 List<Integer> startingGamesId = ((AvailableLobbiesMessage) message).getStartingGamesId();
                 List<Integer> gamesWhitDisconnectionsId = ((AvailableLobbiesMessage) message).getGamesWhitDisconnectionsId();
+                cancelCatchPing();
                 this.view.selectGame(startingGamesId, gamesWhitDisconnectionsId);
                 break;
             case GAME_STATE:
@@ -561,6 +568,7 @@ public class SocketClient implements ClientInterface {
                 break;
             case DECLARE_WINNER:
                 ArrayList<String> winners = ((WinnerMessage) message).getWinners();
+                this.cancelCatchPing();
                 this.view.declareWinners(winners);
                 sendMessage(new RemoveFromServerMessage(username));
                 this.onDisconnect();

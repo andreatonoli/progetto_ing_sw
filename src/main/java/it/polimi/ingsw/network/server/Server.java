@@ -2,6 +2,7 @@ package it.polimi.ingsw.network.server;
 
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.controller.ServerController;
+import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.messages.GenericMessage;
 
@@ -227,10 +228,12 @@ public class Server {
                 this.startingGamesId.remove((Integer) controller.getId());
             }
         } catch (Exception e){
-            System.out.println(e.getMessage());
-            client.get(username).sendMessage(new GenericMessage("an error as occurred, please try again."));
-            login(client.get(username));
+            System.out.println("lobby full exception");
+            Connection user = client.get(username);
             client.remove(username);
+            user.sendMessage(new GenericMessage("an error as occurred, please try again."));
+            user.cancelPing();
+            login(user);
         }
     }
 
@@ -260,6 +263,21 @@ public class Server {
         if (!alreadyWithDisconnections) {
             gamesWithDisconnections.add(game);
             gamesWithDisconnectionsId.add(game.getId());
+        }
+        else {
+            int count = 0;
+            Game g = game.getGame();
+            for (Player p : g.getPlayers()) {
+                if (p.isDisconnected()) {
+                    count++;
+                }
+            }
+            if (count >= g.getPlayers().size()) {
+                removeGame(game);
+                for (Player p : g.getPlayers()) {
+                    removePlayers(p.getUsername());
+                }
+            }
         }
     }
 
