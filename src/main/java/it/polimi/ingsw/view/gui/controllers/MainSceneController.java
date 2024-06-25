@@ -208,10 +208,12 @@ public class MainSceneController extends GenericController{
             viewHand1 = new ImageView(imageHand1);
             viewHand1.setFitHeight(42*3);
             viewHand1.setFitWidth(63*3);
+            flip1.setVisible(true);
             hand1.setVisible(true);
             hand1.setGraphic(viewHand1);
         }
         else{
+            flip1.setVisible(false);
             hand1.setVisible(false);
         }
         if(player.getHand()[1] != null){
@@ -223,10 +225,12 @@ public class MainSceneController extends GenericController{
             viewHand2 = new ImageView(imageHand2);
             viewHand2.setFitHeight(42*3);
             viewHand2.setFitWidth(63*3);
+            flip2.setVisible(true);
             hand2.setVisible(true);
             hand2.setGraphic(viewHand2);
         }
         else{
+            flip2.setVisible(false);
             hand2.setVisible(false);
         }
         if(player.getHand()[2] != null){
@@ -238,10 +242,12 @@ public class MainSceneController extends GenericController{
             viewHand3 = new ImageView(imageHand3);
             viewHand3.setFitHeight(42*3);
             viewHand3.setFitWidth(63*3);
+            flip3.setVisible(true);
             hand3.setVisible(true);
             hand3.setGraphic(viewHand3);
         }
         else{
+            flip3.setVisible(false);
             hand3.setVisible(false);
         }
         
