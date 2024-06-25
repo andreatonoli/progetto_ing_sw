@@ -267,7 +267,6 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
     /**
      * This method sets the achievement of the player.
      * @param achievement the achievement chosen by the player.
-     * @throws RemoteException if there is an error in the connection.
      */
     @Override
     public void chooseAchievement(Achievement achievement) {
