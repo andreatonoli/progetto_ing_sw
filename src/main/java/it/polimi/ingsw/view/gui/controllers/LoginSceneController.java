@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.gui.controllers;
 
+import it.polimi.ingsw.view.gui.Gui;
 import it.polimi.ingsw.view.gui.GuiInputHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -28,6 +29,9 @@ public class LoginSceneController extends GenericController{
         bindEvents();
     }
 
+    /**
+     * Method that binds the events to the buttons.
+     */
     public void bindEvents(){
         next.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if(username.getText().isEmpty()){
@@ -44,22 +48,41 @@ public class LoginSceneController extends GenericController{
         });
     }
 
+    /**
+     * Method that sets the next action to perform.
+     * @param i the next action to perform.
+     */
     public void setNextAction(int i){
         this.nextAction = i;
     }
 
+    /**
+     * Method that sets the parameter used by the next action.
+     * @param i the next action value.
+     */
     public void setNextActionValue(int i){
         this.nextActionValue = i;
     }
 
+    /**
+     * Method that sets the lobbies to join.
+     * @param freeLobbies the lobbies to join
+     */
     public void setFreeLobbies(List<Integer> freeLobbies){
         this.freeLobbies = freeLobbies;
     }
 
+    /**
+     * Method that sets the lobbies to reconnect to.
+     * @param freeReconnectLobbies the lobbies to reconnect to
+     */
     public void setFreeReconnectLobbies(List<Integer> freeReconnectLobbies){
         this.freeReconnectLobbies = freeReconnectLobbies;
     }
 
+    /**
+     * Method that handles the next action.
+     */
     public void handleNextAction(){
         switch (nextAction){
             case 1:

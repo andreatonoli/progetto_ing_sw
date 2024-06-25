@@ -1,11 +1,8 @@
 package it.polimi.ingsw.view.gui.controllers;
 
-import it.polimi.ingsw.model.player.PlayerBoard;
 import it.polimi.ingsw.network.client.GameBean;
 import it.polimi.ingsw.network.client.PlayerBean;
-import it.polimi.ingsw.view.gui.Gui;
 import it.polimi.ingsw.view.gui.GuiInputHandler;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -36,12 +33,22 @@ public class OtherPlayerBoardsSceneController extends GenericController{
         bindEvents();
     }
 
+    /**
+     * Method that binds the events to the buttons.
+     */
     public void bindEvents(){
         back.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             guiHandler.backButtonClicked(player, game, opponents);
         });
     }
 
+    /**
+     * Method that sets the board of the other player.
+     * @param other the other player
+     * @param player the player
+     * @param game the game
+     * @param opponents the opponents
+     */
     public void setBoard(PlayerBean other, PlayerBean player, GameBean game, ArrayList<PlayerBean> opponents){
         this.player = player;
         this.game = game;

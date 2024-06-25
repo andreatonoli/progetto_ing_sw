@@ -34,6 +34,9 @@ public class LobbiesSceneController extends GenericController {
         bindEvents();
     }
 
+    /**
+     * Method that binds the events to the buttons.
+     */
     public void bindEvents(){
         create.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             guiHandler.createLobbyButtonClicked(startingGamesId, gamesWhitDisconnectionsId);
@@ -43,6 +46,11 @@ public class LobbiesSceneController extends GenericController {
         });
     }
 
+    /**
+     * Method that sets the lobbies to join.
+     * @param freeLobbies the lobbies to join
+     * @param freeReconnectLobbies the lobbies to reconnect to
+     */
     public void setLobbies(List<Integer> freeLobbies, List<Integer> freeReconnectLobbies){
         startingGamesId = freeLobbies;
         gamesWhitDisconnectionsId = freeReconnectLobbies;

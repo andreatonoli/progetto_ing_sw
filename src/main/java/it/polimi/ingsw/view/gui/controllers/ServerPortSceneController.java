@@ -21,6 +21,9 @@ public class ServerPortSceneController extends GenericController{
         bindEvents();
     }
 
+    /**
+     * Method that binds the events to the buttons.
+     */
     public void bindEvents(){
         next.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if(port.getText().isEmpty()){

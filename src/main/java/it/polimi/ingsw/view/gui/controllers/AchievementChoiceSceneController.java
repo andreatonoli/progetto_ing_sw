@@ -13,6 +13,7 @@ import javafx.scene.input.MouseEvent;
 
 import java.util.Optional;
 
+
 public class AchievementChoiceSceneController extends GenericController{
 
     @FXML
@@ -39,10 +40,13 @@ public class AchievementChoiceSceneController extends GenericController{
         bindEvents();
     }
 
+    /**
+     * Method that binds the events to the buttons.
+     */
     public void bindEvents(){
         chooseA1.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             Alert a = new Alert(Alert.AlertType.CONFIRMATION);
-            a.initOwner(Gui.stage.getOwner());
+            a.initOwner(Gui.getStage().getOwner());
             ButtonType yes = new ButtonType("Confirm");
             ButtonType no = new ButtonType("Cancel");
             a.setTitle("Choosing achievement card");
@@ -63,7 +67,7 @@ public class AchievementChoiceSceneController extends GenericController{
         });
         chooseA2.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             Alert a = new Alert(Alert.AlertType.CONFIRMATION);
-            a.initOwner(Gui.stage.getOwner());
+            a.initOwner(Gui.getStage().getOwner());
             ButtonType yes = new ButtonType("Confirm");
             ButtonType no = new ButtonType("Cancel");
             a.setTitle("Choosing achievement card");
@@ -84,6 +88,10 @@ public class AchievementChoiceSceneController extends GenericController{
         });
     }
 
+    /**
+     * Method that sets the achievements to be shown.
+     * @param achievements the achievements to be shown.
+     */
     public void setAchievements(Achievement[] achievements){
         this.achievements = achievements;
         int number1 = achievements[0].getId() + 86;

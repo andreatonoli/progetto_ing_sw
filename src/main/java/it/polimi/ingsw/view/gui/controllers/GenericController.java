@@ -7,6 +7,9 @@ public class GenericController {
 
     GuiInputHandler guiHandler;
 
+    /**
+     * Initializes the controller.
+     */
     @FXML
     public void initialize(){
         guiHandler = GuiInputHandler.getInstance();

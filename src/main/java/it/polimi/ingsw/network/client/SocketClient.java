@@ -254,7 +254,9 @@ public class SocketClient implements ClientInterface {
                 catchPing.cancel();
                 onDisconnect();
                 view.reset();
-                reconnectAttempt();
+                if (game.getState() == null || game.getState() != GameState.END){
+                    reconnectAttempt();
+                }
             }
         }, 5000, 5000);
     }
@@ -555,7 +557,6 @@ public class SocketClient implements ClientInterface {
                 }
                 break;
             case CHAT:
-                System.err.println(username);
                 player.setChat(((ChatMessage) message).getChat());
                 this.view.printViewWithCommands(this.player, this.game, this.opponents);
                 break;
@@ -570,7 +571,6 @@ public class SocketClient implements ClientInterface {
                 ArrayList<String> winners = ((WinnerMessage) message).getWinners();
                 this.cancelCatchPing();
                 this.view.declareWinners(winners);
-                sendMessage(new RemoveFromServerMessage(username));
                 this.onDisconnect();
                 break;
             case GENERIC_MESSAGE:

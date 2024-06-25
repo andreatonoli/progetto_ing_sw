@@ -38,6 +38,9 @@ public class StarterFlipSceneController extends GenericController{
         bindEvents();
     }
 
+    /**
+     * Method that binds the events to the buttons.
+     */
     public void bindEvents(){
         flip.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if(card.getImage().equals(front)){
@@ -49,7 +52,7 @@ public class StarterFlipSceneController extends GenericController{
         });
         next.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             Alert a = new Alert(Alert.AlertType.CONFIRMATION);
-            a.initOwner(Gui.stage.getOwner());
+            a.initOwner(Gui.getStage().getOwner());
             ButtonType yes = new ButtonType("Confirm");
             ButtonType no = new ButtonType("Cancel");
             a.setTitle("Placing starter card");
@@ -87,6 +90,10 @@ public class StarterFlipSceneController extends GenericController{
 
     }
 
+    /**
+     * Method that sets the face of the starter card.
+     * @param starter is the starter card to be flipped.
+     */
     public void setFace(Card starter){
         this.starter = starter;
         int number = starter.getCardNumber() + 80;

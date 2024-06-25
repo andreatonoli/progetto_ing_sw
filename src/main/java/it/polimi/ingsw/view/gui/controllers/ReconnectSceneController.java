@@ -19,6 +19,11 @@ public class ReconnectSceneController extends GenericController{
     @FXML
     private VBox v = new VBox();
 
+    /**
+     * Method that sets the lobbies to reconnect to.
+     * @param freeLobbies the lobbies to join
+     * @param freeReconnectLobbies the lobbies to reconnect to
+     */
     public void setLobbies(List<Integer> freeLobbies, List<Integer> freeReconnectLobbies){
         for (Integer i : freeReconnectLobbies){
             HBox h = new HBox();
