@@ -20,7 +20,7 @@ Each player could play using a Text User Interface (TUI) or a Graphical User Int
 
 ### Javadoc
 
-The following documentation includes a description for most of the classes and methods used, follows the Java documentation techniques, and can be accessed by generating it from code or here [JavaDoc]().
+The following documentation includes a description for most of the classes and methods used, follows the Java documentation techniques, and can be accessed by generating it from code or here [JavaDoc](https://github.com/rivaPolimi/ing-sw-2024-riva-pieruz-sartore-tonoli/tree/gui/deliverables/javadoc).
 
 ### JUnit Testing
 
