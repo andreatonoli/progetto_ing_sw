@@ -16,15 +16,15 @@ Each player could play using a Text User Interface (TUI) or a Graphical User Int
 
 ### UML
 - [High-Level UML]()
-- [Low-Level UML](https://github.com/rivaPolimi/ing-sw-2024-riva-pieruz-sartore-tonoli/blob/gui/deliverables/UML/low_level_UML.png)
+- [Low-Level UML](https://github.com/rivaPolimi/ing-sw-2024-riva-pieruz-sartore-tonoli/blob/master/deliverables/UML/low_level_UML.png)
 
 ### Javadoc
 
-The following documentation includes a description for most of the classes and methods used, follows the Java documentation techniques, and can be accessed by generating it from code or here [JavaDoc](https://github.com/rivaPolimi/ing-sw-2024-riva-pieruz-sartore-tonoli/tree/gui/deliverables/javadoc).
+The following documentation includes a description for most of the classes and methods used, follows the Java documentation techniques, and can be accessed by generating it from code or here [JavaDoc](https://github.com/rivaPolimi/ing-sw-2024-riva-pieruz-sartore-tonoli/tree/master/deliverables/javadoc).
 
 ### JUnit Testing
 
-All the components have been tested using [JUnit](https://junit.org/junit5/) for the model, with the help of [Mockito](https://site.mockito.org/) to test the controller. Here are the [results](https://github.com/rivaPolimi/ing-sw-2024-riva-pieruz-sartore-tonoli/blob/network/deliverables/Test_Results.png).
+All the components have been tested using [JUnit](https://junit.org/junit5/) for the model, with the help of [Mockito](https://site.mockito.org/) to test the controller. Here are the [results](https://github.com/rivaPolimi/ing-sw-2024-riva-pieruz-sartore-tonoli/blob/master/deliverables/Test_Results.png).
 
 ## Implemented Features
 
@@ -51,7 +51,7 @@ The project is deployed with two jars, one to run the client and one to run the 
 
 To run this project you need JDK 21 or above.
 If you want to play with TUI, it's highly recommended to use a terminal which support UTF-8 encoding and ANSI escape sequences, for example the latest version of Windows Terminal. The recommended size for the console is 50x150.
-To play with GUI there are no specific requirements.
+To play with GUI it's recommended to have a resolution of 1920x1080. If you are playing on Windows reduce the 
 
 ### Server
 
