@@ -220,13 +220,18 @@ public class MainSceneController extends GenericController{
             if(player.getHand()[1].getType().equals("gold")){
                 cardIndex += 40;
             }
-            imageHand = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/cards/fronts/" + cardIndex + ".png")));
-            viewHand2 = new ImageView(imageHand);
-            viewHand2.setFitHeight(42*3);
-            viewHand2.setFitWidth(63*3);
-            flip2.setVisible(true);
-            hand2.setVisible(true);
-            hand2.setGraphic(viewHand2);
+            if (player.getHand()[1].isNotBack()){
+                imageHand = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/cards/fronts/" + cardIndex + ".png")));
+                viewHand2 = new ImageView(imageHand);
+                viewHand2.setFitHeight(42*3);
+                viewHand2.setFitWidth(63*3);
+                flip2.setVisible(true);
+                hand2.setVisible(true);
+                hand2.setGraphic(viewHand2);
+            }
+            else{
+                flipCard(1);
+            }
         }
         else{
             flip2.setVisible(false);
@@ -237,13 +242,18 @@ public class MainSceneController extends GenericController{
             if(player.getHand()[2].getType().equals("gold")){
                 cardIndex += 40;
             }
-            imageHand = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/cards/fronts/" + cardIndex + ".png")));
-            viewHand3 = new ImageView(imageHand);
-            viewHand3.setFitHeight(42*3);
-            viewHand3.setFitWidth(63*3);
-            flip3.setVisible(true);
-            hand3.setVisible(true);
-            hand3.setGraphic(viewHand3);
+            if (player.getHand()[2].isNotBack()){
+                imageHand = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/cards/fronts/" + cardIndex + ".png")));
+                viewHand3 = new ImageView(imageHand);
+                viewHand3.setFitHeight(42*3);
+                viewHand3.setFitWidth(63*3);
+                flip3.setVisible(true);
+                hand3.setVisible(true);
+                hand3.setGraphic(viewHand3);
+            }
+            else {
+                flipCard(2);
+            }
         }
         else{
             flip3.setVisible(false);
@@ -256,20 +266,34 @@ public class MainSceneController extends GenericController{
         personalAch.setImage(imagePersonalAch);
 
         //common board
-        int retroNumber = (game.getResourceDeckRetro().ordinal() * 10) + 1;
+        int retroNumber = 0;
         ImageView viewRetro;
-        Image imageRetro = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/cards/backs/" + retroNumber + ".png")));
-        viewRetro = new ImageView(imageRetro);
-        viewRetro.setFitHeight(42*2.5);
-        viewRetro.setFitWidth(64*2.5);
-        resourceDeck.setGraphic(viewRetro);
+        Image imageRetro = null;
+        if (!game.getResourceDeckRetro().equals(Color.EMPTY)) {
+            retroNumber = (game.getResourceDeckRetro().ordinal() * 10) + 1;
+            imageRetro = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/cards/backs/" + retroNumber + ".png")));
+            viewRetro = new ImageView(imageRetro);
+            viewRetro.setFitHeight(42*2.5);
+            viewRetro.setFitWidth(64*2.5);
+            resourceDeck.setGraphic(viewRetro);
+        }
+        else{
+            resourceDeck.setVisible(false);
+            resourceDeck.setGraphic(null);
+        }
 
-        retroNumber = (game.getGoldDeckRetro().ordinal() * 10) + 41;
-        imageRetro = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/cards/backs/" + retroNumber + ".png")));
-        viewRetro = new ImageView(imageRetro);
-        viewRetro.setFitHeight(42*2.5);
-        viewRetro.setFitWidth(64*2.5);
-        goldDeck.setGraphic(viewRetro);
+        if (!game.getGoldDeckRetro().equals(Color.EMPTY)) {
+            retroNumber = (game.getGoldDeckRetro().ordinal() * 10) + 41;
+            imageRetro = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/cards/backs/" + retroNumber + ".png")));
+            viewRetro = new ImageView(imageRetro);
+            viewRetro.setFitHeight(42*2.5);
+            viewRetro.setFitWidth(64*2.5);
+            goldDeck.setGraphic(viewRetro);
+        }
+        else{
+            goldDeck.setVisible(false);
+            goldDeck.setGraphic(null);
+        }
 
         int r1 = game.getCommonResources()[0].getCardNumber();
         int r2 = game.getCommonResources()[1].getCardNumber();
@@ -522,6 +546,14 @@ public class MainSceneController extends GenericController{
                 b.setVisible(false);
             }
             j += 1;
+        }
+    }
+
+    public void drawBoardOnRecon(){
+        buttonBoard.getChildren().clear();
+        Set<Integer> keys = player.getBoard().getPositionCardKeys();
+        for (Integer key : keys) {
+            printCard(key);
         }
     }
 

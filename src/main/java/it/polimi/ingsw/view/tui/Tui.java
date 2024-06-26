@@ -439,7 +439,12 @@ public class Tui implements Ui {
         String[][] matCard = new String[TuiCostants.ROW][TuiCostants.COLUMN];
         for (int i = 0; i < TuiCostants.ROW; i++) {
             for (int j = 0; j < TuiCostants.COLUMN; j++) {
-                matCard[i][j] = Color.getBackground(color) + " " + TuiColors.getColor(TuiColors.ANSI_RESET);
+                if (!color.equals(Color.EMPTY)) {
+                    matCard[i][j] = Color.getBackground(color) + " " + TuiColors.getColor(TuiColors.ANSI_RESET);
+                }
+                else {
+                    matCard[i][j] = " ";
+                }
             }
         }
         return matCard;

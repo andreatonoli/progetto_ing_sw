@@ -232,7 +232,10 @@ public class GuiInputHandler implements Ui {
 
     @Override
     public void handleReconnection() {
-
+        Platform.runLater(() -> {
+            MainSceneController c = (MainSceneController) GuiScenes.getController(GuiScenes.MAIN_SCENE);
+            c.drawBoardOnRecon();
+        });
     }
 
     /**

@@ -17,7 +17,9 @@ public enum Color {
 
     YELLOW(5, "\033[43m"),
 
-    ORANGE(6, "\033[48;5;208m");
+    ORANGE(6, "\033[48;5;208m"),
+
+    EMPTY(7, " ");
 
     /**
      * Index of the color which is linked in the L shape objective.
