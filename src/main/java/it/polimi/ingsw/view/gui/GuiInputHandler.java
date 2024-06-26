@@ -101,11 +101,20 @@ public class GuiInputHandler implements Ui {
      * Called when the reconnect button is clicked. It changes the scene to the reconnect scene.
      */
     public void reconnectLobbyButtonClicked(List<Integer> startingGamesId, List<Integer> gamesWithDisconnectionsId){
-        Platform.runLater(() -> {
-            ReconnectSceneController c = (ReconnectSceneController) GuiScenes.getController(GuiScenes.LOBBIES_SCENE);
-            c.setLobbies(startingGamesId, gamesWithDisconnectionsId);
-            Gui.setScene(Gui.getScenes().get(GuiScenes.RECONNECT_SCENE.ordinal()));
-        });
+        if (gamesWithDisconnectionsId.isEmpty()){
+            Platform.runLater(() -> {
+                LobbiesSceneController c = (LobbiesSceneController) GuiScenes.getController(GuiScenes.LOBBIES_SCENE);
+                c.setLobbies(startingGamesId, gamesWithDisconnectionsId);
+                Gui.setScene(Gui.getScenes().get(GuiScenes.LOBBIES_SCENE.ordinal()));
+            });
+        }
+        else {
+            Platform.runLater(() -> {
+                ReconnectSceneController c = (ReconnectSceneController) GuiScenes.getController(GuiScenes.RECONNECT_SCENE);
+                c.setLobbies(startingGamesId, gamesWithDisconnectionsId);
+                Gui.setScene(Gui.getScenes().get(GuiScenes.RECONNECT_SCENE.ordinal()));
+            });
+        }
     }
 
     /**

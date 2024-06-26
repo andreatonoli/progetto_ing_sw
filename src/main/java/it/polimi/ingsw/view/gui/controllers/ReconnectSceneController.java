@@ -25,6 +25,7 @@ public class ReconnectSceneController extends GenericController{
      * @param freeReconnectLobbies the lobbies to reconnect to
      */
     public void setLobbies(List<Integer> freeLobbies, List<Integer> freeReconnectLobbies){
+        v.getChildren().clear();
         for (Integer i : freeReconnectLobbies){
             HBox h = new HBox();
             Text t = new Text("Lobby " + i);

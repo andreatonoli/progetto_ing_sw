@@ -209,20 +209,6 @@ public class SocketClient implements ClientInterface {
     }
 
     /**
-     * This method is used to resume the connection.
-     * @param number the number of the player.
-     * @param creation the flag used to check if the player is creating a new game.
-     */
-    public void resumeConnection(int number, boolean creation){
-        if (creation){
-            sendMessage(new NumPlayerResponseMessage(this.username, number));
-        }
-        else {
-            sendMessage(new LobbyIndexMessage(this.username, number));
-        }
-    }
-
-    /**
      * This method is used to set the action to perform on connection.
      * @param response is the action to perform.
      * @param startingGamesId is the list of the starting games' id.
@@ -424,11 +410,8 @@ public class SocketClient implements ClientInterface {
                 this.view.printViewWithCommands(player, game, opponents);
                 break;
             case USERNAME_REQUEST:
-                int number = ((UsernameRequestMessage) message).getNumber();
-                boolean creation = ((UsernameRequestMessage) message).isCreation();
                 System.out.println("Username is already taken, please choose another: ");
                 this.view.askNickname();
-                resumeConnection(number, creation);
                 break;
             case NUM_PLAYER_REQUEST:
                 cancelCatchPing();

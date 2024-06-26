@@ -54,6 +54,7 @@ public class LobbiesSceneController extends GenericController {
     public void setLobbies(List<Integer> freeLobbies, List<Integer> freeReconnectLobbies){
         startingGamesId = freeLobbies;
         gamesWhitDisconnectionsId = freeReconnectLobbies;
+        v.getChildren().clear();
         for (Integer i : freeLobbies){
             HBox h = new HBox();
             Text t = new Text("Lobby " + i);
