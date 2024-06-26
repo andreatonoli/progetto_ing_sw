@@ -51,7 +51,7 @@ The project is deployed with two jars, one to run the client and one to run the 
 
 To run this project you need JDK 21 or above.
 If you want to play with TUI, it's highly recommended to use a terminal which support UTF-8 encoding and ANSI escape sequences, for example the latest version of Windows Terminal. The recommended size for the console is 50x150.
-To play with GUI it's recommended to have a resolution of 1920x1080. If you are playing on Windows reduce the 
+To play with GUI it's recommended to have a resolution of 1920x1080. If you are playing on Windows go to Display > Scale > 100%. 
 
 ### Server
 
