@@ -41,7 +41,7 @@ All the components have been tested using [JUnit](https://junit.org/junit5/) for
 
 ## Jars
 
-The following [jars]() were used for the delivery of the project, therefore allowing the launch of the game according to the functionality described in the introduction.
+The following [jars](https://github.com/rivaPolimi/ing-sw-2024-riva-pieruz-sartore-tonoli/tree/master/deliverables/jars) were used for the delivery of the project, therefore allowing the launch of the game according to the functionality described in the introduction.
 
 ## JAR Execution
 
