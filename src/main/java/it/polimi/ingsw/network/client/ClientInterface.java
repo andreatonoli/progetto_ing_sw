@@ -12,7 +12,7 @@ import java.util.List;
 public interface ClientInterface {
 
     /**
-     * Method used to login.
+     * Method used to log in.
      */
     void login();
 

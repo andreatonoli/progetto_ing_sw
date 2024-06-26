@@ -4,7 +4,6 @@ import it.polimi.ingsw.model.card.Achievement;
 import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.network.client.RMIClientHandler;
 import it.polimi.ingsw.model.card.Card;
-import it.polimi.ingsw.network.messages.Message;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

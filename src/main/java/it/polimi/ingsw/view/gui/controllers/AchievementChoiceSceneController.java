@@ -11,6 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -96,11 +97,11 @@ public class AchievementChoiceSceneController extends GenericController{
         this.achievements = achievements;
         int number1 = achievements[0].getId() + 86;
         int number2 = achievements[1].getId() + 86;
-        achievement1 = new Image(getClass().getResourceAsStream("/cards/fronts/" + String.valueOf(number1) + ".png"));
+        achievement1 = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/cards/fronts/" + number1 + ".png")));
         miniAchievement1View = new ImageView(achievement1);
         miniAchievement1View.setFitHeight(42*3);
         miniAchievement1View.setFitWidth(63*3);
-        achievement2 = new Image(getClass().getResourceAsStream("/cards/fronts/" + String.valueOf(number2) + ".png"));
+        achievement2 = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/cards/fronts/" + number2 + ".png")));
         miniAchievement2View = new ImageView(achievement2);
         miniAchievement2View.setFitHeight(42*3);
         miniAchievement2View.setFitWidth(63*3);

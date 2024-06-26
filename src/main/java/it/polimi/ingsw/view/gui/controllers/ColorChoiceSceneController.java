@@ -15,6 +15,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class ColorChoiceSceneController extends GenericController{
@@ -37,7 +38,7 @@ public class ColorChoiceSceneController extends GenericController{
      * @param colors the colors to choose from
      */
     public void setColors(List<Color> colors){
-        Image red = new Image(getClass().getResourceAsStream("/images/red.png"));
+        Image red = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/red.png")));
         ImageView redView = new ImageView(red);
         redView.setFitHeight(150);
         redView.setFitWidth(150);
@@ -45,7 +46,7 @@ public class ColorChoiceSceneController extends GenericController{
         miniRedView.setFitHeight(50);
         miniRedView.setFitWidth(50);
 
-        Image blue = new Image(getClass().getResourceAsStream("/images/blue.png"));
+        Image blue = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/blue.png")));
         ImageView blueView = new ImageView(blue);
         blueView.setFitHeight(150);
         blueView.setFitWidth(150);
@@ -53,7 +54,7 @@ public class ColorChoiceSceneController extends GenericController{
         miniBlueView.setFitHeight(50);
         miniBlueView.setFitWidth(50);
 
-        Image green = new Image(getClass().getResourceAsStream("/images/green.png"));
+        Image green = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/green.png")));
         ImageView greenView = new ImageView(green);
         greenView.setFitHeight(150);
         greenView.setFitWidth(150);
@@ -61,7 +62,7 @@ public class ColorChoiceSceneController extends GenericController{
         miniGreenView.setFitHeight(50);
         miniGreenView.setFitWidth(50);
 
-        Image yellow = new Image(getClass().getResourceAsStream("/images/yellow.png"));
+        Image yellow = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/yellow.png")));
         ImageView yellowView = new ImageView(yellow);
         yellowView.setFitHeight(150);
         yellowView.setFitWidth(150);

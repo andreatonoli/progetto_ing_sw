@@ -17,11 +17,6 @@ public class Gui extends Application {
     private static Stage stage;
 
     /**
-     * The loader of the FXML file.
-     */
-    private static FXMLLoader loader;
-
-    /**
      * First scene of the game.
      */
     private static Parent root;
@@ -45,7 +40,7 @@ public class Gui extends Application {
      */
     public static void loadAllScenes() {
         for (GuiScenes s : GuiScenes.values()) {
-            loader = new FXMLLoader(Gui.class.getResource(GuiScenes.getFxml(s)));
+            FXMLLoader loader = new FXMLLoader(Gui.class.getResource(GuiScenes.getFxml(s)));
             try {
                 root = loader.load();
             } catch (IOException e) {

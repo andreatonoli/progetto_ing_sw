@@ -24,12 +24,8 @@ public class ConnectionSceneController extends GenericController{
      * Method that binds the events to the buttons.
      */
     public void bindEvents(){
-        rmi.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            guiHandler.rmiButtonClicked();
-        });
-        socket.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            guiHandler.socketButtonClicked();
-        });
+        rmi.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> guiHandler.rmiButtonClicked());
+        socket.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> guiHandler.socketButtonClicked());
 
     }
 

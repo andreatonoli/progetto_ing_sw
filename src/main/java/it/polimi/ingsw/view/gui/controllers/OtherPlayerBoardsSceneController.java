@@ -12,6 +12,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class OtherPlayerBoardsSceneController extends GenericController{
 
@@ -64,9 +65,9 @@ public class OtherPlayerBoardsSceneController extends GenericController{
             if(other.getBoard().getCard(coord).getType().equals("gold")){
                 card = card + 40;
             }
-            Image imageCard = new Image(getClass().getResourceAsStream("/cards/fronts/" + String.valueOf(card) + ".png"));
+            Image imageCard = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/cards/fronts/" + card + ".png")));
             if(!other.getBoard().getCard(coord).isNotBack()){
-                imageCard = new Image(getClass().getResourceAsStream("/cards/backs/" + String.valueOf(card) + ".png"));
+                imageCard = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/cards/backs/" + card + ".png")));
             }
             ImageView viewCard = new ImageView(imageCard);
             viewCard.setFitHeight(42*3);

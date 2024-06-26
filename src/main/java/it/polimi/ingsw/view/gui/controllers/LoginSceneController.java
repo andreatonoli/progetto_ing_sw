@@ -1,6 +1,5 @@
 package it.polimi.ingsw.view.gui.controllers;
 
-import it.polimi.ingsw.view.gui.Gui;
 import it.polimi.ingsw.view.gui.GuiInputHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;

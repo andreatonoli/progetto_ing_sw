@@ -163,7 +163,7 @@ public class RMIServer implements VirtualServer {
      */
     @Override
     public void sendChatMessage(String message, Integer id, String receiver) throws RemoteException {
-        addToQueue(() -> connections.get(id).sendChatMessage(message, connections.get(receiver)));
+        addToQueue(() -> connections.get(id).sendChatMessage(message, server.getClientFromName(receiver)));
     }
 
     /**
@@ -178,7 +178,7 @@ public class RMIServer implements VirtualServer {
     }
 
     /**
-     * Thsi method place the starter card.
+     * This method place the starter card.
      * @param card is the card that has to be placed.
      * @param id is the id of the connection.
      * @throws RemoteException if there is a connection error.

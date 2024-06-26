@@ -12,7 +12,6 @@ import java.io.Serializable;
  * It provides methods to get the achievement's id, calculate points, get base points,
  * get the color of the achievement, get the symbols on the card, get the symbol value,
  * and compare two achievements.
- *
  * This interface is a part of the model component in the MVC pattern.
  */
 public interface Achievement extends Serializable {

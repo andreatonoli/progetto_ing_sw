@@ -5,7 +5,6 @@ import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.card.Achievement;
 import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.GameState;
-import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.messages.*;
 
 import java.io.IOException;
@@ -257,7 +256,7 @@ public class SocketConnection extends Connection implements Runnable {
     @Override
     public void reconnect(Connection oldConnection) {
         this.lobby = oldConnection.getLobby();
-        lobby.addAction(new ActionMessage(this, () -> this.lobby.reconnectBackup(this/*, oldConnection*/)));
+        lobby.addAction(new ActionMessage(this, () -> this.lobby.reconnectBackup(this)));
         this.disconnected = false;
     }
 

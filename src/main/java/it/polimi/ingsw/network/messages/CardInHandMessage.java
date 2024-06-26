@@ -3,6 +3,8 @@ package it.polimi.ingsw.network.messages;
 import it.polimi.ingsw.model.card.Card;
 import it.polimi.ingsw.network.server.Server;
 
+import java.util.Arrays;
+
 /**
  * Message used to send the cards in the hand of the player.
  */
@@ -21,7 +23,7 @@ public class CardInHandMessage extends Message{
     @Override
     public String toString() {
         return "CardInHandMessage{" +
-                "cards: " + hand +
+                "cards: " + Arrays.toString(hand) +
                 '}';
     }
 }

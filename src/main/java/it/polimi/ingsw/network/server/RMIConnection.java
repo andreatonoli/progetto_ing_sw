@@ -6,7 +6,6 @@ import it.polimi.ingsw.model.card.Achievement;
 import it.polimi.ingsw.model.card.Card;
 import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.GameState;
-import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.messages.GenericMessage;
 import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.client.RMIClientHandler;

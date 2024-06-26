@@ -1,7 +1,7 @@
 package it.polimi.ingsw.network.messages;
 
 /**
- * Message used to notify the server that the player wants to login.
+ * Message used to notify the server that the player wants to log in.
  */
 public class LoginResponseMessage extends Message{
     public LoginResponseMessage(){

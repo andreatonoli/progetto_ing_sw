@@ -13,6 +13,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 
+import java.util.Objects;
 import java.util.Optional;
 
 public class StarterFlipSceneController extends GenericController{
@@ -97,11 +98,11 @@ public class StarterFlipSceneController extends GenericController{
     public void setFace(Card starter){
         this.starter = starter;
         int number = starter.getCardNumber() + 80;
-        front = new Image(getClass().getResourceAsStream("/cards/fronts/" + String.valueOf(number) + ".png"));
+        front = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/cards/fronts/" + number + ".png")));
         miniFrontView = new ImageView(front);
         miniFrontView.setFitHeight(42*3);
         miniFrontView.setFitWidth(63*3);
-        back = new Image(getClass().getResourceAsStream("/cards/backs/" + String.valueOf(number) + ".png"));
+        back = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/cards/backs/" + number + ".png")));
         miniBackView = new ImageView(back);
         miniBackView.setFitHeight(42*3);
         miniBackView.setFitWidth(63*3);

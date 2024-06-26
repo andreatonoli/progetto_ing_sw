@@ -21,12 +21,12 @@ public class AchievementL implements Achievement{
     private final int basePoint;
 
     /**
-     * The needed color (from the color enumeration) of 2/3 of the cards in a L-shaped pattern have to be.
+     * The needed color (from the color enumeration) of 2/3 of the cards in an L-shaped pattern have to be.
      */
     private final Color color;
 
     /**
-     * Builds cards which achievement is creating a L with cards of the same color.
+     * Builds cards which achievement is creating an L with cards of the same color.
      * They've all the same base points (3).
      * @param color color of 2/3 of the L.
      */

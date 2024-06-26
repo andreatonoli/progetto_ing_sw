@@ -14,10 +14,6 @@ public class UsernameRequestMessage extends Message{
         this.number = number;
     }
 
-    public boolean isCreation() {
-        return creation;
-    }
-
     public int getNumber() {
         return number;
     }

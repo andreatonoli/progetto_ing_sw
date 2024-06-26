@@ -1,13 +1,9 @@
 package it.polimi.ingsw.model.card;
 
 import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.Condition;
 import it.polimi.ingsw.model.enums.CornerEnum;
 import it.polimi.ingsw.model.enums.Symbols;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class GoldCard extends Face {
 

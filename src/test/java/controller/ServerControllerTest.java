@@ -5,7 +5,7 @@ import static org.mockito.Mockito.*;
 
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.controller.ServerController;
-import it.polimi.ingsw.model.exceptions.FullLobbyExeption;
+import it.polimi.ingsw.model.exceptions.FullLobbyException;
 import it.polimi.ingsw.network.server.Connection;
 import it.polimi.ingsw.network.server.Server;
 import org.junit.jupiter.api.DisplayName;
@@ -79,7 +79,7 @@ public class ServerControllerTest {
 
         // Define behavior for mocks
         when(serverMock.getClientFromName(username)).thenReturn(connectionMock);
-        when(controllerMock.joinGame(connectionMock)).thenThrow(FullLobbyExeption.class);
+        when(controllerMock.joinGame(connectionMock)).thenThrow(FullLobbyException.class);
 
         // Call the method under test
         boolean result = serverController.joinLobby(username, controllerMock);

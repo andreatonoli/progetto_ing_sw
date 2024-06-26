@@ -22,9 +22,7 @@ public class StartSceneController extends GenericController{
      * Method that binds the events to the buttons.
      */
     public void bindEvents(){
-        play.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            guiHandler.playButtonClicked();
-        });
+        play.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> guiHandler.playButtonClicked());
     }
 
 }

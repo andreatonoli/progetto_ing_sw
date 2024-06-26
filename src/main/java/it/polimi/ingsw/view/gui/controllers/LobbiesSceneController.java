@@ -38,12 +38,8 @@ public class LobbiesSceneController extends GenericController {
      * Method that binds the events to the buttons.
      */
     public void bindEvents(){
-        create.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            guiHandler.createLobbyButtonClicked(startingGamesId, gamesWhitDisconnectionsId);
-        });
-        reconnect.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            guiHandler.reconnectLobbyButtonClicked(startingGamesId, gamesWhitDisconnectionsId);
-        });
+        create.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> guiHandler.createLobbyButtonClicked(startingGamesId, gamesWhitDisconnectionsId));
+        reconnect.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> guiHandler.reconnectLobbyButtonClicked(startingGamesId, gamesWhitDisconnectionsId));
     }
 
     /**
@@ -65,17 +61,14 @@ public class LobbiesSceneController extends GenericController {
             b.setPrefSize(230, 30);
             b.setId("setup-small-button");
             int finalI = i;
-            b.setOnAction(event -> {
-                //guiHandler.joinLobbyButtonClicked(finalI, freeLobbies, freeReconnectLobbies);
-                Platform.runLater(() -> {
-                    LoginSceneController lsc = (LoginSceneController) GuiScenes.getController(GuiScenes.LOGIN_SCENE);
-                    lsc.setNextAction(2);
-                    lsc.setNextActionValue(finalI);
-                    lsc.setFreeLobbies(freeLobbies);
-                    lsc.setFreeReconnectLobbies(freeReconnectLobbies);
-                    Gui.setScene(Gui.getScenes().get(GuiScenes.LOGIN_SCENE.ordinal()));
-                });
-            });
+            b.setOnAction(event -> Platform.runLater(() -> {
+                LoginSceneController lsc = (LoginSceneController) GuiScenes.getController(GuiScenes.LOGIN_SCENE);
+                lsc.setNextAction(2);
+                lsc.setNextActionValue(finalI);
+                lsc.setFreeLobbies(freeLobbies);
+                lsc.setFreeReconnectLobbies(freeReconnectLobbies);
+                Gui.setScene(Gui.getScenes().get(GuiScenes.LOGIN_SCENE.ordinal()));
+            }));
 
             h.getChildren().addAll(t, b);
             h.setSpacing(40);

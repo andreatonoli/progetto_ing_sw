@@ -132,10 +132,10 @@ public class Controller extends Observable {
      * @param user of the client who's joining the game.
      * @return {@code true} if the game is full, {@code false} otherwise.
      */
-    public boolean joinGame(Connection user) throws FullLobbyExeption {
+    public boolean joinGame(Connection user) throws FullLobbyException {
         if (game.isFull()) {
             user.sendMessage(new GenericMessage("\nthe game is full, please retry.\n"));
-            throw new FullLobbyExeption();
+            throw new FullLobbyException();
         }
         Player player = new Player(user.getUsername(), game);
         this.connectedPlayers.put(user, player);
