@@ -7,10 +7,10 @@ Each player could play using a Text User Interface (TUI) or a Graphical User Int
 
 ## Group Members
 
-- Riva Stefano
-- Tonoli Andrea
-- Sartore Edoardo
-- Pieruz Dora Francesca
+- Riva Stefano (10794985)
+- Tonoli Andrea (10764952)
+- Sartore Edoardo (10825131)
+- Pieruz Francesca Dora (10817431)
 
 ## Documentation
 
