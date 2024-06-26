@@ -158,8 +158,8 @@
             </TextArea>
          </children>
           <stylesheets>
-              <URL value="@../text.css" />
               <URL value="@../backgroundAndText.css" />
+              <URL value="@../text.css" />
           </stylesheets>
       </VBox>
    </right>

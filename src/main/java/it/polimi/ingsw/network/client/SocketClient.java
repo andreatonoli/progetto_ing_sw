@@ -349,7 +349,7 @@ public class SocketClient implements ClientInterface {
             player.removeCardFromHand(card);
         }
         else{
-            update(new GenericMessage("\nThere's a time and place for everything! But not now.\n"));
+            update(new ErrorMessage("\nThere's a time and place for everything! But not now.\n"));
         }
     }
 
@@ -363,7 +363,7 @@ public class SocketClient implements ClientInterface {
             sendMessage(new DrawMessage(username, chosenDeck));
         }
         else {
-            update(new GenericMessage("\nThere's a time and place for everything! But not now.\n"));
+            update(new ErrorMessage("\nThere's a time and place for everything! But not now.\n"));
         }
     }
 
@@ -377,7 +377,7 @@ public class SocketClient implements ClientInterface {
             sendMessage(new DrawFromBoardMessage(username, index - 1));
         }
         else{
-            update(new GenericMessage("\nThere's a time and place for everything! But not now.\n"));
+            update(new ErrorMessage("\nThere's a time and place for everything! But not now.\n"));
         }
     }
 

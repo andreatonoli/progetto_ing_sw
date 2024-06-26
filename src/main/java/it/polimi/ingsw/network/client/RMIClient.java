@@ -333,7 +333,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
             }
         }
         else{
-            update(new GenericMessage("\nThere's a time and place for everything! But not now.\n"));
+            update(new ErrorMessage("\nThere's a time and place for everything! But not now.\n"));
         }
     }
 
@@ -351,7 +351,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
             }
         }
         else{
-            update(new GenericMessage("\nThere's a time and place for everything! But not now.\n"));
+            update(new ErrorMessage("\nThere's a time and place for everything! But not now.\n"));
         }
     }
 
@@ -369,7 +369,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
             }
         }
         else{
-            update(new GenericMessage("\nThere's a time and place for everything! But not now.\n"));
+            update(new ErrorMessage("\nThere's a time and place for everything! But not now.\n"));
         }
     }
 

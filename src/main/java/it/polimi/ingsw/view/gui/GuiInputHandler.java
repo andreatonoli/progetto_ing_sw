@@ -31,11 +31,6 @@ public class GuiInputHandler implements Ui {
     private String address;
 
     /**
-     * The connection type.
-     */
-    private String connection;
-
-    /**
      * Gets the instance of the GuiHandler.
      */
     public static GuiInputHandler getInstance(){
@@ -64,52 +59,20 @@ public class GuiInputHandler implements Ui {
      * Called when the RMI button is clicked. It sets the connection type to RMI and changes the scene to the server port scene.
      */
     public void rmiButtonClicked() {
-        connection = "rmi";
-        Platform.runLater(() -> Gui.setScene(Gui.getScenes().get(GuiScenes.SERVER_PORT_SCENE.ordinal())));
+        try {
+            client = new RMIClient(address, Server.rmiPort, this);
+            client.login();
+        } catch (RemoteException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     /**
      * Called when the socket button is clicked. It sets the connection type to socket and changes the scene to the server port scene.
      */
     public void socketButtonClicked() {
-        connection = "socket";
-        Platform.runLater(() -> Gui.setScene(Gui.getScenes().get(GuiScenes.SERVER_PORT_SCENE.ordinal())));
-    }
-
-    /**
-     * Called when the next button is clicked. It sets the port and creates the client.
-     */
-    public void nextPortButtonClicked(String s){
-        if(connection.equals("rmi")){
-            if(s.equals("default")){
-                try{
-                    client = new RMIClient(address, Server.rmiPort, this);
-                    client.login();
-                }
-                catch(RemoteException e){
-                    System.err.println(e.getMessage());
-                }
-            }
-            else{
-                try{
-                    client = new RMIClient(address, Integer.parseInt(s), this);
-                    client.login();
-                }
-                catch(RemoteException e){
-                    System.err.println(e.getMessage());
-                }            
-            }
-        }
-        else{
-            if(s.equals("default")){
-                client = new SocketClient(address, Server.socketPort, this);
-                client.login();
-            }
-            else{
-                client = new SocketClient(address, Integer.parseInt(s), this);
-                client.login();
-            }
-        }
+        client = new SocketClient(address, Server.socketPort, this);
+        client.login();
     }
 
     /**

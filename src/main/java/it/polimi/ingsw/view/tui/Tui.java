@@ -147,13 +147,12 @@ public class Tui implements Ui {
                 AnsiConsole.out().println("Wrong input.\nPlease, choose your connection method. Write:\n\t[1] RMI\n\t[2]Socket");
                 choice = scanner.nextLine();
             }
-            int port = askServerPort(choice);
             if (choice.equalsIgnoreCase("RMI")){
-                client = new RMIClient(address, port, this);
+                client = new RMIClient(address, Server.rmiPort, this);
                 client.login();
             }
             else{
-                client = new SocketClient(address, port, this);
+                client = new SocketClient(address, Server.socketPort, this);
                 client.login();
             }
         } catch (RemoteException e) {
@@ -187,27 +186,6 @@ public class Tui implements Ui {
             host = address;
         }
         return host;
-    }
-
-    /**
-     * Asks the player the port of the server he wants to connect to
-     * @return the chosen server port
-     */
-    public int askServerPort(String connection) {
-        String port;
-        String defaultPort;
-        if (connection.equalsIgnoreCase("RMI")){
-            defaultPort = String.valueOf(Server.rmiPort);
-        }
-        else{
-            defaultPort = String.valueOf(Server.socketPort);
-        }
-        AnsiConsole.out().print("Enter the server port [" + defaultPort + "]: ");
-        port = scanner.nextLine();
-        if (port.isEmpty()) {
-            port = defaultPort;
-        }
-        return Integer.parseInt(port);
     }
 
     /**

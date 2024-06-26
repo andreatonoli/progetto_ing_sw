@@ -1,9 +1,6 @@
 package it.polimi.ingsw.view.gui.controllers;
 
-import it.polimi.ingsw.model.enums.Color;
-import it.polimi.ingsw.model.enums.CornerEnum;
-import it.polimi.ingsw.model.enums.CornerState;
-import it.polimi.ingsw.model.enums.PlayerState;
+import it.polimi.ingsw.model.enums.*;
 import it.polimi.ingsw.network.client.GameBean;
 import it.polimi.ingsw.network.client.PlayerBean;
 import it.polimi.ingsw.view.gui.Gui;
@@ -27,6 +24,8 @@ import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.Set;
 
 public class MainSceneController extends GenericController{
 
@@ -67,11 +66,7 @@ public class MainSceneController extends GenericController{
     @FXML
     private AnchorPane scoreBoard;
     @FXML
-    private AnchorPane messages;
-    @FXML
     private VBox messagesV;
-    @FXML
-    private VBox errorbox;
     @FXML
     private ChoiceBox receiver;
     @FXML
@@ -118,6 +113,9 @@ public class MainSceneController extends GenericController{
     private ImageView viewInsectGoldRetro;
 
     private GuiInputHandler guiHandler;
+    private boolean firstTime = true;
+    private final int[][] buttonCornerCenter = { new int[]{6, 6, 7, 7}, new int[]{6, 7, 7, 6} };
+    ArrayList<Color> pionsColor = new ArrayList<>();
 
     @FXML
     public void initialize(){
@@ -126,7 +124,7 @@ public class MainSceneController extends GenericController{
     }
 
     /**
-     *
+     * Method that binds the events to the buttons.
      */
     public void bindEvents(){
         resourceDeck.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
@@ -174,7 +172,32 @@ public class MainSceneController extends GenericController{
                 }
             }
         });
+    }
 
+    public void setColors(){
+        if (game.getState().equals(GameState.IN_GAME)){
+
+            firstTime = false;
+            ArrayList<PlayerBean> allPlayers = new ArrayList<>(opponents);
+            allPlayers.add(player);
+            pions.clear();
+            pionsColor = new ArrayList<>();
+
+            for (int i = 0; i < allPlayers.size(); i++){
+                if (allPlayers.get(i).getPionColor() != null){
+
+                    Image image = new Image(getClass().getResourceAsStream("/images/" + allPlayers.get(i).getPionColor().toString().toLowerCase() + ".png"));
+                    ImageView iView = new ImageView(image);
+
+                    iView.setFitHeight(40);
+                    iView.setFitWidth(40);
+                    scoreBoard.getChildren().add(iView);
+
+                    pions.add(iView);
+                    pionsColor.add(allPlayers.get(i).getPionColor());
+                }
+            }
+        }
     }
 
     /**
@@ -363,31 +386,13 @@ public class MainSceneController extends GenericController{
         achievement2.setImage(imageAchievement2);
 
         //player board
-        for (Integer i : player.getBoard().getPositionCardKeys()){
-            int[] coord = player.getBoard().getCardCoordinates(player.getBoard().getCardPosition().get(i));
-            int card = player.getBoard().getCard(coord).getCardNumber();
-            if(player.getBoard().getCard(coord).getType().equals("starter")){
-                card = card + 80;
-            }
-            if(player.getBoard().getCard(coord).getType().equals("gold")){
-                card = card + 40;
-            }
-            Image imageCard = new Image(getClass().getResourceAsStream("/cards/fronts/" + card + ".png"));
-            if(!player.getBoard().getCard(coord).isNotBack()){
-                card = getNumber(card);
-                imageCard = new Image(getClass().getResourceAsStream("/cards/backs/" + card + ".png"));
-            }
-            ImageView viewCard = new ImageView(imageCard);
-            viewCard.setFitHeight(42*3);
-            viewCard.setFitWidth(64*3);
-            viewCard.setLayoutX(996 + coord[0]*150);
-            viewCard.setLayoutY(524 - coord[1]*77);
-            board.getChildren().addLast(viewCard);
-            board.setLayoutX(1000);
-            board.setLayoutY(530);
-            int[][] buttonCornerCenter = { new int[]{6, 6, 7, 7}, new int[]{6, 7, 7, 6} };
+        buttonBoard.getChildren().clear();
+        Set<Integer> keys = player.getBoard().getPositionCardKeys();
+        Integer lastElement = 0;
+        for (Integer key : keys) {
+            lastElement = key;
+            int[] coord = player.getBoard().getCardCoordinates(player.getBoard().getCardPosition().get(key));
             int j = 0;
-            //TODO: se c'è angolo vuoto allora si vede quello sotto
             buttonBoard.toFront();
             for (CornerEnum c : CornerEnum.values()){
                 if (player.getBoard().getCard(coord).getCorner(c).getState().equals(CornerState.VISIBLE)){
@@ -404,68 +409,14 @@ public class MainSceneController extends GenericController{
                 j += 1;
             }
         }
+        printCard(lastElement);
 
         //score track
+        if(firstTime){
+            setColors();
+        }
         ArrayList<PlayerBean> allPlayers = new ArrayList<>(opponents);
         allPlayers.add(player);
-        ArrayList<Color> pionsColor = new ArrayList<>();
-        for(PlayerBean p : allPlayers){
-            if(pions.size() < allPlayers.size()){
-                switch(p.getPionColor()){
-                    case RED -> {
-                        Image imageRed = new Image(getClass().getResourceAsStream("/images/red.png"));
-                        ImageView viewRed = new ImageView(imageRed);
-                        viewRed.setFitHeight(40);
-                        viewRed.setFitWidth(40);
-                        scoreBoard.getChildren().add(viewRed);
-                        viewRed.setLayoutX(scoretrackZero[0][0]);
-                        viewRed.setLayoutY(scoretrackZero[1][0]);
-                        pions.add(viewRed);
-                        pionsColor.add(Color.RED);
-                    }
-                    case BLUE -> {
-                        Image imageBlue = new Image(getClass().getResourceAsStream("/images/blue.png"));
-                        ImageView viewBlue = new ImageView(imageBlue);
-                        scoreBoard.getChildren().add(viewBlue);
-                        viewBlue.setFitHeight(40);
-                        viewBlue.setFitWidth(40);
-                        viewBlue.setLayoutX(scoretrackZero[0][2]);
-                        viewBlue.setLayoutY(scoretrackZero[1][2]);
-                        pions.add(viewBlue);
-                        pionsColor.add(Color.BLUE);
-                    }
-                    case GREEN -> {
-                        Image imageGreen = new Image(getClass().getResourceAsStream("/images/green.png"));
-                        ImageView viewGreen = new ImageView(imageGreen);
-                        scoreBoard.getChildren().add(viewGreen);
-                        viewGreen.setFitHeight(40);
-                        viewGreen.setFitWidth(40);
-                        viewGreen.setLayoutX(scoretrackZero[0][1]);
-                        viewGreen.setLayoutY(scoretrackZero[1][1]);
-                        pions.add(viewGreen);
-                        pionsColor.add(Color.GREEN);
-                    }
-                    case YELLOW -> {
-                        Image imageYellow = new Image(getClass().getResourceAsStream("/images/yellow.png"));
-                        ImageView viewYellow = new ImageView(imageYellow);
-                        scoreBoard.getChildren().add(viewYellow);
-                        viewYellow.setFitHeight(40);
-                        viewYellow.setFitWidth(40);
-                        viewYellow.setLayoutX(scoretrackZero[0][3]);
-                        viewYellow.setLayoutY(scoretrackZero[1][3]);
-                        pions.add(viewYellow);
-                        pionsColor.add(Color.PURPLE);
-                    }
-                    case null, default -> {}
-                }
-            }
-            else{
-                if(p.getPionColor() != null){
-                    pionsColor.add(p.getPionColor());
-
-                }
-            }
-        }
         for (int i = 0; i < pions.size(); i++){
             for(PlayerBean p : allPlayers){
                 if(p.getPionColor() != null && p.getPionColor().equals(pionsColor.get(i))){
@@ -503,7 +454,6 @@ public class MainSceneController extends GenericController{
             otherPlayers.setStyle("-fx-font-size:20");
             otherPlayers.getSelectionModel().selectFirst();
         }
-
     }
 
     /**
@@ -564,12 +514,15 @@ public class MainSceneController extends GenericController{
      */
     public void setMessage(String message, boolean isError){
         errorBox.clear();
-        Text t = new Text(message);
-        t.setFont(new Font(30));
-        if(isError){
-            t.setStyle("-fx-fill: red");
-        }
+        //Text t = new Text(message);
         errorBox.setText(message);
+        //errorBox.setId("background-text");
+        if(isError){
+            errorBox.setStyle("-fx-font-size: 30; -fx-text-fill: red; -fx-stroke: black; -fx-stroke-width: 1.5;");
+        }
+        else{
+            errorBox.setStyle("-fx-font-size: 30; -fx-text-fill: white; -fx-stroke: black; -fx-stroke-width: 1.5;");
+        }
     }
 
     /**
@@ -621,37 +574,56 @@ public class MainSceneController extends GenericController{
         }
     }
 
+    public void printCard(Integer lastElement){
+        int[] coord = player.getBoard().getCardCoordinates(player.getBoard().getCardPosition().get(lastElement));
+        int card = player.getBoard().getCard(coord).getCardNumber();
+        if(player.getBoard().getCard(coord).getType().equals("starter")){
+            card = card + 80;
+        }
+        if(player.getBoard().getCard(coord).getType().equals("gold")){
+            card = card + 40;
+        }
+        Image imageCard = new Image(getClass().getResourceAsStream("/cards/fronts/" + card + ".png"));
+        if(!player.getBoard().getCard(coord).isNotBack()){
+            card = getNumber(card);
+            imageCard = new Image(getClass().getResourceAsStream("/cards/backs/" + card + ".png"));
+        }
+        ImageView viewCard = new ImageView(imageCard);
+        viewCard.setFitHeight(42*3);
+        viewCard.setFitWidth(64*3);
+        viewCard.setLayoutX(996 + coord[0]*150);
+        viewCard.setLayoutY(524 - coord[1]*77);
+        board.getChildren().addLast(viewCard);
+        board.setLayoutX(1000);
+        board.setLayoutY(530);
+        int[][] buttonCornerCenter = { new int[]{6, 6, 7, 7}, new int[]{6, 7, 7, 6} };
+        int j = 0;
+        buttonBoard.toFront();
+        for (CornerEnum c : CornerEnum.values()){
+            if (player.getBoard().getCard(coord).getCorner(c).getState().equals(CornerState.VISIBLE)){
+                Button b = new Button();
+                b.setPrefSize(58, 52);
+                //b.setStyle("-fx-background-color: transparent");
+                b.setOnAction(event -> {
+                    placeCard(cardToPlace, new int[]{coord[0] + c.getX(), coord[1] + c.getY()});
+                    buttonBoard.getChildren().remove(b);
+                });
+                buttonBoard.add(b, (buttonCornerCenter[1][j] + coord[0]), (buttonCornerCenter[0][j] - coord[1]));
+                b.setVisible(false);
+            }
+            j += 1;
+        }
+    }
+
     /**
      * Method that returns the number of the back of the card to take the correct image.
      * @param number the number of the card
      * @return the number of the back of the card
      */
     private int getNumber(int number) {
-        if (number <= 10){
-            number = 1;
-        }
-        else if (number <= 20){
-            number = 11;
-        }
-        else if (number <= 30){
-            number = 21;
-        }
-        else if (number <= 40){
-            number = 31;
-        }
-        else if (number <= 50){
-            number = 41;
-        }
-        else if (number <= 60){
-            number = 51;
-        }
-        else if (number <= 70){
-            number = 61;
-        }
-        else{
-            number = 71;
+        if (number <= 80){
+            return ((number - 1) / 10) * 10 + 1;
         }
         return number;
     }
-
 }
