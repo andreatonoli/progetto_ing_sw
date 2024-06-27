@@ -136,6 +136,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
             server = (VirtualServer) registry.lookup(Server.serverName);
             server.login(this);
             reconnectionThread.interrupt();
+            reconnectionTimer.cancel();
             pickQueue();
         } catch (RemoteException | NotBoundException e){
             System.out.println(e.getMessage());
