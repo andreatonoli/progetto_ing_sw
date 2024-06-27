@@ -15,7 +15,7 @@ Each player could play using a Text User Interface (TUI) or a Graphical User Int
 ## Documentation
 
 ### UML
-- [High-Level UML]()
+- [High-Level UML](https://github.com/rivaPolimi/ing-sw-2024-riva-pieruz-sartore-tonoli/tree/master/deliverables/UML)
 - [Low-Level UML](https://github.com/rivaPolimi/ing-sw-2024-riva-pieruz-sartore-tonoli/blob/master/deliverables/UML/low_level_UML.png)
 
 ### Javadoc
