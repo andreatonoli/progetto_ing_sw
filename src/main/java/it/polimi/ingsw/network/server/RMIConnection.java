@@ -83,6 +83,8 @@ public class RMIConnection extends Connection {
         this.server = server;
         this.serverHandler = serverHandler;
         this.id = id;
+        this.ping = new Timer();
+        this.catchPing = new Timer();
         this.setClientId();
     }
 
