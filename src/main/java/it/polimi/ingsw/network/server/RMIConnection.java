@@ -162,24 +162,26 @@ public class RMIConnection extends Connection {
      */
     public void onDisconnect(){
         cancelPing();
-        Game game = lobby.getGame();
-        if (game.getGameState().equals(GameState.WAIT_PLAYERS)) {
-            server.removePlayers(username);
-            game.removePlayer(username);
-            if (game.getPlayers().isEmpty()) {
-                server.removeStartingGame(lobby);
-            } else {
-                lobby.getConnectedPlayersMessage();
-            }
-        } else if (!game.getGameState().equals(GameState.END)) {
-            this.disconnected = true;
-            game.getPlayerByUsername(username).setDisconnected(true);
-            server.addDisconnectedPlayer(username, lobby);
-            if (game.getPlayerInTurn().getUsername().equals(username)) {
-                lobby.disconnectedWhileInTurn(username);
-            }
-            if (game.getGameState().equals(GameState.START)) {
-                lobby.disconnectedWhileSetupping(this, username.equals(lobby.getPlayerInTurn()));
+        if (this.lobby != null) {
+            Game game = lobby.getGame();
+            if (game.getGameState().equals(GameState.WAIT_PLAYERS)) {
+                server.removePlayers(username);
+                game.removePlayer(username);
+                if (game.getPlayers().isEmpty()) {
+                    server.removeStartingGame(lobby);
+                } else {
+                    lobby.getConnectedPlayersMessage();
+                }
+            } else if (!game.getGameState().equals(GameState.END)) {
+                this.disconnected = true;
+                game.getPlayerByUsername(username).setDisconnected(true);
+                server.addDisconnectedPlayer(username, lobby);
+                if (game.getPlayerInTurn().getUsername().equals(username)) {
+                    lobby.disconnectedWhileInTurn(username);
+                }
+                if (game.getGameState().equals(GameState.START)) {
+                    lobby.disconnectedWhileSetupping(this, username.equals(lobby.getPlayerInTurn()));
+                }
             }
         }
     }
