@@ -219,7 +219,7 @@ public class SocketClient implements ClientInterface {
         if (response == -2) {
             this.view.selectGame(startingGamesId, gamesWithDisconnectionsId);
         }
-        if (response == -1) {
+        else if (response == -1) {
             this.view.askLobbySize();
         } else if (startingGamesId.contains(response)) {
             sendMessage(new LobbyIndexMessage(this.username, response));

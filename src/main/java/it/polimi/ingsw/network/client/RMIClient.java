@@ -181,7 +181,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
             catchPing();
             server.pingConnection(id);
         } catch (RemoteException e) {
-            throw new RuntimeException(e);
+            System.out.println(e.getMessage() + "yuppi");
         }
     }
 
@@ -421,8 +421,8 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
                 this.player = ((ReconnectionMessage) message).getPlayerBean();
                 this.game = ((ReconnectionMessage) message).getGameBean();
                 this.opponents = ((ReconnectionMessage) message).getOpponents();
-                this.view.handleReconnection();
                 this.view.printViewWithCommands(this.player, this.game, this.opponents);
+                this.view.handleReconnection();
                 break;
             case GAME_STATE:
                 GameState state = ((GameStateMessage) message).getState();

@@ -244,7 +244,10 @@ public class RMIConnection extends Connection {
      * This method handles the action of creating, joining or reconnecting to a game.
      */
     public void handleAction(int response, String username, List<Integer> startingGamesId, List<Integer> gamesWhitDisconnectionsId){
-        if (response == -1) {
+        if (response == -2) {
+            this.joinGame(startingGamesId, gamesWhitDisconnectionsId);
+        }
+        else if (response == -1) {
             this.createGame();
         } else if (startingGamesId.contains(response)) {
             if (server.usernameTaken(username)) {
