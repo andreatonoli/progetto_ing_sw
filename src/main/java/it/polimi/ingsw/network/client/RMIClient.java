@@ -86,7 +86,7 @@ public class RMIClient extends UnicastRemoteObject implements RMIClientHandler, 
      * The timer to catch the ping.
      */
     private Timer catchPing;
-    private Timer reconnectionTimer;
+    private Timer reconnectionTimer = new Timer();
 
     /**
      * The reconnection thread. Every second it tries to reconnect to the server.

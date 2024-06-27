@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e69075f2-d9c5-4728-9abf-57d5a9ef676f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/main/java/it/polimi/ingsw/view/GuiInputHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/main/resources/fxml/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main/java/it/polimi/ingsw/view/Gui.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/java/it/polimi/ingsw/view/Gui.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main/java/it/polimi/ingsw/view/controllers/StartSceneController.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/java/it/polimi/ingsw/view/controllers/StartSceneController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main/java/it/polimi/ingsw/view/tui/Tui.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/java/it/polimi/ingsw/view/tui/Tui.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main/resources/fxml/startScene.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/main/resources/fxml/startScene.fxml" afterDir="false" />
-    </list>
+    <list default="true" id="e69075f2-d9c5-4728-9abf-57d5a9ef676f" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -18,9 +10,21 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 8
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "rivaPolimi"
+  }
 }]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/rivaPolimi/ing-sw-2024-riva-pieruz-sartore-tonoli.git",
+    "accountId": "dd2911b4-e7a2-4b22-8f40-c62467dc56e2"
+  }
+}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
   <component name="ProjectId" id="2i9EC6PQnRH77DMh87z9KWtYA9e" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -30,16 +34,34 @@
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/home/hydro/IdeaProjects/ing-sw-2024-riva-pieruz-sartore-tonoli/src"
+    "last_opened_file_path": "C:/Users/stefa/IdeaProjects",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9f38398b9061-18abd8497189-intellij.indexing.shared.core-IU-241.14494.240" />
+        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.18034.62" />
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-IU-241.18034.62" />
       </set>
     </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="e69075f2-d9c5-4728-9abf-57d5a9ef676f" name="Changes" comment="" />
+      <created>1719514873803</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1719514873803</updated>
+      <workItem from="1719514874845" duration="67000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
 </project>
