@@ -214,7 +214,7 @@ public class SocketClient implements ClientInterface {
      * @param startingGamesId is the list of the starting games' id.
      * @param gamesWithDisconnectionsId is the list of the games with disconnections id.
      */
-    @Override
+    @Override palle
     public void setOnConnectionAction(int response, List<Integer> startingGamesId, List<Integer> gamesWithDisconnectionsId) {
         if (response == -2) {
             this.view.selectGame(startingGamesId, gamesWithDisconnectionsId);
