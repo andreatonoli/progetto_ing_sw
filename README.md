@@ -1,4 +1,3 @@
-# progetto_ing_sw
 # Prova Finale Ingegneria del Software 2023 - 2024
 
 ![Codex Naturalis](https://github.com/rivaPolimi/ing-sw-2024-riva-pieruz-sartore-tonoli/blob/master/src/main/resources/images/background.png)
