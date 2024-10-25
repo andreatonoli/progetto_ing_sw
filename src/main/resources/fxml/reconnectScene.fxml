@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<?import java.net.URL?>
+<?import javafx.scene.layout.HBox?>
+<BorderPane id="setup-scene" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.gui.controllers.ReconnectSceneController">
+    <top>
+        <Text id="setup-text" text="Lobbies reconnection" BorderPane.alignment="CENTER">
+            <font>
+                <Font size="150.0" />
+            </font>
+            <BorderPane.margin>
+                <Insets top="80.0" />
+            </BorderPane.margin>
+        </Text>
+    </top>
+    <center>
+      <VBox fx:id="v" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER" stylesheets="@../buttons.css">
+          <children>
+
+          </children>
+          <BorderPane.margin>
+              <Insets top="30.0" />
+          </BorderPane.margin>
+      </VBox>
+    </center>
+   <bottom>
+   </bottom>
+    <stylesheets>
+        <URL value="@../text.css" />
+        <URL value="@../backgrounds.css" />
+    </stylesheets>
+</BorderPane>

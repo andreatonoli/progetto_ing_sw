@@ -1,0 +1,404 @@
+{
+  "resourcecards":[
+    {
+      "corners": [
+        "FUNGI",
+        "EMPTY",
+        "NOCORNER",
+        "FUNGI"
+      ],
+      "point": 0,
+      "id" : 1
+    },
+    {
+      "corners": [
+        "FUNGI",
+        "FUNGI",
+        "EMPTY",
+        "NOCORNER"
+      ],
+      "point": 0,
+      "id" : 2
+    },
+    {
+      "corners": [
+        "EMPTY",
+        "NOCORNER",
+        "FUNGI",
+        "FUNGI"
+      ],
+      "point": 0,
+      "id" : 3
+    },
+    {
+      "corners": [
+        "NOCORNER",
+        "FUNGI",
+        "FUNGI",
+        "EMPTY"
+      ],
+      "point": 0,
+      "id" : 4
+    },
+    {
+      "corners": [
+        "NOCORNER",
+        "QUILL",
+        "FUNGI",
+        "PLANT"
+      ],
+      "point": 0,
+      "id" : 5
+    },
+    {
+      "corners": [
+        "INKWELL",
+        "FUNGI",
+        "ANIMAL",
+        "NOCORNER"
+      ],
+      "point": 0,
+      "id" : 6
+    },
+    {
+      "corners": [
+        "FUNGI",
+        "INSECT",
+        "EMPTY",
+        "MANUSCRIPT"
+      ],
+      "point": 0,
+      "id" : 7
+    },
+    {
+      "corners": [
+        "EMPTY",
+        "FUNGI",
+        "NOCORNER",
+        "EMPTY"
+      ],
+      "point": 1,
+      "id" : 8
+    },
+    {
+      "corners": [
+        "FUNGI",
+        "NOCORNER",
+        "EMPTY",
+        "EMPTY"
+      ],
+      "point": 1,
+      "id" : 9
+    },
+    {
+      "corners": [
+        "NOCORNER",
+        "EMPTY",
+        "EMPTY",
+        "FUNGI"
+      ],
+      "point": 1,
+      "id" : 10
+    },
+    {
+      "corners": [
+        "PLANT",
+        "EMPTY",
+        "NOCORNER",
+        "PLANT"
+      ],
+      "point": 0,
+      "id" : 11
+    },
+    {
+      "corners": [
+        "PLANT",
+        "PLANT",
+        "EMPTY",
+        "NOCORNER"
+      ],
+      "point": 0,
+      "id" : 12
+    },
+    {
+      "corners": [
+        "EMPTY",
+        "NOCORNER",
+        "PLANT",
+        "PLANT"
+      ],
+      "point": 0,
+      "id" : 13
+    },
+    {
+      "corners": [
+        "NOCORNER",
+        "PLANT",
+        "PLANT",
+        "EMPTY"
+      ],
+      "point": 0,
+      "id" : 14
+    },
+    {
+      "corners": [
+        "NOCORNER",
+        "INSECT",
+        "PLANT",
+        "QUILL"
+      ],
+      "point": 0,
+      "id" : 15
+    },
+    {
+      "corners": [
+        "FUNGI",
+        "PLANT",
+        "INKWELL",
+        "NOCORNER"
+      ],
+      "point": 0,
+      "id" : 16
+    },
+    {
+      "corners": [
+        "MANUSCRIPT",
+        "NOCORNER",
+        "ANIMAL",
+        "PLANT"
+      ],
+      "point": 0,
+      "id" : 17
+    },
+    {
+      "corners": [
+        "EMPTY",
+        "EMPTY",
+        "NOCORNER",
+        "PLANT"
+      ],
+      "point": 1,
+      "id" : 18
+    },
+    {
+      "corners": [
+        "EMPTY",
+        "EMPTY",
+        "PLANT",
+        "NOCORNER"
+      ],
+      "point": 1,
+      "id" : 19
+    },
+    {
+      "corners": [
+        "NOCORNER",
+        "PLANT",
+        "EMPTY",
+        "EMPTY"
+      ],
+      "point": 1,
+      "id" : 20
+    },
+    {
+      "corners": [
+        "ANIMAL",
+        "ANIMAL",
+        "NOCORNER",
+        "EMPTY"
+      ],
+      "point": 0,
+      "id" : 21
+    },
+    {
+      "corners": [
+        "NOCORNER",
+        "EMPTY",
+        "ANIMAL",
+        "ANIMAL"
+      ],
+      "point": 0,
+      "id" : 22
+    },
+    {
+      "corners": [
+        "ANIMAL",
+        "NOCORNER",
+        "EMPTY",
+        "ANIMAL"
+      ],
+      "point": 0,
+      "id" : 23
+    },
+    {
+      "corners": [
+        "EMPTY",
+        "ANIMAL",
+        "ANIMAL",
+        "NOCORNER"
+      ],
+      "point": 0,
+      "id" : 24
+    },
+    {
+      "corners": [
+        "NOCORNER",
+        "INSECT",
+        "ANIMAL",
+        "INKWELL"
+      ],
+      "point": 0,
+      "id" : 25
+    },
+    {
+      "corners": [
+        "PLANT",
+        "ANIMAL",
+        "MANUSCRIPT",
+        "NOCORNER"
+      ],
+      "point": 0,
+      "id" : 26
+    },
+    {
+      "corners": [
+        "QUILL",
+        "NOCORNER",
+        "FUNGI",
+        "ANIMAL"
+      ],
+      "point": 0,
+      "id" : 27
+    },
+    {
+      "corners": [
+        "NOCORNER",
+        "EMPTY",
+        "EMPTY",
+        "ANIMAL"
+      ],
+      "point": 1,
+      "id" : 28
+    },
+    {
+      "corners": [
+        "EMPTY",
+        "NOCORNER",
+        "ANIMAL",
+        "EMPTY"
+      ],
+      "point": 1,
+      "id" : 29
+    },
+    {
+      "corners": [
+        "EMPTY",
+        "ANIMAL",
+        "NOCORNER",
+        "EMPTY"
+      ],
+      "point": 1,
+      "id" : 30
+    },
+    {
+      "corners": [
+        "INSECT",
+        "INSECT",
+        "NOCORNER",
+        "EMPTY"
+      ],
+      "point": 0,
+      "id" : 31
+    },
+    {
+      "corners": [
+        "NOCORNER",
+        "EMPTY",
+        "INSECT",
+        "INSECT"
+      ],
+      "point": 0,
+      "id" : 32
+    },
+    {
+      "corners": [
+        "INSECT",
+        "NOCORNER",
+        "EMPTY",
+        "INSECT"
+      ],
+      "point": 0,
+      "id" : 33
+    },
+    {
+      "corners": [
+        "EMPTY",
+        "INSECT",
+        "INSECT",
+        "NOCORNER"
+      ],
+      "point": 0,
+      "id" : 34
+    },
+    {
+      "corners": [
+        "NOCORNER",
+        "QUILL",
+        "INSECT",
+        "ANIMAL"
+      ],
+      "point": 0,
+      "id" : 35
+    },
+    {
+      "corners": [
+        "MANUSCRIPT",
+        "INSECT",
+        "FUNGI",
+        "NOCORNER"
+      ],
+      "point": 0,
+      "id" : 36
+    },
+    {
+      "corners": [
+        "INSECT",
+        "PLANT",
+        "NOCORNER",
+        "INKWELL"
+      ],
+      "point": 0,
+      "id" : 37
+    },
+    {
+      "corners": [
+        "INSECT",
+        "NOCORNER",
+        "EMPTY",
+        "EMPTY"
+      ],
+      "point": 1,
+      "id" : 38
+    },
+    {
+      "corners": [
+        "EMPTY",
+        "EMPTY",
+        "INSECT",
+        "NOCORNER"
+      ],
+      "point": 1,
+      "id" : 39
+    },
+    {
+      "corners": [
+        "NOCORNER",
+        "INSECT",
+        "EMPTY",
+        "EMPTY"
+      ],
+      "point": 1,
+      "id" : 40
+    }
+  ]
+}
