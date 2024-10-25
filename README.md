@@ -15,16 +15,16 @@ Each player could play using a Text User Interface (TUI) or a Graphical User Int
 ## Documentation
 
 ### UML
-- [High-Level UML](https://github.com/rivaPolimi/ing-sw-2024-riva-pieruz-sartore-tonoli/tree/master/deliverables/UML)
-- [Low-Level UML](https://github.com/rivaPolimi/ing-sw-2024-riva-pieruz-sartore-tonoli/blob/master/deliverables/UML/low_level_UML.png)
+- [High-Level UML](https://github.com/andreatonoli/progetto_ing_sw/tree/master/deliverables/UML)
+- [Low-Level UML](https://github.com/andreatonoli/progetto_ing_sw/blob/master/deliverables/UML/low_level_UML.png)
 
 ### Javadoc
 
-The following documentation includes a description for most of the classes and methods used, follows the Java documentation techniques, and can be accessed by generating it from code or here [JavaDoc](https://github.com/rivaPolimi/ing-sw-2024-riva-pieruz-sartore-tonoli/tree/master/deliverables/javadoc).
+The following documentation includes a description for most of the classes and methods used, follows the Java documentation techniques, and can be accessed by generating it from code or here [JavaDoc](https://github.com/andreatonoli/progetto_ing_sw/tree/master/deliverables/javadoc).
 
 ### JUnit Testing
 
-All the components have been tested using [JUnit](https://junit.org/junit5/) for the model, with the help of [Mockito](https://site.mockito.org/) to test the controller. Here are the [results](https://github.com/rivaPolimi/ing-sw-2024-riva-pieruz-sartore-tonoli/blob/master/deliverables/Test_Results.png).
+All the components have been tested using [JUnit](https://junit.org/junit5/) for the model, with the help of [Mockito](https://site.mockito.org/) to test the controller. Here are the [results](https://github.com/andreatonoli/progetto_ing_sw/blob/master/deliverables/Test_Results.png).
 
 ## Implemented Features
 
@@ -41,7 +41,7 @@ All the components have been tested using [JUnit](https://junit.org/junit5/) for
 
 ## Jars
 
-The following [jars](https://github.com/rivaPolimi/ing-sw-2024-riva-pieruz-sartore-tonoli/tree/master/deliverables/jars) were used for the delivery of the project, therefore allowing the launch of the game according to the functionality described in the introduction.
+The following [jars](https://github.com/andreatonoli/progetto_ing_sw/tree/master/deliverables/jars) were used for the delivery of the project, therefore allowing the launch of the game according to the functionality described in the introduction.
 
 ## JAR Execution
 
