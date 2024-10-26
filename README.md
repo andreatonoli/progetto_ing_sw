@@ -1,5 +1,5 @@
 # Prova Finale Ingegneria del Software 2023 - 2024
-valutazione: 30/30L
+Valutazione Finale: 30/30L
 
 ![Codex Naturalis](https://github.com/andreatonoli/progetto_ing_sw/blob/main/src/main/resources/images/background.png)
 
